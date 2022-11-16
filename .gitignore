@@ -8,6 +8,7 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+*.json
 web-build/
 .env
 
