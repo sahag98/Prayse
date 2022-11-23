@@ -10,7 +10,6 @@ import ListFolders from "./ListFolders";
 
 
 const Home = ({ theme, todos, setTodos }) => {
-
     const fadeAnim = useRef(new Animated.Value(0)).current
     const [modalVisible, setModalVisible] = useState(false)
     const [clearModalVisible, setClearModalVisible] = useState(false)
@@ -19,6 +18,11 @@ const Home = ({ theme, todos, setTodos }) => {
     const [categoryValue, setCategoryValue] = useState('')
     const [folderName, setFolderName] = useState('')
     const [filter, setFilter] = useState('None')
+
+    const [filterData, setFilterData] = useState(todos)
+
+    const [filteredData, setFilteredData] = useState([])
+
 
     useEffect(() => {
         Animated.timing(
@@ -37,8 +41,9 @@ const Home = ({ theme, todos, setTodos }) => {
         }).catch(error => console.log(error))
     }
 
+
     const handleAddTodo = (todo) => {
-        const newTodos = [...todos, todo]
+        const newTodos = [todo, ...todos]
         AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
             setTodos(newTodos)
             setModalVisible(false)
@@ -83,6 +88,8 @@ const Home = ({ theme, todos, setTodos }) => {
             <ListItems
                 theme={theme}
                 todos={todos}
+                filteredData={filteredData}
+                setFilteredData={setFilteredData}
                 setTodos={setTodos}
                 handleTriggerEdit={handleTriggerEdit}
                 filter={filter}

@@ -44,9 +44,9 @@ export const HeaderView = styled.View`
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 30px;
+  font-size: 25px;
   color: ${colors.tertiary};
-  letter-spacing: 2px;
+  /* letter-spacing: 2px; */
 `;
 export const HeaderButton = styled.TouchableOpacity`
 display: flex;

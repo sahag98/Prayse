@@ -21,6 +21,7 @@ import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { useNavigation } from '@react-navigation/native'
+import uuid from 'react-native-uuid';
 
 const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setModalVisible, todoInputValue, setTodoInputValue, handleAddTodo, todos, todoToBeEdited, setTodoToBeEdited, handleEditTodo }) => {
     const handleCloseModal = () => {
@@ -35,7 +36,6 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
     })
 
     const navigation = useNavigation()
-
     const data = [
         {
             value: 'General'
@@ -67,13 +67,13 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
                 title: todoInputValue,
                 category: categoryValue,
                 date: new Date().toLocaleString(),
-                key: `${(todos[todos.length - 1] && parseInt(todos[todos.length - 1].key) + 1) || 1}`
+                key: uuid.v4()
             })
         } else {
             handleEditTodo({
                 title: todoInputValue,
                 category: categoryValue,
-                date: new Date().toLocaleString(),
+                date: todoToBeEdited.date,
                 key: todoToBeEdited.key
             })
         }

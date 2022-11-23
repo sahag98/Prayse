@@ -10,7 +10,7 @@ import { Appearance } from 'react-native';
 
 export default function Main() {
     const [theme, setTheme] = useState(Appearance.getColorScheme());
-
+    const [sorted, setsorted] = useState([])
     Appearance.addChangeListener((scheme) => {
         setTheme(scheme.colorScheme)
     })
@@ -19,6 +19,8 @@ export default function Main() {
 
     const [todos, setTodos] = useState([])
 
+
+
     const loadTodos = () => {
         AsyncStorage.getItem("storedTodos").then(data => {
             if (data !== null) {
@@ -26,6 +28,8 @@ export default function Main() {
             }
         }).catch((error) => console.log(error))
     }
+
+
 
     if (!ready) {
         return (

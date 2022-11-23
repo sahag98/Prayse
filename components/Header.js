@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, Modal, Dimensions, View, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, Text, Modal, Dimensions, View, Switch, StyleSheet, TouchableOpacity } from 'react-native';
 import {
     HeaderView, HeaderTitle, HeaderButton, colors, ModalButton,
     ModalButton2,
@@ -18,7 +18,7 @@ import { FlashList } from '@shopify/flash-list';
 import RadioButtonRN from 'radio-buttons-react-native';
 import SelectList from 'react-native-dropdown-select-list'
 
-const Header = ({ categoryValue, setCategoryValue, filter, setFilter, todos, theme, handleClearTodos, clearModalVisible, setClearModalVisible, filterModalVisible, setFilterModalVisible }) => {
+const Header = ({ setCategoryValue, todos, theme, handleClearTodos, clearModalVisible, setClearModalVisible, filterModalVisible, setFilterModalVisible }) => {
 
     const handleCloseModal = () => {
         setClearModalVisible(false)
@@ -30,7 +30,7 @@ const Header = ({ categoryValue, setCategoryValue, filter, setFilter, todos, the
         handleClearTodos()
     }
 
-    const [selected, setSelected] = useState("")
+
 
     let [fontsLoaded] = useFonts({
         'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
@@ -59,11 +59,7 @@ const Header = ({ categoryValue, setCategoryValue, filter, setFilter, todos, the
         }
     ]
 
-    const handleFilter = () => {
-        setFilter(categoryValue)
-        handleCloseModal()
-    }
-    // console.log(filter)
+
 
     if (!fontsLoaded) {
         return <AppLoading />
@@ -77,15 +73,15 @@ const Header = ({ categoryValue, setCategoryValue, filter, setFilter, todos, the
                 {todos.length == 0 && ''}
                 {todos.length != 0 &&
                     <>
-                        {/* <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ color: 'white', paddingRight: 10 }}>Filter</Text>
-                            <FontAwesome name="filter" size={25} color="white" />
+
+                        {/* <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <AntDesign name="search1" size={24} color={theme == 'dark' ? 'white' : 'black'} />
                         </TouchableOpacity> */}
                         <HeaderButton
                             onPress={() => { setClearModalVisible(true) }}
                         >
 
-                            <AntDesign name='closecircle' size={48} color={theme == 'dark' ? '#7272FF' : '#2F2D51'} />
+                            <AntDesign name='closecircle' size={45} color={theme == 'dark' ? '#7272FF' : '#2F2D51'} />
                         </HeaderButton>
                     </>}
             </HeaderView>
@@ -140,7 +136,7 @@ const Header = ({ categoryValue, setCategoryValue, filter, setFilter, todos, the
                             <ModalAction color={'white'} onPress={handleCloseModal}>
                                 <AntDesign name='close' size={28} color={'#2F2D51'} />
                             </ModalAction>
-                            <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleFilter}>
+                            <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleSubmit}>
                                 <AntDesign name='check' size={28} color={'white'} />
                             </ModalAction>
                         </ModalActionGroup>
@@ -216,7 +212,9 @@ const styles = StyleSheet.create({
     input: {
         // textAlignVertical: "top",
         fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
-    }
+    },
+
+
 })
 
 

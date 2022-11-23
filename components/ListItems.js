@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView } from 'react-native';
+import { TextInput, View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import {
     ListView,
@@ -17,13 +17,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Motion } from "@legendapp/motion"
 
 
-const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdit }) => {
+const ListItems = ({ filteredData, setFilteredData, filter, setFilter, theme, todos, setTodos, handleTriggerEdit }) => {
 
     let [fontsLoaded] = useFonts({
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     })
+    const [search, setSearch] = useState('')
 
     const filters = [
         {
@@ -48,9 +49,29 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
 
     let value = 0
 
+
+
+    const searchFilter = (text) => {
+        if (text) {
+            const newData = todos.filter((item) => {
+                const itemData = item.title ? item.title.toUpperCase()
+                    : ''.toUpperCase()
+                const textData = text.toUpperCase()
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSearch(text)
+        } else {
+            setFilteredData(todos)
+            setSearch(text)
+        }
+    }
+
+    const clearInput = () => {
+        setSearch('')
+    }
+
     const [status, setStatus] = useState('All')
-    const [swipedRow, setSwipedRow] = useState(null)
-    const [datalist, setDatalist] = useState(todos)
 
     const setStatusFilter = (status) => {
         if (status !== 'All') {
@@ -63,22 +84,40 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
         setStatus(status)
     }
 
-    const handleDeleteTodo = (rowMap, rowKey) => {
-        const newTodos = [...todos]
-        const todoIndex = todos.findIndex((todo) => todo.key === rowKey)
-        newTodos.splice(todoIndex, 1)
 
-        AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
-            setTodos(newTodos)
-        }).catch(error => console.log(error))
+    const handleDeleteTodo = (rowMap, rowKey) => {
+        if (search.length != 0) {
+            const newfilter = [...filteredData]
+            const newTodos = [...todos]
+            const todoIndex = todos.findIndex((todo) => todo.key === rowKey)
+            newTodos.splice(todoIndex, 1)
+            const filterIndex = filteredData.findIndex((todo) => todo.key === rowKey)
+            newfilter.splice(filterIndex, 1)
+
+            AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
+                setTodos(newTodos)
+                setFilteredData(newfilter)
+            }).catch(error => console.log(error))
+        }
+        else {
+            const newTodos = [...todos]
+            const todoIndex = todos.findIndex((todo) => todo.key === rowKey)
+            newTodos.splice(todoIndex, 1)
+
+            AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
+                setTodos(newTodos)
+            }).catch(error => console.log(error))
+        }
+
     }
 
     const renderItem = ({ item, index }) => {
-        const RowText = item.key == swipedRow ? SwipedTodoText : TodoText;
+        const RowText = TodoText;
         const categoryItem = item.category;
         return (
             <>
-                {filter == 'General' && item.category == 'General' &&
+
+                {filter == 'General' && item.category == 'General' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -119,7 +158,48 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                         </ListView>
                     </Motion.View>
                 }
-                {filter == 'People' && item.category == 'People' &&
+                {filter == 'General' && item.category == 'General' && search != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+
+                        >
+                            <>
+
+                                <View
+                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {categoryItem == "General" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#FFDAA5' } : { borderRadius: 20, backgroundColor: '#FFBF65' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'People' && item.category == 'People' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -158,7 +238,46 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                         </ListView>
                     </Motion.View>
                 }
-                {filter == 'Other' && item.category == 'Other' &&
+                {filter == 'People' && item.category == 'People' && search != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+
+                        >
+                            <>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {categoryItem == "People" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#A5C9FF', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#6B7EFF', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }}>
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'Other' && item.category == 'Other' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -198,7 +317,47 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                         </ListView>
                     </Motion.View>
                 }
-                {filter == 'Personal' && item.category == 'Personal' &&
+                {filter == 'Other' && item.category == 'Other' && search != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+                        // onPress={() => { handleTriggerEdit(item) }}
+                        >
+                            <>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {categoryItem == "Other" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: 'white', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: 'white', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'Personal' && item.category == 'Personal' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -237,7 +396,46 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                         </ListView>
                     </Motion.View>
                 }
-                {filter == 'Praise' && item.category == 'Praise' &&
+                {filter == 'Personal' && item.category == 'Personal' && search != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+
+                        >
+                            <>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {categoryItem == "Personal" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#FFB2B2', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#FF5858', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'Praise' && item.category == 'Praise' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -276,7 +474,46 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                         </ListView>
                     </Motion.View>
                 }
-                {filter == 'None' &&
+                {filter == 'Praise' && item.category == 'Praise' && search != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+
+                        >
+                            <>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {categoryItem == "Praise" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#A5FFC9', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#65FFA2', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: '#2F2D51' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'None' && search == 0 &&
                     <Motion.View initial={{ y: -50 }}
                         animate={{ x: value * 100, y: 0 }}
                         whileHover={{ scale: 1.2 }}
@@ -286,6 +523,86 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
                             style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
                             underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
                             onPress={() => { handleTriggerEdit(item) }}
+                        >
+                            <>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <RowText
+                                        style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: 15 } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: 15 }}>
+                                        {item.title}
+                                    </RowText>
+                                    <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDeleteTodo(RowText, item.key)}>
+                                        <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    {categoryItem == "General" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#FFDAA5' } : { borderRadius: 20, backgroundColor: '#FFBF65' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    {categoryItem == "People" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#A5C9FF', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#6B7EFF', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }}>
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    {categoryItem == "Praise" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#A5FFC9', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#65FFA2', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: '#2F2D51' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    {categoryItem == "Personal" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: '#FFB2B2', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#FF5858', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    {categoryItem == "Other" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { backgroundColor: 'white', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: 'white', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    {categoryItem == "None" &&
+                                        <TodoCategory
+                                            style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#8C8C8C', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#2F2D51', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                            <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                                {item.category}
+                                            </Text>
+                                        </TodoCategory>
+                                    }
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
+                            </>
+                        </ListView>
+                    </Motion.View>
+                }
+                {filter == 'None' && search.length != 0 &&
+                    <Motion.View initial={{ y: -50 }}
+                        animate={{ x: value * 100, y: 0 }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ y: 20 }}
+                        transition={{ type: "spring" }}>
+                        <ListView
+                            style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                            underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
+                        // onPress={() => { handleTriggerEdit(item) }}
                         >
                             <>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -387,12 +704,26 @@ const ListItems = ({ filter, setFilter, theme, todos, setTodos, handleTriggerEdi
             }
 
             {todos.length != 0 &&
-                <SwipeListView
-                    data={todos}
-                    keyExtractor={(e, i) => i.toString()}
-                    renderItem={renderItem}
+                <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <TextInput
+                            style={styles.textInputStyle}
+                            value={search}
+                            placeholder='Search prayers...'
+                            placeholderTextColor={theme == 'light' && '#2f2d51'}
+                            onChangeText={(text) => searchFilter(text)}
+                        />
+                        <TouchableOpacity onPress={() => setSearch('')}>
+                            <Text style={theme == 'dark' ? { fontFamily: 'Inter-Medium', paddingRight: 10, color: 'white' } : { fontFamily: 'Inter-Medium', paddingRight: 10, color: '#2f2d51' }}>Clear</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <SwipeListView
+                        data={search.length == 0 ? todos : filteredData}
+                        keyExtractor={(e, i) => i.toString()}
+                        renderItem={renderItem}
 
-                />
+                    />
+                </>
             }
         </>
     );
@@ -403,12 +734,24 @@ export default ListItems;
 
 const styles = StyleSheet.create({
 
+    textInputStyle: {
+        width: '80%',
+        height: 40,
+        fontSize: 12,
+        borderWidth: 1,
+        paddingLeft: 10,
+        marginTop: 5,
+        marginBottom: 10,
+        borderColor: 'white',
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+
     tab: {
         height: 40,
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingBottom: 10,
     },
 
     btnTab: {
@@ -467,8 +810,15 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     elevation: {
-        elevation: 5,
         shadowColor: '#13588c',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     press: {
         fontFamily: 'Inter-Light',

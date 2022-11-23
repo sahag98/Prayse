@@ -87,6 +87,7 @@ export default function Welcome({ navigation }) {
                         To use dark mode, change the theme of your phone to dark mode, and vice versa.
                     </Text>
                 </Unorderedlist>
+
                 <TouchableOpacity
                     style={theme == 'dark' ? styles.buttonDark : styles.button}
                     title='Create a prayer list'
