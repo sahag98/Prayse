@@ -20,7 +20,7 @@ export const colors = {
 const statusBarHeight = Constants.statusBarHeight;
 
 export const Container = styled.View`
-  background-color: ${colors.primary};
+  background-color: '${colors.primary}';
   padding: 20px;
   padding-bottom: 0px;
   flex: 1;
@@ -36,6 +36,7 @@ export const Container1 = styled.View`
 
 // Header
 export const HeaderView = styled.View`
+position:relative;
   margin-top:10px;
   margin-bottom: 10px;
   flex-direction: row;
@@ -44,13 +45,12 @@ export const HeaderView = styled.View`
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 25px;
+  font-size: 20px;
   color: ${colors.tertiary};
-  /* letter-spacing: 2px; */
 `;
 export const HeaderButton = styled.TouchableOpacity`
-display: flex;
-flex-direction: row;
+/* display: flex;
+flex-direction: row; */
 align-items:center;
   font-weight: bold;
   color: ${colors.tertiary};
@@ -59,9 +59,7 @@ align-items:center;
 
 // List
 export const ListContainer = styled.View`
-  /* margin-bottom: 30px; */
   flex: 1;
-  /* padding-bottom: 40px; */
 `;
 
 export const ListView = styled.TouchableHighlight`
@@ -70,7 +68,7 @@ export const ListView = styled.TouchableHighlight`
   width: 100%;
   padding: 15px;
   justify-content: space-around;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   border-radius: 10px;
 `;
 
@@ -137,8 +135,8 @@ export const ModalButton = styled.TouchableOpacity`
 `;
 
 export const ModalButton2 = styled.TouchableOpacity`
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   background-color: ${colors.tertiary};
   border-radius: 50px;
   justify-content: center;
@@ -203,8 +201,8 @@ export const StyledInput = styled.TextInput`
 `;
 
 export const StyledInput2 = styled.TextInput`
-  width: 100px;
-  height: 70px;
+  width: 150px;
+  height: 50px;
   background-color: ${colors.tertiary};
   padding: 10px;
   font-size: 14px;

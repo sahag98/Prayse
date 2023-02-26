@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "Prayse",
+    "slug": "prayer-App",
+    "version": "4.1.0",
+    "orientation": "portrait",
+    "owner": "sahag98",
+    "icon": "./assets/prayer.png",
+    "userInterfaceStyle": "automatic",
+    "notification": {
+      "icon": "./assets/noti-image.png",
+      "color": "#349eeb"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/noti-image.png",
+          "color": "#349eeb"
+        }
+      ]
+    ],
+    "splash": {
+      "image": "./assets/prayer-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "userInterfaceStyle": "automatic",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sahag98.prayerListApp",
+      "buildNumber": "15"
+    },
+    "android": {
+      "softwareKeyboardLayoutMode": "pan",
+      "userInterfaceStyle": "automatic",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/prayer.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.sahag98.prayerListApp",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 17
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bd2fcc18-85af-4520-8468-4e95a0d3fb73"
+      }
+    }
+  }
+}

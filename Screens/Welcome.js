@@ -1,22 +1,18 @@
-import React, { useRef, useEffect, useContext, useState } from 'react'
-import { Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated, Button } from "react-native"
+import React, { useRef, useEffect } from 'react'
+import { Dimensions, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
 import prayer from '../assets/prayer-nobg.png'
-import { Ionicons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import Unorderedlist from 'react-native-unordered-list';
-import { Dimensions, Appearance, useColorScheme, StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import Svg, { Path } from 'react-native-svg';
+import { useSelector } from 'react-redux';
 
 export default function Welcome({ navigation }) {
-
-    const [theme, setTheme] = useState(Appearance.getColorScheme());
-    Appearance.addChangeListener((scheme) => {
-        setTheme(scheme.colorScheme)
-    })
-    console.log(theme)
+    const theme = useSelector(state => state.user.theme)
 
     const fadeAnim = useRef(new Animated.Value(0)).current
+
 
     useEffect(() => {
         Animated.timing(
@@ -41,6 +37,7 @@ export default function Welcome({ navigation }) {
     }
 
     return (
+
         <View style={theme == 'dark' ? styles.containerDark : styles.container}>
 
             <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to the prayer app.</Text>
@@ -81,13 +78,12 @@ export default function Welcome({ navigation }) {
                 <Unorderedlist
                     color={theme == 'dark' ? 'white' : 'black'}
                     bulletUnicode={0x25E6}
-                    style={{ marginLeft: 10, marginBottom: 30 }}
+                    style={{ marginLeft: 10, marginBottom: 10 }}
                 >
                     <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
                         To use dark mode, change the theme of your phone to dark mode, and vice versa.
                     </Text>
                 </Unorderedlist>
-
                 <TouchableOpacity
                     style={theme == 'dark' ? styles.buttonDark : styles.button}
                     title='Create a prayer list'
@@ -144,7 +140,7 @@ export default function Welcome({ navigation }) {
                     }
                 </View>
             </View>
-        </View>
+        </View >
     )
 }
 
@@ -178,12 +174,12 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     instructions: {
-        marginBottom: 10,
+        marginBottom: 5,
         fontSize: 16,
         fontFamily: 'Inter-Medium',
     },
     instructionsDark: {
-        marginBottom: 10,
+        marginBottom: 5,
         fontSize: 16,
         fontFamily: 'Inter-Medium',
         color: 'white'
@@ -204,16 +200,15 @@ const styles = StyleSheet.create({
     imgContainer: {
         backgroundColor: 'white',
         borderRadius: 130,
-        marginVertical: 30,
+        marginVertical: 20,
         justifyContent: 'center',
     },
     img: {
         width: 250,
         height: 250,
-
     },
     button: {
-        marginVertical: 20,
+        marginVertical: 10,
         backgroundColor: '#2F2D51',
         padding: 15,
         width: 170,

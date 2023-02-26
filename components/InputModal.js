@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Text, View, Modal, StyleSheet, SafeAreaView
+    KeyboardAvoidingView, View, Text, Modal, StyleSheet
 }
     from 'react-native';
 import {
@@ -10,26 +10,30 @@ import {
     ModalContainer,
     ModalView,
     StyledInput,
-    StyledInput2,
     ModalAction,
     ModalActionGroup,
     ModalIcon,
     HeaderTitle,
 } from '../styles/appStyles'
 import SelectList from 'react-native-dropdown-select-list'
-import { AntDesign, Entypo, Fontisto } from '@expo/vector-icons'
+import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { useNavigation } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
+import { FAB } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPrayer, editPrayer } from '../redux/prayerReducer';
 
-const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setModalVisible, todoInputValue, setTodoInputValue, handleAddTodo, todos, todoToBeEdited, setTodoToBeEdited, handleEditTodo }) => {
+const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
+    const theme = useSelector(state => state.user.theme)
     const handleCloseModal = () => {
         setModalVisible(false)
-        setTodoInputValue("")
+        setPrayerValue("")
         setCategoryValue("")
-        setTodoToBeEdited(null)
+        // setTodoToBeEdited(null)
     }
+    const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
@@ -58,26 +62,29 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
 
     const handleSubmit = () => {
 
-        if (todoInputValue.length == 0) {
+        if (prayerValue.length == 0) {
             alert("Type in a prayer and try again.")
             return
         }
-        if (!todoToBeEdited) {
-            handleAddTodo({
-                title: todoInputValue,
+        if (!prayertoBeEdited) {
+            dispatch(addPrayer({
+                prayer: prayerValue,
+                folder: folderName,
                 category: categoryValue,
                 date: new Date().toLocaleString(),
-                key: uuid.v4()
-            })
+                id: uuid.v4(),
+            }))
         } else {
-            handleEditTodo({
-                title: todoInputValue,
+            dispatch(editPrayer({
+                prayer: prayerValue,
+                folder: folderName,
                 category: categoryValue,
-                date: todoToBeEdited.date,
-                key: todoToBeEdited.key
-            })
+                date: prayertoBeEdited.date,
+                id: prayertoBeEdited.id,
+            }))
         }
-        setTodoInputValue("")
+        setModalVisible(false)
+        setPrayerValue("")
         setCategoryValue("")
     }
 
@@ -85,18 +92,31 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
         return <AppLoading />
     }
     return (
-        <>
-            <ModalButton3 style={theme == 'dark' ? { backgroundColor: '#A5C9FF' } : { backgroundColor: '#4E31FF' }} onPress={() => navigation.navigate('Gospel')}>
-                <Entypo name='open-book' size={40} color={theme == 'dark' ? 'black' : 'white'} />
-            </ModalButton3>
+        <View style={{ position: 'relative', flex: 1 }}>
+            <View style={styles.actionButtons}>
+                <FAB
+                    icon="book-open-blank-variant"
+                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
+                    onPress={() => navigation.navigate('Gospel')}
+                    color={theme == "dark" ? "black" : "white"}
+                    customSize={70}
+                />
+                <FAB
+                    icon="plus"
+                    style={styles.fabStyle}
+                    onPress={() => { setModalVisible(true) }}
+                    color="#2F2D51"
+                    customSize={70}
+                />
 
-            <ModalButton style={theme == 'dark' ? { borderRadius: 50, backgroundColor: '#7272FF' } : { backgroundColor: '#2F2D51' }} onPress={() => { setModalVisible(true) }}>
-                <AntDesign name='plus' size={40} color={theme == 'dark' ? 'black' : 'white'} />
-            </ModalButton>
-
-            <ModalButton2 style={theme == 'dark' ? { backgroundColor: 'white' } : { backgroundColor: '#2F2D51' }} onPress={() => navigation.navigate('Community')}>
-                <Fontisto name='world-o' size={40} color={theme == 'dark' ? 'black' : 'white'} />
-            </ModalButton2>
+                <FAB
+                    icon="account-group"
+                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
+                    onPress={() => navigation.navigate('Community')}
+                    color={theme == "dark" ? "black" : "white"}
+                    customSize={70}
+                />
+            </View>
 
             <Modal
                 animationType='fade'
@@ -117,8 +137,8 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
                                 placeholderTextColor={'white'}
                                 selectionColor={'white'}
                                 autoFocus={true}
-                                onChangeText={(text) => setTodoInputValue(text)}
-                                value={todoInputValue}
+                                onChangeText={(text) => setPrayerValue(text)}
+                                value={prayerValue}
                                 onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
                                 multiline={true}
                             />
@@ -150,7 +170,7 @@ const InputModal = ({ categoryValue, setCategoryValue, theme, modalVisible, setM
                     </ModalContainer>
                 </KeyboardAvoidingView>
             </Modal>
-        </>
+        </View>
     );
 }
 
@@ -163,6 +183,43 @@ const styles = StyleSheet.create({
 
     inputText: {
         color: 'white'
+    },
+    fabStyle: {
+        bottom: 10,
+        position: 'relative',
+        alignSelf: 'center',
+        borderRadius: 20,
+        justifyContent: 'center',
+        backgroundColor: 'white',
+
+    },
+
+    actionButtons: {
+        position: 'absolute',
+        bottom: 5,
+        height: 70,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    fabStyle2: {
+        bottom: 10,
+        borderRadius: 20,
+        justifyContent: 'center',
+        backgroundColor: '#2F2D51',
+    },
+    fabStyle3: {
+        bottom: 10,
+        borderRadius: 20,
+        justifyContent: 'center',
+        backgroundColor: '#2F2D51',
+    },
+    fabStyle3Dark: {
+        bottom: 10,
+        borderRadius: 20,
+        justifyContent: 'center',
+        backgroundColor: '#A5C9FF',
     },
     select: {
         fontSize: 12,

@@ -3,27 +3,18 @@ import { Animated, View } from 'react-native'
 import Header from "./Header";
 import ListItems from "./ListItems";
 import InputModal from "./InputModal";
-import FolderModal from "./FolderModal"
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ListFolders from "./ListFolders";
+import { useDispatch, useSelector } from "react-redux";
+import { Container } from "../styles/appStyles";
 
-
-const Home = ({ theme, todos, setTodos }) => {
+const Home = ({ navigation, prayerList, folder }) => {
+    const theme = useSelector(state => state.user.theme)
     const fadeAnim = useRef(new Animated.Value(0)).current
     const [modalVisible, setModalVisible] = useState(false)
     const [clearModalVisible, setClearModalVisible] = useState(false)
-    const [filterModalVisible, setFilterModalVisible] = useState(false)
-    const [todoInputValue, setTodoInputValue] = useState('')
+    const [prayerValue, setPrayerValue] = useState("")
     const [categoryValue, setCategoryValue] = useState('')
-    const [folderName, setFolderName] = useState('')
-    const [filter, setFilter] = useState('None')
-
-    const [filterData, setFilterData] = useState(todos)
-
-    const [filteredData, setFilteredData] = useState([])
-
-
+    const dispatch = useDispatch()
     useEffect(() => {
         Animated.timing(
             fadeAnim,
@@ -35,81 +26,77 @@ const Home = ({ theme, todos, setTodos }) => {
         ).start()
     }, [fadeAnim]);
 
-    const handleClearTodos = () => {
-        AsyncStorage.setItem("storedTodos", JSON.stringify([])).then(() => {
-            setTodos([])
-        }).catch(error => console.log(error))
-    }
+    // const handleClearTodos = () => {
+    //     AsyncStorage.setItem("storedTodos", JSON.stringify([])).then(() => {
+    //         setTodos([])
+    //     }).catch(error => console.log(error))
+    // }
 
 
-    const handleAddTodo = (todo) => {
-        const newTodos = [todo, ...todos]
-        AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
-            setTodos(newTodos)
-            setModalVisible(false)
-        }).catch(error => console.log(error))
-    }
+    // const handleAddTodo = (todo) => {
+    //     const newTodos = [todo, ...todos]
+    //     AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
+    //         setTodos(newTodos)
+    //         setModalVisible(false)
+    //     }).catch(error => console.log(error))
+    // }
 
-    const [todoToBeEdited, setTodoToBeEdited] = useState(null)
+    const [prayertoBeEdited, setPrayertoBeEdited] = useState(null)
 
     const handleTriggerEdit = (item) => {
-        setTodoToBeEdited(item)
+        setPrayertoBeEdited(item)
         setModalVisible(true)
-        setTodoInputValue(item.title);
+        setPrayerValue(item.prayer);
         setCategoryValue(item.category);
     }
 
-    const handleEditTodo = (editedTodo) => {
-        const newTodos = [...todos]
-        const todoIndex = todos.findIndex((todo) => todo.key === editedTodo.key)
-        newTodos.splice(todoIndex, 1, editedTodo)
-        AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
-            setTodos(newTodos)
-            setModalVisible(false)
-            setTodoToBeEdited(null)
-        }).catch(error => console.log(error))
-    }
+    // const handleEditPrayer = (editedPrayer) => {
+    //     dispatch(editedPrayer)
+    //     // const newPr = [...todos]
+    //     // const todoIndex = todos.findIndex((todo) => todo.key === editedTodo.key)
+    //     // newTodos.splice(todoIndex, 1, editedTodo)
+    //     // AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos)).then(() => {
+    //     //     setTodos(newTodos)
+    //     //     setModalVisible(false)
+    //     //     setTodoToBeEdited(null)
+    //     // }).catch(error => console.log(error))
+    // }
 
     return (
-        <>
+        <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
             <Header
-                todos={todos}
+                folderName={folder}
+                // todos={todos}
                 theme={theme}
-                handleClearTodos={handleClearTodos}
-                clearModalVisible={clearModalVisible}
-                setClearModalVisible={setClearModalVisible}
-                filterModalVisible={filterModalVisible}
-                setFilterModalVisible={setFilterModalVisible}
-                filter={filter}
-                setFilter={setFilter}
-                categoryValue={categoryValue}
-                setCategoryValue={setCategoryValue}
+                // handleClearTodos={handleClearTodos}
+                // clearModalVisible={clearModalVisible}
+                // setClearModalVisible={setClearModalVisible}
+                navigation={navigation}
             />
             <ListItems
-                theme={theme}
-                todos={todos}
-                filteredData={filteredData}
-                setFilteredData={setFilteredData}
-                setTodos={setTodos}
+                // theme={theme}
+                prayerList={prayerList}
+                folder={folder}
+                // todos={todos}
+                // setTodos={setTodos}
                 handleTriggerEdit={handleTriggerEdit}
-                filter={filter}
-                setFilter={setFilter}
             />
             <InputModal
+                folderName={folder}
                 theme={theme}
-                todoInputValue={todoInputValue}
-                setTodoInputValue={setTodoInputValue}
+                prayerValue={prayerValue}
+                setPrayerValue={setPrayerValue}
                 categoryValue={categoryValue}
                 setCategoryValue={setCategoryValue}
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                handleAddTodo={handleAddTodo}
-                todos={todos}
-                todoToBeEdited={todoToBeEdited}
-                setTodoToBeEdited={setTodoToBeEdited}
-                handleEditTodo={handleEditTodo}
+                // handleAddTodo={handleAddTodo}
+                // // todos={todos}
+                prayertoBeEdited={prayertoBeEdited}
+                setPrayertoBeEdited={setPrayertoBeEdited}
+
             />
-        </>
+        </Container>
     )
 }
 

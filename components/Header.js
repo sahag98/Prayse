@@ -1,28 +1,38 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { TextInput, Text, Modal, Dimensions, View, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, Modal, View, StyleSheet, TouchableOpacity } from 'react-native';
 import {
-    HeaderView, HeaderTitle, HeaderButton, colors, ModalButton,
-    ModalButton2,
+    HeaderView, HeaderTitle,
     ModalContainer,
-    ModalView, StyledInput,
+    ModalView, StyledInput2,
     ModalAction,
     ModalActionGroup,
     ModalIcon,
-    ListView
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import { FontAwesome, AntDesign } from '@expo/vector-icons'
-import AppLoading from 'expo-app-loading';
-import Svg, { Path } from 'react-native-svg';
-import { FlashList } from '@shopify/flash-list';
-import RadioButtonRN from 'radio-buttons-react-native';
 import SelectList from 'react-native-dropdown-select-list'
+import { AntDesign, Ionicons } from '@expo/vector-icons'
+import AppLoading from 'expo-app-loading';
+import { useSelector } from 'react-redux';
+import { addUser, closeTool, removeUser } from '../redux/userReducer';
+import { useDispatch } from 'react-redux';
+import { selected } from '../redux/folderReducer';
 
-const Header = ({ setCategoryValue, todos, theme, handleClearTodos, clearModalVisible, setClearModalVisible, filterModalVisible, setFilterModalVisible }) => {
+const Header = ({ navigation, folderName, theme, handleClearTodos, clearModalVisible, setClearModalVisible }) => {
+    const [currentUser, setCurrentUser] = useState('')
+    const user = useSelector(state => state.user.user)
+    const tooltip = useSelector(state => state.user.tooltip)
+    const folder = useSelector(state => state.folder.folders)
+    const [openInput, setopenInput] = useState(false)
+    const dispatch = useDispatch()
+    let title = 'Prayer List'
 
     const handleCloseModal = () => {
         setClearModalVisible(false)
-        setFilterModalVisible(false)
+    }
+
+    const add = () => {
+        dispatch(addUser(currentUser))
+        setopenInput(false)
     }
 
     const handleSubmit = () => {
@@ -30,7 +40,19 @@ const Header = ({ setCategoryValue, todos, theme, handleClearTodos, clearModalVi
         handleClearTodos()
     }
 
+    const change = () => {
+        setopenInput(true)
+        dispatch(closeTool())
+        setCurrentUser('')
+    }
+    const close = () => {
+        dispatch(removeUser())
+        setopenInput(false)
+    }
 
+    const closeToolTip = () => {
+        dispatch(closeTool())
+    }
 
     let [fontsLoaded] = useFonts({
         'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
@@ -38,28 +60,6 @@ const Header = ({ setCategoryValue, todos, theme, handleClearTodos, clearModalVi
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     })
-
-
-    const data = [
-        {
-            value: 'General'
-        },
-        {
-            value: 'Friends & Family'
-        },
-        {
-            value: 'Personal'
-        }
-        ,
-        {
-            value: 'Praise'
-        },
-        {
-            value: 'Other'
-        }
-    ]
-
-
 
     if (!fontsLoaded) {
         return <AppLoading />
@@ -69,80 +69,58 @@ const Header = ({ setCategoryValue, todos, theme, handleClearTodos, clearModalVi
         <>
 
             <HeaderView>
-                <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' } : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>Prayer List</HeaderTitle>
-                {todos.length == 0 && ''}
-                {todos.length != 0 &&
-                    <>
+                {tooltip == true &&
+                    <View style={{ position: 'absolute', right: '15%', top: 20, width: '40%' }}>
+                        <TouchableOpacity onPress={closeToolTip} style={theme == 'dark' ? styles.tooltipDark : styles.tooltipLight}>
+                            <View style={theme == 'dark' ? { position: 'absolute', transform: [{ rotateZ: '80deg' }], width: 10, height: 10, backgroundColor: '#FFDAA5', left: 1, top: 2 } : { position: 'absolute', transform: [{ rotateZ: '80deg' }], width: 10, height: 10, backgroundColor: '#FFBF65', left: 1, top: 2 }}></View>
+                            <Text style={{ color: 'black', fontSize: 10 }}>edit title by pressing on it!</Text>
+                            <AntDesign style={{ paddingLeft: 2, paddingBottom: 4 }} name="close" size={10} color={'black'} />
+                        </TouchableOpacity>
+                    </View>
 
-                        {/* <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <AntDesign name="search1" size={24} color={theme == 'dark' ? 'white' : 'black'} />
-                        </TouchableOpacity> */}
-                        <HeaderButton
-                            onPress={() => { setClearModalVisible(true) }}
-                        >
+                }
+                <TouchableOpacity onPress={change}>
+                    {openInput == false &&
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <HeaderTitle
+                                style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' }
+                                    : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>
+                                {/* {user ? user + '\'s prayer list' : title} */}
+                                {folderName}
+                            </HeaderTitle>
+                            <AntDesign style={{ paddingLeft: 5 }} name="edit" size={24} color={theme == 'dark' ? 'white' : 'black'} />
+                        </View>
+                    }
+                    {openInput == true &&
+                        <>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <StyledInput2
+                                    style={theme == 'dark' ? styles.inputDark : styles.input}
+                                    onChangeText={(heading) => setCurrentUser(heading)}
+                                    value={currentUser}
+                                    placeholder="Enter your name"
+                                    placeholderTextColor={'white'}
+                                    selectionColor={'white'}
+                                    autoFocus={true}
+                                    maxLength={10}
+                                    onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
+                                />
+                                <TouchableOpacity style={theme == 'dark' ? styles.userbuttonDark : styles.userbutton} onPress={add}>
+                                    <AntDesign name="check" size={24} color={theme == 'dark' ? 'black' : 'white'} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={theme == 'dark' ? styles.userbuttonDark : styles.userbutton} onPress={close}>
+                                    <AntDesign name="close" size={24} color={theme == 'dark' ? 'black' : 'white'} />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                    <Ionicons name="settings" size={30} color={theme == 'dark' ? 'white' : "#2f2d51"} />
+                </TouchableOpacity>
 
-                            <AntDesign name='closecircle' size={45} color={theme == 'dark' ? '#7272FF' : '#2F2D51'} />
-                        </HeaderButton>
-                    </>}
             </HeaderView>
-            <Modal
 
-                animationType='fade'
-                transparent={true}
-                visible={clearModalVisible}
-                onRequestClose={handleCloseModal}
-            >
-                <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-                    <ModalView style={theme == 'dark' ? { backgroundColor: '#7272FF' } : { backgroundColor: '#93D8F8' }}>
-                        <ModalIcon>
-                            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: '#080808', fontSize: 18 } : { fontFamily: 'Inter-Bold', fontSize: 18 }}>Are you sure you want to delete all the prayers?</HeaderTitle>
-                        </ModalIcon>
-                        <ModalActionGroup>
-                            <ModalAction color={'white'} onPress={handleCloseModal}>
-                                <AntDesign name='close' size={30} color={'#2F2D51'} />
-                            </ModalAction>
-                            <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleSubmit}>
-                                <AntDesign name='check' size={30} color={'white'} />
-                            </ModalAction>
-                        </ModalActionGroup>
-                    </ModalView>
-                </ModalContainer>
-            </Modal>
-
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={filterModalVisible}
-                onRequestClose={handleCloseModal}
-            >
-                <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-                    <ModalView style={theme == 'dark' ? { width: '100%', backgroundColor: '#212121' } : { width: '100%', backgroundColor: '#93D8F8' }}>
-                        <Text>Filter</Text>
-                        <SelectList
-                            placeholder="selectcategory"
-                            setSelected={setCategoryValue}
-                            data={data}
-                            search={false}
-                            // onSelect={() => console.log(categoryValue)}
-                            defaultOption={{ key: 'None', value: 'None' }}
-                            boxStyles={theme == 'dark' ? styles.categoryDark : styles.category}
-                            dropdownStyles={theme == 'dark' ? styles.dropdownDark : styles.dropdown}
-                            dropdownTextStyles={styles.dropdownTextDark}
-                            inputStyles={styles.inputText}
-                            arrowicon={<AntDesign name="down" size={15} color="white" />}
-                            maxHeight="250"
-                        />
-                        <ModalActionGroup>
-                            <ModalAction color={'white'} onPress={handleCloseModal}>
-                                <AntDesign name='close' size={28} color={'#2F2D51'} />
-                            </ModalAction>
-                            <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleSubmit}>
-                                <AntDesign name='check' size={28} color={'white'} />
-                            </ModalAction>
-                        </ModalActionGroup>
-                    </ModalView>
-                </ModalContainer>
-            </Modal>
         </>
     );
 }
@@ -152,28 +130,14 @@ export default Header;
 
 const styles = StyleSheet.create({
 
-    category: {
+    userbutton: {
+        width: 45,
+        height: 45,
+        borderRadius: 50,
+        marginHorizontal: 5,
         backgroundColor: '#2F2D51',
-        color: 'black',
-        marginTop: 10,
-        height: 50,
         alignItems: 'center',
-    },
-    categoryDark: {
-        backgroundColor: '#121212',
-        color: 'white',
-        marginTop: 10,
-        height: 50,
-        alignItems: 'center',
-    },
-
-    dropdown: {
-        backgroundColor: '#2F2D51',
-        height: 800
-    },
-    dropdownDark: {
-        backgroundColor: '#121212',
-        height: 800
+        justifyContent: 'center',
     },
     dropdownText: {
         color: 'black',
@@ -187,33 +151,60 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'white'
     },
-    list: {
-        backgroundColor: '#93D8F8',
-        minHeight: 60,
-        width: '100%',
-        padding: 15,
-        justifyContent: 'space-around',
-        marginBottom: 20,
-        borderRadius: 10
+    inputText: {
+        color: 'white'
     },
-    listDark: {
-        backgroundColor: '#212121',
-        minHeight: 60,
-        width: '100%',
-        padding: 15,
-        justifyContent: 'space-around',
-        marginBottom: 20,
-        borderRadius: 10
-    },
-    inputDark: {
-        // textAlignVertical: "top",
-        fontFamily: 'Inter-Regular', backgroundColor: '#121212'
-    },
-    input: {
-        // textAlignVertical: "top",
-        fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
+    userbuttonDark: {
+        width: 45,
+        height: 45,
+        borderRadius: 50,
+        marginHorizontal: 5,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
+    corner: {
+
+    },
+    cornerDark: {
+
+    },
+
+    tooltipLight: {
+        position: 'relative',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        padding: 6,
+        backgroundColor: '#FFBF65'
+    },
+    tooltipDark: {
+        position: 'relative',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        padding: 6,
+        backgroundColor: '#FFDAA5'
+    },
+
+    input: {
+        height: 45,
+        borderRadius: 5,
+        overflow: 'hidden',
+        backgroundColor: '#2F2D51',
+        fontSize: 13,
+        alignItems: 'center'
+    },
+    inputDark: {
+        borderRadius: 5,
+        overflow: 'hidden',
+        backgroundColor: '#212121',
+        fontSize: 13,
+        alignItems: 'center'
+    },
 
 })
 

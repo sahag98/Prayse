@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Appearance, Text, View, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
-import { Container, HeaderView, HeaderTitle, ModalButton2, StyledInput } from '../styles/appStyles';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Text, View, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { Container, HeaderView, HeaderTitle, StyledInput } from '../styles/appStyles';
+import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import { firebase } from '../firebase'
 import { FlashList } from "@shopify/flash-list";
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
-import { LinearGradient } from 'expo-linear-gradient';
+import NetInfo from '@react-native-community/netinfo';
+import LottieView from "lottie-react-native";
+import { FAB } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
-const Community = ({ navigation: { goBack } }) => {
-    const [theme, setTheme] = useState(Appearance.getColorScheme());
+const Community = ({ navigation }) => {
+    const theme = useSelector(state => state.user.theme)
+    const size = useSelector(state => state.user.fontSize)
     const [todos, setTodos] = useState([])
     const todoRef = firebase.firestore().collection('todos')
     const [addData, setAddData] = useState('')
     const [error, setError] = useState(false)
     const [swearError, setSwearError] = useState(false)
+    const [isConnected, setIsConnected] = useState(true)
+    const [visible, setVisible] = useState(false)
+    const [name, setName] = useState('')
 
     useEffect(() => {
         todoRef
@@ -64,13 +71,17 @@ const Community = ({ navigation: { goBack } }) => {
     }
 
     var badwordsArray = require('badwords/array')
+    const [loading, setLoading] = useState(false)
+
+    setTimeout(() => {
+        setLoading(true)
+    }, 1500)
 
     const addTodo = () => {
         if (addData && addData.length > 0) {
             setError(false)
             const foundSwears = badwordsArray.filter(word => addData.toLowerCase().includes(word.toLowerCase()))
             if (foundSwears.length) {
-                // setError(true)
                 setSwearError(true)
                 setAddData('')
                 return
@@ -99,9 +110,19 @@ const Community = ({ navigation: { goBack } }) => {
 
     }
 
-    Appearance.addChangeListener((scheme) => {
-        setTheme(scheme.colorScheme)
-    })
+    const checkConnection = () => {
+        console.log('checking connection')
+        NetInfo.fetch().then(state => {
+
+            if (state.isConnected == true) {
+                setIsConnected(true)
+            }
+            else (
+                setIsConnected(false)
+            )
+        });
+    }
+
 
     let [fontsLoaded] = useFonts({
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
@@ -110,83 +131,114 @@ const Community = ({ navigation: { goBack } }) => {
         'Inter-Light': require('../assets/fonts/Inter-Light.ttf'),
     })
 
+
     if (!fontsLoaded) {
         return <AppLoading />
     }
 
-    return (
+    return isConnected ? (
         <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-            <HeaderView>
-                <HeaderTitle
-                    style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' } :
-                        { fontFamily: 'Inter-Medium', color: '#2F2D51', marginBottom: 0 }}>
-                    Community
-                </HeaderTitle>
+            {loading == false &&
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <LottieView
+                        source={require("../assets/97930-loading.json")}
+                        style={styles.animation}
+                        autoPlay
+                    />
+                </View>
+            }
+            {loading == true &&
+                <View style={{ position: 'relative', height: '100%' }}>
+                    <HeaderView>
+                        <HeaderTitle
+                            style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' } :
+                                { fontFamily: 'Inter-Medium', color: '#2F2D51', marginBottom: 0 }}>
+                            Community
+                        </HeaderTitle>
 
-            </HeaderView>
-            <Text
-                style={theme == 'dark' ? { fontFamily: 'Inter-Light', color: 'white', textAlign: 'center', fontSize: 15 } :
-                    { fontFamily: 'Inter-Light', color: '#2F2D51', textAlign: 'center', fontSize: 15 }}>
-                Welcome to the community! A place to share your prayers with others.Click on the red prayer button to let them know you are praying for them.
-            </Text>
+                    </HeaderView>
+                    <Text
+                        style={theme == 'dark' ? { fontFamily: 'Inter-Light', color: 'white', textAlign: 'center', fontSize: 15 } :
+                            { fontFamily: 'Inter-Light', color: '#2F2D51', textAlign: 'center', fontSize: 15 }}>
+                        Welcome to community! A place to share your prayers with others.
+                    </Text>
 
-            <Text
-                style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white', textAlign: 'left', fontSize: 14, paddingBottom: 10 }
-                    : { fontFamily: 'Inter-Medium', color: '#2F2D51', textAlign: 'left', fontSize: 15, paddingBottom: 10 }}>
-                If YOUR prayer gets answered let us know by clicking on the check mark that's on your prayer!
-            </Text>
-            <ModalButton2 style={theme == 'dark' ? { zIndex: 99, backgroundColor: '#7272FF' } : { zIndex: 99, backgroundColor: '#2F2D51' }}>
-                <AntDesign name='back' size={40} color={theme == 'dark' ? 'black' : 'white'} onPress={() => goBack()} />
-            </ModalButton2>
-            <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}>
-                <StyledInput
-                    style={theme == 'dark' ? styles.inputDark : styles.input}
-                    onChangeText={(heading) => setAddData(heading)}
-                    value={addData}
-                    placeholder="Add a prayer"
-                    placeholderTextColor={'white'}
-                    selectionColor={'white'}
-                    onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
-                    multiline={true}
-                />
-                <TouchableOpacity style={theme == 'dark' ? styles.buttonDark : styles.button} onPress={addTodo}>
-                    <AntDesign name='plus' size={35} color={theme == 'dark' ? 'black' : 'white'} />
-                </TouchableOpacity>
-            </View>
-            {error == true && <Text style={{ fontFamily: 'Inter-Light', fontSize: 13.5, color: '#FE5050', paddingBottom: 10 }}>Type in a prayer and try again.</Text>}
-            {swearError == true && <Text style={{ fontFamily: 'Inter-Light', fontSize: 13.5, color: '#FE5050', paddingBottom: 10 }}>Can't have any swear words in a prayer. Try again.</Text>}
-            <FlashList
-                data={todos}
-                estimatedItemSize={30}
-                numColumns={1}
-                renderItem={({ item }) => (
-                    <View style={theme == 'dark' ? styles.listDark : styles.list}>
-                        <Text style={theme == 'dark' ? styles.itemHeadingDark : styles.itemHeading}>
-                            {item.heading[0].toUpperCase() + item.heading.slice(1)}
-                        </Text>
-                        <View style={{ alignItems: 'center', flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
-                            <Text style={theme == 'dark' ? styles.dateDark : styles.date}>
-                                {item.date}
-                            </Text>
-                            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => updateTodo(item.id)}>
-                                    <MaterialCommunityIcons name="hands-pray" size={24} color={theme == "dark" ? "#FE5050" : "#AD1616"} />
-                                    <Text style={theme == 'dark' ? { paddingLeft: 3, color: '#FE5050' } : { paddingLeft: 3, color: '#AD1616' }}>{item.likes}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    {item.complete == false &&
-                                        <AntDesign style={{ paddingLeft: 20 }}
-                                            onPress={() => complete(item.id)} name="check" size={24} color={theme == "dark" ? "#9C9C9C" : "#4e4a8a"} />}
-                                    {item.complete == true &&
-                                        <AntDesign style={{ paddingLeft: 20 }} name="check" size={24} color={theme == "dark" ? "green" : "#14641B"} />}
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                    <Text
+                        style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white', textAlign: 'left', fontSize: 14, paddingBottom: 5 }
+                            : { fontFamily: 'Inter-Medium', color: '#2F2D51', textAlign: 'left', fontSize: 15, paddingBottom: 5 }}>
+                        If YOUR prayer gets answered let us know by clicking on the check mark that's on your prayer!
+                    </Text>
+                    <View style={{ position: 'absolute', bottom: 13, right: '1%', zIndex: 99 }}>
+                        <FAB
+                            icon="arrow-left"
+                            style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
+                            onPress={() => { navigation.navigate('Main') }}
+                            color={theme == 'dark' ? "black" : "white"}
+                            customSize={70}
+                        />
                     </View>
-                )}
-            />
+                    <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}>
+
+                        <StyledInput
+                            style={theme == 'dark' ? styles.inputDark : styles.input}
+                            onChangeText={(heading) => setAddData(heading)}
+                            value={addData}
+                            placeholder="Add a prayer"
+                            placeholderTextColor={'white'}
+                            selectionColor={'white'}
+                            onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
+                            multiline={true}
+                        />
+                        <TouchableOpacity style={theme == 'dark' ? styles.buttonDark : styles.button} onPress={addTodo}>
+                            <AntDesign name='plus' size={35} color={theme == 'dark' ? 'black' : 'white'} />
+                        </TouchableOpacity>
+                    </View>
+                    {error == true && <Text style={{ fontFamily: 'Inter-Light', fontSize: 13.5, color: '#FE5050', paddingBottom: 10 }}>Type in a prayer and try again.</Text>}
+                    {swearError == true && <Text style={{ fontFamily: 'Inter-Light', fontSize: 13.5, color: '#FE5050', paddingBottom: 10 }}>Can't have any swear words in a prayer. Try again.</Text>}
+
+                    <FlashList
+                        data={todos}
+                        estimatedItemSize={200}
+                        numColumns={1}
+                        renderItem={({ item }) => (
+                            <View style={theme == 'dark' ? styles.listDark : styles.list}>
+                                <Text style={theme == 'dark' ? { fontSize: size, fontFamily: 'Inter-Regular', color: 'white', paddingBottom: 5 } : { fontSize: size, fontFamily: 'Inter-Regular', color: '#2f2d51', paddingBottom: 5 }}>
+                                    {item.heading[0].toUpperCase() + item.heading.slice(1)}
+                                </Text>
+                                <View style={{ alignItems: 'center', flexDirection: 'row-reverse', justifyContent: 'space-between' }}>
+                                    <Text style={theme == 'dark' ? styles.dateDark : styles.date}>
+                                        {item.date}
+                                    </Text>
+                                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => updateTodo(item.id)}>
+                                            <MaterialCommunityIcons name="hands-pray" size={24} color={theme == "dark" ? "#FE5050" : "#AD1616"} />
+                                            <Text style={theme == 'dark' ? { paddingLeft: 3, color: '#FE5050' } : { paddingLeft: 3, color: '#AD1616' }}>{item.likes}</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            {item.complete == false &&
+                                                <AntDesign style={{ paddingLeft: 20 }}
+                                                    onPress={() => complete(item.id)} name="check" size={24} color={theme == "dark" ? "#9C9C9C" : "#4e4a8a"} />}
+                                            {item.complete == true &&
+                                                <AntDesign style={{ paddingLeft: 20 }} name="check" size={24} color={theme == "dark" ? "green" : "#14641B"} />}
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        )}
+                    />
+                </View>
+            }
         </Container>
-    );
+    ) : (
+        <Container style={theme == 'dark' ? { justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
+            <Text style={theme == 'dark' ? { color: 'white' } : { color: 'black' }}>No network connection. Please try again.</Text>
+            <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 10 }}>
+                <Ionicons name="refresh" style={{ paddingRight: 10 }} size={40} color={theme == 'dark' ? 'white' : 'black'} onPress={checkConnection} />
+                <AntDesign name='back' size={40} color={theme == 'dark' ? '#7272FF' : 'black'} onPress={() => goBack()} />
+            </TouchableOpacity>
+
+        </Container>
+    )
 }
 
 
@@ -197,14 +249,32 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Inter-Regular',
         color: '#2F2D51',
-        fontSize: 15,
         paddingBottom: 5
+    },
+    fabStyle: {
+        position: 'absolute',
+        bottom: 13,
+        right: '5%',
+        zIndex: 99,
+        backgroundColor: '#2F2D51',
+    },
+    fabStyleDark: {
+        position: 'absolute',
+        bottom: 13,
+        right: '1%',
+        zIndex: 99,
+        backgroundColor: 'white',
     },
     itemHeadingDark: {
         fontFamily: 'Inter-Regular',
         color: 'white',
-        fontSize: 15,
         paddingBottom: 5
+    },
+    NameinputDark: {
+        height: 40,
+        marginBottom: 10,
+        width: '80%',
+        backgroundColor: '#212121',
     },
     input: {
         width: '80%',
@@ -225,6 +295,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         letterSpacing: 1,
         alignItems: 'center'
+    },
+    animation: {
+        width: 100,
+        height: 100,
+        alignSelf: 'center',
     },
     button: {
         width: 60,
@@ -249,7 +324,7 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     list: {
-        backgroundColor: 'white',
+        backgroundColor: '#93D8F8',
         minHeight: 60,
         width: '100%',
         padding: 15,

@@ -1,14 +1,15 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Animated, Modal, Linking, Appearance, TouchableOpacity, View, FlatList, StyleSheet, Text } from 'react-native';
+import { Alert, Animated, Modal, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import {
-    ModalView, StyledInput,
+    ModalView,
     ModalAction2,
     ModalActionGroup2,
-    ModalIcon, HeaderTitle, ModalContainer, Container1, ModalButton4
+    ModalIcon, ModalContainer, Container1
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
-import { AntDesign } from '@expo/vector-icons'
+import { useSelector } from 'react-redux';
+import { FAB } from 'react-native-paper';
 
 const Message = [
     {
@@ -44,6 +45,8 @@ const Message = [
 ]
 
 const Gospel = ({ navigation }) => {
+    const theme = useSelector(state => state.user.theme)
+
     const fadeAnim = useRef(new Animated.Value(0)).current
 
     const fadeIn = () => {
@@ -65,7 +68,7 @@ const Gospel = ({ navigation }) => {
     );
     const renderItem = ({ item }) => <Item title={item.title} verse={item.verse} chapter={item.chapter} />;
 
-    const [theme, setTheme] = useState(Appearance.getColorScheme());
+
     const [modalVisible, setModalVisible] = useState(false)
     const [clearModalVisible, setClearModalVisible] = useState(false)
 
@@ -90,11 +93,6 @@ const Gospel = ({ navigation }) => {
         )
     }
 
-
-    Appearance.addChangeListener((scheme) => {
-        setTheme(scheme.colorScheme)
-    })
-
     let [fontsLoaded] = useFonts({
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
@@ -115,16 +113,22 @@ const Gospel = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
-            <TouchableOpacity
-                style={theme == 'dark' ? styles.buttonDark : styles.button}
-                title='Create a prayer list'
-                onPress={() => { setClearModalVisible(true) }}
-            >
-                <Text style={theme == 'dark' ? styles.startedDark : styles.started}>Take Next Step</Text>
-            </TouchableOpacity>
-            <ModalButton4 style={theme == 'dark' ? { zIndex: 99, backgroundColor: '#7272FF' } : { zIndex: 99, backgroundColor: '#2F2D51' }}>
-                <AntDesign name='back' size={40} color={theme == 'dark' ? 'black' : 'white'} onPress={() => navigation.goBack()} />
-            </ModalButton4>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <TouchableOpacity
+                    style={theme == 'dark' ? styles.buttonDark : styles.button}
+                    title='Create a prayer list'
+                    onPress={() => { setClearModalVisible(true) }}
+                >
+                    <Text style={theme == 'dark' ? styles.startedDark : styles.started}>Take Next Step</Text>
+                </TouchableOpacity>
+                <FAB
+                    icon="arrow-left"
+                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
+                    onPress={() => navigation.goBack()}
+                    color={theme == "dark" ? "black" : "white"}
+                    customSize={70}
+                />
+            </View>
             <Modal
                 animationType='slide'
                 transparent={true}
@@ -134,9 +138,9 @@ const Gospel = ({ navigation }) => {
                 <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
                     <ModalView style={theme == 'dark' ? { backgroundColor: '#FFDAA5' } : { backgroundColor: '#2F2D51' }}>
                         <ModalIcon>
-                            <Text style={theme == 'dark' ? styles.prayTitleDark : styles.prayTitle}>Make the best decision of your life and pray this from your heart:</Text>
+                            <Text style={theme == 'dark' ? styles.prayTitleDark : styles.prayTitle}>Make the best decision of your life and pray the following:</Text>
                             <Text style={theme == 'dark' ? styles.prayDark : styles.pray}>Dear God, I recognize that I am a sinner and have been seperated from you.
-                                From this point on I accept you Jesus as my Lord and Saviour and I open my heart to you.
+                                From this point on I accept you Jesus as my Lord and Saviour.
                                 Forgive me from my sins and help me to follow you in all areas of my life.
                                 In Jesus name I pray, Amen.</Text>
                         </ModalIcon>
@@ -170,9 +174,27 @@ const styles = StyleSheet.create({
         padding: 10
     },
 
+    fabStyle3: {
+        bottom: 10,
+        borderRadius: 20,
+        marginRight: 10,
+        justifyContent: 'center',
+        backgroundColor: '#2F2D51',
+        width: 70
+    },
+    fabStyle3Dark: {
+        bottom: 10,
+        borderRadius: 20,
+        marginRight: 10,
+        justifyContent: 'center',
+        backgroundColor: '#A5C9FF',
+        width: 70
+    },
+
     button: {
         alignSelf: 'center',
         marginVertical: 10,
+        marginLeft: 10,
         backgroundColor: '#2F2D51',
         padding: 15,
         width: 150,
@@ -262,6 +284,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 20,
         fontFamily: 'Inter-SemiBold',
+        textAlign: 'center',
         paddingBottom: 5
     },
 
