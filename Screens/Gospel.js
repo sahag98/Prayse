@@ -113,7 +113,7 @@ const Gospel = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                 <TouchableOpacity
                     style={theme == 'dark' ? styles.buttonDark : styles.button}
                     title='Create a prayer list'
@@ -121,13 +121,6 @@ const Gospel = ({ navigation }) => {
                 >
                     <Text style={theme == 'dark' ? styles.startedDark : styles.started}>Take Next Step</Text>
                 </TouchableOpacity>
-                <FAB
-                    icon="arrow-left"
-                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
-                    onPress={() => navigation.goBack()}
-                    color={theme == "dark" ? "black" : "white"}
-                    customSize={70}
-                />
             </View>
             <Modal
                 animationType='slide'
@@ -196,7 +189,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginLeft: 10,
         backgroundColor: '#2F2D51',
-        padding: 15,
+        padding: 12,
         width: 150,
         borderRadius: 35,
         flexDirection: 'row',

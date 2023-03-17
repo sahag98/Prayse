@@ -11,7 +11,6 @@ import { ActivityIndicator, View } from 'react-native';
 
 export default function Main({ navigation }) {
     const theme = useSelector(state => state.user.theme)
-    console.log(theme)
     const isReady = useIsReady()
     const [ready, setReady] = useState(false)
     const [todos, setTodos] = useState([])
@@ -34,6 +33,7 @@ export default function Main({ navigation }) {
     }
 
     if (!isReady) {
+        loadTodos()
         return <BusyIndicator />;
     }
     // if (!ready) {
@@ -52,13 +52,7 @@ export default function Main({ navigation }) {
         <>
             <StatusBar style={theme == 'dark' ? 'light' : 'dark'} />
             <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-                <Folder navigation={navigation} />
-                {/* <Home
-                    theme={theme}
-                    todos={todos}
-                    setTodos={setTodos}
-                    navigation={navigation}
-                /> */}
+                <Folder todos={todos} setTodos={setTodos} navigation={navigation} />
             </Container>
         </>
     );

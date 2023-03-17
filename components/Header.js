@@ -15,45 +15,9 @@ import AppLoading from 'expo-app-loading';
 import { useSelector } from 'react-redux';
 import { addUser, closeTool, removeUser } from '../redux/userReducer';
 import { useDispatch } from 'react-redux';
-import { selected } from '../redux/folderReducer';
+import { changeFolderName } from '../redux/folderReducer';
 
-const Header = ({ navigation, folderName, theme, handleClearTodos, clearModalVisible, setClearModalVisible }) => {
-    const [currentUser, setCurrentUser] = useState('')
-    const user = useSelector(state => state.user.user)
-    const tooltip = useSelector(state => state.user.tooltip)
-    const folder = useSelector(state => state.folder.folders)
-    const [openInput, setopenInput] = useState(false)
-    const dispatch = useDispatch()
-    let title = 'Prayer List'
-
-    const handleCloseModal = () => {
-        setClearModalVisible(false)
-    }
-
-    const add = () => {
-        dispatch(addUser(currentUser))
-        setopenInput(false)
-    }
-
-    const handleSubmit = () => {
-        setClearModalVisible(false)
-        handleClearTodos()
-    }
-
-    const change = () => {
-        setopenInput(true)
-        dispatch(closeTool())
-        setCurrentUser('')
-    }
-    const close = () => {
-        dispatch(removeUser())
-        setopenInput(false)
-    }
-
-    const closeToolTip = () => {
-        dispatch(closeTool())
-    }
-
+const Header = ({ navigation, folderName, theme }) => {
     let [fontsLoaded] = useFonts({
         'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
@@ -69,58 +33,19 @@ const Header = ({ navigation, folderName, theme, handleClearTodos, clearModalVis
         <>
 
             <HeaderView>
-                {tooltip == true &&
-                    <View style={{ position: 'absolute', right: '15%', top: 20, width: '40%' }}>
-                        <TouchableOpacity onPress={closeToolTip} style={theme == 'dark' ? styles.tooltipDark : styles.tooltipLight}>
-                            <View style={theme == 'dark' ? { position: 'absolute', transform: [{ rotateZ: '80deg' }], width: 10, height: 10, backgroundColor: '#FFDAA5', left: 1, top: 2 } : { position: 'absolute', transform: [{ rotateZ: '80deg' }], width: 10, height: 10, backgroundColor: '#FFBF65', left: 1, top: 2 }}></View>
-                            <Text style={{ color: 'black', fontSize: 10 }}>edit title by pressing on it!</Text>
-                            <AntDesign style={{ paddingLeft: 2, paddingBottom: 4 }} name="close" size={10} color={'black'} />
+                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('Folders')}>
+                            <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
                         </TouchableOpacity>
+                        <HeaderTitle
+                            style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' }
+                                : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>
+                            {folderName}
+                        </HeaderTitle>
                     </View>
-
-                }
-                <TouchableOpacity onPress={change}>
-                    {openInput == false &&
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <HeaderTitle
-                                style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' }
-                                    : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>
-                                {/* {user ? user + '\'s prayer list' : title} */}
-                                {folderName}
-                            </HeaderTitle>
-                            <AntDesign style={{ paddingLeft: 5 }} name="edit" size={24} color={theme == 'dark' ? 'white' : 'black'} />
-                        </View>
-                    }
-                    {openInput == true &&
-                        <>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <StyledInput2
-                                    style={theme == 'dark' ? styles.inputDark : styles.input}
-                                    onChangeText={(heading) => setCurrentUser(heading)}
-                                    value={currentUser}
-                                    placeholder="Enter your name"
-                                    placeholderTextColor={'white'}
-                                    selectionColor={'white'}
-                                    autoFocus={true}
-                                    maxLength={10}
-                                    onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
-                                />
-                                <TouchableOpacity style={theme == 'dark' ? styles.userbuttonDark : styles.userbutton} onPress={add}>
-                                    <AntDesign name="check" size={24} color={theme == 'dark' ? 'black' : 'white'} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={theme == 'dark' ? styles.userbuttonDark : styles.userbutton} onPress={close}>
-                                    <AntDesign name="close" size={24} color={theme == 'dark' ? 'black' : 'white'} />
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                    }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-                    <Ionicons name="settings" size={30} color={theme == 'dark' ? 'white' : "#2f2d51"} />
-                </TouchableOpacity>
-
+                </View>
             </HeaderView>
-
         </>
     );
 }

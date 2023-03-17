@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { TextInput } from 'react-native';
+import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { Container } from '../styles/appStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addPrayer, deletePrayer } from '../redux/prayerReducer';
+import { useSelector } from 'react-redux';
 import uuid from 'react-native-uuid';
 import Home from '../components/Home';
 import useIsReady from '../hooks/useIsReady';
@@ -14,17 +9,13 @@ const PrayerPage = ({ route, navigation }) => {
   const theme = useSelector(state => state.user.theme)
   const isReady = useIsReady()
   const prayerList = useSelector(state => state.prayer.prayer)
-  const { prayers, id, title } = route.params
-
-  const [prayer, setPrayer] = useState("")
-  // const [prayerList, setPrayerList] = useState([])
-  const dispatch = useDispatch()
+  const { prayers, id, title, setoldPrayer } = route.params
 
   const BusyIndicator = () => {
 
     return (
       <View style={theme == 'dark' ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" } : { backgroundColor: '#F2F7FF', flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="white" />
+        <ActivityIndicator size="large" color={theme == 'dark' ? "white" : "#2f2d51"} />
       </View>
     );
   };
@@ -33,23 +24,16 @@ const PrayerPage = ({ route, navigation }) => {
     return <BusyIndicator />;
   }
 
-
   return (
-    <Home navigation={navigation} prayerList={prayerList} folder={title} />
+    <Home
+      navigation={navigation}
+      prayerList={prayerList}
+      oldPrayers={prayers}
+      setoldPrayer={setoldPrayer}
+      folderName={title}
+      folderId={id}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  inputDark: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    textAlignVertical: 'center',
-    fontFamily: 'Inter-Regular', backgroundColor: '#121212'
-  },
-  input: {
-    textAlignVertical: "center",
-    fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
-  }
-})
 
 export default PrayerPage;

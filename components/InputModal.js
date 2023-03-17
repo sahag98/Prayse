@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     KeyboardAvoidingView, View, Text, Modal, StyleSheet
 }
@@ -19,14 +19,30 @@ import SelectList from 'react-native-dropdown-select-list'
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
 import { FAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPrayer, editPrayer } from '../redux/prayerReducer';
+import { useCallback } from 'react';
 
-const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
+
+const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName, folderId, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
     const theme = useSelector(state => state.user.theme)
+    const inputRef = useRef(null)
+
+    useFocusEffect(
+        useCallback(() => {
+            // When the screen is focused
+            const focus = () => {
+                setTimeout(() => {
+                    inputRef?.current?.focus();
+                }, 1);
+            };
+            focus();
+            return focus; // cleanup
+        }, []),
+    );
     const handleCloseModal = () => {
         setModalVisible(false)
         setPrayerValue("")
@@ -70,6 +86,7 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
             dispatch(addPrayer({
                 prayer: prayerValue,
                 folder: folderName,
+                folderId: folderId,
                 category: categoryValue,
                 date: new Date().toLocaleString(),
                 id: uuid.v4(),
@@ -78,10 +95,12 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
             dispatch(editPrayer({
                 prayer: prayerValue,
                 folder: folderName,
+                folderId: folderId,
                 category: categoryValue,
                 date: prayertoBeEdited.date,
                 id: prayertoBeEdited.id,
             }))
+            setPrayertoBeEdited(null)
         }
         setModalVisible(false)
         setPrayerValue("")
@@ -95,26 +114,11 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
         <View style={{ position: 'relative', flex: 1 }}>
             <View style={styles.actionButtons}>
                 <FAB
-                    icon="book-open-blank-variant"
-                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
-                    onPress={() => navigation.navigate('Gospel')}
-                    color={theme == "dark" ? "black" : "white"}
-                    customSize={70}
-                />
-                <FAB
                     icon="plus"
                     style={styles.fabStyle}
                     onPress={() => { setModalVisible(true) }}
                     color="#2F2D51"
-                    customSize={70}
-                />
-
-                <FAB
-                    icon="account-group"
-                    style={theme == 'dark' ? styles.fabStyle3Dark : styles.fabStyle3}
-                    onPress={() => navigation.navigate('Community')}
-                    color={theme == "dark" ? "black" : "white"}
-                    customSize={70}
+                    customSize={60}
                 />
             </View>
 
@@ -123,6 +127,7 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={handleCloseModal}
+            // onShow={() => inputRef.current?.focus()}
             >
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
@@ -132,6 +137,7 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
                                 <AntDesign style={{ marginTop: 10 }} name='edit' size={32} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                             </ModalIcon>
                             <StyledInput
+                                ref={inputRef}
                                 style={theme == 'dark' ? styles.inputDark : styles.input}
                                 placeholder="Add a prayer"
                                 placeholderTextColor={'white'}
@@ -185,23 +191,19 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     fabStyle: {
-        bottom: 10,
         position: 'relative',
-        alignSelf: 'center',
         borderRadius: 20,
         justifyContent: 'center',
         backgroundColor: 'white',
-
     },
-
     actionButtons: {
         position: 'absolute',
-        bottom: 5,
+        bottom: 10,
         height: 70,
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     fabStyle2: {
         bottom: 10,

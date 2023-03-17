@@ -15,6 +15,7 @@ export const colors = {
   secondary: "#93D8F8",
   tertiary: "#2F2D51",
   alternative: "white",
+  folderColor: "#f1d592",
 };
 
 const statusBarHeight = Constants.statusBarHeight;
@@ -65,6 +66,16 @@ export const ListContainer = styled.View`
 export const ListView = styled.TouchableHighlight`
   background-color: ${colors.secondary};
   min-height: 85px;
+  width: 100%;
+  padding: 15px;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  border-radius: 10px;
+`;
+
+export const ListView1 = styled.TouchableHighlight`
+  background-color:${colors.folderColor};
+  min-height: 75px;
   width: 100%;
   padding: 15px;
   justify-content: space-around;

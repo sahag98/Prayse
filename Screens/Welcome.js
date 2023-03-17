@@ -7,12 +7,43 @@ import Unorderedlist from 'react-native-unordered-list';
 import AppLoading from 'expo-app-loading';
 import Svg, { Path } from 'react-native-svg';
 import { useSelector } from 'react-redux';
+// import { Alert } from 'react-native';
+// import Constants from 'expo-constants';
+// import * as Updates from 'expo-updates';
+
+// async function checkAppVersion() {
+//     const { version } = Constants.manifest;
+
+//     // Get the latest version from the app store
+//     const latestVersion = await Updates.checkForUpdateAsync();
+
+//     // Compare the app version with the latest version
+//     if (latestVersion.isAvailable && latestVersion.version !== version) {
+//         Alert.alert(
+//             'New Update Available',
+//             'A new version of the app is available. Do you want to update now?',
+//             [
+//                 {
+//                     text: 'Later',
+//                     style: 'cancel'
+//                 },
+//                 {
+//                     text: 'Update',
+//                     onPress: () => {
+//                         // Start the update process
+//                         Updates.reloadAsync();
+//                     }
+//                 }
+//             ]
+//         );
+//     }
+// }
 
 export default function Welcome({ navigation }) {
     const theme = useSelector(state => state.user.theme)
 
     const fadeAnim = useRef(new Animated.Value(0)).current
-
+    // checkAppVersion()
 
     useEffect(() => {
         Animated.timing(
@@ -87,7 +118,7 @@ export default function Welcome({ navigation }) {
                 <TouchableOpacity
                     style={theme == 'dark' ? styles.buttonDark : styles.button}
                     title='Create a prayer list'
-                    onPress={() => navigation.navigate('Main')}
+                    onPress={() => navigation.navigate('Folders')}
                 >
                     <Text style={theme == 'dark' ? styles.startedDark : styles.started}>Get Started</Text>
                     <AntDesign style={{ marginLeft: 7 }} name="rightcircleo" size={22} color={theme == 'dark' ? '#080808' : 'white'} />

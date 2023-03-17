@@ -3,7 +3,7 @@ import { View, StyleSheet, Platform, Linking, TouchableOpacity } from 'react-nat
 import { Container } from '../styles/appStyles';
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
-import { Divider, Text } from 'react-native-paper';
+import { Divider, FAB, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { darkMode, large, regular, small, systemTheme } from '../redux/userReducer';
 import { addFolder, removeAllFolders } from '../redux/folderReducer';
@@ -17,8 +17,8 @@ const Settings = ({ navigation }) => {
   const size = useSelector(state => state.user.fontSize)
   const [open, setOpen] = useState(false)
   const [folderName, setFolderName] = useState("")
-
   const dispatch = useDispatch()
+
   let [fontsLoaded] = useFonts({
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
@@ -35,19 +35,6 @@ const Settings = ({ navigation }) => {
       );
     }
   }
-
-  function add() {
-    dispatch(addFolder({
-      id: uuid.v4(),
-      name: folderName,
-      prayers: []
-    }))
-  }
-
-  function erase() {
-    dispatch(removeAllFolders())
-  }
-
 
   const Switch = (theme) => {
     dispatch(darkMode(theme))
@@ -78,9 +65,6 @@ const Settings = ({ navigation }) => {
   return (
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>
       <View style={styles.wrapper}>
-        <TouchableOpacity style={theme == 'dark' ? { backgroundColor: 'grey', borderRadius: 50 } : { backgroundColor: '#2f2d51', color: 'white', borderRadius: 50 }} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={30} color={theme == "light" ? "white" : "black"} />
-        </TouchableOpacity>
         <Text style={theme == 'light' ? styles.settingsTitle : styles.settingsTitleDark}>App Settings</Text>
       </View>
       <View style={{ marginTop: 20 }}>
@@ -150,50 +134,59 @@ const Settings = ({ navigation }) => {
           </View>
         </View>
       </View>
-      {/* {Platform.OS === 'ios' &&
-        <TouchableOpacity onPress={() => giveFeedback(Platform.OS)} style={theme == 'light' ? styles.feedback : styles.feedbackDark}>
-          <Text style={{ color: 'white' }}>Write a Review!</Text>
-          <MaterialIcons name="feedback" size={24} color='white' />
-        </TouchableOpacity>
-      }
-      {Platform.OS === 'android' &&
-        <TouchableOpacity onPress={() => giveFeedback(Platform.OS)} style={theme == 'light' ? styles.feedback : styles.feedbackDark}>
-          <Text style={{ color: 'white' }}>Click here to write a review!</Text>
-          <MaterialIcons name="feedback" size={23} color='white' />
-        </TouchableOpacity>
-      } */}
-      <TouchableOpacity onPress={() => setOpen(!open)} style={theme == 'light' ? styles.feedback : styles.feedbackDark}>
-        <Text style={{ color: 'white' }}>Add a folder!</Text>
-        <MaterialIcons name="feedback" size={23} color='white' />
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={erase} style={theme == 'light' ? styles.feedback : styles.feedbackDark}>
-        <Text style={{ color: 'white' }}>Remove folder!</Text>
-        <MaterialIcons name="feedback" size={23} color='white' />
-      </TouchableOpacity>
-
-      {open &&
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-          <TextInput
-            onChangeText={(name) => setFolderName(name)}
-            value={folderName}
-            placeholder="Enter folder name"
-            // placeholderTextColor={'white'}
-            // selectionColor={'white'}
-            autoFocus={true}
-            maxLength={10}
-            onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
-          />
-          <TouchableOpacity onPress={add}>
-            <AntDesign name='check' size={28} color={'black'} />
+      <View style={{ marginTop: 10 }}>
+        <Text style={theme == 'light' ? styles.appearance : styles.appearanceDark}>ADDITIONAL LINKS</Text>
+        <Divider style={{ marginBottom: 10 }} />
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          {Platform.OS === 'ios' && <TouchableOpacity onPress={() => giveFeedback('ios')} style={styles.reviewButton}>
+            <MaterialIcons style={{ marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
+            <Text style={{ color: '#3547cD' }}>Write a Review</Text>
+          </TouchableOpacity>}
+          {Platform.OS === 'android' && <TouchableOpacity onPress={() => giveFeedback('android')} style={styles.reviewButton}>
+            <MaterialIcons style={{ marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
+            <Text style={{ color: '#3547cD' }}>Write a Review</Text>
+          </TouchableOpacity>}
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.buymeacoffee.com/arzsahag')} style={styles.donateButton}>
+            <AntDesign style={{ marginRight: 10 }} name="hearto" size={24} color="red" />
+            <Text style={{ color: 'red' }}>Donate</Text>
           </TouchableOpacity>
         </View>
-      }
+      </View>
     </Container>
   );
 }
 
 const styles = StyleSheet.create({
+  reviewButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '45%',
+    borderRadius: 5,
+    padding: 15,
+    backgroundColor: 'white'
+  },
+  donateButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 5,
+    width: '45%',
+    backgroundColor: 'white'
+  },
+  donateButtonDark: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 5,
+    width: '45%',
+    backgroundColor: 'white'
+  },
   wrapper: {
     marginTop: 10,
     display: 'flex',
@@ -223,7 +216,6 @@ const styles = StyleSheet.create({
   settingsTitleDark: {
     color: 'white',
     textAlign: 'center',
-    marginLeft: 20,
     fontSize: 17,
     fontFamily: 'Inter-Medium'
   },
@@ -333,7 +325,6 @@ const styles = StyleSheet.create({
   settingsTitle: {
     color: '#2f2d51',
     textAlign: 'center',
-    marginLeft: 20,
     fontSize: 17,
     fontFamily: 'Inter-Medium'
   },

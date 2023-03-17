@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import {
     ListView,
@@ -17,7 +17,7 @@ import SearchBar from './SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePrayer } from '../redux/prayerReducer';
 
-const ListItems = ({ prayerList, folder, handleTriggerEdit }) => {
+const ListItems = ({ prayerList, onScroll, folderName, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
     const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
@@ -25,6 +25,7 @@ const ListItems = ({ prayerList, folder, handleTriggerEdit }) => {
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     })
+
     const [search, setSearch] = useState('')
     const size = useSelector(state => state.user.fontSize)
 
@@ -58,12 +59,8 @@ const ListItems = ({ prayerList, folder, handleTriggerEdit }) => {
         return (
             <>
 
-                <Motion.View initial={{ y: -50 }}
-                    animate={{ x: value * 100, y: 0 }}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ y: 20 }}
-                    transition={{ type: "spring" }}>
-                    {folder == item.folder &&
+                <ScrollView onScroll={onScroll}>
+                    {folderId == item.folderId &&
                         <ListView
                             style={theme == 'dark' ? { backgroundColor: '#212121' } : [styles.elevation, { backgroundColor: '#93D8F8' }]}
                             underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
@@ -139,7 +136,7 @@ const ListItems = ({ prayerList, folder, handleTriggerEdit }) => {
                             </>
                         </ListView>
                     }
-                </Motion.View>
+                </ScrollView>
             </>
         )
     }
