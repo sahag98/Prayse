@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Animated, View } from 'react-native'
+import { Animated, Platform, View } from 'react-native'
 import Header from "./Header";
 import ListItems from "./ListItems";
 import InputModal from "./InputModal";
@@ -14,14 +14,20 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [clearModalVisible, setClearModalVisible] = useState(false)
     const [prayerValue, setPrayerValue] = useState("")
     const [categoryValue, setCategoryValue] = useState('')
-    const [isExtended, setIsExtended] = useState(true);
+    const [extended, setExtended] = useState(true);
     const dispatch = useDispatch()
+    const isIOS = Platform.OS === 'ios'
+    const [visible, setVisible] = useState(true)
+
+    const { current: velocity } = useRef(new Animated.Value(0))
 
     const onScroll = ({ nativeEvent }) => {
         const currentScrollPosition =
-            Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-
-        setIsExtended(currentScrollPosition <= 0);
+            Math.floor(nativeEvent?.contentOffset?.y) ?? 0
+        if (!isIOS) {
+            return velocity.setValue(currentScrollPosition)
+        }
+        setExtended(currentScrollPosition <= 0);
     };
 
     useEffect(() => {
@@ -60,6 +66,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                 navigation={navigation}
             />
             <ListItems
+                navigation={navigation}
                 prayerList={prayerList}
                 folderName={folderName}
                 folderId={folderId}
@@ -69,7 +76,11 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
             <InputModal
                 folderName={folderName}
                 folderId={folderId}
-                isExtended={isExtended}
+                visible={visible}
+                animatedValue={velocity}
+                extended={extended}
+                isIOS={isIOS}
+                // isExtended={isExtended}
                 theme={theme}
                 prayerValue={prayerValue}
                 setPrayerValue={setPrayerValue}

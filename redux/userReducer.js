@@ -14,14 +14,8 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        addUser: (state, action) => {
-            state.user = action.payload
-        },
         closeTool: (state) => {
             state.tooltip = false
-        },
-        removeUser: (state) => {
-            state.user = ''
         },
         large: (state) => {
             state.fontSize = 20

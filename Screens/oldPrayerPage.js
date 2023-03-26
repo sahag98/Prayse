@@ -33,9 +33,9 @@ const OldPrayerPage = ({ navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <View>
-        <ListView1>
+        <ListView1 style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
           <View>
-            <Text>
+            <Text style={theme == 'dark' ? { color: 'white' } : { color: '#2f2d51' }}>
               {item.title}
             </Text>
           </View>
@@ -44,9 +44,9 @@ const OldPrayerPage = ({ navigation }) => {
     )
   }
   return (
-    <Container>
+    <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
       <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('Folders')}>
           <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
         </TouchableOpacity>
         <HeaderTitle style={theme == 'dark' ? { color: 'white' } : { color: 'black' }}>Original Prayers</HeaderTitle>

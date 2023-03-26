@@ -1,12 +1,17 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Dimensions, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
 import prayer from '../assets/prayer-nobg.png'
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import Unorderedlist from 'react-native-unordered-list';
 import AppLoading from 'expo-app-loading';
 import Svg, { Path } from 'react-native-svg';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Divider, List } from 'react-native-paper';
+import { Container, ModalContainer, ModalView, ToolTipView } from '../styles/appStyles';
+import { closeTool } from '../redux/userReducer';
+import { Modal } from 'react-native';
+
 // import { Alert } from 'react-native';
 // import Constants from 'expo-constants';
 // import * as Updates from 'expo-updates';
@@ -41,6 +46,14 @@ import { useSelector } from 'react-redux';
 
 export default function Welcome({ navigation }) {
     const theme = useSelector(state => state.user.theme)
+    const [toolVisible, setToolVisible] = useState(false)
+    const [expanded, setExpanded] = useState(true);
+
+    const handlePress = () => setExpanded(!expanded);
+
+    function handleCloseTooltip() {
+        setToolVisible(false)
+    }
 
     const fadeAnim = useRef(new Animated.Value(0)).current
     // checkAppVersion()
@@ -68,110 +81,135 @@ export default function Welcome({ navigation }) {
     }
 
     return (
-
-        <View style={theme == 'dark' ? styles.containerDark : styles.container}>
-
-            <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to the prayer app.</Text>
-
+        <Container style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
+            <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to your prayer app</Text>
             <View style={styles.imgContainer}>
                 <Image
                     style={styles.img}
                     source={prayer}
                 />
             </View>
-            <View style={styles.wrapper}>
-                <Text style={theme == 'dark' ? styles.instructionsDark : styles.instructions}>Instructions:</Text>
-                <Unorderedlist
-                    color={theme == 'dark' ? 'white' : 'black'}
-                    bulletUnicode={0x25E6}
-                    style={{ marginLeft: 10 }}
-                >
-                    <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>To edit a prayer press on it.</Text>
-                </Unorderedlist>
-                <Unorderedlist
-                    color={theme == 'dark' ? 'white' : 'black'}
-                    bulletUnicode={0x25E6}
-                    style={{ marginLeft: 10 }}
-                >
-                    <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                        To remove a single prayer click on the X button on that prayer.
-                    </Text>
-                </Unorderedlist>
-                <Unorderedlist
-                    color={theme == 'dark' ? 'white' : 'black'}
-                    bulletUnicode={0x25E6}
-                    style={{ marginLeft: 10 }}
-                >
-                    <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                        To remove the whole prayer list click on the X button located at the top right corner of the screen.
-                    </Text>
-                </Unorderedlist>
-                <Unorderedlist
-                    color={theme == 'dark' ? 'white' : 'black'}
-                    bulletUnicode={0x25E6}
-                    style={{ marginLeft: 10, marginBottom: 10 }}
-                >
-                    <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                        To use dark mode, change the theme of your phone to dark mode, and vice versa.
-                    </Text>
-                </Unorderedlist>
-                <TouchableOpacity
-                    style={theme == 'dark' ? styles.buttonDark : styles.button}
-                    title='Create a prayer list'
-                    onPress={() => navigation.navigate('Folders')}
-                >
-                    <Text style={theme == 'dark' ? styles.startedDark : styles.started}>Get Started</Text>
-                    <AntDesign style={{ marginLeft: 7 }} name="rightcircleo" size={22} color={theme == 'dark' ? '#080808' : 'white'} />
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={toolVisible}
+                onRequestClose={handleCloseTooltip}
+                statusBarTranslucent={true}
+            >
+                <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+
+                    <TouchableOpacity onPress={handleCloseTooltip} style={theme == 'dark' ? { borderRadius: 5, position: 'relative', padding: 15, width: '100%', backgroundColor: '#212121' } : { borderRadius: 5, position: 'relative', padding: 15, width: '100%', backgroundColor: '#93D8F8' }}>
+                        <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5, padding: 10 }} onPress={handleCloseTooltip}>
+                            <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
+                        </TouchableOpacity>
+
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 5, fontFamily: 'Inter-Medium', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', marginBottom: 5, fontSize: 15 }}>What's New:</Text>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>New and intuitive navigation system using the bottom tabs.</Text>
+                        </Unorderedlist>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
+                                New devotional page that will have a daily devotional.
+                            </Text>
+                        </Unorderedlist>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
+                                Quick links on home page.
+                            </Text>
+                        </Unorderedlist>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
+                                Small bugfixes all around the app.
+                            </Text>
+                        </Unorderedlist>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
+                                Added confirmation for deleting folders.
+                            </Text>
+                        </Unorderedlist>
+                    </TouchableOpacity>
+                </ModalContainer>
+            </Modal>
+            <View style={{ width: '100%' }}>
+                <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Regular', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Regular', fontSize: 15 }}>Quick links</Text>
+                <Divider style={{ marginBottom: 10, marginTop: 5 }} />
+                <TouchableOpacity onPress={() => setToolVisible(true)} style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Feather name="info" size={24} color={theme == 'dark' ? "#f1d592" : "#bb8b18"} />
+                        <Text style={theme == 'dark' ? { color: '#f1d592', marginLeft: 5, fontFamily: 'Inter-Regular' } : { color: '#bb8b18', marginLeft: 5, fontFamily: 'Inter-Regular' }}>Check What's New!</Text>
+                    </View>
+                    <AntDesign name="right" size={18} color={theme == 'dark' ? "#f1d592" : '#bb8b18'} />
                 </TouchableOpacity>
-            </View>
-            <View style={styles.bottom}>
-                <View style={theme == 'dark' ? styles.boxDark : styles.box}>
-                    <Svg
-                        height={180}
-                        width={Dimensions.get('screen').width}
-                        viewBox="0 0 1440 320"
-                        style={styles.bottomWave}
+                <TouchableOpacity onPress={() => navigation.navigate('Gospel')} style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name="cross" size={24} color="#8cbaff" />
+                        <Text style={theme == 'dark' ? { color: '#A5C9FF', marginLeft: 5, fontFamily: 'Inter-Regular' } : { color: '#738cb2', marginLeft: 5, fontFamily: 'Inter-Regular' }}>The Gospel of Jesus</Text>
+                    </View>
+                    <AntDesign name="right" size={18} color={theme == 'dark' ? "#8cbaff" : '#738cb2'} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.buymeacoffee.com/arzsahag')} style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <AntDesign name="hearto" size={24} color="#DE3163" />
+                        <Text style={theme == 'dark' ? { color: '#e24774', marginLeft: 5, fontFamily: 'Inter-Regular' } : { color: '#cb3f68', marginLeft: 5, fontFamily: 'Inter-Regular' }}>Donate to support future updates!</Text>
+                    </View>
+                    <AntDesign name="right" size={18} color={theme == 'dark' ? "#e24774" : '#cb3f68'} />
+                </TouchableOpacity>
+                {
+                    Platform.OS === 'android' &&
+                    <TouchableOpacity
+                        style={theme == 'dark' ? styles.refreshDark : styles.refresh}
+                        onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp')}
                     >
-                        <Path
-                            fill={theme == 'dark' ? "#7272FF" : "#2F2D51"}
-                            d='M0,160L40,165.3C80,171,160,181,240,160C320,139,400,85,480,74.7C560,64,640,96,720,128C800,160,880,192,960,197.3C1040,203,1120,181,1200,165.3C1280,149,1360,139,1400,133.3L1440,128L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z'
-                        />
-                    </Svg>
-                    {
-                        Platform.OS === 'android' &&
-                        <TouchableOpacity
-                            onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp')}
-                        >
-                            <View style={theme == "dark" ? styles.linkContainerDark : styles.linkContainer}>
-                                <Text
-                                    style={{ color: 'white', fontFamily: 'Inter-Medium' }}
-                                >
-                                    Check for Updates
-                                </Text>
-                                <Ionicons style={{ paddingLeft: 10 }} name="logo-google-playstore" size={24} color="white" />
-                            </View>
-                        </TouchableOpacity>
-
-
-                    }
-                    {
-                        Platform.OS === 'ios' &&
-                        <TouchableOpacity
-                            onPress={() => Linking.openURL('https://apps.apple.com/us/app/prayerlist-app/id6443480347')}
-                        >
-                            <View style={theme == "dark" ? styles.linkContainerDark : styles.linkContainer}>
-                                <Text
-                                    style={{ color: 'white', fontFamily: 'Inter-Medium' }}
-                                >
-                                    Check for Updates
-                                    <AntDesign style={{ paddingLeft: 10 }} name="apple1" size={24} color="white" />
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    }
-                </View>
+                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Ionicons name="logo-google-playstore" size={24} color={theme == 'dark' ? "#d6d6d6" : "#606060"} />
+                            <Text
+                                style={theme == 'dark' ? { color: '#f0f0f0', fontFamily: 'Inter-Regular', marginLeft: 5 } : { color: '#606060', fontFamily: 'Inter-Regular', marginLeft: 5 }}
+                            >
+                                Check for Updates
+                            </Text>
+                        </View>
+                        <AntDesign name="right" size={18} color={theme == 'dark' ? "#d6d6d6" : '#606060'} />
+                    </TouchableOpacity>
+                }
+                {
+                    Platform.OS === 'ios' &&
+                    <TouchableOpacity
+                        style={theme == 'dark' ? styles.refreshDark : styles.refresh}
+                        onPress={() => Linking.openURL('https://apps.apple.com/us/app/prayerlist-app/id6443480347')}
+                    >
+                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <AntDesign name="apple1" size={24} color={theme == 'dark' ? "#d6d6d6" : "#606060"} />
+                            <Text
+                                style={theme == 'dark' ? { color: '#f0f0f0', fontFamily: 'Inter-Regular', marginLeft: 5 } : { color: '#606060', fontFamily: 'Inter-Regular', marginLeft: 5 }}
+                            >
+                                Check for Updates
+                            </Text>
+                        </View>
+                        <AntDesign name="right" size={18} color={theme == 'dark' ? "#d6d6d6" : '#2f2d51'} />
+                    </TouchableOpacity>
+                }
             </View>
-        </View >
+
+            <TouchableOpacity onPress={() => navigation.navigate('Folders')} style={theme == 'dark' ? styles.buttonDark : styles.button}>
+                <Text style={theme == 'dark' ? { fontFamily: 'Inter-Medium' } : { color: 'white', fontFamily: 'Inter-Medium' }}>Create a Folder</Text>
+                <AntDesign style={{ marginLeft: 10 }} name="right" size={18} color={theme == 'dark' ? "black" : 'white'} />
+            </TouchableOpacity>
+        </Container>
     )
 }
 
@@ -188,21 +226,51 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: 'center'
     },
-    wrapper: {
-        justifyContent: 'center',
+    refreshDark: {
+        width: '100%',
+        backgroundColor: '#212121',
+        paddingHorizontal: 5,
+        paddingVertical: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
         alignItems: 'center'
     },
-    listText: {
-        fontFamily: 'Inter-Light',
-        fontSize: 12.8,
-        maxWidth: '90%',
+    refresh: {
+        width: '100%',
+        backgroundColor: 'white',
+        paddingHorizontal: 5,
+        paddingVertical: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    section: {
+        backgroundColor: '#a6c8ff'
+    },
+    sectionDark: {
 
+        backgroundColor: '#212121',
+    },
+    wrapper: {
+        width: '80%'
+    },
+    listText: {
+        fontFamily: 'Inter-Regular',
+        color: '#2f2d51',
+        fontSize: 14,
+        marginBottom: 2
     },
     listTextDark: {
-        fontFamily: 'Inter-Light',
-        fontSize: 12.8,
-        maxWidth: '90%',
-        color: 'white'
+        fontFamily: 'Inter-Regular',
+        fontSize: 14,
+        color: 'white',
+        marginBottom: 2
     },
     instructions: {
         marginBottom: 5,
@@ -217,99 +285,55 @@ const styles = StyleSheet.create({
     },
     welcome: {
         fontSize: 20,
+        marginVertical: 15,
         fontFamily: 'Inter-Bold',
         letterSpacing: 2,
+        alignSelf: 'center',
         color: '#2F2D51'
 
     },
     welcomeDark: {
+        marginVertical: 15,
         fontSize: 20,
         fontFamily: 'Inter-Bold',
+        alignSelf: 'center',
         letterSpacing: 2,
         color: 'white'
     },
     imgContainer: {
         backgroundColor: 'white',
-        borderRadius: 130,
-        marginVertical: 20,
+        height: 180,
+        width: 180,
+        borderRadius: 100,
+        marginVertical: 15,
+        alignSelf: 'center',
         justifyContent: 'center',
+        alignItems: 'center'
     },
     img: {
         width: 250,
         height: 250,
     },
     button: {
-        marginVertical: 10,
-        backgroundColor: '#2F2D51',
+        marginTop: 30,
+        width: 160,
+        backgroundColor: '#2f2d51',
         padding: 15,
-        width: 170,
-        borderRadius: 35,
+        borderRadius: 5,
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 999
-
     },
     buttonDark: {
-        marginVertical: 20,
-        backgroundColor: '#7272FF',
+        marginTop: 30,
+        width: 160,
+        backgroundColor: '#A5C9FF',
         padding: 15,
-        width: 170,
-        borderRadius: 35,
+        borderRadius: 5,
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 999
-    },
-    bottom: {
-        position: 'absolute',
-        width: Dimensions.get('screen').width,
-        bottom: 0,
-    },
-    bottomWave: {
-        position: 'absolute',
-        bottom: -10
-    },
-    box: {
-        backgroundColor: '#2F2D51',
-        height: 70,
-    },
-    boxDark: {
-        backgroundColor: '#7272FF',
-        height: 70,
-    },
-    started: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 16,
-        fontFamily: 'Inter-Medium'
-    },
-    startedDark: {
-        color: '#080808',
-        textAlign: 'center',
-        fontSize: 16,
-        fontFamily: 'Inter-Medium'
-    },
-    linkContainer: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: '#3c3a59',
-        alignSelf: 'center',
-        color: 'white',
-        zIndex: 99
-    },
-    linkContainerDark: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: '#2F2D51',
-        alignSelf: 'center',
-        zIndex: 99
-    },
-
+    }
 })

@@ -70,7 +70,7 @@ const Settings = ({ navigation }) => {
       <View style={{ marginTop: 20 }}>
         <Text style={theme == 'light' ? styles.appearance : styles.appearanceDark}>APPEARANCE</Text>
         <Divider />
-        <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={Platform.isPad ? { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' } : { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <TouchableOpacity onPress={() => Switch('light')}
               style={theme == "light" ? styles.activeLight : styles.inactiveLight}
@@ -137,19 +137,15 @@ const Settings = ({ navigation }) => {
       <View style={{ marginTop: 10 }}>
         <Text style={theme == 'light' ? styles.appearance : styles.appearanceDark}>ADDITIONAL LINKS</Text>
         <Divider style={{ marginBottom: 10 }} />
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          {Platform.OS === 'ios' && <TouchableOpacity onPress={() => giveFeedback('ios')} style={styles.reviewButton}>
-            <MaterialIcons style={{ marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
-            <Text style={{ color: '#3547cD' }}>Write a Review</Text>
+        <View style={{}}>
+          {Platform.OS === 'ios' && <TouchableOpacity onPress={() => giveFeedback('ios')} style={theme == 'dark' ? styles.reviewButtonDark : styles.reviewButton}>
+            <MaterialIcons style={theme == 'dark' ? { marginRight: 10, color: '#8cbaff' } : { marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
+            <Text style={theme == 'dark' ? { color: '#8cbaff' } : { color: '#3547cD' }}>Write a Review</Text>
           </TouchableOpacity>}
-          {Platform.OS === 'android' && <TouchableOpacity onPress={() => giveFeedback('android')} style={styles.reviewButton}>
-            <MaterialIcons style={{ marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
-            <Text style={{ color: '#3547cD' }}>Write a Review</Text>
+          {Platform.OS === 'android' && <TouchableOpacity onPress={() => giveFeedback('android')} style={theme == 'dark' ? styles.reviewButtonDark : styles.reviewButton}>
+            <MaterialIcons style={theme == 'dark' ? { marginRight: 10, color: '#8cbaff' } : { marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
+            <Text style={theme == 'dark' ? { color: '#8cbaff' } : { color: '#3547cD' }}>Write a Review</Text>
           </TouchableOpacity>}
-          <TouchableOpacity onPress={() => Linking.openURL('https://www.buymeacoffee.com/arzsahag')} style={styles.donateButton}>
-            <AntDesign style={{ marginRight: 10 }} name="hearto" size={24} color="red" />
-            <Text style={{ color: 'red' }}>Donate</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Container>
@@ -162,10 +158,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '45%',
     borderRadius: 5,
     padding: 15,
     backgroundColor: 'white'
+  },
+  reviewButtonDark: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    padding: 15,
+    backgroundColor: '#212121'
   },
   donateButton: {
     display: 'flex',

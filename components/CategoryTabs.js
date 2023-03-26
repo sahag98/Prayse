@@ -6,7 +6,7 @@ const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
     <>
       {prayerList.length != 0 &&
         <View>
-          <ScrollView horizontal={true} contentContainerStyle={styles.tab}>
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} contentContainerStyle={styles.tab}>
             {selected.map((selected, idx) => (
               <TouchableOpacity
                 key={idx}

@@ -168,17 +168,7 @@ const Community = ({ navigation }) => {
                             : { fontFamily: 'Inter-Medium', color: '#2F2D51', textAlign: 'left', fontSize: 15, paddingBottom: 5 }}>
                         If YOUR prayer gets answered let us know by clicking on the check mark that's on your prayer!
                     </Text>
-                    <View style={{ position: 'absolute', bottom: 13, right: '1%', zIndex: 99 }}>
-                        <FAB
-                            icon="arrow-left"
-                            style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
-                            onPress={() => { navigation.navigate('Main') }}
-                            color={theme == 'dark' ? "black" : "white"}
-                            customSize={70}
-                        />
-                    </View>
                     <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}>
-
                         <StyledInput
                             style={theme == 'dark' ? styles.inputDark : styles.input}
                             onChangeText={(heading) => setAddData(heading)}
@@ -232,10 +222,6 @@ const Community = ({ navigation }) => {
     ) : (
         <Container style={theme == 'dark' ? { justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
             <Text style={theme == 'dark' ? { color: 'white' } : { color: 'black' }}>No network connection. Please try again.</Text>
-            <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 10 }}>
-                <Ionicons name="refresh" style={{ paddingRight: 10 }} size={40} color={theme == 'dark' ? 'white' : 'black'} onPress={checkConnection} />
-                <AntDesign name='back' size={40} color={theme == 'dark' ? '#7272FF' : 'black'} onPress={() => goBack()} />
-            </TouchableOpacity>
 
         </Container>
     )

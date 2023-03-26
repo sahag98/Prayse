@@ -15,12 +15,23 @@ import PrayerPage from './Screens/PrayerPage';
 import OldPrayerPage from './Screens/oldPrayerPage';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Devotional from './Screens/Devotional';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
 const Stack = createStackNavigator()
 
 const Tab = createBottomTabNavigator()
 
 const Navigation = () => {
   const theme = useSelector(state => state.user.theme)
+  let [fontsLoaded] = useFonts({
+    'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
+    'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
+    'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
+    'Inter-Light': require('./assets/fonts/Inter-Light.ttf'),
+  })
+  if (!fontsLoaded) {
+    return <AppLoading />
+  }
   return (
     <>
       <StatusBar style={theme == 'dark' ? 'light' : 'dark'} />
@@ -29,7 +40,7 @@ const Navigation = () => {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
+            let Color;
             if (route.name === 'Home') {
               iconName = focused
                 ? 'home'
@@ -43,50 +54,55 @@ const Navigation = () => {
             else if (route.name === 'Devotional') {
               iconName = focused ? 'ios-bookmarks' : 'ios-bookmarks-outline';
             }
-            else if (route.name === 'Gospel') {
-              iconName = focused ? 'book' : 'book-outline';
+            else if (route.name === 'Community') {
+              iconName = focused ? 'ios-globe' : 'ios-globe-outline';
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
 
-          tabBarActiveTintColor: theme == 'dark' ? 'white' : '#212121',
+          tabBarActiveTintColor: theme == 'dark' ? 'white' : '#2f2d51',
           tabBarInactiveTintColor: 'gray',
         })}
         >
           <Tab.Screen
             name="Home"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
             component={Welcome}
           />
           <Tab.Screen
             name="Folders"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
             component={Main}
           />
           <Tab.Screen
             name="Devotional"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
             component={Devotional}
           />
           <Tab.Screen
             name="OldPrayerPage"
-            options={() => ({ tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
             component={OldPrayerPage}
           />
           <Tab.Screen
-            name="PrayerPage"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 }, tabBarButton: () => null })}
-            component={PrayerPage}
-          />
-          <Tab.Screen
             name="Gospel"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
             component={Gospel}
           />
           <Tab.Screen
+            name="PrayerPage"
+            options={() => ({ tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
+            component={PrayerPage}
+          />
+          <Tab.Screen
+            name="Community"
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            component={Community}
+          />
+          <Tab.Screen
             name="Settings"
-            options={() => ({ tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
             component={Settings}
           />
         </Tab.Navigator>

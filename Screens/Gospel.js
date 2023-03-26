@@ -10,6 +10,7 @@ import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { useSelector } from 'react-redux';
 import { FAB } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons'
 
 const Message = [
     {
@@ -106,7 +107,13 @@ const Gospel = ({ navigation }) => {
     }
     return (
         <Container1 style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-            <Text style={theme == 'dark' ? styles.headingDark : styles.heading}>The Gospel</Text>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                    <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
+                </TouchableOpacity>
+                <Text style={theme == 'dark' ? styles.headingDark : styles.heading}>The Gospel of Jesus</Text>
+            </View>
+
             <Animated.FlatList
                 style={{ opacity: fadeAnim }}
                 data={Message}
@@ -154,14 +161,14 @@ const Gospel = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     heading: {
-        fontSize: 30,
+        fontSize: 24,
         color: '#2F2D51',
         textAlign: 'center',
         padding: 10
     },
 
     headingDark: {
-        fontSize: 30,
+        fontSize: 24,
         color: 'white',
         textAlign: 'center',
         padding: 10

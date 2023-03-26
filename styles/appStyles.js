@@ -15,14 +15,14 @@ export const colors = {
   secondary: "#93D8F8",
   tertiary: "#2F2D51",
   alternative: "white",
-  folderColor: "#f1d592",
+  folderColor: "#212121",
 };
 
 const statusBarHeight = Constants.statusBarHeight;
 
 export const Container = styled.View`
   background-color: '${colors.primary}';
-  padding: 20px;
+  padding: 15px;
   padding-bottom: 0px;
   flex: 1;
   padding-top: ${statusBarHeight}px;
@@ -199,6 +199,14 @@ export const ModalView = styled.View`
   padding: 25px;
 
 `;
+
+export const ToolTipView = styled.View`
+  background-color: ${colors.secondary};
+  border-radius: 10px;
+  padding: 15px;
+
+`;
+
 
 export const StyledInput = styled.TextInput`
   width: 300px;

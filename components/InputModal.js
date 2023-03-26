@@ -21,28 +21,26 @@ import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
-import { FAB } from 'react-native-paper';
+import { AnimatedFAB, FAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPrayer, editPrayer } from '../redux/prayerReducer';
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 
 
-const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName, folderId, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
+const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, setCategoryValue, modalVisible, folderName, folderId, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
     const theme = useSelector(state => state.user.theme)
     const inputRef = useRef(null)
+    const [isExtended, setIsExtended] = useState(true);
 
-    useFocusEffect(
-        useCallback(() => {
-            // When the screen is focused
-            const focus = () => {
-                setTimeout(() => {
-                    inputRef?.current?.focus();
-                }, 1);
-            };
-            focus();
-            return focus; // cleanup
-        }, []),
-    );
+    useEffect(() => {
+        if (!isIOS) {
+            animatedValue.addListener(({ value }) => {
+                setIsExtended(value <= 0);
+            });
+        } else setIsExtended(extended);
+    }, [animatedValue, extended, isIOS]);
+
+
     const handleCloseModal = () => {
         setModalVisible(false)
         setPrayerValue("")
@@ -113,13 +111,24 @@ const InputModal = ({ categoryValue, setCategoryValue, modalVisible, folderName,
     return (
         <View style={{ position: 'relative', flex: 1 }}>
             <View style={styles.actionButtons}>
-                <FAB
+                <AnimatedFAB
+                    icon={'plus'}
+                    label={'Add prayer'}
+                    extended={isExtended}
+                    onPress={() => { setModalVisible(true) }}
+                    visible={visible}
+                    animateFrom={'left'}
+                    iconMode={'dynamic'}
+                    color={'white'}
+                    style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
+                />
+                {/* <FAB
                     icon="plus"
                     style={styles.fabStyle}
                     onPress={() => { setModalVisible(true) }}
                     color="#2F2D51"
                     customSize={60}
-                />
+                /> */}
             </View>
 
             <Modal
@@ -190,11 +199,20 @@ const styles = StyleSheet.create({
     inputText: {
         color: 'white'
     },
-    fabStyle: {
+    fabStyleDark: {
         position: 'relative',
+        alignSelf: 'center',
         borderRadius: 20,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#212121',
+
+    },
+    fabStyle: {
+        position: 'relative',
+        alignSelf: 'center',
+        borderRadius: 20,
+        justifyContent: 'center',
+        backgroundColor: '#2f2d51',
     },
     actionButtons: {
         position: 'absolute',

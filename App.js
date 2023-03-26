@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Navigation from './Navigation';
-
+import 'react-native-url-polyfill/auto'
 let persistor = persistStore(store)
 
 export default function App() {
