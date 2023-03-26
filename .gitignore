@@ -9,8 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 .env
-.jks
-.json
+*.jks
+*.json
 
 
 
