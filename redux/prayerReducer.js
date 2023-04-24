@@ -23,7 +23,6 @@ export const prayerSlice = createSlice({
       state.prayer = newPrayers
     },
     addToAnsweredPrayer: (state, action) => {
-      console.log(action)
       const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
       state.answeredPrayers = AnsweredPrayers
       console.log(state.answeredPrayers)

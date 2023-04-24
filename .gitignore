@@ -8,7 +8,9 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-
+.env
+.jks
+google-services.json
 
 
 
