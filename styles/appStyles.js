@@ -65,21 +65,32 @@ export const ListContainer = styled.View`
 
 export const ListView = styled.TouchableHighlight`
   background-color: ${colors.secondary};
-  min-height: 85px;
+  min-height: 90px;
   width: 100%;
   padding: 15px;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-radius: 10px;
+`;
+
+export const ListView2 = styled.TouchableHighlight`
+  background-color: ${colors.secondary};
+  min-height: 90px;
+  width: 100%;
+  padding: 15px;
+  justify-content: center;
   margin-bottom: 20px;
   border-radius: 10px;
 `;
 
 export const ListView1 = styled.TouchableHighlight`
   background-color:${colors.folderColor};
-  min-height: 75px;
-  width: 100%;
-  padding: 15px;
+  height: 130px;
+  width:90%;
+  padding: 10px;
   justify-content: space-around;
-  margin-bottom: 20px;
+  margin-top:10px;
+  margin-bottom: 10px;
   border-radius: 10px;
 `;
 
@@ -106,7 +117,7 @@ export const TodoText = styled.Text`
 `;
 
 export const TodoDate = styled.Text`
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1px;
   color: ${colors.alternative};
   text-align: right;
@@ -116,7 +127,6 @@ export const TodoDate = styled.Text`
 
 export const TodoCategory = styled.View`
   background-color:#121212;
-  margin-top:5px;
   border-radius:20px;
   padding:5px;
   font-size: 9px;

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import registerNNPushToken from 'native-notify';
 import AnimatedSplash from 'react-native-animated-splash-screen';
 import { Provider } from 'react-redux';
@@ -8,13 +8,27 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Navigation from './Navigation';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import 'react-native-url-polyfill/auto'
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import 'expo-dev-client';
 let persistor = persistStore(store)
+
+
 
 export default function App() {
 
-  registerNNPushToken(3959, 'lARWUk5vPpm64VSZBudWx7');
+
+  // registerNNPushToken(3959, 'lARWUk5vPpm64VSZBudWx7');
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    console.log('in use effect')
+  }, [])
 
   setTimeout(() => {
     setLoading(true)
@@ -31,7 +45,9 @@ export default function App() {
     >
       <Provider store={store} >
         <PersistGate loading={null} persistor={persistor}>
-          <Navigation />
+          <SafeAreaProvider>
+            <Navigation />
+          </SafeAreaProvider>
         </PersistGate>
       </Provider>
     </AnimatedSplash>

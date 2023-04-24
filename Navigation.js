@@ -17,11 +17,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Devotional from './Screens/Devotional';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import { SafeAreaView, View } from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 const Stack = createStackNavigator()
 
 const Tab = createBottomTabNavigator()
 
 const Navigation = () => {
+  const insets = useSafeAreaInsets()
   const theme = useSelector(state => state.user.theme)
   let [fontsLoaded] = useFonts({
     'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
@@ -33,8 +39,25 @@ const Navigation = () => {
     return <AppLoading />
   }
   return (
-    <>
+    <View style={theme == 'dark' ? {
+      flex: 1,
+      backgroundColor: '#121212',
+      // Paddings to handle safe area
+
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+    } : {
+      flex: 1,
+      backgroundColor: 'white',
+      // Paddings to handle safe area
+
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+    }}>
       <StatusBar style={theme == 'dark' ? 'light' : 'dark'} />
+
       <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
         <Tab.Navigator screenOptions={({ route }) => ({
           headerShown: false,
@@ -67,17 +90,17 @@ const Navigation = () => {
         >
           <Tab.Screen
             name="Home"
-            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
             component={Welcome}
           />
           <Tab.Screen
             name="Folders"
-            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
             component={Main}
           />
           <Tab.Screen
             name="Devotional"
-            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
             component={Devotional}
           />
           <Tab.Screen
@@ -97,17 +120,17 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="Community"
-            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
             component={Community}
           />
           <Tab.Screen
             name="Settings"
-            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5 } })}
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
             component={Settings}
           />
         </Tab.Navigator>
       </NavigationContainer>
-    </>
+    </View>
   );
 }
 

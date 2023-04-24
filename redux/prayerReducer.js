@@ -5,6 +5,7 @@ export const prayerSlice = createSlice({
   name: 'prayer',
   initialState: {
     prayer: [],
+    answeredPrayers: []
   },
   reducers: {
     addPrayer: (state, action) => {
@@ -20,11 +21,22 @@ export const prayerSlice = createSlice({
       const prayerIndex = state.prayer.findIndex((prayer) => prayer.id === action.payload.id)
       newPrayers.splice(prayerIndex, 1, action.payload)
       state.prayer = newPrayers
+    },
+    addToAnsweredPrayer: (state, action) => {
+      console.log(action)
+      const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
+      state.answeredPrayers = AnsweredPrayers
+      console.log(state.answeredPrayers)
     }
   }
 },
 )
 
-export const { addPrayer, deletePrayer, editPrayer } = prayerSlice.actions
+export const {
+  addPrayer,
+  deletePrayer,
+  editPrayer,
+  addToAnsweredPrayer
+} = prayerSlice.actions
 
 export default prayerSlice.reducer

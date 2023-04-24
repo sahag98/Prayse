@@ -10,6 +10,7 @@ import { TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import tbf from '../assets/tbf-logo.jpg'
+import NetInfo from '@react-native-community/netinfo';
 
 const Devotional = () => {
   const isFocused = useIsFocused();
@@ -17,6 +18,7 @@ const Devotional = () => {
   const isReady = useIsReady()
   const [devotionals, setDevotionals] = useState([])
   const [refresh, setRefresh] = useState(true)
+  const [connected, setConnected] = useState(false)
 
   useEffect(() => {
     loadDevotionals()
@@ -34,13 +36,10 @@ const Devotional = () => {
       })
   }
 
-  // useEffect(() => {
-  //   const query = '*[_type=="devotional"]'
-  //   client.fetch(query)
-  //     .then((data) => {
-  //       setDevotionals(data)
-  //     })
-  // }, [refresh])
+  NetInfo.fetch().then(state => {
+    setConnected(state.isConnected)
+  });
+
 
   const BusyIndicator = () => {
     return (
@@ -50,7 +49,7 @@ const Devotional = () => {
     );
   };
 
-  if (!isReady) {
+  if (!isReady || !connected) {
     return <BusyIndicator />;
   }
 
@@ -97,7 +96,6 @@ const Devotional = () => {
 
         ))
         }
-
       </Container>
     </>
   );

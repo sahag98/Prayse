@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { Dimensions, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
 import prayer from '../assets/prayer-nobg.png'
 import { Ionicons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
@@ -11,6 +11,14 @@ import { Divider, List } from 'react-native-paper';
 import { Container, ModalContainer, ModalView, ToolTipView } from '../styles/appStyles';
 import { closeTool } from '../redux/userReducer';
 import { Modal } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { useNavigation } from '@react-navigation/native';
+import { PROJECT_ID } from '@env'
+
+
+SplashScreen.preventAutoHideAsync();
 
 // import { Alert } from 'react-native';
 // import Constants from 'expo-constants';
@@ -44,11 +52,79 @@ import { Modal } from 'react-native';
 //     }
 // }
 
+Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+        const navigation = useNavigation()
+        console.log('in set noti', notification)
+        const data = notification.request.content.data;
+        if (data && data.screen) {
+            // navigate to the screen specified in the data object
+            navigation.navigate(data.screen);
+        }
+
+        return {
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+        };
+    },
+});
+
+async function sendToken(expoPushToken) {
+    console.log(' in send')
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Original Title',
+        body: 'And here is the body!',
+        data: { someData: 'goes here' },
+    };
+
+    await fetch('http://192.168.1.206:8800/api/tokens', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+}
+
+async function registerForPushNotificationsAsync() {
+    let token;
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })).data;
+        console.log(token)
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+    return token;
+}
+
 export default function Welcome({ navigation }) {
     const theme = useSelector(state => state.user.theme)
+    const token = useSelector(state => state.user.expoToken)
     const [toolVisible, setToolVisible] = useState(false)
     const [expanded, setExpanded] = useState(true);
-
     const handlePress = () => setExpanded(!expanded);
 
     function handleCloseTooltip() {
@@ -57,6 +133,38 @@ export default function Welcome({ navigation }) {
 
     const fadeAnim = useRef(new Animated.Value(0)).current
     // checkAppVersion()
+
+    // useEffect(() => {
+    //     console.log('in welcome us effect')
+    // }, [])
+
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => sendToken(token));
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            const res = response.notification.request.content.data
+            if (res && res.screen) {
+                // navigate to the screen specified in the data object
+                navigation.navigate(res.screen);
+            }
+        });
+
+        // sendToken(expoPushToken)
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
+
 
     useEffect(() => {
         Animated.timing(
@@ -69,19 +177,29 @@ export default function Welcome({ navigation }) {
         ).start()
     }, [fadeAnim]);
 
-    let [fontsLoaded] = useFonts({
+    const [fontsLoaded] = useFonts({
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
         'Inter-Light': require('../assets/fonts/Inter-Light.ttf'),
     })
 
+    const onLayoutRootView = useCallback(async () => {
+        if (fontsLoaded) {
+            await SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded]);
+
     if (!fontsLoaded) {
-        return <AppLoading />
+        return null;
     }
 
+    // if (!fontsLoaded) {
+    //     return <AppLoading />
+    // }
+
     return (
-        <Container style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
+        <Container onLayout={onLayoutRootView} style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
             <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to your prayer app</Text>
             <View style={styles.imgContainer}>
                 <Image

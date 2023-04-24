@@ -5,6 +5,7 @@ const initialState = {
     tooltip: true,
     checkmarkVisible: false,
     theme: Appearance.getColorScheme(),
+    expoToken: '',
     prayers: [],
     fontSize: 15,
     selectedId: null
@@ -16,6 +17,9 @@ export const userSlice = createSlice({
     reducers: {
         closeTool: (state) => {
             state.tooltip = false
+        },
+        setToken: (state, action) => {
+            state.expoToken = action.payload
         },
         large: (state) => {
             state.fontSize = 20
@@ -42,6 +46,6 @@ export const userSlice = createSlice({
 },
 )
 
-export const { addUser, closeTool, addFolder, regular, small, large, removeUser, openCheckmark, select, darkMode, systemTheme } = userSlice.actions
+export const { addUser, setToken, closeTool, addFolder, regular, small, large, removeUser, openCheckmark, select, darkMode, systemTheme } = userSlice.actions
 
 export default userSlice.reducer

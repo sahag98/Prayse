@@ -7,16 +7,18 @@ import {
     TodoCategory,
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Entypo } from '@expo/vector-icons'
 import AppLoading from 'expo-app-loading';
 import { Motion } from "@legendapp/motion"
 import CategoryTabs from './CategoryTabs';
 import SearchBar from './SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
-import { deletePrayer } from '../redux/prayerReducer';
+import { deletePrayer, addToAnsweredPrayer } from '../redux/prayerReducer';
 
 const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
+    const [openMore, setOpenMore] = useState(false)
+    const [selectedEdit, setSelectedEdit] = useState('')
     const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
@@ -33,6 +35,11 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
 
     const handleDelete = (prayer) => {
         dispatch(deletePrayer(prayer))
+    }
+
+    const handleAddToAnsweredPrayer = (prayer) => {
+        console.log(prayer)
+        dispatch(addToAnsweredPrayer(prayer))
     }
 
     const All = "All";
@@ -65,7 +72,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                     whileTap={{ y: 20 }}
                     transition={{ type: "spring" }}>
                     <ListView
-                        style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121' }] : [styles.elevation, { backgroundColor: '#93D8F8' }]}
+                        style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121', position: 'relative' }] : [styles.elevation, { backgroundColor: '#93D8F8' }]}
                         underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'}
                         onPress={() => { handleTriggerEdit(item) }}
                     >
@@ -77,16 +84,36 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                     style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: size } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: size }}>
                                     {item.prayer}
                                 </RowText>
-                                {search.length == 0 && <TouchableOpacity style={{ paddingBottom: 10 }} onPress={() => handleDelete(item.id)} >
-                                    <Feather name='x' size={28} color={theme == 'dark' ? 'white' : '#2F2D51'} />
-                                </TouchableOpacity>}
-
                             </View>
+                            {search.length == 0 &&
+                                <TouchableOpacity onPress={() => setSelectedEdit(item.prayer)} style={{ position: 'absolute', top: 9, right: 3 }}>
+                                    <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                </TouchableOpacity>
+                                // <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}
+                                //     onPress={() => handleDelete(item.id)} >
+                                //     <Feather name='x' size={26} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                // </TouchableOpacity>
+                            }
+                            {selectedEdit == item.prayer &&
+                                <View style={styles.editContainer}>
+                                    <View style={{ position: 'relative' }}>
+                                        <TouchableOpacity style={{ alignSelf: 'flex-end', position: 'absolute', top: 9, right: 3 }} onPress={() => setSelectedEdit('')}>
+                                            <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{ width: '75%' }} onPress={() => handleDelete(item.id)}>
+                                            <Text>Delete prayer</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{ width: '75%' }} onPress={() => handleAddToAnsweredPrayer(item.prayer)}>
+                                            <Text>Mark as answered</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            }
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 {categoryItem == "General" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#FFDAA5' } : { borderRadius: 20, backgroundColor: '#FFBF65' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -94,7 +121,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 {categoryItem == "People" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { backgroundColor: '#A5C9FF', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#6B7EFF', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }}>
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }}>
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -102,7 +129,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 {categoryItem == "Praise" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { backgroundColor: '#A5FFC9', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#65FFA2', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: '#2F2D51' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: '#2F2D51' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -110,7 +137,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 {categoryItem == "Personal" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { backgroundColor: '#FFB2B2', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#FF5858', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -118,7 +145,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 {categoryItem == "Other" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { backgroundColor: 'white', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: 'white', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -126,13 +153,13 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 {categoryItem == "None" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#8C8C8C', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#2F2D51', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 <TodoDate
-                                    style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Light' } : { color: '#4e4a8a', fontFamily: 'Inter-Light' }}>
+                                    style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Regular' } : { color: '#4e4a8a', fontFamily: 'Inter-Regular' }}>
                                     {item.date}
                                 </TodoDate>
                             </View>
@@ -181,7 +208,16 @@ export default ListItems;
 
 const styles = StyleSheet.create({
 
-
+    editContainer: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        backgroundColor: '#3b3b3b',
+        zIndex: 99,
+        width: '50%',
+        height: '150%',
+        borderRadius: 5
+    },
     TodoCategory: {
         backgroundColor: '#121212',
         marginTop: 10,
@@ -195,21 +231,20 @@ const styles = StyleSheet.create({
         shadowColor: '#040404',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 3,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 7,
+        shadowRadius: 2,
+        elevation: 5,
     },
     elevation: {
         shadowColor: '#13588c',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 3,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
+        shadowRadius: 2,
         elevation: 5,
     },
     press: {

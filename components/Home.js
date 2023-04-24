@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Animated, Platform, View } from 'react-native'
 import Header from "./Header";
 import ListItems from "./ListItems";
-import InputModal from "./InputModal";
+import InputModal from './InputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../styles/appStyles";

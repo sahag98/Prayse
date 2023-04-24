@@ -39,7 +39,7 @@ const Message = [
     },
     {
         id: 5,
-        title: "RECIEVE JESUS AS YOUR SAVIOUR",
+        title: "RECEIVE JESUS AS YOUR SAVIOUR",
         verse: "For whosoever shall call upon the name of the Lord shall be saved.",
         chapter: "Romans 10:13"
     },

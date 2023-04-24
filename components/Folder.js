@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, FlatList } from 'react-native';
+import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, FlatList, Dimensions } from 'react-native';
 import {
   HeaderTitle, ModalContainer,
   ModalView,
   StyledInput,
   ModalAction,
   ModalActionGroup,
-  ModalIcon, ListView1, TodoText
+  ModalIcon, ListView1, TodoText, ListView, ListView2
 } from '../styles/appStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -54,6 +54,7 @@ const Folder = ({ navigation, todos }) => {
   let [fontsLoaded] = useFonts({
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
 
@@ -91,17 +92,46 @@ const Folder = ({ navigation, todos }) => {
   const renderItem = ({ item, index }) => {
     return (
       <View>
-        <ListView1 style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121' }] : [styles.elevation, { backgroundColor: '#2f2d51' }]} underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'} onPress={() => { handleOpen(item) }}>
-          <View style={{ display: 'flex', position: 'relative', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <AntDesign style={{ marginRight: 10 }} name="folder1" size={24} color="#f1d592" />
-              <Text style={{ color: 'white', fontFamily: 'Inter-Medium' }}>
+        <View style={theme == 'dark' ? [styles.containerDark, styles.elevationDark] : [styles.container, styles.elevation]}>
+          <View style={{ display: 'flex', position: 'relative', height: '100%', justifyContent: 'center' }}>
+            <View style={{
+              display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+              position: 'absolute', top: 0
+            }}>
+              <AntDesign name="folder1" size={22} color="#f1d592" />
+              <Feather style={{ marginLeft: 5 }} onPress={() => { handleDeleteFolder(item.id); setOpen(true) }} name='x' size={26} color="#f1d592" />
+            </View>
+            <View>
+              <Text style={{ color: 'white', fontSize: 16, marginVertical: 5, fontFamily: 'Inter-Medium' }}>
                 {item.name}
               </Text>
             </View>
-            <Feather onPress={() => { handleDeleteFolder(item.id); setOpen(true) }} name='x' size={30} color="#f1d592" />
+            <TouchableOpacity onPress={() => { handleOpen(item) }} style={theme == 'dark' ? styles.viewDark : styles.view}>
+              <Text style={{ color: 'white', fontFamily: 'Inter-Medium', fontSize: 13 }}>View prayers</Text>
+              <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
+            </TouchableOpacity>
           </View>
-        </ListView1>
+        </View>
+        {/* <View style={theme == 'dark' ? [styles.containerDark, styles.elevationDark] : [styles.container, styles.elevation]}>
+          <View style={{ display: 'flex', position: 'relative', height: '100%', justifyContent: 'center' }}>
+            <View style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', 
+            position: 'absolute', top: 0 }}>
+              <AntDesign name="folder1" size={22} color="#f1d592" />
+              <Feather style={{ marginLeft: 5 }} onPress={() => { handleDeleteFolder(item.id); setOpen(true) }} name='x' size={26} color="#f1d592" />
+            </View>
+            <View style={{ display: 'flex' }}>
+              <Text style={{ color: '#faefd6', marginVertical: 5, fontFamily: 'Inter-SemiBold', fontSize: 16 }}>
+                {item.name}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => { handleOpen(item) }} 
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', 
+            position: 'absolute', padding: 7, width: '100%', borderRadius: 5, bottom: 0, backgroundColor: '#1c1c1c' }}>
+              <Text style={{ color: '#faefd6', fontFamily: 'Inter-Medium', fontSize: 13 }}>View prayers</Text>
+              <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
+            </TouchableOpacity>
+          </View>
+        </View> */}
       </View>
     )
   }
@@ -111,25 +141,27 @@ const Folder = ({ navigation, todos }) => {
 
       <View style={{ display: 'flex', marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
-          : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>Folders</HeaderTitle>
+          : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>Your Folders</HeaderTitle>
       </View>
       {todos.length != 0 &&
-        <ListView1 style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121' }] : [styles.elevation, { backgroundColor: '#2f2d51' }]} underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'} onPress={goToOrignalPrayer}>
+        <ListView2 style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121' }] : [styles.elevation, { backgroundColor: '#2f2d51' }]} underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'} onPress={goToOrignalPrayer}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ color: 'white', fontFamily: 'Inter-Medium' }}>Original Prayers</Text>
+            <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 15 }}>Original Prayers</Text>
             <AntDesign name="right" size={24} color="white" />
           </View>
-        </ListView1>
+        </ListView2>
       }
       {folders.length == 0 && <TodoText style={theme == 'dark' ? styles.pressDark : styles.press}>Add a folder to write your prayers in!</TodoText>}
       <FlatList
         data={folders}
-        keyExtractor={(e, i) => i.toString()}
+        keyExtractor={(item) => item.id}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         renderItem={renderItem}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 10 }}
       />
       <View style={styles.actionButtons}>
         <AnimatedFAB
@@ -212,13 +244,60 @@ const Folder = ({ navigation, todos }) => {
   );
 }
 
+const width = Dimensions.get('window').width - 30
+
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#2f2d51',
+    padding: 8,
+    width: width / 2 - 8,
+    height: 130,
+    marginBottom: 20,
+    borderRadius: 10
+  },
+  // containerDark: {
+  //   backgroundColor: '#212121',
+  //   padding: 8,
+  //   width: width / 2 - 8,
+  //   height: 130,
+  //   marginBottom: 20,
+  //   borderRadius: 10
+  // },
+  containerDark: {
+    backgroundColor: '#212121',
+    padding: 8,
+    width: width / 2 - 8,
+    height: 130,
+    marginBottom: 20,
+    borderRadius: 10
+  },
+  viewDark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0, padding: 7,
+    width: '100%',
+    backgroundColor: "#2e2e2e",
+    borderRadius: 5
+  }
+  ,
+  view: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0, padding: 7,
+    width: '100%',
+    backgroundColor: "#423f72",
+    borderRadius: 5
+  },
   fabStyleDark: {
     position: 'relative',
     alignSelf: 'center',
     borderRadius: 20,
     justifyContent: 'center',
-    backgroundColor: '#212121',
+    backgroundColor: '#3b3b3b',
 
   },
   fabStyle: {
@@ -226,28 +305,28 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 20,
     justifyContent: 'center',
-    backgroundColor: '#2f2d51',
+    backgroundColor: '#36345e',
 
   },
   elevation: {
     shadowColor: '#12111f',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 2,
+    elevation: 4,
   },
   elevationDark: {
     shadowColor: '#040404',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 7,
+    shadowRadius: 2,
+    elevation: 5,
   },
   press: {
     fontFamily: 'Inter-Regular',

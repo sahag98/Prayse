@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
-    KeyboardAvoidingView, View, Text, Modal, StyleSheet
+    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform
 }
     from 'react-native';
 import {
@@ -15,11 +15,11 @@ import {
     ModalIcon,
     HeaderTitle,
 } from '../styles/appStyles'
-import SelectList from 'react-native-dropdown-select-list'
+import { SelectList } from 'react-native-dropdown-select-list'
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
 import { AnimatedFAB, FAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,18 +56,23 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, se
     const navigation = useNavigation()
     const data = [
         {
+            key: 'General',
             value: 'General'
         },
         {
+            key: 'People',
             value: 'People'
         },
         {
+            key: 'Personal',
             value: 'Personal'
         },
         {
+            key: 'Praise',
             value: 'Praise'
         },
         {
+            key: 'Other',
             value: 'Other'
         }
     ]
@@ -204,7 +209,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 20,
         justifyContent: 'center',
-        backgroundColor: '#212121',
+        backgroundColor: '#3b3b3b',
 
     },
     fabStyle: {
