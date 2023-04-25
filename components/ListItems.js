@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, FlatList, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, FlatList, Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import {
     ListView,
     TodoText,
@@ -13,10 +13,14 @@ import { Motion } from "@legendapp/motion"
 import CategoryTabs from './CategoryTabs';
 import SearchBar from './SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
-import { deletePrayer, addToAnsweredPrayer } from '../redux/prayerReducer';
+import { deletePrayer, addToAnsweredPrayer, deleteAnsweredPrayers, removeAnsweredPrayer } from '../redux/prayerReducer';
+import { Divider } from 'react-native-paper';
 
 const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
+    const answered = useSelector(state => state.prayer.answeredPrayers)
+    const [answeredAlready, setAnsweredAlready] = useState('')
+    console.log(answered)
     const [openMore, setOpenMore] = useState(false)
     const [selectedEdit, setSelectedEdit] = useState('')
     const dispatch = useDispatch()
@@ -35,12 +39,19 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
 
     const handleDelete = (prayer) => {
         dispatch(deletePrayer(prayer))
+        setSelectedEdit('')
     }
 
     const handleAddToAnsweredPrayer = (prayer) => {
-        console.log(prayer)
         dispatch(addToAnsweredPrayer(prayer))
+        setAnsweredAlready(prayer.id)
+        setSelectedEdit('')
     }
+
+    // const handleRemoveAnsweredPrayer = (prayer) => {
+    //     dispatch(removeAnsweredPrayer(prayer))
+    //     setAnsweredAlready(prayer.id)
+    // }
 
     const All = "All";
     const General = "General";
@@ -86,7 +97,7 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 </RowText>
                             </View>
                             {search.length == 0 &&
-                                <TouchableOpacity onPress={() => setSelectedEdit(item.prayer)} style={{ position: 'absolute', top: 9, right: 3 }}>
+                                <TouchableOpacity onPress={() => setSelectedEdit(item.id)} style={{ position: 'absolute', top: 9, right: 3 }}>
                                     <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                 </TouchableOpacity>
                                 // <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}
@@ -94,18 +105,26 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
                                 //     <Feather name='x' size={26} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                 // </TouchableOpacity>
                             }
-                            {selectedEdit == item.prayer &&
+                            {selectedEdit == item.id &&
                                 <View style={styles.editContainer}>
-                                    <View style={{ position: 'relative' }}>
-                                        <TouchableOpacity style={{ alignSelf: 'flex-end', position: 'absolute', top: 9, right: 3 }} onPress={() => setSelectedEdit('')}>
+                                    <View style={{ position: 'relative', padding: 10, justifyContent: 'space-evenly', height: '100%' }}>
+                                        <TouchableOpacity style={{ alignSelf: 'flex-end', position: 'absolute', top: 9, padding: 2, zIndex: 99, right: 3 }} onPress={() => setSelectedEdit('')}>
                                             <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{ width: '75%' }} onPress={() => handleDelete(item.id)}>
-                                            <Text>Delete prayer</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{ width: '75%' }} onPress={() => handleAddToAnsweredPrayer(item.prayer)}>
-                                            <Text>Mark as answered</Text>
-                                        </TouchableOpacity>
+                                        <TouchableHighlight underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, justifyContent: 'center', borderRadius: 5 }} onPress={() => handleDelete(item.id)}>
+                                            <Text style={{ color: '#ff6666', fontFamily: 'Inter-Medium' }}>Delete prayer</Text>
+                                        </TouchableHighlight>
+                                        <Divider style={{ marginVertical: 5, backgroundColor: '#f0f0f0' }} />
+                                        {answeredAlready != item.id &&
+                                            <TouchableHighlight underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, borderRadius: 5, justifyContent: 'center' }} onPress={() => handleAddToAnsweredPrayer(item)}>
+                                                <Text style={{ color: '#66b266', fontFamily: 'Inter-Medium' }}>Mark as answered</Text>
+                                            </TouchableHighlight>
+                                        }
+                                        {answeredAlready == item.id &&
+                                            <TouchableHighlight disabled={true} underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, borderRadius: 5, justifyContent: 'center' }} onPress={() => handleAddToAnsweredPrayer(item)}>
+                                                <Text style={{ color: '#66b266', fontFamily: 'Inter-Medium' }}>Already marked</Text>
+                                            </TouchableHighlight>
+                                        }
                                     </View>
                                 </View>
                             }
@@ -214,7 +233,7 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: '#3b3b3b',
         zIndex: 99,
-        width: '50%',
+        width: '60%',
         height: '150%',
         borderRadius: 5
     },

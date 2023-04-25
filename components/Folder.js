@@ -68,6 +68,7 @@ const Folder = ({ navigation, todos }) => {
   function goToOrignalPrayer() {
     navigation.navigate('OldPrayerPage')
   }
+
   function add() {
     dispatch(addFolder({
       id: uuid.v4(),

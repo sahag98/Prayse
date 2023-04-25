@@ -23,9 +23,16 @@ export const prayerSlice = createSlice({
       state.prayer = newPrayers
     },
     addToAnsweredPrayer: (state, action) => {
-      const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
-      state.answeredPrayers = AnsweredPrayers
-      console.log(state.answeredPrayers)
+      state.answeredPrayers.push(action.payload)
+      // const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
+      // state.answeredPrayers = AnsweredPrayers
+      // console.log(state.answeredPrayers)
+    },
+    removeAnsweredPrayer: (state, action) => {
+      state.answeredPrayers = state.answeredPrayers.filter((prayer) => prayer.id !== action.payload)
+    },
+    deleteAnsweredPrayers: (state, action) => {
+      state.answeredPrayers = []
     }
   }
 },
@@ -35,7 +42,9 @@ export const {
   addPrayer,
   deletePrayer,
   editPrayer,
-  addToAnsweredPrayer
+  addToAnsweredPrayer,
+  deleteAnsweredPrayers,
+  removeAnsweredPrayer
 } = prayerSlice.actions
 
 export default prayerSlice.reducer
