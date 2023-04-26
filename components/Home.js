@@ -6,6 +6,8 @@ import InputModal from './InputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../styles/appStyles";
+import LottieView from "lottie-react-native";
+import { StyleSheet } from "react-native";
 
 const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, folderId }) => {
     const theme = useSelector(state => state.user.theme)
@@ -98,3 +100,11 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
 }
 
 export default Home
+
+const styles = StyleSheet.create({
+    animation: {
+        width: 300,
+        height: 300,
+        alignSelf: 'center',
+    },
+})
