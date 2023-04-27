@@ -17,6 +17,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [prayerValue, setPrayerValue] = useState("")
     const [categoryValue, setCategoryValue] = useState('')
     const [extended, setExtended] = useState(true);
+    const [selectedEdit, setSelectedEdit] = useState('')
     const dispatch = useDispatch()
     const isIOS = Platform.OS === 'ios'
     const [visible, setVisible] = useState(true)
@@ -54,6 +55,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [prayertoBeEdited, setPrayertoBeEdited] = useState(null)
 
     const handleTriggerEdit = (item) => {
+        setSelectedEdit('')
         setPrayertoBeEdited(item)
         setModalVisible(true)
         setPrayerValue(item.prayer);
@@ -61,7 +63,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     }
 
     return (
-        <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
+        <Container onStartShouldSetResponder={() => setSelectedEdit('')} style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
             <Header
                 folderName={folderName}
                 theme={theme}
@@ -70,6 +72,8 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
             <ListItems
                 navigation={navigation}
                 prayerList={prayerList}
+                selectedEdit={selectedEdit}
+                setSelectedEdit={setSelectedEdit}
                 folderName={folderName}
                 folderId={folderId}
                 onScroll={onScroll}

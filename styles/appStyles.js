@@ -46,7 +46,7 @@ position:relative;
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 20px;
+  font-size: 19px;
   color: ${colors.tertiary};
 `;
 export const HeaderButton = styled.TouchableOpacity`

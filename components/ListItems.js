@@ -17,14 +17,13 @@ import { deletePrayer, addToAnsweredPrayer, deleteAnsweredPrayers, removeAnswere
 import { Divider } from 'react-native-paper';
 import LottieView from "lottie-react-native";
 
-const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
+const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
     const answered = useSelector(state => state.prayer.answeredPrayers)
     const [answeredAlready, setAnsweredAlready] = useState('')
-    // console.log(answered)
+
     const [loading, setLoading] = useState(false)
     const [openMore, setOpenMore] = useState(false)
-    const [selectedEdit, setSelectedEdit] = useState('')
     const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
@@ -45,7 +44,6 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
 
     function pickedPrayer(prayer) {
         setSelectedEdit(prayer.id)
-        console.log(answered.includes(prayer))
         if (answered.some(item => item.id === prayer.id && item.prayer === prayer.prayer)) {
             console.log('exists in array')
             setAnsweredAlready(prayer.id)
@@ -66,8 +64,11 @@ const ListItems = ({ prayerList, onScroll, folderId, handleTriggerEdit }) => {
 
 
     const handleAddToAnsweredPrayer = (prayer) => {
-
-        dispatch(addToAnsweredPrayer(prayer))
+        // dispatch(deleteAnsweredPrayers())
+        dispatch(addToAnsweredPrayer({
+            answeredDate: new Date().toDateString(),
+            prayer: prayer
+        }))
         setLoading(true)
         time()
         setSelectedEdit('')

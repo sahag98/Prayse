@@ -39,8 +39,8 @@ const Header = ({ navigation, folderName, theme }) => {
                             <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
                         </TouchableOpacity>
                         <HeaderTitle
-                            style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' }
-                                : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>
+                            style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
+                                : { fontFamily: 'Inter-Bold', color: '#2F2D51' }}>
                             {folderName}
                         </HeaderTitle>
                     </View>

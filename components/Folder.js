@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { TouchableOpacity, Animated } from 'react-native';
 import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
-import { AnimatedFAB, FAB } from 'react-native-paper';
+import { AnimatedFAB, Divider, FAB } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { addFolder, deleteFolder } from '../redux/folderReducer';
 import uuid from 'react-native-uuid';
@@ -23,16 +23,18 @@ const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null)
   const theme = useSelector(state => state.user.theme)
   const folders = useSelector(state => state.folder.folders)
+  const answeredPrayers = useSelector(state => state.prayer.answeredPrayers)
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [action, setAction] = useState(false)
   const [folderName, setFolderName] = useState("")
+  const [folderClicked, setFolderClicked] = useState(true)
   const [isExtended, setIsExtended] = useState(true);
   const [idToDelete, setIdToDelete] = useState(null)
   const [extended, setExtended] = useState(true);
   const isIOS = Platform.OS === 'ios'
   const [fabvisible, setFabvisible] = useState(true)
-
+  console.log(answeredPrayers)
   const { current: velocity } = useRef(new Animated.Value(0))
 
   useEffect(() => {
@@ -90,9 +92,26 @@ const Folder = ({ navigation, todos }) => {
     setIdToDelete(id)
   }
 
-  const renderItem = ({ item, index }) => {
+  const renderAnsweredPrayers = ({ item, index }) => {
+    console.log(item)
     return (
       <View>
+        <Text style={theme == 'dark' ? { marginBottom: 10, color: '#bebebe' } : { marginBottom: 10, color: '#8986bc' }}>{item.answeredDate}</Text>
+        <View key={index} style={{ width: '100%', marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Feather name="check-circle" size={24} color="#66b266" />
+          <View style={theme == 'dark' ? { borderRadius: 5, backgroundColor: "#212121", width: '90%', height: 50, justifyContent: 'center', padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', height: 50, justifyContent: 'center', padding: 10 }}>
+            <Text style={{ color: 'white' }}>
+              {item.prayer.prayer}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <View key={index}>
         <View style={theme == 'dark' ? [styles.containerDark, styles.elevationDark] : [styles.container, styles.elevation]}>
           <View style={{ display: 'flex', position: 'relative', height: '100%', justifyContent: 'center' }}>
             <View style={{
@@ -113,26 +132,6 @@ const Folder = ({ navigation, todos }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <View style={theme == 'dark' ? [styles.containerDark, styles.elevationDark] : [styles.container, styles.elevation]}>
-          <View style={{ display: 'flex', position: 'relative', height: '100%', justifyContent: 'center' }}>
-            <View style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', 
-            position: 'absolute', top: 0 }}>
-              <AntDesign name="folder1" size={22} color="#f1d592" />
-              <Feather style={{ marginLeft: 5 }} onPress={() => { handleDeleteFolder(item.id); setOpen(true) }} name='x' size={26} color="#f1d592" />
-            </View>
-            <View style={{ display: 'flex' }}>
-              <Text style={{ color: '#faefd6', marginVertical: 5, fontFamily: 'Inter-SemiBold', fontSize: 16 }}>
-                {item.name}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={() => { handleOpen(item) }} 
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', 
-            position: 'absolute', padding: 7, width: '100%', borderRadius: 5, bottom: 0, backgroundColor: '#1c1c1c' }}>
-              <Text style={{ color: '#faefd6', fontFamily: 'Inter-Medium', fontSize: 13 }}>View prayers</Text>
-              <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </View>
     )
   }
@@ -140,11 +139,36 @@ const Folder = ({ navigation, todos }) => {
   return (
     <View style={{ position: 'relative', flex: 1 }}>
 
-      <View style={{ display: 'flex', marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
-          : { fontFamily: 'Inter-Medium', color: '#2F2D51' }}>Your Folders</HeaderTitle>
+      <View style={{ display: 'flex', marginVertical: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        {folderClicked ?
+          <TouchableOpacity onPress={() => setFolderClicked(true)}>
+            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
+              : { fontFamily: 'Inter-Bold', color: '#2F2D51' }}>Your Folders
+            </HeaderTitle>
+          </TouchableOpacity>
+          :
+          <TouchableOpacity onPress={() => setFolderClicked(true)}>
+            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: '#979797' }
+              : { fontFamily: 'Inter-Bold', color: '#716dae' }}>Your Folders
+            </HeaderTitle>
+          </TouchableOpacity>
+        }
+        <Divider style={theme == 'dark' ? { width: 1.5, backgroundColor: 'white', height: '100%' } : { width: 1.5, backgroundColor: '#2f2d51', height: '100%' }} />
+        {folderClicked ?
+          <TouchableOpacity onPress={() => setFolderClicked(false)}>
+            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: '#979797' }
+              : { fontFamily: 'Inter-Bold', color: '#716dae' }}>Answered Prayers
+            </HeaderTitle>
+          </TouchableOpacity>
+          :
+          <TouchableOpacity onPress={() => setFolderClicked(false)}>
+            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
+              : { fontFamily: 'Inter-Bold', color: '#2F2D51' }}>Answered Prayers
+            </HeaderTitle>
+          </TouchableOpacity>
+        }
       </View>
-      {todos.length != 0 &&
+      {todos.length != 0 && folderClicked &&
         <ListView2 style={theme == 'dark' ? [styles.elevationDark, { backgroundColor: '#212121' }] : [styles.elevation, { backgroundColor: '#2f2d51' }]} underlayColor={theme == 'dark' ? '#121212' : '#F2F7FF'} onPress={goToOrignalPrayer}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 15 }}>Original Prayers</Text>
@@ -153,31 +177,48 @@ const Folder = ({ navigation, todos }) => {
         </ListView2>
       }
       {folders.length == 0 && <TodoText style={theme == 'dark' ? styles.pressDark : styles.press}>Add a folder to write your prayers in!</TodoText>}
-      <FlatList
-        data={folders}
-        keyExtractor={(item) => item.id}
-        onEndReachedThreshold={0}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        renderItem={renderItem}
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 10 }}
-      />
-      <View style={styles.actionButtons}>
-        <AnimatedFAB
-          icon={'plus'}
-          label={'Add Folder'}
-          extended={isExtended}
-          onPress={() => { setVisible(true) }}
-          visible={fabvisible}
-          animateFrom={'left'}
-          iconMode={'dynamic'}
-          color={"white"}
-          style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
-        />
-      </View>
+      {folderClicked &&
+        <>
+          <FlatList
+            data={folders}
+            keyExtractor={(item) => item.id}
+            onEndReachedThreshold={0}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            onScroll={onScroll}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 10 }}
+          />
 
+          <View style={styles.actionButtons}>
+            <AnimatedFAB
+              icon={'plus'}
+              label={'Add Folder'}
+              extended={isExtended}
+              onPress={() => { setVisible(true) }}
+              visible={fabvisible}
+              animateFrom={'left'}
+              iconMode={'dynamic'}
+              color={"white"}
+              style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
+            />
+          </View>
+        </>
+      }
+      {!folderClicked && answeredPrayers.length != 0 &&
+        <FlatList
+          data={answeredPrayers}
+          keyExtractor={(item) => item.id}
+          onEndReachedThreshold={0}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderAnsweredPrayers}
+        />
+      }
+      {!folderClicked && answeredPrayers.length == 0 &&
+        <Text style={{ alignSelf: 'center', color: 'white' }}>Nothing on the list just yet!</Text>
+      }
       <Modal
         animationType='fade'
         transparent={true}
