@@ -18,6 +18,7 @@ import { addFolder, deleteFolder } from '../redux/folderReducer';
 import uuid from 'react-native-uuid';
 import { useFonts } from 'expo-font';
 import { useRef } from 'react';
+import { removeAnsweredPrayer } from '../redux/prayerReducer';
 
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null)
@@ -34,7 +35,6 @@ const Folder = ({ navigation, todos }) => {
   const [extended, setExtended] = useState(true);
   const isIOS = Platform.OS === 'ios'
   const [fabvisible, setFabvisible] = useState(true)
-  console.log(answeredPrayers)
   const { current: velocity } = useRef(new Animated.Value(0))
 
   useEffect(() => {
@@ -93,19 +93,21 @@ const Folder = ({ navigation, todos }) => {
   }
 
   const renderAnsweredPrayers = ({ item, index }) => {
-    console.log(item)
     return (
-      <View>
+      <View key={index}>
         <Text style={theme == 'dark' ? { marginBottom: 10, color: '#bebebe' } : { marginBottom: 10, color: '#8986bc' }}>{item.answeredDate}</Text>
-        <View key={index} style={{ width: '100%', marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ width: '100%', marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Feather name="check-circle" size={24} color="#66b266" />
-          <View style={theme == 'dark' ? { borderRadius: 5, backgroundColor: "#212121", width: '90%', height: 50, justifyContent: 'center', padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', height: 50, justifyContent: 'center', padding: 10 }}>
+          <View style={theme == 'dark' ? { borderRadius: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: "#212121", width: '90%', height: 50, padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
             <Text style={{ color: 'white' }}>
               {item.prayer.prayer}
             </Text>
+            <TouchableOpacity onPress={() => dispatch(removeAnsweredPrayer(item.prayer.id))}>
+              <AntDesign name="close" size={22} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View >
     )
   }
 
@@ -217,7 +219,10 @@ const Folder = ({ navigation, todos }) => {
         />
       }
       {!folderClicked && answeredPrayers.length == 0 &&
-        <Text style={{ alignSelf: 'center', color: 'white' }}>Nothing on the list just yet!</Text>
+        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <Text style={theme == 'dark' ? { color: 'white', fontSize: 15, fontFamily: 'Inter-Medium' } : { color: '#2f2d51', fontSize: 15, fontFamily: 'Inter-Medium' }}>Nothing on the list just yet!</Text>
+        </View>
+
       }
       <Modal
         animationType='fade'

@@ -85,8 +85,8 @@ export const ListView2 = styled.TouchableHighlight`
 
 export const ListView1 = styled.TouchableHighlight`
   background-color:${colors.folderColor};
-  height: 130px;
-  width:90%;
+  min-height: 75px;
+  width:100%;
   padding: 10px;
   justify-content: space-around;
   margin-top:10px;

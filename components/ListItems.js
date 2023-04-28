@@ -44,7 +44,8 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
 
     function pickedPrayer(prayer) {
         setSelectedEdit(prayer.id)
-        if (answered.some(item => item.id === prayer.id && item.prayer === prayer.prayer)) {
+        console.log(prayer.prayer)
+        if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
             console.log('exists in array')
             setAnsweredAlready(prayer.id)
         }
