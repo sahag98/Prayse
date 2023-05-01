@@ -79,8 +79,8 @@ async function sendToken(expoPushToken) {
         body: 'And here is the body!',
         data: { someData: 'goes here' },
     };
-
-    await fetch('http://192.168.1.206:8800/api/tokens', {
+    console.log('about to fetch')
+    await fetch('https://prayse.herokuapp.com/api/tokens', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -93,6 +93,7 @@ async function sendToken(expoPushToken) {
 
 async function registerForPushNotificationsAsync() {
     let token;
+    console.log('in reg function')
     if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
@@ -106,12 +107,15 @@ async function registerForPushNotificationsAsync() {
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
             const { status } = await Notifications.requestPermissionsAsync();
+            console.log(status)
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
+            console.log('hello')
             alert('Failed to get push token for push notification!');
             return;
         }
+        console.log('after if')
         token = (await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })).data;
         console.log(token)
     } else {
@@ -144,7 +148,7 @@ export default function Welcome({ navigation }) {
     const responseListener = useRef();
 
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => sendToken(token));
+        registerForPushNotificationsAsync().then(token => sendToken(token)).catch(err => console.log(err));
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
         });

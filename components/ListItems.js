@@ -7,7 +7,7 @@ import {
     TodoCategory,
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import { Feather, Entypo } from '@expo/vector-icons'
+import { Feather, Entypo, Ionicons } from '@expo/vector-icons'
 import AppLoading from 'expo-app-loading';
 import { Motion } from "@legendapp/motion"
 import CategoryTabs from './CategoryTabs';
@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deletePrayer, addToAnsweredPrayer, deleteAnsweredPrayers, removeAnsweredPrayer } from '../redux/prayerReducer';
 import { Divider } from 'react-native-paper';
 import LottieView from "lottie-react-native";
+import * as Clipboard from 'expo-clipboard';
 
 const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
@@ -36,6 +37,11 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
     const size = useSelector(state => state.user.fontSize)
 
     let value = 0
+
+
+    const copyToClipboard = async (title) => {
+        await Clipboard.setStringAsync(title);
+    };
 
     const handleDelete = (prayer) => {
         dispatch(deletePrayer(prayer))
@@ -119,7 +125,7 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                             <View
                                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <RowText
-                                    style={theme == 'dark' ? { paddingRight: 12, fontFamily: 'Inter-Regular', color: 'white', fontSize: size } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: size }}>
+                                    style={theme == 'dark' ? { paddingRight: 5, fontFamily: 'Inter-Regular', color: 'white', fontSize: size } : { fontFamily: 'Inter-Regular', color: '#2F2D51', fontSize: size }}>
                                     {item.prayer}
                                 </RowText>
                             </View>
@@ -136,20 +142,25 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                 <View style={theme == 'dark' ? styles.editContainerDark : styles.editContainer}>
                                     <View style={{ position: 'relative', padding: 10, justifyContent: 'space-evenly', height: '100%' }}>
                                         <TouchableOpacity style={{ alignSelf: 'flex-end', position: 'absolute', top: 9, padding: 2, zIndex: 99, right: 3 }} onPress={() => setSelectedEdit('')}>
-                                            <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                            <Entypo name="dots-three-vertical" size={20} color='white' />
                                         </TouchableOpacity>
                                         <TouchableHighlight underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, justifyContent: 'center', borderRadius: 5 }} onPress={() => handleDelete(item.id)}>
-                                            <Text style={theme == 'dark' ? { color: '#ff6666', fontFamily: 'Inter-Medium' } : { color: '#ff3232', fontFamily: 'Inter-Medium' }}>Delete prayer</Text>
+                                            <Text style={theme == 'dark' ? { color: '#ff6666', fontFamily: 'Inter-Medium' } : { color: '#ff6262', fontFamily: 'Inter-Medium' }}>Delete prayer</Text>
                                         </TouchableHighlight>
                                         <Divider style={{ marginVertical: 5, backgroundColor: '#f0f0f0' }} />
                                         {answeredAlready == item.id ?
                                             <TouchableHighlight disabled={true} underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, borderRadius: 5, justifyContent: 'center' }}>
-                                                <Text style={theme == 'dark' ? { color: '#66b266', fontFamily: 'Inter-Medium' } : { color: '#329932', fontFamily: 'Inter-Medium' }}>Already marked</Text>
+                                                <Text
+                                                    style={theme == 'dark' ? { color: '#66b266', fontFamily: 'Inter-Medium' }
+                                                        : { color: '#89ff89', fontFamily: 'Inter-Medium' }}>Already marked</Text>
                                             </TouchableHighlight>
                                             :
                                             <TouchableHighlight underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, borderRadius: 5, justifyContent: 'center' }} onPress={() => handleAddToAnsweredPrayer(item)}>
-                                                <Text style={theme == 'dark' ? { color: '#66b266', fontFamily: 'Inter-Medium' } : { color: '#329932', fontFamily: 'Inter-Medium' }}>Mark as answered</Text>
+                                                <Text
+                                                    style={theme == 'dark' ? { color: '#66b266', fontFamily: 'Inter-Medium' }
+                                                        : { color: '#89ff89', fontFamily: 'Inter-Medium' }}>Mark as answered</Text>
                                             </TouchableHighlight>
+
                                         }
 
                                     </View>
@@ -204,10 +215,15 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                         </Text>
                                     </TodoCategory>
                                 }
-                                <TodoDate
-                                    style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Regular' } : { color: '#4e4a8a', fontFamily: 'Inter-Regular' }}>
-                                    {item.date}
-                                </TodoDate>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => copyToClipboard(item.prayer)} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                                        <Ionicons name="ios-copy-outline" size={24} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
+                                    </TouchableOpacity>
+                                    <TodoDate
+                                        style={theme == 'dark' ? { color: '#8C8C8C', fontFamily: 'Inter-Regular' } : { color: '#4e4a8a', fontFamily: 'Inter-Regular' }}>
+                                        {item.date}
+                                    </TodoDate>
+                                </View>
                             </View>
                         </>
                     </ListView>
@@ -275,17 +291,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#3b3b3b',
         zIndex: 99,
         width: '60%',
-        height: '150%',
+        height: 110,
         borderRadius: 5
     },
     editContainer: {
         position: 'absolute',
         top: 0,
         right: 0,
-        backgroundColor: '#63c7f5',
+        backgroundColor: '#2f2d51',
         zIndex: 99,
         width: '60%',
-        height: '150%',
+        height: 110,
         borderRadius: 5
     },
     animation: {

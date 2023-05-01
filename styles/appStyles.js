@@ -113,6 +113,7 @@ export const TodoText = styled.Text`
   width: 95%;
   font-size: 16px;
   letter-spacing: 1px;
+  padding-bottom:5px;
   color: ${colors.tertiary};
 `;
 
@@ -122,7 +123,7 @@ export const TodoDate = styled.Text`
   color: ${colors.alternative};
   text-align: right;
   text-transform: uppercase;
-  padding-top: 8px;
+  /* padding-top: 8px; */
 `;
 
 export const TodoCategory = styled.View`
