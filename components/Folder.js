@@ -98,8 +98,8 @@ const Folder = ({ navigation, todos }) => {
         <Text style={theme == 'dark' ? { marginBottom: 10, color: '#bebebe' } : { marginBottom: 10, color: '#8986bc' }}>{item.answeredDate}</Text>
         <View style={{ width: '100%', marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Feather name="check-circle" size={24} color="#66b266" />
-          <View style={theme == 'dark' ? { borderRadius: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: "#212121", width: '90%', height: 50, padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
-            <Text style={{ color: 'white' }}>
+          <View style={theme == 'dark' ? { borderRadius: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: "#212121", width: '90%', minHeight: 50, padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', minHeight: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+            <Text style={{ color: 'white', width: '90%' }}>
               {item.prayer.prayer}
             </Text>
             <TouchableOpacity onPress={() => dispatch(removeAnsweredPrayer(item.prayer.id))}>

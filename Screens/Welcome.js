@@ -154,10 +154,18 @@ export default function Welcome({ navigation }) {
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            const body = response.notification.request.content.body
             const res = response.notification.request.content.data
             if (res && res.screen) {
                 // navigate to the screen specified in the data object
-                navigation.navigate(res.screen);
+                if (res.screen == 'VerseOfTheDay') {
+                    navigation.navigate(res.screen, {
+                        verse: body
+                    });
+                } else {
+                    navigation.navigate(res.screen)
+                }
+
             }
         });
 

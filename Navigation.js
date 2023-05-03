@@ -22,6 +22,8 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import More from './Screens/More';
+import VerseOfTheDay from './Screens/VerseOfTheDay';
 const Stack = createStackNavigator()
 
 const Tab = createBottomTabNavigator()
@@ -68,7 +70,7 @@ const Navigation = () => {
               iconName = focused
                 ? 'home'
                 : 'home-outline';
-            } else if (route.name === 'Settings') {
+            } else if (route.name === 'More') {
               iconName = focused ? 'ios-list' : 'ios-list-outline';
             }
             else if (route.name === 'Folders') {
@@ -109,6 +111,16 @@ const Navigation = () => {
             component={OldPrayerPage}
           />
           <Tab.Screen
+            name="Settings"
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
+            component={Settings}
+          />
+          <Tab.Screen
+            name="VerseOfTheDay"
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
+            component={VerseOfTheDay}
+          />
+          <Tab.Screen
             name="Gospel"
             options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
             component={Gospel}
@@ -124,9 +136,9 @@ const Navigation = () => {
             component={Community}
           />
           <Tab.Screen
-            name="Settings"
+            name="More"
             options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
-            component={Settings}
+            component={More}
           />
         </Tab.Navigator>
       </NavigationContainer>

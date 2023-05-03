@@ -5,9 +5,13 @@ export const prayerSlice = createSlice({
   name: 'prayer',
   initialState: {
     prayer: [],
-    answeredPrayers: []
+    answeredPrayers: [],
+    verse: ''
   },
   reducers: {
+    setVerse: (state, action) => {
+      state.verse == action.payload
+    },
     addPrayer: (state, action) => {
       const Prayers = [action.payload, ...state.prayer]
       state.prayer = Prayers
@@ -42,7 +46,8 @@ export const {
   editPrayer,
   addToAnsweredPrayer,
   deleteAnsweredPrayers,
-  removeAnsweredPrayer
+  removeAnsweredPrayer,
+  setVerse
 } = prayerSlice.actions
 
 export default prayerSlice.reducer

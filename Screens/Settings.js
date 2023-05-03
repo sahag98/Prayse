@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Platform, Linking, TouchableOpacity } from 'react-native';
-import { Container } from '../styles/appStyles';
+import { Container, HeaderTitle, HeaderView } from '../styles/appStyles';
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import { Divider, FAB, Text } from 'react-native-paper';
@@ -64,10 +64,19 @@ const Settings = ({ navigation }) => {
   }
   return (
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>
-      <View style={styles.wrapper}>
-        <Text style={theme == 'light' ? styles.settingsTitle : styles.settingsTitleDark}>App Settings</Text>
+      <View>
+        <View style={{ marginVertical: 10, flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity style={{ marginRight: 5 }} onPress={() => navigation.navigate('More')}>
+            <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "white"} />
+          </TouchableOpacity>
+          <HeaderTitle
+            style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
+              : { fontFamily: 'Inter-Bold', color: '#2F2D51' }}>
+            Settings
+          </HeaderTitle>
+        </View>
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View>
         <Text style={theme == 'light' ? styles.appearance : styles.appearanceDark}>APPEARANCE</Text>
         <Divider />
         <View style={Platform.isPad ? { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' } : { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -132,20 +141,6 @@ const Settings = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 12 } : { color: "#2f2d51", paddingLeft: 10, fontSize: 12 }}>Text example</Text>
           </View>
-        </View>
-      </View>
-      <View style={{ marginTop: 10 }}>
-        <Text style={theme == 'light' ? styles.appearance : styles.appearanceDark}>ADDITIONAL LINKS</Text>
-        <Divider style={{ marginBottom: 10 }} />
-        <View style={{}}>
-          {Platform.OS === 'ios' && <TouchableOpacity onPress={() => giveFeedback('ios')} style={theme == 'dark' ? styles.reviewButtonDark : styles.reviewButton}>
-            <MaterialIcons style={theme == 'dark' ? { marginRight: 10, color: '#8cbaff' } : { marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
-            <Text style={theme == 'dark' ? { color: '#8cbaff' } : { color: '#3547cD' }}>Write a Review</Text>
-          </TouchableOpacity>}
-          {Platform.OS === 'android' && <TouchableOpacity onPress={() => giveFeedback('android')} style={theme == 'dark' ? styles.reviewButtonDark : styles.reviewButton}>
-            <MaterialIcons style={theme == 'dark' ? { marginRight: 10, color: '#8cbaff' } : { marginRight: 10, color: '#3547cD' }} name="rate-review" size={24} color="black" />
-            <Text style={theme == 'dark' ? { color: '#8cbaff' } : { color: '#3547cD' }}>Write a Review</Text>
-          </TouchableOpacity>}
         </View>
       </View>
     </Container>
