@@ -10,7 +10,7 @@ export const prayerSlice = createSlice({
   },
   reducers: {
     setVerse: (state, action) => {
-      state.verse == action.payload
+      state.verse == 'hey'
     },
     addPrayer: (state, action) => {
       const Prayers = [action.payload, ...state.prayer]

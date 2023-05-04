@@ -55,16 +55,17 @@ const More = ({ navigation }) => {
         : { fontFamily: 'Inter-Bold', color: '#2F2D51', marginVertical: 10 }}>More
       </HeaderTitle>
       {options.map((option, index) => (
-        <TouchableOpacity onPress={() => navigation.navigate(option.screen)} style={styles.verseDark}>
+        <TouchableOpacity key={option.id} onPress={() => navigation.navigate(option.screen)}
+          style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {option.icon}
-            <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>{option.title}</Text>
+            <Text style={{ fontFamily: 'Inter-Regular', color: 'white', fontSize: 16 }}>{option.title}</Text>
           </View>
           <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
         </TouchableOpacity>
       ))}
       {Platform.OS === 'ios' ?
-        <TouchableOpacity onPress={() => giveFeedback('ios')} style={styles.verseDark}>
+        <TouchableOpacity onPress={() => giveFeedback('ios')} style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color="white" />
             <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Feedback</Text>
@@ -72,7 +73,7 @@ const More = ({ navigation }) => {
           <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={() => giveFeedback('android')} style={styles.verseDark}>
+        <TouchableOpacity onPress={() => giveFeedback('android')} style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color="white" />
             <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Feedback</Text>
@@ -91,7 +92,17 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#212121',
+    backgroundColor: '#151515',
+    padding: 20,
+    borderRadius: 5,
+    justifyContent: 'space-between',
+    marginBottom: 15
+  },
+  verse: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2f2d51',
     padding: 20,
     borderRadius: 5,
     justifyContent: 'space-between',

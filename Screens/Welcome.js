@@ -160,7 +160,8 @@ export default function Welcome({ navigation }) {
                 // navigate to the screen specified in the data object
                 if (res.screen == 'VerseOfTheDay') {
                     navigation.navigate(res.screen, {
-                        verse: body
+                        verse: body,
+                        title: res.verseTitle
                     });
                 } else {
                     navigation.navigate(res.screen)
