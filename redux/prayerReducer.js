@@ -16,6 +16,9 @@ export const prayerSlice = createSlice({
       const Prayers = [action.payload, ...state.prayer]
       state.prayer = Prayers
     },
+    addNoteToPrayer: (state, action) => {
+      state.answeredPrayers = state.answeredPrayers.map(obj => obj.id === action.payload.id ? { ...obj, answerNoted: action.payload.answerNote } : obj)
+    },
     deletePrayer: (state, action) => {
       state.prayer = state.prayer.filter((prayer) => prayer.id !== action.payload)
     },
@@ -47,7 +50,8 @@ export const {
   addToAnsweredPrayer,
   deleteAnsweredPrayers,
   removeAnsweredPrayer,
-  setVerse
+  setVerse,
+  addNoteToPrayer
 } = prayerSlice.actions
 
 export default prayerSlice.reducer

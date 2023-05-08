@@ -8,6 +8,7 @@ import { useFonts } from 'expo-font'
 import { Platform } from 'react-native'
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
 import { Linking } from 'react-native'
+import SettingsItems from '../components/SettingsItems'
 
 const More = ({ navigation }) => {
   const theme = useSelector(state => state.user.theme)
@@ -54,18 +55,14 @@ const More = ({ navigation }) => {
       <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white', marginVertical: 10 }
         : { fontFamily: 'Inter-Bold', color: '#2F2D51', marginVertical: 10 }}>More
       </HeaderTitle>
-      {options.map((option, index) => (
-        <TouchableOpacity key={option.id} onPress={() => navigation.navigate(option.screen)}
-          style={theme == 'dark' ? styles.verseDark : styles.verse}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {option.icon}
-            <Text style={{ fontFamily: 'Inter-Regular', color: 'white', fontSize: 16 }}>{option.title}</Text>
-          </View>
-          <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
-        </TouchableOpacity>
-      ))}
+      <SettingsItems
+        options={options}
+        theme={theme}
+        navigation={navigation}
+      />
       {Platform.OS === 'ios' ?
-        <TouchableOpacity onPress={() => giveFeedback('ios')} style={theme == 'dark' ? styles.verseDark : styles.verse}>
+        <TouchableOpacity onPress={() => giveFeedback('ios')}
+          style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color="white" />
             <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Feedback</Text>
@@ -73,12 +70,13 @@ const More = ({ navigation }) => {
           <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={() => giveFeedback('android')} style={theme == 'dark' ? styles.verseDark : styles.verse}>
+        <TouchableOpacity onPress={() => giveFeedback('android')}
+          style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color="white" />
             <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Feedback</Text>
           </View>
-          <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme == 'dark' ? "white" : 'white'} />
+          <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
         </TouchableOpacity>
       }
     </Container>

@@ -15,6 +15,7 @@ export const colors = {
   secondary: "#93D8F8",
   tertiary: "#2F2D51",
   alternative: "white",
+  input: "grey",
   folderColor: "#212121",
 };
 
@@ -228,6 +229,15 @@ export const StyledInput = styled.TextInput`
   border-radius: 10px;
   color: ${colors.alternative};
   letter-spacing: 1px;
+`;
+
+export const AnswerInput = styled.TextInput`
+  width: 100%;
+  background-color: ${colors.tertiary};
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 10px;
+  color: ${colors.alternative};
 `;
 
 export const StyledInput2 = styled.TextInput`

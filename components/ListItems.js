@@ -17,6 +17,7 @@ import { deletePrayer, addToAnsweredPrayer, deleteAnsweredPrayers, removeAnswere
 import { Divider } from 'react-native-paper';
 import LottieView from "lottie-react-native";
 import * as Clipboard from 'expo-clipboard';
+import uuid from 'react-native-uuid';
 
 const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
@@ -74,7 +75,8 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
         // dispatch(deleteAnsweredPrayers())
         dispatch(addToAnsweredPrayer({
             answeredDate: new Date().toDateString(),
-            prayer: prayer
+            prayer: prayer,
+            id: uuid.v4(),
         }))
         setLoading(true)
         time()

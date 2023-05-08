@@ -180,7 +180,7 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, se
                             />
                             <ModalActionGroup>
                                 <ModalAction color={'white'} onPress={handleCloseModal}>
-                                    <AntDesign name='close' size={28} color={'#2F2D51'} />
+                                    <AntDesign name='close' size={28} color={theme == 'dark' ? '#121212' : '#2F2D51'} />
                                 </ModalAction>
                                 <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleSubmit}>
                                     <AntDesign name='check' size={28} color={'white'} />

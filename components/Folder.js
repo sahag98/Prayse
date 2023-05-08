@@ -6,7 +6,7 @@ import {
   StyledInput,
   ModalAction,
   ModalActionGroup,
-  ModalIcon, ListView1, TodoText, ListView, ListView2
+  ModalIcon, ListView1, TodoText, ListView, ListView2, AnswerInput
 } from '../styles/appStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -18,7 +18,8 @@ import { addFolder, deleteFolder } from '../redux/folderReducer';
 import uuid from 'react-native-uuid';
 import { useFonts } from 'expo-font';
 import { useRef } from 'react';
-import { removeAnsweredPrayer } from '../redux/prayerReducer';
+import AnsweredPrayer from './AnsweredPrayer';
+
 
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null)
@@ -27,7 +28,6 @@ const Folder = ({ navigation, todos }) => {
   const answeredPrayers = useSelector(state => state.prayer.answeredPrayers)
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [action, setAction] = useState(false)
   const [folderName, setFolderName] = useState("")
   const [folderClicked, setFolderClicked] = useState(true)
   const [isExtended, setIsExtended] = useState(true);
@@ -94,20 +94,12 @@ const Folder = ({ navigation, todos }) => {
 
   const renderAnsweredPrayers = ({ item, index }) => {
     return (
-      <View key={index}>
-        <Text style={theme == 'dark' ? { marginBottom: 10, color: '#bebebe' } : { marginBottom: 10, color: '#8986bc' }}>{item.answeredDate}</Text>
-        <View style={{ width: '100%', marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Feather name="check-circle" size={24} color="#66b266" />
-          <View style={theme == 'dark' ? { borderRadius: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: "#212121", width: '90%', minHeight: 50, padding: 10 } : { borderRadius: 5, backgroundColor: "#2f2d51", width: '90%', minHeight: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
-            <Text style={{ color: 'white', width: '90%' }}>
-              {item.prayer.prayer}
-            </Text>
-            <TouchableOpacity onPress={() => dispatch(removeAnsweredPrayer(item.prayer.id))}>
-              <AntDesign name="close" size={22} color="white" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View >
+      <AnsweredPrayer
+        item={item}
+        index={index}
+        theme={theme}
+      />
+
     )
   }
 
@@ -178,7 +170,7 @@ const Folder = ({ navigation, todos }) => {
           </View>
         </ListView2>
       }
-      {folders.length == 0 && <TodoText style={theme == 'dark' ? styles.pressDark : styles.press}>Add a folder to write your prayers in!</TodoText>}
+      {folders.length == 0 && folderClicked && <TodoText style={theme == 'dark' ? styles.pressDark : styles.press}>Add a folder to write your prayers in!</TodoText>}
       {folderClicked &&
         <>
           <FlatList
@@ -302,14 +294,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10
   },
-  // containerDark: {
-  //   backgroundColor: '#212121',
-  //   padding: 8,
-  //   width: width / 2 - 8,
-  //   height: 130,
-  //   marginBottom: 20,
-  //   borderRadius: 10
-  // },
+
   containerDark: {
     backgroundColor: '#212121',
     padding: 8,
@@ -380,14 +365,14 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'center',
     color: '#2F2D51',
-    fontSize: 14
+    fontSize: 15
   },
   pressDark: {
     fontFamily: 'Inter-Regular',
     padding: 10,
     alignSelf: 'center',
-    color: 'white',
-    fontSize: 14
+    color: '#e0e0e0',
+    fontSize: 15
   },
   actionButtons: {
     position: 'absolute',
@@ -414,9 +399,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     textAlignVertical: 'center',
+    fontSize: 14,
     fontFamily: 'Inter-Regular', backgroundColor: '#121212'
   },
   input: {
+    alignItems: 'center',
+    alignSelf: 'center',
     textAlignVertical: "center",
     fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
   }

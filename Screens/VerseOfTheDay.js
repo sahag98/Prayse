@@ -44,11 +44,24 @@ const VerseOfTheDay = ({ route }) => {
           Verse of the Day
         </HeaderTitle>
       </View>
-      <Text style={theme == 'dark' ? { fontSize: 16, fontFamily: 'Inter-Regular', lineHeight: 35, color: 'white' } : { fontFamily: 'Inter-Regular', fontSize: 16, lineHeight: 35, color: '#2f2d51' }}>{verse}</Text>
+      <Text style={theme == 'dark' ? styles.verseDark : styles.verse}>{verse}</Text>
     </Container>
   )
 }
 
 export default VerseOfTheDay
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  verseDark: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    lineHeight: 35,
+    color: 'white'
+  },
+  verse: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    lineHeight: 35,
+    color: '#2f2d51'
+  }
+})

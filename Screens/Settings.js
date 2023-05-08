@@ -130,7 +130,7 @@ const Settings = ({ navigation }) => {
             <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 20 } : { color: '#2f2d51', paddingLeft: 10, fontSize: 20 }}>Text example</Text>
           </View>
           <View style={{ display: 'flex', marginBottom: 15, flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => changeFont('regular')} style={size == 15 ? styles.FontActive : styles.FontInActive}>
+            <TouchableOpacity onPress={() => changeFont('regular')} style={size == 16 ? styles.FontActive : styles.FontInActive}>
               <Text style={{ color: 'black', paddingLeft: 5 }}>Regular Font</Text>
             </TouchableOpacity>
             <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 15 } : { paddingLeft: 10, fontSize: 15, color: "#2f2d51" }}>Text example</Text>
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     padding: 35
   },
   FontActive: {
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: 'white',
     position: 'relative',
     overflow: 'hidden',

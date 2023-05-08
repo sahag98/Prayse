@@ -25,7 +25,7 @@ export const userSlice = createSlice({
             state.fontSize = 20
         },
         regular: (state) => {
-            state.fontSize = 15
+            state.fontSize = 16
         },
         small: (state) => {
             state.fontSize = 12
