@@ -24,6 +24,7 @@ import {
 } from 'react-native-safe-area-context';
 import More from './Screens/More';
 import VerseOfTheDay from './Screens/VerseOfTheDay';
+import Favorites from './Screens/Favorites';
 const Stack = createStackNavigator()
 
 const Tab = createBottomTabNavigator()
@@ -114,6 +115,11 @@ const Navigation = () => {
             name="Settings"
             options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
             component={Settings}
+          />
+          <Tab.Screen
+            name="Favorites"
+            options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { display: 'none' }, tabBarButton: () => null })}
+            component={Favorites}
           />
           <Tab.Screen
             name="VerseOfTheDay"
