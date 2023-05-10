@@ -127,7 +127,9 @@ async function registerForPushNotificationsAsync() {
 export default function Welcome({ navigation }) {
     const theme = useSelector(state => state.user.theme)
     const token = useSelector(state => state.user.expoToken)
+    const [greeting, setGreeting] = useState('')
     const [toolVisible, setToolVisible] = useState(false)
+    const [icon, setIcon] = useState(null)
     const [expanded, setExpanded] = useState(true);
     const handlePress = () => setExpanded(!expanded);
 
@@ -148,6 +150,18 @@ export default function Welcome({ navigation }) {
     const responseListener = useRef();
 
     useEffect(() => {
+        const currentHour = new Date().getHours()
+        if (currentHour < 12) {
+            setGreeting('Good morning ')
+            setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#ffff27"} />)
+        } else if (currentHour < 18) {
+            setGreeting('Good afternoon ')
+            setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />)
+        } else {
+            setGreeting('Good night ')
+            setIcon(<Feather name="moon" size={24} color={theme == 'dark' ? "#a6a6a6" : "#9a9a9a"} />)
+        }
+
         registerForPushNotificationsAsync().then(token => sendToken(token)).catch(err => console.log(err));
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -213,6 +227,11 @@ export default function Welcome({ navigation }) {
 
     return (
         <Container onLayout={onLayoutRootView} style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={theme == 'dark' ? styles.greetingDark : styles.greeting}>{greeting}
+                </Text>
+                {icon}
+            </View>
             <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to your prayer app</Text>
             <View style={styles.imgContainer}>
                 <Image
@@ -228,7 +247,6 @@ export default function Welcome({ navigation }) {
                 statusBarTranslucent={true}
             >
                 <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
-
                     <TouchableOpacity onPress={handleCloseTooltip} style={theme == 'dark' ? { borderRadius: 5, position: 'relative', padding: 15, width: '100%', backgroundColor: '#212121' } : { borderRadius: 5, position: 'relative', padding: 15, width: '100%', backgroundColor: '#93D8F8' }}>
                         <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5, padding: 10 }} onPress={handleCloseTooltip}>
                             <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
@@ -428,6 +446,23 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'Inter-Bold',
         alignSelf: 'center',
+        letterSpacing: 2,
+        color: 'white'
+    },
+    greeting: {
+        fontSize: 19,
+        marginVertical: 5,
+        fontFamily: 'Inter-Medium',
+        letterSpacing: 2,
+        alignSelf: 'center',
+        color: '#2F2D51'
+
+    },
+    greetingDark: {
+        marginVertical: 5,
+        fontSize: 19,
+        fontFamily: 'Inter-Medium',
+        alignSelf: 'flex-start',
         letterSpacing: 2,
         color: 'white'
     },

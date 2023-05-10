@@ -51,13 +51,10 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
 
     function pickedPrayer(prayer) {
         setSelectedEdit(prayer.id)
-        console.log(prayer.prayer)
         if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
-            console.log('exists in array')
             setAnsweredAlready(prayer.id)
         }
         else {
-            console.log('does not exist in array')
             setAnsweredAlready('')
         }
     }
@@ -83,11 +80,6 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
         setSelectedEdit('')
     }
 
-    // const handleRemoveAnsweredPrayer = (prayer) => {
-    //     dispatch(removeAnsweredPrayer(prayer))
-    //     setAnsweredAlready(prayer.id)
-    // }
-
     const All = "All";
     const General = "General";
     const People = "People";
@@ -111,7 +103,6 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
         const categoryItem = item.category;
         return (
             <>
-
                 <Motion.View initial={{ y: -50 }}
                     animate={{ x: value * 100, y: 0 }}
                     whileHover={{ scale: 1.2 }}
@@ -123,7 +114,6 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                         onPress={() => { handleTriggerEdit(item) }}
                     >
                         <>
-
                             <View
                                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <RowText
@@ -149,7 +139,7 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                         <TouchableHighlight underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, justifyContent: 'center', borderRadius: 5 }} onPress={() => handleDelete(item.id)}>
                                             <Text style={theme == 'dark' ? { color: '#ff6666', fontFamily: 'Inter-Medium' } : { color: '#ff6262', fontFamily: 'Inter-Medium' }}>Delete prayer</Text>
                                         </TouchableHighlight>
-                                        <Divider style={{ marginVertical: 5, backgroundColor: '#f0f0f0' }} />
+                                        <Divider style={{ marginVertical: 5, backgroundColor: 'grey' }} />
                                         {answeredAlready == item.id ?
                                             <TouchableHighlight disabled={true} underlayColor={'#212121'} style={{ width: '100%', height: '50%', padding: 5, borderRadius: 5, justifyContent: 'center' }}>
                                                 <Text
@@ -164,7 +154,6 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                             </TouchableHighlight>
 
                                         }
-
                                     </View>
                                 </View>
                             }

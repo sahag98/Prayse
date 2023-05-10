@@ -125,21 +125,21 @@ const Settings = ({ navigation }) => {
         <View style={styles.fontSizeWrapper}>
           <View style={{ display: 'flex', marginBottom: 15, flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => changeFont('large')} style={size == 20 ? styles.FontActive : styles.FontInActive}>
-              <Text style={{ color: 'black', paddingLeft: 5 }}>Large Font</Text>
+              <Text style={{ fontFamily: 'Inter-Regular', color: 'black', paddingLeft: 5 }}>Large Font</Text>
             </TouchableOpacity>
-            <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 20 } : { color: '#2f2d51', paddingLeft: 10, fontSize: 20 }}>Text example</Text>
+            <Text style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', paddingLeft: 10, fontSize: 20 } : { fontFamily: 'Inter-Regular', color: '#2f2d51', paddingLeft: 10, fontSize: 20 }}>Text example</Text>
           </View>
           <View style={{ display: 'flex', marginBottom: 15, flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => changeFont('regular')} style={size == 16 ? styles.FontActive : styles.FontInActive}>
               <Text style={{ color: 'black', paddingLeft: 5 }}>Regular Font</Text>
             </TouchableOpacity>
-            <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 15 } : { paddingLeft: 10, fontSize: 15, color: "#2f2d51" }}>Text example</Text>
+            <Text style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', paddingLeft: 10, fontSize: 16 } : { fontFamily: 'Inter-Regular', paddingLeft: 10, fontSize: 15, color: "#2f2d51" }}>Text example</Text>
           </View>
           <View style={{ display: 'flex', marginBottom: 15, flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => changeFont('small')} style={size == 12 ? styles.FontActive : styles.FontInActive}>
-              <Text style={{ color: 'black', paddingLeft: 5 }}>Small Font</Text>
+              <Text style={{ fontFamily: 'Inter-Regular', color: 'black', paddingLeft: 5 }}>Small Font</Text>
             </TouchableOpacity>
-            <Text style={theme == 'dark' ? { color: 'white', paddingLeft: 10, fontSize: 12 } : { color: "#2f2d51", paddingLeft: 10, fontSize: 12 }}>Text example</Text>
+            <Text style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', paddingLeft: 10, fontSize: 12 } : { fontFamily: 'Inter-Regular', color: "#2f2d51", paddingLeft: 10, fontSize: 12 }}>Text example</Text>
           </View>
         </View>
       </View>

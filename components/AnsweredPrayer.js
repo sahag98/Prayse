@@ -3,13 +3,15 @@ import { AntDesign, Feather } from '@expo/vector-icons';
 import { addNoteToPrayer, removeAnsweredPrayer } from '../redux/prayerReducer';
 import { useState } from 'react';
 import { AnswerInput } from '../styles/appStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AnsweredPrayer = ({ item, index, theme }) => {
   const dispatch = useDispatch()
   const [selected, setSelected] = useState('')
+  const answeredPrayers = useSelector(state => state.prayer.answeredPrayers)
   const [answer, setAnswer] = useState('')
   const [openOptions, setOpenOptions] = useState(false)
+
 
   function InputPress(id) {
     setSelected(id)
@@ -27,7 +29,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
 
   return (
     <View key={index}>
-      <Text style={theme == 'dark' ? { marginBottom: 10, color: '#bebebe' } : { marginBottom: 10, color: '#8986bc' }}>{item.answeredDate}</Text>
+
       <View style={styles.answeredPrayerWrapper}>
         <Feather name="check-circle" size={22} color="#66b266" />
         <View style={theme == 'dark' ? styles.answeredPrayerDark : styles.answeredPrayer}>
@@ -39,8 +41,8 @@ const AnsweredPrayer = ({ item, index, theme }) => {
               <AntDesign name="close" size={22} color="white" />
             </TouchableOpacity>
           </View>
-          <View style={{ alignSelf: 'flex-start', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-            <TouchableOpacity style={{ alignSelf: 'flex-start', width: '100%' }}>
+          <View style={{ width: '100%', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+            <TouchableOpacity style={{ width: '100%' }}>
               {item.answerNoted &&
                 <Text style={{ color: '#66b266', fontSize: 15, fontFamily: 'Inter-Regular', width: '90%' }}>
                   {item.answerNoted}
@@ -110,7 +112,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#2f2d51",
     width: '90%',
     minHeight: 50,
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10
@@ -120,12 +121,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlignVertical: 'center',
     fontSize: 14,
-    fontFamily: 'Inter-Regular', backgroundColor: '#121212'
+    fontFamily: 'Inter-Regular', backgroundColor: '#171717'
   },
   input: {
     alignItems: 'center',
     alignSelf: 'center',
     textAlignVertical: "center",
-    fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
+    fontSize: 14,
+    fontFamily: 'Inter-Regular', backgroundColor: '#201f38'
   }
 })

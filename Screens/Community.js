@@ -150,10 +150,8 @@ const Community = ({ navigation }) => {
             {loading == true &&
                 <View style={{ position: 'relative', height: '100%' }}>
                     <HeaderView>
-                        <HeaderTitle
-                            style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white' } :
-                                { fontFamily: 'Inter-Medium', color: '#2F2D51', marginBottom: 0 }}>
-                            Community
+                        <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }
+                            : { fontFamily: 'Inter-Bold', color: '#2F2D51' }}>Community
                         </HeaderTitle>
 
                     </HeaderView>

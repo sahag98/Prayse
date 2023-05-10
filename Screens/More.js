@@ -3,7 +3,7 @@ import React from 'react'
 import { Container, HeaderTitle } from '../styles/appStyles'
 import { useSelector } from 'react-redux'
 import { TouchableOpacity } from 'react-native'
-import { MaterialCommunityIcons, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import { Platform } from 'react-native'
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
@@ -40,7 +40,20 @@ const More = ({ navigation }) => {
     {
       id: 3,
       icon: <AntDesign name="infocirlceo" style={{ marginRight: 10 }} size={24} color="white" />,
-      title: 'About'
+      title: 'About',
+      link: 'https://www.sahak-portfolio.com/'
+    },
+    {
+      id: 4,
+      icon: <Feather name="shield" style={{ marginRight: 10 }} size={24} color="white" />,
+      title: 'Privacy Policy',
+      link: 'https://www.privacypolicies.com/live/887580d1-6bf3-4b0a-a716-a732bf8141fa'
+    },
+    {
+      id: 5,
+      icon: <MaterialCommunityIcons name="email-edit-outline" style={{ marginRight: 10 }} size={24} color="white" />,
+      title: 'Contact Developer',
+      link: 'mailto:arzsahag@gmail.com'
     },
   ]
 
@@ -50,6 +63,7 @@ const More = ({ navigation }) => {
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
+
   return (
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>
       <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white', marginVertical: 10 }
