@@ -7,6 +7,9 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import * as Clipboard from 'expo-clipboard';
+import uuid from 'react-native-uuid';
+import { Modal } from 'react-native'
+
 
 const VerseOfTheDay = ({ route }) => {
   const theme = useSelector(state => state.user.theme)
@@ -14,9 +17,11 @@ const VerseOfTheDay = ({ route }) => {
   const dispatch = useDispatch()
   const [verse, setVerse] = useState('')
   const [verseTitle, setVerseTitle] = useState('')
+  const [isCopied, setisCopied] = useState(false)
   const navigation = useNavigation()
   const isFocused = useIsFocused();
   useEffect(() => {
+    setisCopied(false)
     loadDailyVerse()
     loadDailyVerseTitle()
     if (route.params) {
@@ -25,8 +30,6 @@ const VerseOfTheDay = ({ route }) => {
       loadDailyVerse()
     }
   }, [isFocused])
-
-  console.log(favorites)
 
   const loadDailyVerse = () => {
     AsyncStorage.getItem("storedVerse").then(data => {
@@ -51,13 +54,19 @@ const VerseOfTheDay = ({ route }) => {
   }
 
   const copyToClipboard = async (verse) => {
-    await Clipboard.setStringAsync(verse);
+    await Clipboard.setStringAsync(verse)
+    setisCopied(true)
   };
 
   const HandleFavorites = (verse) => {
-    dispatch(addToFavorites(verse))
+    dispatch(addToFavorites({
+      verse: verse,
+      id: uuid.v4(),
+    }))
+    // dispatch(deleteFavorites())
   }
 
+  favorites.some(item => item.v)
   const message = verse.split('-')
 
   return (
@@ -72,21 +81,34 @@ const VerseOfTheDay = ({ route }) => {
           Verse of the Day
         </HeaderTitle>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={{ width: '100%', backgroundColor: '#151515', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20 }}>
-        <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Favorites list</Text>
-        <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
+      <Text style={theme == 'dark' ? { fontSize: 16, fontFamily: 'Inter-Medium', color: '#e0e0e0', marginBottom: 10 } : { fontSize: 16, fontFamily: 'Inter-Medium', color: '#2f2d51', marginBottom: 10 }}>
+        Welcome to our Verse of the Day page! Our goal is to provide you with a daily reminder of God's love, grace,
+        and wisdom, and to help you grow in your faith journey.
+      </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={theme == 'dark' ? styles.favoritesDark : styles.favorites}>
+        <Text style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 } : { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>Favorites list</Text>
+        <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? 'white' : '#2f2d51'} />
       </TouchableOpacity>
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={theme == 'dark' ? styles.verseDark : styles.verse}>{message[0]}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Text style={theme == 'dark' ? styles.verseTitleDark : styles.verseTitle}>- {message[1]}</Text>
           <TouchableOpacity onPress={() => copyToClipboard(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>Copy</Text>
+            <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>{isCopied ? "Copied" : "Copy"}</Text>
             <Ionicons name="ios-copy-outline" size={24} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => HandleFavorites(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>Favorite</Text>
-            <AntDesign name="staro" size={25} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
+            {favorites.some(item => item.verse === verse) ?
+              <>
+                <Text style={theme == 'dark' ? { marginRight: 5, color: '#d8d800', fontFamily: 'Inter-Regular', fontSize: 14 } : { fontFamily: 'Inter-Regular', fontSize: 14, marginRight: 10, color: '#c4c400' }}>Favorited</Text>
+                <AntDesign name="staro" size={25} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />
+              </>
+              :
+              <>
+                <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa', fontFamily: 'Inter-Regular', fontSize: 14 } : { fontFamily: 'Inter-Regular', fontSize: 14, marginRight: 10, color: '#454277' }}>Favorite</Text>
+                <AntDesign name="staro" size={25} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
+              </>
+            }
           </TouchableOpacity>
         </View>
       </View>
@@ -97,6 +119,24 @@ const VerseOfTheDay = ({ route }) => {
 export default VerseOfTheDay
 
 const styles = StyleSheet.create({
+  favoritesDark: {
+    width: '100%',
+    borderRadius: 10,
+    backgroundColor: '#151515',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20
+  },
+  favorites: {
+    borderRadius: 10,
+    width: '100%',
+    backgroundColor: '#93d8f8',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20
+  },
   verseDark: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',

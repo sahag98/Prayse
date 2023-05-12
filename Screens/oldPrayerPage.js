@@ -7,12 +7,18 @@ import AppLoading from 'expo-app-loading';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
+import { useEffect } from 'react';
 
 const OldPrayerPage = ({ navigation }) => {
   const theme = useSelector(state => state.user.theme)
   const [todos, setTodos] = useState([])
   const [ready, setReady] = useState(false)
+  const [isCopied, setisCopied] = useState('')
   const [selectedEdit, setSelectedEdit] = useState('')
+
+  useEffect(() => {
+    setisCopied('')
+  }, [])
   const loadTodos = () => {
     AsyncStorage.getItem("storedTodos").then(data => {
       if (data !== null) {
@@ -21,8 +27,14 @@ const OldPrayerPage = ({ navigation }) => {
     }).catch((error) => console.log(error))
   }
 
-  const copyToClipboard = async (title) => {
-    await Clipboard.setStringAsync(title);
+  async function clearTodos() {
+    await AsyncStorage.removeItem("storedTodos")
+    console.log('Successfully removed storedTodos')
+  }
+
+  const copyToClipboard = async (title, id) => {
+    await Clipboard.setStringAsync(title)
+    setisCopied(id)
   };
 
   if (!ready) {
@@ -43,8 +55,8 @@ const OldPrayerPage = ({ navigation }) => {
             <Text style={theme == 'dark' ? { color: 'white' } : { color: '#2f2d51' }}>
               {item.title}
             </Text>
-            <TouchableOpacity onPress={() => copyToClipboard(item.title)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={theme == 'dark' ? { marginRight: 10, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>Copy</Text>
+            <TouchableOpacity onPress={() => copyToClipboard(item.title, item.id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={theme == 'dark' ? { marginRight: 10, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>{isCopied === item.id ? "Copied" : "Copy"}</Text>
               <Ionicons name="ios-copy-outline" size={24} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
             </TouchableOpacity>
           </View>
@@ -54,12 +66,16 @@ const OldPrayerPage = ({ navigation }) => {
   }
   return (
     <Container style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-      <HeaderView style={{ display: 'flex', justifyContent: 'flex-start' }}>
-        <TouchableOpacity onPress={() => navigation.navigate('Folders')}>
-          <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
+      <HeaderView style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Folders')}>
+            <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
+          </TouchableOpacity>
+          <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold', color: '#2f2d51' }}>Original Prayers</HeaderTitle>
+        </View>
+        <TouchableOpacity onPress={() => clearTodos()}>
+          <Text>Clear original prayers</Text>
         </TouchableOpacity>
-        <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold', color: '#2f2d51' }}>Original Prayers</HeaderTitle>
-        <Text st>Clear original prayers</Text>
       </HeaderView>
       <SwipeListView
         data={todos}

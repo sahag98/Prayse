@@ -20,6 +20,9 @@ export const prayerSlice = createSlice({
     deleteFavorites: (state, action) => {
       state.favoriteVerses = []
     },
+    deleteFavoriteVerse: (state, action) => {
+      state.favoriteVerses = state.favoriteVerses.filter((verse) => verse.id !== action.payload)
+    },
     addPrayer: (state, action) => {
       const Prayers = [action.payload, ...state.prayer]
       state.prayer = Prayers
@@ -28,6 +31,7 @@ export const prayerSlice = createSlice({
       state.answeredPrayers = state.answeredPrayers.map(obj => obj.id === action.payload.id ? { ...obj, answerNoted: action.payload.answerNote } : obj)
     },
     deletePrayer: (state, action) => {
+      console.log(action.payload)
       state.prayer = state.prayer.filter((prayer) => prayer.id !== action.payload)
     },
     editPrayer: (state, action) => {
@@ -61,7 +65,8 @@ export const {
   setVerse,
   addNoteToPrayer,
   addToFavorites,
-  deleteFavorites
+  deleteFavorites,
+  deleteFavoriteVerse
 } = prayerSlice.actions
 
 export default prayerSlice.reducer

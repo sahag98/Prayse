@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
-    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform
+    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform, Animated, PanResponder
 }
     from 'react-native';
 import {
@@ -27,10 +27,15 @@ import { addPrayer, editPrayer } from '../redux/prayerReducer';
 import { useEffect } from 'react';
 
 
-const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, setCategoryValue, modalVisible, folderName, folderId, setModalVisible, prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited, handleEditPrayer }) => {
+const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
+    setCategoryValue, modalVisible, folderName, folderId, setModalVisible,
+    prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited
+}) => {
     const theme = useSelector(state => state.user.theme)
     const inputRef = useRef(null)
     const [isExtended, setIsExtended] = useState(true);
+
+
 
     useEffect(() => {
         if (!isIOS) {
@@ -120,7 +125,7 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, se
                     icon={'plus'}
                     label={'Add prayer'}
                     extended={isExtended}
-                    onPress={() => { setModalVisible(true) }}
+                    onPress={() => setModalVisible(true)}
                     visible={visible}
                     animateFrom={'left'}
                     iconMode={'dynamic'}
@@ -200,6 +205,12 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended, se
 export default InputModal;
 
 const styles = StyleSheet.create({
+
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
 
     inputText: {
         color: 'white'
@@ -299,6 +310,7 @@ const styles = StyleSheet.create({
     },
 
     inputDark: {
+        marginTop: 10,
         alignItems: 'center',
         alignSelf: 'center',
         textAlignVertical: 'center',

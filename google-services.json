@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "751651146215",
+    "project_id": "prayerlist-8eb15",
+    "storage_bucket": "prayerlist-8eb15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751651146215:android:bf3adee8b3dddb9aa6d542",
+        "android_client_info": {
+          "package_name": "com.sahag98.prayerListApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751651146215-au1n7e1r5nq7df4rp4i0jl9qm1lvc868.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjJ2qU5j70Zh8IBnAj5ZOryOp78F014_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751651146215-au1n7e1r5nq7df4rp4i0jl9qm1lvc868.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

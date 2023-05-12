@@ -29,6 +29,14 @@ export const Container = styled.View`
   padding-top: ${statusBarHeight}px;
 `;
 
+export const PrayerContainer = styled.View`
+  background-color: '${colors.primary}';
+  padding: 0px;
+  padding-bottom: 0px;
+  flex: 1;
+  padding-top: ${statusBarHeight}px;
+`;
+
 export const Container1 = styled.View`
   background-color: ${colors.primary};
   padding-bottom: 0px;
@@ -222,7 +230,7 @@ export const ToolTipView = styled.View`
 
 export const StyledInput = styled.TextInput`
   width: 300px;
-  height: 70px;
+  height: 60px;
   background-color: ${colors.tertiary};
   padding: 10px;
   font-size: 14px;

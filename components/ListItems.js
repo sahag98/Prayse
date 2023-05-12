@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, FlatList, Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Animated, TouchableOpacity, TouchableHighlight } from 'react-native';
 import {
     ListView,
     TodoText,
@@ -18,8 +18,12 @@ import { Divider } from 'react-native-paper';
 import LottieView from "lottie-react-native";
 import * as Clipboard from 'expo-clipboard';
 import uuid from 'react-native-uuid';
+import { ScrollView } from 'react-native';
 
-const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folderId, handleTriggerEdit }) => {
+const ListItems = ({ isBoxVisible,
+    slideUpValue,
+    setIsBoxVisible, opacity,
+    prayerList, selectedEdit, setSelectedEdit, onScroll, folderId, handleTriggerEdit }) => {
     const theme = useSelector(state => state.user.theme)
     const answered = useSelector(state => state.prayer.answeredPrayers)
     const [answeredAlready, setAnsweredAlready] = useState('')
@@ -49,8 +53,16 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
         setSelectedEdit('')
     }
 
+
+
     function pickedPrayer(prayer) {
+        Animated.timing(opacity, {
+            toValue: 0.5,
+            duration: 500, // in milliseconds
+            useNativeDriver: true
+        }).start()
         setSelectedEdit(prayer.id)
+        handleButtonClick()
         if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
             setAnsweredAlready(prayer.id)
         }
@@ -58,6 +70,15 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
             setAnsweredAlready('')
         }
     }
+
+    const handleButtonClick = () => {
+        setIsBoxVisible(true);
+        Animated.timing(slideUpValue, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    };
 
     function time() {
 
@@ -130,7 +151,7 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                 //     <Feather name='x' size={26} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                 // </TouchableOpacity>
                             }
-                            {selectedEdit == item.id &&
+                            {/* {selectedEdit == item.id &&
                                 <View style={theme == 'dark' ? styles.editContainerDark : styles.editContainer}>
                                     <View style={{ position: 'relative', padding: 10, justifyContent: 'space-evenly', height: '100%' }}>
                                         <TouchableOpacity style={{ alignSelf: 'flex-end', position: 'absolute', top: 9, padding: 2, zIndex: 99, right: 3 }} onPress={() => setSelectedEdit('')}>
@@ -156,7 +177,7 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                                         }
                                     </View>
                                 </View>
-                            }
+                            } */}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 {categoryItem == "General" &&
                                     <TodoCategory
@@ -237,9 +258,6 @@ const ListItems = ({ prayerList, selectedEdit, setSelectedEdit, onScroll, folder
                 selected={selected}
                 status={status} setStatus={setStatus}
             />
-
-
-
             {prayers.length != 0 &&
                 <>
                     <SearchBar theme={theme} search={search} setSearch={setSearch} />

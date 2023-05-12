@@ -36,7 +36,7 @@ const Header = ({ navigation, folderName, theme }) => {
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('Folders')}>
-                            <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "grey"} />
+                            <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "white"} />
                         </TouchableOpacity>
                         <HeaderTitle
                             style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }

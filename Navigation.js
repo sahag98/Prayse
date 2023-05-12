@@ -25,6 +25,7 @@ import {
 import More from './Screens/More';
 import VerseOfTheDay from './Screens/VerseOfTheDay';
 import Favorites from './Screens/Favorites';
+import TestScreen from './Screens/TestScreen';
 const Stack = createStackNavigator()
 
 const Tab = createBottomTabNavigator()
