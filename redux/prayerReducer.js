@@ -6,16 +6,17 @@ export const prayerSlice = createSlice({
   initialState: {
     prayer: [],
     answeredPrayers: [],
-    verse: '',
     favoriteVerses: [],
   },
   reducers: {
-    setVerse: (state, action) => {
-      state.verse == 'hey'
-    },
     addToFavorites: (state, action) => {
       const Favorites = [action.payload, ...state.favoriteVerses]
       state.favoriteVerses = Favorites
+    },
+    clearPrayerData: (state) => {
+      state.prayer = []
+      state.answeredPrayers = []
+      state.favoriteVerses = []
     },
     deleteFavorites: (state, action) => {
       state.favoriteVerses = []
@@ -66,6 +67,7 @@ export const {
   addNoteToPrayer,
   addToFavorites,
   deleteFavorites,
+  clearPrayerData,
   deleteFavoriteVerse
 } = prayerSlice.actions
 

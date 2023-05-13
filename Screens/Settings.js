@@ -6,13 +6,14 @@ import { useFonts } from 'expo-font'
 import { Divider, FAB, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { darkMode, large, regular, small, systemTheme } from '../redux/userReducer';
-import { addFolder, removeAllFolders } from '../redux/folderReducer';
+import { addFolder, deleteAllFolders, removeAllFolders } from '../redux/folderReducer';
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
 import { TextInput } from 'react-native';
 import uuid from 'react-native-uuid';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { PROJECT_ID, NOTIFICATION_API } from '@env'
+import { clearPrayerData } from '../redux/prayerReducer';
 
 const Settings = ({ navigation }) => {
   const [active, setActive] = useState(false)
@@ -124,6 +125,11 @@ const Settings = ({ navigation }) => {
     dispatch(systemTheme())
   }
 
+  function clearAll() {
+
+    dispatch(clearPrayerData(), deleteAllFolders())
+  }
+
   const changeFont = (font) => {
     if (font == 'large') {
       dispatch(large())
@@ -217,7 +223,7 @@ const Settings = ({ navigation }) => {
           </View>
         </View>
         <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ color: 'black', fontFamily: 'Inter-Medium', fontSize: 15 }}>Get Notifications</Text>
+          <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Medium', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', fontSize: 16 }}>Get Notifications</Text>
           <Switch
             trackColor={{ false: "grey", true: "grey" }}
             thumbColor={isEnabled ? "green" : "white"}
@@ -226,6 +232,9 @@ const Settings = ({ navigation }) => {
             value={isEnabled}
           />
         </View>
+        <TouchableOpacity onPress={clearAll} style={{ width: '100%', padding: 15, justifyContent: 'center', alignItems: 'center', backgroundColor: '#212121', borderRadius: 5 }}>
+          <Text style={{ color: '#ff6666', fontFamily: 'Inter-Bold', fontSize: 16 }}>Clear All Data</Text>
+        </TouchableOpacity>
       </View>
     </Container>
   );

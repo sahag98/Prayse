@@ -70,8 +70,7 @@ const Devotional = () => {
               : { fontFamily: 'Inter-Bold', marginTop: 20, fontSize: 24, color: '#2F2D51' }}>{d.title}</HeaderTitle>
             <Text style={theme == 'dark' ? styles.descriptionDark : styles.description}>{d.description}</Text>
             <View style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
-              <Text style={{ color: 'white' }}>Pull page down to refresh</Text>
-              <AntDesign style={{ marginLeft: 5 }} name="down" size={13} color="white" />
+              <Text style={{ color: '#7a7a7a' }}>Pull page down to refresh</Text>
             </View>
             {/* <Button color={theme == 'dark' ? '#212121' : '#2f2d51'} title='Refresh page' onPress={(() => setRefresh(refresh + 1))} /> */}
             <View>
@@ -119,7 +118,6 @@ const styles = StyleSheet.create({
   },
   refreshDark: {
     width: '100%',
-    backgroundColor: '#212121',
     paddingVertical: 7,
     display: 'flex',
     flexDirection: 'row',
@@ -128,7 +126,6 @@ const styles = StyleSheet.create({
   },
   refresh: {
     width: '100%',
-    backgroundColor: '#2f2d51',
     paddingVertical: 7,
     display: 'flex',
     flexDirection: 'row',
@@ -136,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   descriptionDark: {
-    color: 'grey',
+    color: '#d6d6d6',
     fontFamily: 'Inter-Light',
     fontSize: 16,
     marginBottom: 5

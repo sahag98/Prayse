@@ -12,7 +12,6 @@ const AnsweredPrayer = ({ item, index, theme }) => {
   const [answer, setAnswer] = useState('')
   const [openOptions, setOpenOptions] = useState(false)
 
-
   function InputPress(id) {
     setSelected(id)
     setOpenOptions(true)
@@ -33,8 +32,8 @@ const AnsweredPrayer = ({ item, index, theme }) => {
       <View style={styles.answeredPrayerWrapper}>
         <Feather name="check-circle" size={22} color="#66b266" />
         <View style={theme == 'dark' ? styles.answeredPrayerDark : styles.answeredPrayer}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ color: 'white', fontSize: 15, fontFamily: 'Inter-Bold', width: '90%' }}>
+          <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+            <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Inter-Bold', width: '90%' }}>
               {item.prayer.prayer}
             </Text>
             <TouchableOpacity onPress={() => dispatch(removeAnsweredPrayer(item.prayer.id))}>

@@ -252,19 +252,25 @@ export default function Welcome({ navigation }) {
                             <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
                         </TouchableOpacity>
 
-                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 5, fontFamily: 'Inter-Medium', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', marginBottom: 5, fontSize: 15 }}>What's New:</Text>
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 5, fontFamily: 'Inter-Bold', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 5, fontSize: 15 }}>What's New in v7 :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>New and intuitive navigation system using the bottom tabs.</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Verse of the Day page to meditate on the daily verse & favorite it!</Text>
+                        </Unorderedlist>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Whole new notification system!</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                New devotional page that will have a daily devotional.
+                                Answered Prayer section to keep track of answered prayers!
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -272,7 +278,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Quick links on home page.
+                                Simplified folders layout!
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -280,7 +286,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Small bugfixes all around the app.
+                                Changes to edit functionality on prayers!
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -288,7 +294,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Added confirmation for deleting folders.
+                                Added privacy policies, settings and more on the More page!
                             </Text>
                         </Unorderedlist>
                     </TouchableOpacity>
@@ -418,6 +424,7 @@ const styles = StyleSheet.create({
     listTextDark: {
         fontFamily: 'Inter-Regular',
         fontSize: 14,
+        lineHeight: 20,
         color: 'white',
         marginBottom: 2
     },

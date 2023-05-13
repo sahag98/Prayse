@@ -18,14 +18,9 @@ import LottieView from "lottie-react-native";
 import uuid from 'react-native-uuid';
 
 
-const ListItems = ({ isBoxVisible, answeredAlready, setAnsweredAlready,
-    slideUpValue,
-    setIsBoxVisible, opacity,
-    prayerList, selectedEdit, setSelectedEdit, onScroll, loading, folderId, handleTriggerEdit }) => {
-    console.log(loading)
+const ListItems = ({ pickedPrayer,
+    prayerList, onScroll, loading, folderId }) => {
     const theme = useSelector(state => state.user.theme)
-    const answered = useSelector(state => state.prayer.answeredPrayers)
-
 
     const [openMore, setOpenMore] = useState(false)
     const dispatch = useDispatch()
@@ -40,39 +35,6 @@ const ListItems = ({ isBoxVisible, answeredAlready, setAnsweredAlready,
     const size = useSelector(state => state.user.fontSize)
 
     let value = 0
-
-
-    const copyToClipboard = async (title) => {
-        await Clipboard.setStringAsync(title);
-    };
-
-    function pickedPrayer(prayer) {
-        Animated.timing(opacity, {
-            toValue: 0.5,
-            duration: 500, // in milliseconds
-            useNativeDriver: true
-        }).start()
-        setSelectedEdit(prayer)
-        handleButtonClick()
-        if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
-            setAnsweredAlready(prayer.id)
-        }
-        else {
-            setAnsweredAlready('')
-        }
-    }
-
-    const handleButtonClick = () => {
-        setIsBoxVisible(true);
-        Animated.timing(slideUpValue, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true,
-        }).start();
-    };
-
-
-
 
     const All = "All";
     const General = "General";
@@ -97,7 +59,7 @@ const ListItems = ({ isBoxVisible, answeredAlready, setAnsweredAlready,
         const categoryItem = item.category;
         return (
             <>
-                <Motion.View initial={{ y: -50 }}
+                <Motion.View onPointerEnter={() => console.log('pointer')} initial={{ y: -50 }}
                     animate={{ x: value * 100, y: 0 }}
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ y: 20 }}
@@ -114,7 +76,7 @@ const ListItems = ({ isBoxVisible, answeredAlready, setAnsweredAlready,
                                 </RowText>
                             </View>
                             {search.length == 0 &&
-                                <TouchableOpacity disabled={isBoxVisible} onPress={() => pickedPrayer(item)} style={{ position: 'absolute', top: 9, right: 3, padding: 5 }}>
+                                <TouchableOpacity onPress={() => pickedPrayer(item)} style={{ position: 'absolute', top: 9, right: 3, padding: 5 }}>
                                     <Entypo name="dots-three-vertical" size={20} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                 </TouchableOpacity>
                             }

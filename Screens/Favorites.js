@@ -10,8 +10,9 @@ import FavoriteVerses from '../components/FavoriteVerses'
 const Favorites = ({ navigation }) => {
   const theme = useSelector(state => state.user.theme)
   const favorites = useSelector(state => state.prayer.favoriteVerses)
-
+  console.log(favorites)
   const renderFavoriteVerses = ({ item }) => {
+    console.log(item)
     return (
       <FavoriteVerses
         item={item}

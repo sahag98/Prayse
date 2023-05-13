@@ -23,6 +23,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [selectedEdit, setSelectedEdit] = useState('')
     const [answeredAlready, setAnsweredAlready] = useState('')
     const [isBoxVisible, setIsBoxVisible] = useState(false);
+    const answered = useSelector(state => state.prayer.answeredPrayers)
     const slideUpValue = useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch()
     const isIOS = Platform.OS === 'ios'
@@ -48,6 +49,32 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
             }
         ).start()
     }, [fadeAnim]);
+
+    function pickedPrayer(prayer) {
+        Animated.timing(opacity, {
+            toValue: 0.5,
+            duration: 500, // in milliseconds
+            useNativeDriver: true
+        }).start()
+        setSelectedEdit(prayer)
+        handleButtonClick()
+        if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
+            console.log('exists')
+            setAnsweredAlready(prayer.id)
+        }
+        else {
+            console.log('doesnt exist')
+            setAnsweredAlready('')
+        }
+    }
+    const handleButtonClick = () => {
+        setIsBoxVisible(true);
+        Animated.timing(slideUpValue, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    };
 
     const handleAddOldPrayers = (todo) => {
         const newTodos = [todo, ...oldPrayers]
@@ -75,8 +102,8 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     }
 
     return (
-        <PrayerContainer onStartShouldSetResponder={() => setSelectedEdit('')} style={theme == 'dark' ? { position: 'relative', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-            <Animated.View style={isBoxVisible ? { paddingHorizontal: 15, opacity, zIndex: -99 } : { flex: 1, paddingHorizontal: 15, opacity, height: '100%' }}>
+        <PrayerContainer style={theme == 'dark' ? { position: 'relative', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
+            <Animated.View pointerEvents={isBoxVisible ? 'none' : 'auto'} style={isBoxVisible ? { paddingHorizontal: 15, opacity } : { flex: 1, paddingHorizontal: 15, opacity, height: '100%' }}>
                 <Header
                     folderName={folderName}
                     theme={theme}
@@ -85,9 +112,9 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                 <ListItems
                     navigation={navigation}
                     prayerList={prayerList}
+                    pickedPrayer={pickedPrayer}
                     answeredAlready={answeredAlready}
                     setAnsweredAlready={setAnsweredAlready}
-                    isBoxVisible={isBoxVisible}
                     loading={loading}
                     opacity={opacity}
                     setOpacity={setOpacity}

@@ -3,7 +3,7 @@ import React from 'react'
 import { Container, HeaderTitle } from '../styles/appStyles'
 import { useSelector } from 'react-redux'
 import { TouchableOpacity } from 'react-native'
-import { MaterialCommunityIcons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import { Platform } from 'react-native'
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
@@ -27,33 +27,34 @@ const More = ({ navigation }) => {
   const options = [
     {
       id: 1,
-      icon: <MaterialCommunityIcons style={{ marginRight: 10 }} name="hands-pray" size={24} color="white" />,
+      icon: <Ionicons name="book-outline" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Verse of the Day',
       screen: 'VerseOfTheDay'
     },
+
     {
       id: 2,
-      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
-      title: 'Settings',
-      screen: 'Settings'
-    },
-    {
-      id: 3,
       icon: <AntDesign name="infocirlceo" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'About',
       link: 'https://www.sahak-portfolio.com/'
     },
     {
-      id: 4,
+      id: 3,
       icon: <Feather name="shield" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Privacy Policy',
       link: 'https://www.privacypolicies.com/live/887580d1-6bf3-4b0a-a716-a732bf8141fa'
     },
     {
-      id: 5,
+      id: 4,
       icon: <MaterialCommunityIcons name="email-edit-outline" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Contact Developer',
       link: 'mailto:arzsahag@gmail.com'
+    },
+    {
+      id: 5,
+      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
+      title: 'Settings',
+      screen: 'Settings'
     },
   ]
 

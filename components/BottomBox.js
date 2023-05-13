@@ -31,6 +31,7 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
     }, 1100)
   }
 
+
   const handleAddToAnsweredPrayer = (prayer) => {
     // dispatch(deleteAnsweredPrayers())
     dispatch(addToAnsweredPrayer({
