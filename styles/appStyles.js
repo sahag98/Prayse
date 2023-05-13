@@ -72,8 +72,7 @@ export const ListContainer = styled.View`
   flex: 1;
 `;
 
-export const ListView = styled.TouchableHighlight`
-  background-color: ${colors.secondary};
+export const ListView = styled.View`
   min-height: 90px;
   width: 100%;
   padding: 15px;

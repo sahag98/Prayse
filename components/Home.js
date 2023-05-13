@@ -18,8 +18,10 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [prayerValue, setPrayerValue] = useState("")
     const [opacity, setOpacity] = useState(new Animated.Value(1));
     const [categoryValue, setCategoryValue] = useState('')
+    const [loading, setLoading] = useState(false)
     const [extended, setExtended] = useState(true);
     const [selectedEdit, setSelectedEdit] = useState('')
+    const [answeredAlready, setAnsweredAlready] = useState('')
     const [isBoxVisible, setIsBoxVisible] = useState(false);
     const slideUpValue = useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch()
@@ -58,7 +60,14 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [prayertoBeEdited, setPrayertoBeEdited] = useState(null)
 
     const handleTriggerEdit = (item) => {
+        Animated.timing(opacity, {
+            toValue: 1,
+            duration: 500, // in milliseconds
+            useNativeDriver: true
+        }).start()
         setSelectedEdit('')
+        setIsBoxVisible(false)
+
         setPrayertoBeEdited(item)
         setModalVisible(true)
         setPrayerValue(item.prayer);
@@ -67,7 +76,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
 
     return (
         <PrayerContainer onStartShouldSetResponder={() => setSelectedEdit('')} style={theme == 'dark' ? { position: 'relative', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-            <Animated.View style={{ flex: 1, paddingHorizontal: 15, opacity, height: '100%' }}>
+            <Animated.View style={isBoxVisible ? { paddingHorizontal: 15, opacity, zIndex: -99 } : { flex: 1, paddingHorizontal: 15, opacity, height: '100%' }}>
                 <Header
                     folderName={folderName}
                     theme={theme}
@@ -76,7 +85,10 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                 <ListItems
                     navigation={navigation}
                     prayerList={prayerList}
+                    answeredAlready={answeredAlready}
+                    setAnsweredAlready={setAnsweredAlready}
                     isBoxVisible={isBoxVisible}
+                    loading={loading}
                     opacity={opacity}
                     setOpacity={setOpacity}
                     slideUpValue={slideUpValue}
@@ -114,15 +126,21 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                 }
             </Animated.View>
             {isBoxVisible &&
-                <BottomBox
-                    slideUpValue={slideUpValue}
-                    isBoxVisible={isBoxVisible}
-                    opacity={opacity}
-                    theme={theme}
-                    selectedEdit={selectedEdit}
-                    setSelectedEdit={setSelectedEdit}
-                    setIsBoxVisible={setIsBoxVisible}
-                />
+                <View style={{ flex: 1, position: 'absolute', bottom: 0, zIndex: 99, width: '100%', height: '40%' }}>
+                    <BottomBox
+                        slideUpValue={slideUpValue}
+                        isBoxVisible={isBoxVisible}
+                        opacity={opacity}
+                        answeredAlready={answeredAlready}
+                        handleTriggerEdit={handleTriggerEdit}
+                        setAnsweredAlready={setAnsweredAlready}
+                        setLoading={setLoading}
+                        theme={theme}
+                        selectedEdit={selectedEdit}
+                        setSelectedEdit={setSelectedEdit}
+                        setIsBoxVisible={setIsBoxVisible}
+                    />
+                </View>
             }
 
 

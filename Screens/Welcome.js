@@ -112,7 +112,7 @@ async function registerForPushNotificationsAsync() {
         }
         if (finalStatus !== 'granted') {
             console.log('hello')
-            alert('Failed to get push token for push notification!');
+            alert('To recieve notifications in the future, enable Notifications from the App Settings.');
             return;
         }
         console.log('after if')

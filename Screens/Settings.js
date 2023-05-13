@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Platform, Linking, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Platform, Linking, TouchableOpacity, Switch } from 'react-native';
 import { Container, HeaderTitle, HeaderView } from '../styles/appStyles';
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
@@ -10,14 +10,80 @@ import { addFolder, removeAllFolders } from '../redux/folderReducer';
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
 import { TextInput } from 'react-native';
 import uuid from 'react-native-uuid';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import { PROJECT_ID, NOTIFICATION_API } from '@env'
 
 const Settings = ({ navigation }) => {
   const [active, setActive] = useState(false)
   const theme = useSelector(state => state.user.theme)
+  const [isEnabled, setIsEnabled] = useState(false);
   const size = useSelector(state => state.user.fontSize)
   const [open, setOpen] = useState(false)
   const [folderName, setFolderName] = useState("")
   const dispatch = useDispatch()
+
+
+  async function sendToken(expoPushToken) {
+    console.log(' in send')
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Original Title',
+      body: 'And here is the body!',
+      data: { someData: 'goes here' },
+    };
+    console.log('about to fetch')
+    await fetch(NOTIFICATION_API, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
+
+  useEffect(() => {
+    async function Perm() {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync()
+      if (existingStatus !== 'granted') {
+        setIsEnabled(false)
+      } else {
+        setIsEnabled(true)
+      }
+    }
+    Perm()
+  }, [])
+
+  async function getPermission() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        setIsEnabled(false)
+        const { status } = await Notifications.requestPermissionsAsync();
+        console.log(status)
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        console.log('not granted')
+        return;
+      }
+      console.log('permission granted')
+      token = (await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })).data;
+      setIsEnabled(true)
+      console.log(token)
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+    sendToken(token)
+  }
+
+
+
 
   let [fontsLoaded] = useFonts({
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
@@ -36,7 +102,15 @@ const Settings = ({ navigation }) => {
     }
   }
 
-  const Switch = (theme) => {
+  const toggleSwitch = () => {
+    setIsEnabled(previousState => !previousState)
+    if (isEnabled == false) {
+      getPermission()
+      return
+    }
+  };
+
+  const SwitchTheme = (theme) => {
     dispatch(darkMode(theme))
     if (theme == 'light') {
       setActive(!active)
@@ -60,8 +134,8 @@ const Settings = ({ navigation }) => {
     if (font == 'small') {
       dispatch(small())
     }
-
   }
+
   return (
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>
       <View>
@@ -81,7 +155,7 @@ const Settings = ({ navigation }) => {
         <Divider />
         <View style={Platform.isPad ? { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' } : { marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
-            <TouchableOpacity onPress={() => Switch('light')}
+            <TouchableOpacity onPress={() => SwitchTheme('light')}
               style={theme == "light" ? styles.activeLight : styles.inactiveLight}
             >
               <View style={styles.lightButton}>
@@ -94,7 +168,7 @@ const Settings = ({ navigation }) => {
             </Text>
           </View>
           <View>
-            <TouchableOpacity onPress={() => Switch('dark')}
+            <TouchableOpacity onPress={() => SwitchTheme('dark')}
               style={theme == "dark" ? styles.activeDark : styles.inactiveDark}
             >
               <View style={styles.darkButton}>
@@ -141,6 +215,16 @@ const Settings = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', paddingLeft: 10, fontSize: 12 } : { fontFamily: 'Inter-Regular', color: "#2f2d51", paddingLeft: 10, fontSize: 12 }}>Text example</Text>
           </View>
+        </View>
+        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ color: 'black', fontFamily: 'Inter-Medium', fontSize: 15 }}>Get Notifications</Text>
+          <Switch
+            trackColor={{ false: "grey", true: "grey" }}
+            thumbColor={isEnabled ? "green" : "white"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
         </View>
       </View>
     </Container>
