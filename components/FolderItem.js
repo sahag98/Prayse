@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2f2d51',
     padding: 8,
     width: width / 2 - 8,
-    height: 130,
-    marginBottom: 20,
+    height: 135,
+    marginBottom: 15,
     borderRadius: 10
   },
 
@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#212121',
     padding: 8,
     width: width / 2 - 8,
-    height: 130,
-    marginBottom: 20,
+    height: 135,
+    marginBottom: 15,
     borderRadius: 10
   },
   viewDark: {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'absolute',
-    bottom: 0, padding: 7,
+    bottom: 0, padding: 9,
     width: '100%',
     backgroundColor: "#2e2e2e",
     borderRadius: 5

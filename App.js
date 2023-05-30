@@ -24,7 +24,7 @@ export default function App() {
 
   setTimeout(() => {
     setLoading(true)
-  }, 1000)
+  }, 500)
 
   return (
     <AnimatedSplash

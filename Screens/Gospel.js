@@ -85,7 +85,7 @@ const Gospel = ({ navigation }) => {
     const handleSubmit = () => {
         setClearModalVisible(false)
         Alert.alert(
-            "Amen",
+            "Congratulations!",
             "Let us know on the community page that you have accepted Jesus so that we can celebrate with you!",
             [
                 {
@@ -93,7 +93,7 @@ const Gospel = ({ navigation }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "OK", onPress: () => navigation.navigate('Community') }
+                { text: "WILL DO", onPress: () => navigation.navigate('Community') }
 
             ]
         )

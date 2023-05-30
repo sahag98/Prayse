@@ -171,13 +171,13 @@ const Community = ({ navigation }) => {
                     <Text
                         style={theme == 'dark' ? { fontFamily: 'Inter-Light', color: 'white', textAlign: 'center', fontSize: 15 } :
                             { fontFamily: 'Inter-Light', color: '#2F2D51', textAlign: 'center', fontSize: 15 }}>
-                        Welcome to community! A place to share your prayers with others.
+                        A place to share prayers and pray for one another.
                     </Text>
 
                     <Text
-                        style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white', textAlign: 'left', fontSize: 14, paddingBottom: 5 }
-                            : { fontFamily: 'Inter-Medium', color: '#2F2D51', textAlign: 'left', fontSize: 15, paddingBottom: 5 }}>
-                        If YOUR prayer gets answered let us know by clicking on the check mark that's on your prayer!
+                        style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', textAlign: 'left', fontSize: 15, paddingBottom: 5 }
+                            : { fontFamily: 'Inter-Regular', color: '#2F2D51', textAlign: 'left', fontSize: 15, paddingBottom: 5 }}>
+                        If your prayer gets answered let us know by clicking on the check mark that's on your prayer!
                     </Text>
                     <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}>
                         <StyledInput
@@ -201,6 +201,7 @@ const Community = ({ navigation }) => {
                         data={todos}
                         estimatedItemSize={200}
                         numColumns={1}
+                        showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => (
                             <View style={theme == 'dark' ? styles.listDark : styles.list}>
                                 <Text style={theme == 'dark' ? { fontSize: size, fontFamily: 'Inter-Regular', color: 'white', paddingBottom: 5 } : { fontSize: size, fontFamily: 'Inter-Regular', color: '#2f2d51', paddingBottom: 5 }}>

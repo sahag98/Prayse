@@ -71,7 +71,6 @@ const Devotional = () => {
             <View style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
               <Text style={{ color: '#7a7a7a' }}>Pull page down to refresh</Text>
             </View>
-            {/* <Button color={theme == 'dark' ? '#212121' : '#2f2d51'} title='Refresh page' onPress={(() => setRefresh(refresh + 1))} /> */}
             <View>
               <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/triedbyfireministry/')} style={{ marginTop: 5, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View>

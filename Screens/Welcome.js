@@ -13,6 +13,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useIsFocused } from '@react-navigation/native';
 import { PROJECT_ID } from '@env'
+import GreetingAnimation from '../components/GreetingAnimation';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -93,10 +94,9 @@ export default function Welcome({ navigation }) {
     const handlePress = () => setExpanded(!expanded);
 
     const BusyIndicator = () => {
-
         return (
             <View style={{ flex: 1, justifyContent: "center" }}>
-                <ActivityIndicator size="large" color="white" />
+                <ActivityIndicator size="large" color={theme == 'dark' ? "white" : "#2f2d51"} />
             </View>
         );
     };
@@ -106,12 +106,6 @@ export default function Welcome({ navigation }) {
     }
 
     const fadeAnim = useRef(new Animated.Value(0)).current
-    // checkAppVersion()
-
-    // useEffect(() => {
-    //     console.log('in welcome us effect')
-    // }, [])
-
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
@@ -119,6 +113,15 @@ export default function Welcome({ navigation }) {
     const isFocused = useIsFocused();
 
     useEffect(() => {
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: 1,
+                duration: 3000,
+                useNativeDriver: true
+            }
+        ).start()
+
         getHour()
         function getHour() {
             const currentHour = new Date().getHours()
@@ -129,17 +132,14 @@ export default function Welcome({ navigation }) {
                 setGreeting('Good afternoon ')
                 setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />)
             } else {
-                setGreeting('Good night ')
+                setGreeting('Good Evening ')
                 setIcon(<Feather name="moon" size={24} color={theme == 'dark' ? "#a6a6a6" : "#9a9a9a"} />)
             }
         }
 
     }, [isFocused])
 
-
     useEffect(() => {
-
-
         registerForPushNotificationsAsync().then(token => sendToken(token).then(console.log('token sent'))).catch(err => console.log(err))
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -171,26 +171,11 @@ export default function Welcome({ navigation }) {
 
             // }
         });
-
-        // sendToken(expoPushToken)
-
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
-
-
-    useEffect(() => {
-        Animated.timing(
-            fadeAnim,
-            {
-                toValue: 1,
-                duration: 1000,
-                useNativeDriver: true
-            }
-        ).start()
-    }, [fadeAnim]);
 
     const [fontsLoaded] = useFonts({
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
@@ -211,12 +196,11 @@ export default function Welcome({ navigation }) {
 
     return (
         <Container onLayout={onLayoutRootView} style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={theme == 'dark' ? styles.greetingDark : styles.greeting}>{greeting}
-                </Text>
+            <Animated.View style={{ flexDirection: 'row', alignItems: 'center', opacity: fadeAnim }}>
+                <Text style={theme == 'dark' ? styles.greetingDark : styles.greeting}>{greeting}</Text>
                 {icon}
-            </View>
-            <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to your prayer app</Text>
+            </Animated.View>
+            <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to Prayse</Text>
             <View style={styles.imgContainer}>
                 <Image
                     style={styles.img}
@@ -368,10 +352,10 @@ const styles = StyleSheet.create({
     refreshDark: {
         width: '100%',
         backgroundColor: '#212121',
-        paddingHorizontal: 5,
-        paddingVertical: 15,
+        paddingHorizontal: 6,
+        paddingVertical: 12,
         marginBottom: 10,
-        borderRadius: 5,
+        borderRadius: 15,
         display: 'flex',
         justifyContent: 'space-between',
         flexDirection: 'row',
@@ -380,10 +364,12 @@ const styles = StyleSheet.create({
     refresh: {
         width: '100%',
         backgroundColor: 'white',
-        paddingHorizontal: 5,
-        paddingVertical: 15,
+        paddingHorizontal: 6,
+        paddingVertical: 12,
         marginBottom: 10,
-        borderRadius: 5,
+        borderRadius: 15,
+        borderColor: '#dddddd',
+        borderWidth: 0.4,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
