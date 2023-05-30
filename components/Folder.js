@@ -6,13 +6,12 @@ import {
   StyledInput,
   ModalAction,
   ModalActionGroup,
-  ModalIcon, ListView1, TodoText, ListView, ListView2, AnswerInput
+  ModalIcon, TodoText, ListView2
 } from '../styles/appStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { SwipeListView } from 'react-native-swipe-list-view';
 import { TouchableOpacity, Animated } from 'react-native';
-import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
-import { AnimatedFAB, Divider, FAB } from 'react-native-paper';
+import { AntDesign } from '@expo/vector-icons';
+import { AnimatedFAB, Divider } from 'react-native-paper';
 import { Modal } from 'react-native';
 import { addFolder, deleteFolder } from '../redux/folderReducer';
 import uuid from 'react-native-uuid';
@@ -22,12 +21,11 @@ import AnsweredPrayer from './AnsweredPrayer';
 import { SectionList } from 'react-native';
 import FolderItem from './FolderItem';
 
-
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null)
   const theme = useSelector(state => state.user.theme)
   const folders = useSelector(state => state.folder.folders)
-  const answeredPrayers = useSelector(state => state.prayer.answeredPrayers)
+  const answeredPrayers = useSelector(state => state.answered.answeredPrayers)
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [folderName, setFolderName] = useState("")
@@ -48,7 +46,7 @@ const Folder = ({ navigation, todos }) => {
     } else setIsExtended(extended);
   }, [velocity, extended, isIOS]);
 
-  answeredPrayers.forEach(prayer => {
+  answeredPrayers?.forEach(prayer => {
     const date = prayer.answeredDate
     const sectionIndex = sections.findIndex(section => section.title === date)
     if (sectionIndex === -1) {
@@ -126,7 +124,6 @@ const Folder = ({ navigation, todos }) => {
         idToDelete={idToDelete}
         setIdToDelete={setIdToDelete}
       />
-
     )
   }
 
@@ -184,7 +181,7 @@ const Folder = ({ navigation, todos }) => {
             onScroll={onScroll}
             renderItem={renderItem}
             numColumns={2}
-            columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 10 }}
+            columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 8 }}
           />
 
           <View style={styles.actionButtons}>

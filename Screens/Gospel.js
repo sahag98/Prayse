@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Animated, Modal, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
+import { Alert, Animated, Modal, TouchableOpacity, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import {
     ModalView,
     ModalAction2,
@@ -7,9 +7,7 @@ import {
     ModalIcon, ModalContainer, Container1
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import AppLoading from 'expo-app-loading';
 import { useSelector } from 'react-redux';
-import { FAB } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons'
 
 const Message = [
@@ -69,13 +67,20 @@ const Gospel = ({ navigation }) => {
     );
     const renderItem = ({ item }) => <Item title={item.title} verse={item.verse} chapter={item.chapter} />;
 
-
-    const [modalVisible, setModalVisible] = useState(false)
     const [clearModalVisible, setClearModalVisible] = useState(false)
 
     const handleCloseModal = () => {
         setClearModalVisible(false)
     }
+
+    const BusyIndicator = () => {
+
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        );
+    };
 
     const handleSubmit = () => {
         setClearModalVisible(false)
@@ -103,7 +108,7 @@ const Gospel = ({ navigation }) => {
     })
 
     if (!fontsLoaded) {
-        return <AppLoading />
+        return <BusyIndicator />
     }
     return (
         <Container1 style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>

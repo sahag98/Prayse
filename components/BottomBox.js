@@ -1,17 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Animated, PanResponder, TouchableOpacity } from 'react-native';
-import { Feather, Entypo, AntDesign, Ionicons } from '@expo/vector-icons'
-import { TouchableHighlight } from 'react-native';
+import { Feather, AntDesign, Ionicons } from '@expo/vector-icons'
 import { Divider } from 'react-native-paper';
-import { addToAnsweredPrayer, deletePrayer } from '../redux/prayerReducer';
-import { useDispatch, useSelector } from 'react-redux';
+import { addToAnsweredPrayer } from '../redux/answeredReducer';
+import { deletePrayer, } from '../redux/prayerReducer';
+import { useDispatch } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 import uuid from 'react-native-uuid';
 
 const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlready,
-  setAnsweredAlready, opacity, theme, selectedEdit,
+  opacity, theme, selectedEdit,
   setSelectedEdit,
-  isBoxVisible, setIsBoxVisible }) => {
+  setIsBoxVisible }) => {
 
   const dispatch = useDispatch()
 
@@ -89,7 +89,8 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
       },
     })
   ).current;
-
+  console.log('selectedEdit:', selectedEdit.id)
+  console.log('answeredAlready:', answeredAlready)
   return (
     <View style={styles.container}>
       <Animated.View
@@ -115,7 +116,7 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
         {...panResponder.panHandlers}
       >
         <TouchableOpacity style={{ alignSelf: 'center', backgroundColor: 'grey', width: 60, height: 5, borderRadius: 50, marginBottom: 10 }}></TouchableOpacity>
-        {answeredAlready == selectedEdit.id ?
+        {answeredAlready === selectedEdit.id ?
           <TouchableOpacity disabled={true} underlayColor={'#212121'} style={styles.buttonItems}>
             <Text
               style={theme == 'dark' ? { color: '#66b266', fontSize: 15, fontFamily: 'Inter-Medium' }
@@ -185,6 +186,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   box: {
+
     width: '100%',
     backgroundColor: '#2f2d51',
     borderTopLeftRadius: 20,

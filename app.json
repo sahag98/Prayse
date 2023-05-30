@@ -2,7 +2,8 @@
   "expo": {
     "name": "Prayse",
     "slug": "prayer-app",
-    "version": "6.0.2",
+    "version": "7.0.1",
+    "scheme": "prayselinks",
     "orientation": "portrait",
     "owner": "sahag98",
     "icon": "./assets/prayer.png",
@@ -35,7 +36,7 @@
       "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "21"
+      "buildNumber": "23"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
@@ -46,7 +47,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 21
+      "versionCode": 23
     },
     "web": {
       "favicon": "./assets/favicon.png"

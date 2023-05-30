@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Text, Modal, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import {
     HeaderView, HeaderTitle,
-    ModalContainer,
-    ModalView, StyledInput2,
-    ModalAction,
-    ModalActionGroup,
-    ModalIcon,
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import SelectList from 'react-native-dropdown-select-list'
-import { AntDesign, Ionicons } from '@expo/vector-icons'
-import AppLoading from 'expo-app-loading';
-import { useSelector } from 'react-redux';
-import { addUser, closeTool, removeUser } from '../redux/userReducer';
-import { useDispatch } from 'react-redux';
-import { changeFolderName } from '../redux/folderReducer';
+import { Ionicons } from '@expo/vector-icons'
 
 const Header = ({ navigation, folderName, theme }) => {
     let [fontsLoaded] = useFonts({
@@ -25,8 +14,17 @@ const Header = ({ navigation, folderName, theme }) => {
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     })
 
+    const BusyIndicator = () => {
+
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        );
+    };
+
     if (!fontsLoaded) {
-        return <AppLoading />
+        return <BusyIndicator />
     }
 
     return (

@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { useState } from 'react';
 
 const FolderItem = ({ item, theme, navigation, open, setOpen, setIdToDelete, idToDelete }) => {
 

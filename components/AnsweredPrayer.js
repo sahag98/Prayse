@@ -1,17 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { addNoteToPrayer, removeAnsweredPrayer } from '../redux/prayerReducer';
+import { addNoteToPrayer, removeAnsweredPrayer } from '../redux/answeredReducer';
 import { useState } from 'react';
 import { AnswerInput } from '../styles/appStyles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const AnsweredPrayer = ({ item, index, theme }) => {
   const dispatch = useDispatch()
-  const [selected, setSelected] = useState('')
-  const answeredPrayers = useSelector(state => state.prayer.answeredPrayers)
   const [answer, setAnswer] = useState('')
   const [openOptions, setOpenOptions] = useState(false)
-
+  const [selected, setSelected] = useState(null)
   function InputPress(id) {
     setSelected(id)
     setOpenOptions(true)
@@ -54,7 +52,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
                 style={theme == 'dark' ? styles.inputDark : styles.input}
                 placeholder="How did God answer this prayer?"
                 placeholderTextColor={'#c2c2c2'}
-                selectionColor={'#adadad'}
+                selectionColor={'white'}
                 onChangeText={(text) => setAnswer(text)}
                 value={answer}
                 multiline={true}

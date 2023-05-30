@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, FlatList, Text, StyleSheet, Animated, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, FlatList, ActivityIndicator, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
     ListView,
     TodoText,
@@ -7,28 +7,33 @@ import {
     TodoCategory,
 } from '../styles/appStyles';
 import { useFonts } from 'expo-font'
-import { Entypo, Ionicons } from '@expo/vector-icons'
-import AppLoading from 'expo-app-loading';
+import { Entypo } from '@expo/vector-icons'
 import { Motion } from "@legendapp/motion"
 import CategoryTabs from './CategoryTabs';
 import SearchBar from './SearchBar';
-import { useDispatch, useSelector } from 'react-redux';
-import { deletePrayer, addToAnsweredPrayer, deleteAnsweredPrayers, removeAnsweredPrayer } from '../redux/prayerReducer';
+import { useSelector } from 'react-redux';
 import LottieView from "lottie-react-native";
-import uuid from 'react-native-uuid';
-
 
 const ListItems = ({ pickedPrayer,
     prayerList, onScroll, loading, folderId }) => {
     const theme = useSelector(state => state.user.theme)
 
-    const [openMore, setOpenMore] = useState(false)
-    const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     })
+
+    const BusyIndicator = () => {
+
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        );
+    };
+
+
 
     const prayers = prayerList.filter((item) => item.folderId === folderId)
     const [search, setSearch] = useState('')
@@ -44,13 +49,13 @@ const ListItems = ({ pickedPrayer,
     const Other = "Other";
 
     const selected = [All, General, People, Personal, Praise, Other]
+
     const [status, setStatus] = useState(selected[0])
 
     const filteredList = prayers.filter(item => item.category === status)
         .filter((item) => search !== "" ?
             (item.prayer).includes(search) : true
         )
-
 
     const list = prayers.filter((item) => search !== "" ? (item.prayer).includes(search) : true)
 
@@ -84,7 +89,7 @@ const ListItems = ({ pickedPrayer,
                                 {categoryItem == "General" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#FFDAA5' } : { borderRadius: 20, backgroundColor: '#FFBF65' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 10, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
@@ -144,9 +149,8 @@ const ListItems = ({ pickedPrayer,
     }
 
     if (!fontsLoaded) {
-        return <AppLoading />
+        return <BusyIndicator />
     }
-
 
     return (
         <>
@@ -166,6 +170,7 @@ const ListItems = ({ pickedPrayer,
                                 source={require("../assets/4964-check-mark-success-animation.json")}
                                 style={styles.animation}
                                 autoPlay
+                                resizeMode='none'
                             />
                         </View>
                     }
@@ -213,8 +218,8 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     animation: {
-        width: 300,
-        height: 300,
+        width: 100,
+        height: 100,
         alignSelf: 'center',
         textAlign: 'center',
         justifyContent: 'center'

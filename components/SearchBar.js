@@ -2,7 +2,7 @@ import React from 'react';
 import { TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { EvilIcons, AntDesign } from '@expo/vector-icons';
 
-const SearchBar = ({ search, setSearch, theme }) => {
+const SearchBar = ({ search, setSearch }) => {
   return (
     <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5, marginBottom: 10 }}>
       <View style={{ width: '80%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -11,7 +11,9 @@ const SearchBar = ({ search, setSearch, theme }) => {
           style={styles.textInputStyle}
           value={search}
           placeholder='Search prayers...'
-          placeholderTextColor={theme == 'light' && '#2f2d51'}
+          // placeholderTextColor={theme == 'light' && '#2f2d51'}
+          placeholderTextColor={'#212121'}
+          selectionColor={'white'}
           onChangeText={(text) => setSearch(text)}
           autoFocus={false}
         />

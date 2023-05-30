@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Container, HeaderTitle, HeaderView, ListView1 } from '../styles/appStyles';
+import { Container, HeaderTitle, HeaderView, ListView1, ModalAction, ModalActionGroup, ModalContainer, ModalIcon, ModalView } from '../styles/appStyles';
 import AppLoading from 'expo-app-loading';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 import { useEffect } from 'react';
@@ -13,9 +13,10 @@ const OldPrayerPage = ({ navigation }) => {
   const theme = useSelector(state => state.user.theme)
   const [todos, setTodos] = useState([])
   const [ready, setReady] = useState(false)
+  const [openClearModal, setOpenClearModal] = useState(false)
   const [isCopied, setisCopied] = useState('')
   const [selectedEdit, setSelectedEdit] = useState('')
-
+  console.log(todos)
   useEffect(() => {
     setisCopied('')
   }, [])
@@ -29,6 +30,7 @@ const OldPrayerPage = ({ navigation }) => {
 
   async function clearTodos() {
     await AsyncStorage.removeItem("storedTodos")
+    setTodos(null)
     console.log('Successfully removed storedTodos')
   }
 
@@ -36,6 +38,14 @@ const OldPrayerPage = ({ navigation }) => {
     await Clipboard.setStringAsync(title)
     setisCopied(id)
   };
+
+  function handleClearAll() {
+    setOpenClearModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setOpenClearModal(false)
+  }
 
   if (!ready) {
     return (
@@ -48,6 +58,8 @@ const OldPrayerPage = ({ navigation }) => {
   }
 
   const renderItem = ({ item }) => {
+
+    console.log(item)
     return (
       <View>
         <ListView1 style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
@@ -73,10 +85,34 @@ const OldPrayerPage = ({ navigation }) => {
           </TouchableOpacity>
           <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold', color: '#2f2d51' }}>Original Prayers</HeaderTitle>
         </View>
-        <TouchableOpacity onPress={() => clearTodos()}>
-          <Text>Clear original prayers</Text>
+        <TouchableOpacity onPress={handleClearAll}>
+          <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Medium', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', fontSize: 15 }}>Clear original prayers</Text>
         </TouchableOpacity>
       </HeaderView>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={openClearModal}
+        onRequestClose={handleCloseModal}
+        statusBarTranslucent={true}
+      // onShow={() => inputRef.current?.focus()}
+      >
+        <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+          <ModalView style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
+            <ModalIcon>
+              <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', fontSize: 18, color: 'white' } : { fontSize: 18, fontFamily: 'Inter-Bold' }}>Are you sure you want to delete all original prayers?</HeaderTitle>
+            </ModalIcon>
+            <ModalActionGroup>
+              <ModalAction color={'white'} onPress={() => setOpenClearModal(false)}>
+                <AntDesign name='close' size={28} color={theme == 'dark' ? 'black' : '#2F2D51'} />
+              </ModalAction>
+              <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={() => { clearTodos(); setOpenClearModal(false) }}>
+                <AntDesign name='check' size={28} color={'white'} />
+              </ModalAction>
+            </ModalActionGroup>
+          </ModalView>
+        </ModalContainer>
+      </Modal>
       <SwipeListView
         data={todos}
         showsVerticalScrollIndicator={false}

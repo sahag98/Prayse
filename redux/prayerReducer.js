@@ -1,22 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createGlobalStyle } from "styled-components";
 
+const initialState = {
+  prayer: [],
+}
+
 export const prayerSlice = createSlice({
   name: 'prayer',
-  initialState: {
-    prayer: [],
-    answeredPrayers: [],
-    favoriteVerses: [],
-  },
+  initialState,
   reducers: {
-    addToFavorites: (state, action) => {
-      const Favorites = [action.payload, ...state.favoriteVerses]
-      state.favoriteVerses = Favorites
-    },
     clearPrayerData: (state) => {
       state.prayer = []
-      state.answeredPrayers = []
-      state.favoriteVerses = []
     },
     deleteFavorites: (state, action) => {
       state.favoriteVerses = []
@@ -41,28 +35,24 @@ export const prayerSlice = createSlice({
       newPrayers.splice(prayerIndex, 1, action.payload)
       state.prayer = newPrayers
     },
-    addToAnsweredPrayer: (state, action) => {
-      // state.answeredPrayers.push(action.payload)
-      const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
-      state.answeredPrayers = AnsweredPrayers
-    },
-    removeAnsweredPrayer: (state, action) => {
-      state.answeredPrayers = state.answeredPrayers.filter((prayer) => prayer.prayer.id !== action.payload)
-    },
-    deleteAnsweredPrayers: (state, action) => {
-      state.answeredPrayers = []
-    }
+    // addAnswer: (state) => {
+    //   console.log(state)
+    //   state.answeredPrayers = [{
+    //     answeredDate: new Date().toDateString(),
+    //     prayer: { id: 1, prayer: 'test' },
+    //     id: 1
+    //   }]
+    // },
   }
 },
+
 )
 
 export const {
   addPrayer,
   deletePrayer,
   editPrayer,
-  addToAnsweredPrayer,
-  deleteAnsweredPrayers,
-  removeAnsweredPrayer,
+  addAnswer,
   setVerse,
   addNoteToPrayer,
   addToFavorites,

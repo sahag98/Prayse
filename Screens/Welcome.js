@@ -1,67 +1,29 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { Dimensions, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
+import { ActivityIndicator, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
 import prayer from '../assets/prayer-nobg.png'
 import { Ionicons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import Unorderedlist from 'react-native-unordered-list';
-import AppLoading from 'expo-app-loading';
-import Svg, { Path } from 'react-native-svg';
-import { useSelector, useDispatch } from 'react-redux';
-import { Divider, List } from 'react-native-paper';
-import { Container, ModalContainer, ModalView, ToolTipView } from '../styles/appStyles';
-import { closeTool } from '../redux/userReducer';
+import { useSelector } from 'react-redux';
+import { Divider } from 'react-native-paper';
+import { Container, ModalContainer } from '../styles/appStyles';
 import { Modal } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { PROJECT_ID } from '@env'
-
 
 SplashScreen.preventAutoHideAsync();
 
-// import { Alert } from 'react-native';
-// import Constants from 'expo-constants';
-// import * as Updates from 'expo-updates';
-
-// async function checkAppVersion() {
-//     const { version } = Constants.manifest;
-
-//     // Get the latest version from the app store
-//     const latestVersion = await Updates.checkForUpdateAsync();
-
-//     // Compare the app version with the latest version
-//     if (latestVersion.isAvailable && latestVersion.version !== version) {
-//         Alert.alert(
-//             'New Update Available',
-//             'A new version of the app is available. Do you want to update now?',
-//             [
-//                 {
-//                     text: 'Later',
-//                     style: 'cancel'
-//                 },
-//                 {
-//                     text: 'Update',
-//                     onPress: () => {
-//                         // Start the update process
-//                         Updates.reloadAsync();
-//                     }
-//                 }
-//             ]
-//         );
-//     }
-// }
-
 Notifications.setNotificationHandler({
     handleNotification: async (notification) => {
-        const navigation = useNavigation()
-        console.log('in set noti', notification)
         const data = notification.request.content.data;
+
         if (data && data.screen) {
             // navigate to the screen specified in the data object
             navigation.navigate(data.screen);
         }
-
         return {
             shouldShowAlert: true,
             shouldPlaySound: false,
@@ -71,7 +33,6 @@ Notifications.setNotificationHandler({
 });
 
 async function sendToken(expoPushToken) {
-    console.log(' in send')
     const message = {
         to: expoPushToken,
         sound: 'default',
@@ -79,8 +40,7 @@ async function sendToken(expoPushToken) {
         body: 'And here is the body!',
         data: { someData: 'goes here' },
     };
-    console.log('about to fetch')
-    await fetch('https://prayse.herokuapp.com/api/tokens', {
+    await fetch('http://192.168.1.206:8800/api/testtokens', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -93,7 +53,6 @@ async function sendToken(expoPushToken) {
 
 async function registerForPushNotificationsAsync() {
     let token;
-    console.log('in reg function')
     if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
@@ -111,11 +70,11 @@ async function registerForPushNotificationsAsync() {
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-            console.log('hello')
+
             alert('To recieve notifications in the future, enable Notifications from the App Settings.');
             return;
         }
-        console.log('after if')
+
         token = (await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })).data;
         console.log(token)
     } else {
@@ -133,6 +92,15 @@ export default function Welcome({ navigation }) {
     const [expanded, setExpanded] = useState(true);
     const handlePress = () => setExpanded(!expanded);
 
+    const BusyIndicator = () => {
+
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        );
+    };
+
     function handleCloseTooltip() {
         setToolVisible(false)
     }
@@ -148,21 +116,31 @@ export default function Welcome({ navigation }) {
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        const currentHour = new Date().getHours()
-        if (currentHour < 12) {
-            setGreeting('Good morning ')
-            setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#ffff27"} />)
-        } else if (currentHour < 18) {
-            setGreeting('Good afternoon ')
-            setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />)
-        } else {
-            setGreeting('Good night ')
-            setIcon(<Feather name="moon" size={24} color={theme == 'dark' ? "#a6a6a6" : "#9a9a9a"} />)
+        getHour()
+        function getHour() {
+            const currentHour = new Date().getHours()
+            if (currentHour >= 5 && currentHour < 12) {
+                setGreeting('Good morning ')
+                setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#ffff27"} />)
+            } else if (currentHour < 18) {
+                setGreeting('Good afternoon ')
+                setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />)
+            } else {
+                setGreeting('Good night ')
+                setIcon(<Feather name="moon" size={24} color={theme == 'dark' ? "#a6a6a6" : "#9a9a9a"} />)
+            }
         }
 
-        registerForPushNotificationsAsync().then(token => sendToken(token)).catch(err => console.log(err));
+    }, [isFocused])
+
+
+    useEffect(() => {
+
+
+        registerForPushNotificationsAsync().then(token => sendToken(token).then(console.log('token sent'))).catch(err => console.log(err))
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
         });
@@ -170,18 +148,28 @@ export default function Welcome({ navigation }) {
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             const body = response.notification.request.content.body
             const res = response.notification.request.content.data
-            if (res && res.screen) {
-                // navigate to the screen specified in the data object
-                if (res.screen == 'VerseOfTheDay') {
-                    navigation.navigate(res.screen, {
-                        verse: body,
-                        title: res.verseTitle
-                    });
-                } else {
-                    navigation.navigate(res.screen)
-                }
+            // console.log(response)
+            // if (res && res.updateLink) {
+            //     console.log('in update')
+            //     if (Platform.OS === 'ios') {
+            //         Linking.openURL('https://apps.apple.com/us/app/prayerlist-app/id6443480347')
+            //     } else if (Platform.OS === 'android') {
+            //         Linking.openURL('https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp')
+            //     }
+            // }
+            // if (res && res.screen) {
+            //     console.log('in screen')
+            //     // navigate to the screen specified in the data object
+            //     if (res.screen == 'VerseOfTheDay') {
+            //         navigation.navigate(res.screen, {
+            //             verse: body,
+            //             title: res.verseTitle
+            //         });
+            //     } else {
+            //         navigation.navigate(res.screen)
+            //     }
 
-            }
+            // }
         });
 
         // sendToken(expoPushToken)
@@ -218,12 +206,8 @@ export default function Welcome({ navigation }) {
     }, [fontsLoaded]);
 
     if (!fontsLoaded) {
-        return null;
+        return <BusyIndicator />;
     }
-
-    // if (!fontsLoaded) {
-    //     return <AppLoading />
-    // }
 
     return (
         <Container onLayout={onLayoutRootView} style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
@@ -257,20 +241,20 @@ export default function Welcome({ navigation }) {
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Verse of the Day page to meditate on the daily verse & favorite it!</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Verse of the Day page to meditate on the daily verse & favorite it</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Whole new notification system!</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Whole new notification system</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Answered Prayer section to keep track of answered prayers!
+                                Answered Prayer section to keep track of answered prayers
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -278,7 +262,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Simplified folders layout!
+                                Simplified folders layout
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -286,7 +270,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Changes to edit functionality on prayers!
+                                Changes to edit functionality on prayers
                             </Text>
                         </Unorderedlist>
                         <Unorderedlist
@@ -294,7 +278,7 @@ export default function Welcome({ navigation }) {
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Added privacy policies, settings and more on the More page!
+                                Added privacy policies, settings and more on the More page
                             </Text>
                         </Unorderedlist>
                     </TouchableOpacity>
@@ -385,7 +369,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#212121',
         paddingHorizontal: 5,
-        paddingVertical: 10,
+        paddingVertical: 15,
         marginBottom: 10,
         borderRadius: 5,
         display: 'flex',
@@ -397,7 +381,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: 'white',
         paddingHorizontal: 5,
-        paddingVertical: 10,
+        paddingVertical: 15,
         marginBottom: 10,
         borderRadius: 5,
         display: 'flex',
@@ -418,12 +402,13 @@ const styles = StyleSheet.create({
     listText: {
         fontFamily: 'Inter-Regular',
         color: '#2f2d51',
-        fontSize: 14,
+        fontSize: 15,
+        lineHeight: 20,
         marginBottom: 2
     },
     listTextDark: {
         fontFamily: 'Inter-Regular',
-        fontSize: 14,
+        fontSize: 15,
         lineHeight: 20,
         color: 'white',
         marginBottom: 2

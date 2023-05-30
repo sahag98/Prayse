@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
-import uuid from 'react-native-uuid';
 import Home from '../components/Home';
 import useIsReady from '../hooks/useIsReady';
 

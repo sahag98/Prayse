@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Container, HeaderTitle } from '../styles/appStyles'
 import { useSelector } from 'react-redux'
-import { TouchableOpacity } from 'react-native'
 import { MaterialCommunityIcons, Ionicons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import { Platform } from 'react-native'
@@ -36,7 +35,7 @@ const More = ({ navigation }) => {
       id: 2,
       icon: <AntDesign name="infocirlceo" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'About',
-      link: 'https://www.sahak-portfolio.com/'
+      link: 'https://prayse-website.vercel.app/'
     },
     {
       id: 3,
@@ -64,6 +63,19 @@ const More = ({ navigation }) => {
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
+
+  const BusyIndicator = () => {
+
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  };
+
+  if (!fontsLoaded) {
+    return <BusyIndicator />
+  }
 
   return (
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>

@@ -2,18 +2,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Container, HeaderTitle } from '../styles/appStyles'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToFavorites, deleteFavorites, setVerse } from '../redux/prayerReducer'
+import { addToFavorites } from '../redux/favoritesReducer'
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import * as Clipboard from 'expo-clipboard';
 import uuid from 'react-native-uuid';
-import { Modal } from 'react-native'
-
 
 const VerseOfTheDay = ({ route }) => {
   const theme = useSelector(state => state.user.theme)
-  const favorites = useSelector(state => state.prayer.favoriteVerses)
+  const favorites = useSelector(state => state.favorites.favoriteVerses)
   const dispatch = useDispatch()
   const [verse, setVerse] = useState('')
   const [verseTitle, setVerseTitle] = useState('')
@@ -66,7 +64,7 @@ const VerseOfTheDay = ({ route }) => {
     // dispatch(deleteFavorites())
   }
 
-  favorites.some(item => item.v)
+  // favorites?.some(item => item.v)
   const message = verse.split('-')
 
   return (
@@ -89,27 +87,28 @@ const VerseOfTheDay = ({ route }) => {
         <Text style={theme == 'dark' ? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 } : { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>Favorites list</Text>
         <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? 'white' : '#2f2d51'} />
       </TouchableOpacity>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ justifyContent: 'center', marginTop: 15 }}>
         <Text style={theme == 'dark' ? styles.verseDark : styles.verse}>{message[0]}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={theme == 'dark' ? styles.verseTitleDark : styles.verseTitle}>- {message[1]}</Text>
-          <TouchableOpacity onPress={() => copyToClipboard(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>{isCopied ? "Copied" : "Copy"}</Text>
-            <Ionicons name="ios-copy-outline" size={24} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => HandleFavorites(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {favorites.some(item => item.verse === verse) ?
-              <>
+        <View>
+          <Text style={theme == 'dark' ? styles.verseTitleDark : styles.verseTitle}>-{message[1]}</Text>
+          <View style={{ marginTop: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <TouchableOpacity onPress={() => copyToClipboard(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa' } : { marginRight: 10, color: '#454277' }}>{isCopied ? "Copied" : "Copy"}</Text>
+              <Ionicons name="ios-copy-outline" size={24} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
+            </TouchableOpacity>
+            {favorites?.some(item => item.verse === verse) ?
+              <TouchableOpacity disabled={true} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={theme == 'dark' ? { marginRight: 5, color: '#d8d800', fontFamily: 'Inter-Regular', fontSize: 14 } : { fontFamily: 'Inter-Regular', fontSize: 14, marginRight: 10, color: '#c4c400' }}>Favorited</Text>
                 <AntDesign name="staro" size={25} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />
-              </>
+              </TouchableOpacity>
               :
-              <>
+              <TouchableOpacity onPress={() => HandleFavorites(verse)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={theme == 'dark' ? { marginRight: 5, color: '#aaaaaa', fontFamily: 'Inter-Regular', fontSize: 14 } : { fontFamily: 'Inter-Regular', fontSize: 14, marginRight: 10, color: '#454277' }}>Favorite</Text>
                 <AntDesign name="staro" size={25} color={theme == 'dark' ? "#aaaaaa" : "#454277"} />
-              </>
+              </TouchableOpacity>
             }
-          </TouchableOpacity>
+
+          </View>
         </View>
       </View>
     </Container>

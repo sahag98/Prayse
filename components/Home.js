@@ -6,7 +6,6 @@ import InputModal from './InputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from "react-redux";
 import { Container, PrayerContainer } from "../styles/appStyles";
-import LottieView from "lottie-react-native";
 import { StyleSheet } from "react-native";
 import BottomBox from "./BottomBox";
 
@@ -14,7 +13,6 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const theme = useSelector(state => state.user.theme)
     const fadeAnim = useRef(new Animated.Value(0)).current
     const [modalVisible, setModalVisible] = useState(false)
-    const [clearModalVisible, setClearModalVisible] = useState(false)
     const [prayerValue, setPrayerValue] = useState("")
     const [opacity, setOpacity] = useState(new Animated.Value(1));
     const [categoryValue, setCategoryValue] = useState('')
@@ -23,7 +21,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [selectedEdit, setSelectedEdit] = useState('')
     const [answeredAlready, setAnsweredAlready] = useState('')
     const [isBoxVisible, setIsBoxVisible] = useState(false);
-    const answered = useSelector(state => state.prayer.answeredPrayers)
+    const answeredPrayers = useSelector(state => state.answered.answeredPrayers)
     const slideUpValue = useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch()
     const isIOS = Platform.OS === 'ios'
@@ -58,7 +56,7 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
         }).start()
         setSelectedEdit(prayer)
         handleButtonClick()
-        if (answered.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
+        if (answeredPrayers?.some(item => item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer)) {
             console.log('exists')
             setAnsweredAlready(prayer.id)
         }

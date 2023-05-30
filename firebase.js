@@ -12,7 +12,7 @@ const firebaseConfig = {
     appId: APP_ID,
     measurementId: MEASUREMENT_ID
 };
-console.log(firebaseConfig)
+
 // Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)

@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-import { deleteFavoriteVerse } from '../redux/prayerReducer';
+import { deleteFavoriteVerse } from '../redux/favoritesReducer';
 
 const FavoriteVerses = ({ item, theme }) => {
   const dispatch = useDispatch()

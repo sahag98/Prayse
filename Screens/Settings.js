@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Platform, Linking, TouchableOpacity, Switch } from 'react-native';
-import { Container, HeaderTitle, HeaderView } from '../styles/appStyles';
-import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, StyleSheet, Platform, TouchableOpacity, Switch, Modal } from 'react-native';
+import { Container, HeaderTitle, ModalAction, ModalActionGroup, ModalContainer, ModalIcon, ModalView } from '../styles/appStyles';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
-import { Divider, FAB, Text } from 'react-native-paper';
+import { Divider, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { darkMode, large, regular, small, systemTheme } from '../redux/userReducer';
-import { addFolder, deleteAllFolders, removeAllFolders } from '../redux/folderReducer';
-import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
-import { TextInput } from 'react-native';
-import uuid from 'react-native-uuid';
+import { deleteAllFolders } from '../redux/folderReducer';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { PROJECT_ID, NOTIFICATION_API } from '@env'
 import { clearPrayerData } from '../redux/prayerReducer';
+import { useEffect } from 'react';
+import { deleteAnsweredPrayers } from '../redux/answeredReducer';
 
 const Settings = ({ navigation }) => {
   const [active, setActive] = useState(false)
   const theme = useSelector(state => state.user.theme)
   const [isEnabled, setIsEnabled] = useState(false);
+  const [deleteAllModal, setDeleteAllModal] = useState(false)
   const size = useSelector(state => state.user.fontSize)
-  const [open, setOpen] = useState(false)
-  const [folderName, setFolderName] = useState("")
   const dispatch = useDispatch()
 
-
+  useEffect(() => {
+    getPermission()
+  }, [])
   async function sendToken(expoPushToken) {
     console.log(' in send')
     const message = {
@@ -45,18 +45,6 @@ const Settings = ({ navigation }) => {
       body: JSON.stringify(message),
     });
   }
-
-  useEffect(() => {
-    async function Perm() {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync()
-      if (existingStatus !== 'granted') {
-        setIsEnabled(false)
-      } else {
-        setIsEnabled(true)
-      }
-    }
-    Perm()
-  }, [])
 
   async function getPermission() {
     let token;
@@ -92,17 +80,6 @@ const Settings = ({ navigation }) => {
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
 
-  function giveFeedback(market) {
-    if (market == "android") {
-      Linking.openURL(`market://details?id=${ANDROID_PACKAGE_NAME}&showAllReviews=true`)
-    }
-    if (market == "ios") {
-      Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${IOS_ITEM_ID}?action=write-review`
-      );
-    }
-  }
-
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState)
     if (isEnabled == false) {
@@ -126,8 +103,15 @@ const Settings = ({ navigation }) => {
   }
 
   function clearAll() {
+    console.log('in clear all function')
+    dispatch(clearPrayerData())
+    dispatch(deleteAllFolders())
+    dispatch(deleteAnsweredPrayers())
+  }
 
-    dispatch(clearPrayerData(), deleteAllFolders())
+
+  const handleCloseModal = () => {
+    setOpenClearModal(false)
   }
 
   const changeFont = (font) => {
@@ -222,7 +206,7 @@ const Settings = ({ navigation }) => {
             <Text style={theme == 'dark' ? { fontFamily: 'Inter-Regular', color: 'white', paddingLeft: 10, fontSize: 12 } : { fontFamily: 'Inter-Regular', color: "#2f2d51", paddingLeft: 10, fontSize: 12 }}>Text example</Text>
           </View>
         </View>
-        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Medium', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', fontSize: 16 }}>Get Notifications</Text>
           <Switch
             trackColor={{ false: "grey", true: "grey" }}
@@ -232,9 +216,33 @@ const Settings = ({ navigation }) => {
             value={isEnabled}
           />
         </View>
-        <TouchableOpacity onPress={clearAll} style={{ width: '100%', padding: 15, justifyContent: 'center', alignItems: 'center', backgroundColor: '#212121', borderRadius: 5 }}>
-          <Text style={{ color: '#ff6666', fontFamily: 'Inter-Bold', fontSize: 16 }}>Clear All Data</Text>
+        <TouchableOpacity onPress={() => setDeleteAllModal(true)} style={theme == 'dark' ? styles.clearAllDark : styles.clearAll}>
+          <Text style={theme == 'dark' ? { color: '#ff6666', fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#ff6262', fontFamily: 'Inter-Bold', fontSize: 16 }}>Clear All Data</Text>
         </TouchableOpacity>
+        <Modal
+          animationType='fade'
+          transparent={true}
+          visible={deleteAllModal}
+          onRequestClose={handleCloseModal}
+          statusBarTranslucent={true}
+        // onShow={() => inputRef.current?.focus()}
+        >
+          <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+            <ModalView style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
+              <ModalIcon>
+                <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', fontSize: 18, color: 'white' } : { fontSize: 18, fontFamily: 'Inter-Bold' }}>Are you sure you want delete everything?</HeaderTitle>
+              </ModalIcon>
+              <ModalActionGroup>
+                <ModalAction color={'white'} onPress={() => setDeleteAllModal(false)}>
+                  <AntDesign name='close' size={28} color={theme == 'dark' ? 'black' : '#2F2D51'} />
+                </ModalAction>
+                <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={() => { clearAll(); setDeleteAllModal(false) }}>
+                  <AntDesign name='check' size={28} color={'white'} />
+                </ModalAction>
+              </ModalActionGroup>
+            </ModalView>
+          </ModalContainer>
+        </Modal>
       </View>
     </Container>
   );
@@ -249,6 +257,22 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 15,
     backgroundColor: 'white'
+  },
+  clearAllDark: {
+    width: '100%',
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#212121',
+    borderRadius: 5
+  },
+  clearAll: {
+    width: '100%',
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2f2d51',
+    borderRadius: 5
   },
   reviewButtonDark: {
     display: 'flex',

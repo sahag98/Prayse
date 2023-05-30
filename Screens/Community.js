@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { Container, HeaderView, HeaderTitle, StyledInput } from '../styles/appStyles';
-import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import { firebase } from '../firebase'
 import { FlashList } from "@shopify/flash-list";
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import NetInfo from '@react-native-community/netinfo';
 import LottieView from "lottie-react-native";
-import { FAB } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 const Community = ({ navigation }) => {
@@ -20,10 +19,9 @@ const Community = ({ navigation }) => {
     const [error, setError] = useState(false)
     const [swearError, setSwearError] = useState(false)
     const [isConnected, setIsConnected] = useState(true)
-    const [visible, setVisible] = useState(false)
-    const [name, setName] = useState('')
 
     useEffect(() => {
+        checkConnection()
         todoRef
             .orderBy('createdAt', 'desc', 'likes')
             .onSnapshot(
@@ -79,6 +77,21 @@ const Community = ({ navigation }) => {
 
     const addTodo = () => {
         if (addData && addData.length > 0) {
+            const message = {
+                title: 'Community',
+                message: 'New community prayer! Check it out',
+                data: { screen: 'Community', verseTitle: '' },
+            };
+            console.log(message)
+            fetch('https://prayse.herokuapp.com/message', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Accept-encoding': 'gzip, deflate',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            })
             setError(false)
             const foundSwears = badwordsArray.filter(word => addData.toLowerCase().includes(word.toLowerCase()))
             if (foundSwears.length) {
@@ -177,7 +190,7 @@ const Community = ({ navigation }) => {
                             onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
                             multiline={true}
                         />
-                        <TouchableOpacity style={theme == 'dark' ? styles.buttonDark : styles.button} onPress={addTodo}>
+                        <TouchableOpacity style={theme == 'dark' ? styles.AddButtonDark : styles.AddButton} onPress={addTodo}>
                             <AntDesign name='plus' size={35} color={theme == 'dark' ? 'black' : 'white'} />
                         </TouchableOpacity>
                     </View>
@@ -219,8 +232,9 @@ const Community = ({ navigation }) => {
         </Container>
     ) : (
         <Container style={theme == 'dark' ? { justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
-            <Text style={theme == 'dark' ? { color: 'white' } : { color: 'black' }}>No network connection. Please try again.</Text>
-
+            <TouchableOpacity onPress={checkConnection}>
+                <Text style={theme == 'dark' ? { color: 'white' } : { color: 'black' }}>No network connection. Please try again.</Text>
+            </TouchableOpacity>
         </Container>
     )
 }
@@ -254,15 +268,9 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingBottom: 5
     },
-    NameinputDark: {
-        height: 40,
-        marginBottom: 10,
-        width: '80%',
-        backgroundColor: '#212121',
-    },
     input: {
         width: '80%',
-        height: 60,
+        height: 55,
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: '#2F2D51',
@@ -272,7 +280,7 @@ const styles = StyleSheet.create({
     },
     inputDark: {
         width: '80%',
-        height: 60,
+        height: 55,
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: '#212121',
@@ -285,18 +293,18 @@ const styles = StyleSheet.create({
         height: 100,
         alignSelf: 'center',
     },
-    button: {
-        width: 60,
-        height: 60,
+    AddButton: {
+        width: 55,
+        height: 55,
         borderRadius: 50,
         backgroundColor: '#2F2D51',
         marginLeft: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    buttonDark: {
-        width: 60,
-        height: 60,
+    AddButtonDark: {
+        width: 55,
+        height: 55,
         borderRadius: 50,
         backgroundColor: 'white',
         marginLeft: 10,
@@ -329,7 +337,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         letterSpacing: 1,
         color: '#4e4a8a',
-        fontFamily: 'Inter-Bold',
+        fontFamily: 'Inter-Light',
         textTransform: 'uppercase',
         paddingTop: 8,
         textAlign: 'right'
@@ -338,7 +346,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         letterSpacing: 1,
         color: '#8C8C8C',
-        fontFamily: 'Inter-Bold',
+        fontFamily: 'Inter-Light',
         textTransform: 'uppercase',
         paddingTop: 8,
         textAlign: 'right'

@@ -1,12 +1,9 @@
 import React, { useRef, useState } from 'react';
 import {
-    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform, Animated, PanResponder
+    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform, ActivityIndicator
 }
     from 'react-native';
 import {
-    ModalButton,
-    ModalButton2,
-    ModalButton3,
     ModalContainer,
     ModalView,
     StyledInput,
@@ -16,12 +13,11 @@ import {
     HeaderTitle,
 } from '../styles/appStyles'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
-import AppLoading from 'expo-app-loading';
 import { useNavigation } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
-import { AnimatedFAB, FAB } from 'react-native-paper';
+import { AnimatedFAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPrayer, editPrayer } from '../redux/prayerReducer';
 import { useEffect } from 'react';
@@ -58,7 +54,6 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     })
 
-    const navigation = useNavigation()
     const data = [
         {
             key: 'General',
@@ -83,6 +78,15 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
     ]
 
     const [selected, setSelected] = useState("")
+
+    const BusyIndicator = () => {
+
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        );
+    };
 
     const handleSubmit = () => {
 
@@ -116,7 +120,7 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
     }
 
     if (!fontsLoaded) {
-        return <AppLoading />
+        return <BusyIndicator />
     }
     return (
         <View style={{ position: 'relative', flex: 1 }}>

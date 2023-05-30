@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, ActivityIndicator, ScrollView, Image, RefreshControl, Linking } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl, Linking } from 'react-native';
 import { client } from '../lib/client';
 import 'react-native-url-polyfill/auto'
 import { Container, HeaderTitle } from '../styles/appStyles';
@@ -8,7 +8,6 @@ import { Divider } from 'react-native-paper';
 import useIsReady from '../hooks/useIsReady';
 import { TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
 import tbf from '../assets/tbf-logo.jpg'
 import NetInfo from '@react-native-community/netinfo';
 
