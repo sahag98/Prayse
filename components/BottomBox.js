@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder, TouchableOpacity } from 'react-native';
-import { Feather, AntDesign, Ionicons } from '@expo/vector-icons'
+import { View, Text, StyleSheet, Share, Animated, PanResponder, TouchableOpacity } from 'react-native';
+import { Feather, AntDesign } from '@expo/vector-icons'
 import { Divider } from 'react-native-paper';
 import { addToAnsweredPrayer } from '../redux/answeredReducer';
 import { deletePrayer, } from '../redux/prayerReducer';
 import { useDispatch } from 'react-redux';
-import * as Clipboard from 'expo-clipboard';
 import uuid from 'react-native-uuid';
 
 const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlready,
@@ -15,25 +14,13 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
 
   const dispatch = useDispatch()
 
-  const copyToClipboard = async (title) => {
-    await Clipboard.setStringAsync(title);
-    setIsBoxVisible(false)
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 500, // in milliseconds
-      useNativeDriver: true
-    }).start()
-  }
-
   function time() {
     setTimeout(() => {
       setLoading(false)
     }, 1100)
   }
 
-
   const handleAddToAnsweredPrayer = (prayer) => {
-    // dispatch(deleteAnsweredPrayers())
     dispatch(addToAnsweredPrayer({
       answeredDate: new Date().toDateString(),
       prayer: prayer,
@@ -60,6 +47,17 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
       useNativeDriver: true
     }).start()
   }
+
+  const onShare = async (title) => {
+    try {
+      await Share.share({
+        message:
+          title,
+      });
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
 
   const panResponder = useRef(
     PanResponder.create({
@@ -129,9 +127,9 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
             <Feather name="check-circle" size={22} color="#aaaaaa" />
           </TouchableOpacity>}
         <Divider style={{ marginVertical: 5, backgroundColor: 'grey' }} />
-        <TouchableOpacity onPress={() => copyToClipboard(selectedEdit.prayer)} style={styles.buttonItems}>
-          <Text style={{ color: 'white', fontSize: 15, fontFamily: 'Inter-Medium' }}>Copy prayer</Text>
-          <Ionicons name="ios-copy-outline" size={22} color="white" />
+        <TouchableOpacity onPress={() => onShare(selectedEdit.prayer)} style={styles.buttonItems}>
+          <Text style={{ color: 'white', fontSize: 15, fontFamily: 'Inter-Medium' }}>Share prayer</Text>
+          <AntDesign name="sharealt" size={20} color={theme == 'dark' ? "#ebebeb" : "#454277"} />
         </TouchableOpacity>
         <Divider style={{ marginVertical: 5, backgroundColor: 'grey' }} />
         <TouchableOpacity onPress={() => handleTriggerEdit(selectedEdit)} style={styles.buttonItems}>

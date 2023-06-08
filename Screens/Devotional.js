@@ -65,11 +65,11 @@ const Devotional = () => {
             showsVerticalScrollIndicator={false}
             key={d._id}
           >
-            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', marginTop: 20, fontSize: 24, color: 'white' }
-              : { fontFamily: 'Inter-Bold', marginTop: 20, fontSize: 24, color: '#2F2D51' }}>{d.title}</HeaderTitle>
+            <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', marginTop: 20, marginBottom: 5, fontSize: 24, color: 'white' }
+              : { fontFamily: 'Inter-Bold', marginTop: 20, fontSize: 24, marginBottom: 5, color: '#2F2D51' }}>{d.title}</HeaderTitle>
             <Text style={theme == 'dark' ? styles.descriptionDark : styles.description}>{d.description}</Text>
             <View style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
-              <Text style={{ color: '#7a7a7a' }}>Pull page down to refresh</Text>
+              <Text style={{ fontFamily: 'Inter-Regular', color: '#7a7a7a' }}>Pull page down to refresh</Text>
             </View>
             <View>
               <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/triedbyfireministry/')} style={{ marginTop: 5, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -82,7 +82,7 @@ const Devotional = () => {
                   source={tbf}
                 />
               </TouchableOpacity>
-              <View style={theme == 'dark' ? { marginTop: 5, borderLeftWidth: 2, borderLeftColor: '#A5C9FF', paddingHorizontal: 10 } : { marginTop: 5, borderLeftWidth: 2, borderLeftColor: '#599bff', paddingHorizontal: 10 }}>
+              <View style={theme == 'dark' ? { marginTop: 10, borderLeftWidth: 2, borderLeftColor: '#A5C9FF', paddingHorizontal: 10 } : { marginTop: 5, borderLeftWidth: 2, borderLeftColor: '#599bff', paddingHorizontal: 10 }}>
                 <Text style={theme == 'dark' ? { color: '#d6d6d6', fontSize: 15, fontFamily: 'Inter-Regular' } : { color: '#2f2d51', fontSize: 15, fontFamily: 'Inter-Regular' }}>{d.verse}</Text>
               </View>
             </View>
@@ -90,7 +90,6 @@ const Devotional = () => {
             <Text style={theme == 'dark' ? styles.dayDark : styles.day}>{d.day}</Text>
             <Text style={theme == 'dark' ? styles.contentDark : styles.content}>{d.content}</Text>
           </ScrollView>
-
         ))
         }
       </Container>
@@ -132,15 +131,13 @@ const styles = StyleSheet.create({
   },
   descriptionDark: {
     color: '#d6d6d6',
-    fontFamily: 'Inter-Light',
-    fontSize: 16,
-    marginBottom: 5
+    fontFamily: 'Inter-Medium',
+    fontSize: 16
   },
   description: {
     color: '#2F2D51',
-    fontFamily: 'Inter-Light',
+    fontFamily: 'Inter-Medium',
     fontSize: 16,
-    marginBottom: 5
   },
   ownerDark: {
     color: '#d6d6d6',
@@ -162,14 +159,15 @@ const styles = StyleSheet.create({
   },
   contentDark: {
     color: '#d6d6d6',
-    fontSize: 16,
-    lineHeight: 40
+    fontSize: 15,
+    lineHeight: 40,
+    fontFamily: 'Inter-Regular',
   },
   content: {
     color: '#2F2D51',
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    lineHeight: 40
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    lineHeight: 40,
   },
 })
 

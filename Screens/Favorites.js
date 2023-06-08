@@ -10,6 +10,7 @@ import FavoriteVerses from '../components/FavoriteVerses'
 const Favorites = ({ navigation }) => {
   const theme = useSelector(state => state.user.theme)
   const favorites = useSelector(state => state.favorites.favoriteVerses)
+
   const renderFavoriteVerses = ({ item }) => {
     return (
       <FavoriteVerses
@@ -22,7 +23,7 @@ const Favorites = ({ navigation }) => {
     <Container style={theme == 'dark' ? { backgroundColor: "#121212" } : { backgroundColor: "#F2F7FF" }}>
       <View style={{ marginVertical: 10, flexDirection: 'row', alignItems: 'center' }}>
         <TouchableOpacity style={{ marginRight: 5, }} onPress={() => navigation.navigate('VerseOfTheDay')}>
-          <Ionicons name="chevron-back" size={30} color={theme == "light" ? "#2f2d51" : "white"} />
+          <Ionicons name="chevron-back" size={30} color={theme == "dark" ? "white" : "#2f2d51"} />
         </TouchableOpacity>
         <HeaderTitle
           style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' }

@@ -55,6 +55,12 @@ const More = ({ navigation }) => {
       title: 'Settings',
       screen: 'Settings'
     },
+    {
+      id: 6,
+      icon: <MaterialCommunityIcons name="thought-bubble-outline" style={{ marginRight: 10 }} size={24} color="white" />,
+      title: 'Next Update Suggestions!',
+      screen: 'Settings'
+    },
   ]
 
   let [fontsLoaded] = useFonts({

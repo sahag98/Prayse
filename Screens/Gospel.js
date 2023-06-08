@@ -169,11 +169,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: '#2F2D51',
         textAlign: 'center',
-        padding: 10
+        padding: 10,
+        fontFamily: 'Inter-Bold',
     },
 
     headingDark: {
         fontSize: 24,
+        fontFamily: 'Inter-Bold',
         color: 'white',
         textAlign: 'center',
         padding: 10

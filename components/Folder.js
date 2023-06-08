@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 20,
     justifyContent: 'center',
-    backgroundColor: '#3b3b3b',
+    backgroundColor: '#353535',
 
   },
   fabStyle: {

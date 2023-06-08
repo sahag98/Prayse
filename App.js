@@ -1,7 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
-import { Linking } from 'react-native'
-// import registerNNPushToken from 'native-notify';
+import React, { useState } from 'react';
 import AnimatedSplash from 'react-native-animated-splash-screen';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -18,7 +16,6 @@ let persistor = persistStore(store)
 
 
 export default function App() {
-
 
   const [loading, setLoading] = useState(false)
 

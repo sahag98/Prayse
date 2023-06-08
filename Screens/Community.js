@@ -76,13 +76,17 @@ const Community = ({ navigation }) => {
     }, 1500)
 
     const addTodo = () => {
-        if (addData && addData.length > 0) {
+
+        if (addData == 'Text') {
+            return
+        }
+        if (addData && addData.length > 0 && addData != 'Text') {
             const message = {
                 title: 'Community',
                 message: 'New community prayer! Check it out',
                 data: { screen: 'Community', verseTitle: '' },
             };
-            console.log(message)
+
             fetch('https://prayse.herokuapp.com/message', {
                 method: 'POST',
                 headers: {

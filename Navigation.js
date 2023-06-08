@@ -1,8 +1,6 @@
 import React from 'react';
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { Provider as PaperProvider } from 'react-native-paper'
 import Main from './Screens/Main'
 import { StatusBar } from 'expo-status-bar'
 import Welcome from './Screens/Welcome'
@@ -15,31 +13,29 @@ import OldPrayerPage from './Screens/oldPrayerPage';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Devotional from './Screens/Devotional';
 import { useFonts } from 'expo-font';
-// import AppLoading from 'expo-app-loading';
-import { View, ActivityIndicator, Linking } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import More from './Screens/More';
 import VerseOfTheDay from './Screens/VerseOfTheDay';
 import Favorites from './Screens/Favorites';
-import { getInitialURL } from 'expo-linking';
-import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator()
 
 const Navigation = () => {
+
   const insets = useSafeAreaInsets()
   const theme = useSelector(state => state.user.theme)
 
   const BusyIndicator = () => {
-
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         <ActivityIndicator size="large" color="white" />
       </View>
     );
   };
+
   let [fontsLoaded] = useFonts({
     'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
     'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
@@ -71,52 +67,7 @@ const Navigation = () => {
 
       <NavigationContainer
         theme={theme === 'dark' ? DarkTheme : DefaultTheme}
-        linking={{
-          prefixes: ['prayselinks://'],
-          config: {
-            screens: {
-              VerseOfTheDay: 'VerseOfTheDay-screen'
-            }
-            // Configuration for linking
-          },
-          async getInitialURL() {
-            // First, you may want to do the default deep link handling
-            // Check if app was opened from a deep link
-            const url = await Linking.getInitialURL();
-            console.log(url)
-            if (url != null) {
-              return url;
-            }
-
-            // Handle URL from expo push notifications
-            const response = await Notifications.getLastNotificationResponseAsync();
-            console.log('response', response)
-            return response?.notification.request.content.data.url;
-          },
-          // subscribe(listener) {
-          //   const onReceiveURL = (url) => listener(url);
-
-          //   // Listen to incoming links from deep linking
-          //   const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
-
-          //   // Listen to expo push notifications
-          //   const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-          //     const url = response.notification.request.content.data.url;
-          //     // console.log('url in subscription', url)
-          //     // Any custom logic to see whether the URL needs to be handled
-          //     //...
-
-          //     // Let React Navigation handle the URL
-          //     listener(url);
-          //   });
-
-          //   return () => {
-          //     // Clean up the event listeners
-          //     eventListenerSubscription.remove();
-          //     subscription.remove();
-          //   };
-          // },
-        }}>
+      >
         <Tab.Navigator screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {

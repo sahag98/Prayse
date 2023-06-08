@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { ActivityIndicator, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native"
+import { ActivityIndicator, Platform, Linking, View, Text, StyleSheet, TouchableOpacity, Image } from "react-native"
 import prayer from '../assets/prayer-nobg.png'
 import { Ionicons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
@@ -12,8 +12,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useIsFocused } from '@react-navigation/native';
-import { PROJECT_ID } from '@env'
-import GreetingAnimation from '../components/GreetingAnimation';
+import Animated, { FadeIn } from "react-native-reanimated";
+import { PROJECT_ID, NOTIFICATION_API } from '@env'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,7 +41,7 @@ async function sendToken(expoPushToken) {
         body: 'And here is the body!',
         data: { someData: 'goes here' },
     };
-    await fetch('http://192.168.1.206:8800/api/testtokens', {
+    await fetch(NOTIFICATION_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -111,6 +111,36 @@ export default function Welcome({ navigation }) {
     const notificationListener = useRef();
     const responseListener = useRef();
     const isFocused = useIsFocused();
+    const lastNotificationResponse = Notifications.useLastNotificationResponse()
+
+
+    useEffect(() => {
+        if (lastNotificationResponse && lastNotificationResponse.notification.request.content.data) {
+            const data = lastNotificationResponse.notification.request.content.data
+            const body = lastNotificationResponse.notification.request.content.body
+            if (data && data.updateLink) {
+                console.log('in update')
+                if (Platform.OS === 'ios') {
+                    Linking.openURL('https://apps.apple.com/us/app/prayerlist-app/id6443480347')
+                } else if (Platform.OS === 'android') {
+                    Linking.openURL('https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp')
+                }
+            }
+
+            if (data && data.screen) {
+                console.log('in screen')
+                //navigate to the screen specified in the data object
+                if (data.screen == 'VerseOfTheDay') {
+                    navigation.navigate(data.screen, {
+                        verse: body,
+                        title: data.verseTitle
+                    });
+                } else {
+                    navigation.navigate(data.screen)
+                }
+            }
+        }
+    }, [lastNotificationResponse])
 
     useEffect(() => {
         Animated.timing(
@@ -128,7 +158,7 @@ export default function Welcome({ navigation }) {
             if (currentHour >= 5 && currentHour < 12) {
                 setGreeting('Good morning ')
                 setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#ffff27"} />)
-            } else if (currentHour < 18) {
+            } else if (currentHour >= 12 && currentHour < 18) {
                 setGreeting('Good afternoon ')
                 setIcon(<Feather name="sun" size={24} color={theme == 'dark' ? "#d8d800" : "#c4c400"} />)
             } else {
@@ -196,8 +226,8 @@ export default function Welcome({ navigation }) {
 
     return (
         <Container onLayout={onLayoutRootView} style={theme == 'dark' ? { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' } : { display: 'flex', position: 'relative', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F2F7FF' }}>
-            <Animated.View style={{ flexDirection: 'row', alignItems: 'center', opacity: fadeAnim }}>
-                <Text style={theme == 'dark' ? styles.greetingDark : styles.greeting}>{greeting}</Text>
+            <Animated.View entering={FadeIn.duration(2000)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Animated.Text style={theme == 'dark' ? styles.greetingDark : styles.greeting}>{greeting}</Animated.Text>
                 {icon}
             </Animated.View>
             <Text style={theme == 'dark' ? styles.welcomeDark : styles.welcome}>Welcome to Prayse</Text>
@@ -220,56 +250,37 @@ export default function Welcome({ navigation }) {
                             <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
                         </TouchableOpacity>
 
-                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 5, fontFamily: 'Inter-Bold', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 5, fontSize: 15 }}>What's New in v7 :</Text>
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 10, fontSize: 16 }}>What's New in v7.1.0 :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Verse of the Day page to meditate on the daily verse & favorite it</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Share functionality on verse of the day and prayers</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Whole new notification system</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Minor styling changes</Text>
+                        </Unorderedlist>
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 }}>Bug fixes :</Text>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Fixed issue where notification would not show proper page</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Answered Prayer section to keep track of answered prayers
-                            </Text>
-                        </Unorderedlist>
-                        <Unorderedlist
-                            color={theme == 'dark' ? 'white' : 'black'}
-                            bulletUnicode={0x2713}
-                        >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Simplified folders layout
-                            </Text>
-                        </Unorderedlist>
-                        <Unorderedlist
-                            color={theme == 'dark' ? 'white' : 'black'}
-                            bulletUnicode={0x2713}
-                        >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Changes to edit functionality on prayers
-                            </Text>
-                        </Unorderedlist>
-                        <Unorderedlist
-                            color={theme == 'dark' ? 'white' : 'black'}
-                            bulletUnicode={0x2713}
-                        >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>
-                                Added privacy policies, settings and more on the More page
-                            </Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Changed greeting to properly show correct greeting message</Text>
                         </Unorderedlist>
                     </TouchableOpacity>
                 </ModalContainer>
             </Modal>
             <View style={{ width: '100%' }}>
-                <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Regular', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Regular', fontSize: 15 }}>Quick links</Text>
+                <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Medium', fontSize: 15 } : { color: '#2f2d51', fontFamily: 'Inter-Medium', fontSize: 15 }}>Quick links</Text>
                 <Divider style={{ marginBottom: 10, marginTop: 5 }} />
                 <TouchableOpacity onPress={() => setToolVisible(true)} style={theme == 'dark' ? styles.refreshDark : styles.refresh}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -329,8 +340,8 @@ export default function Welcome({ navigation }) {
             </View>
 
             <TouchableOpacity onPress={() => navigation.navigate('Folders')} style={theme == 'dark' ? styles.buttonDark : styles.button}>
-                <Text style={theme == 'dark' ? { fontFamily: 'Inter-Medium' } : { color: 'white', fontFamily: 'Inter-Medium' }}>Create a Folder</Text>
-                <AntDesign style={{ marginLeft: 10 }} name="right" size={18} color={theme == 'dark' ? "black" : 'white'} />
+                <Text style={theme == 'dark' ? { color: '#212121', fontFamily: 'Inter-Bold' } : { color: 'white', fontFamily: 'Inter-Bold' }}>Create a Folder</Text>
+                <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? "#212121" : 'white'} />
             </TouchableOpacity>
         </Container>
     )
@@ -390,14 +401,14 @@ const styles = StyleSheet.create({
         color: '#2f2d51',
         fontSize: 15,
         lineHeight: 20,
-        marginBottom: 2
+        marginBottom: 10
     },
     listTextDark: {
         fontFamily: 'Inter-Regular',
         fontSize: 15,
         lineHeight: 20,
         color: 'white',
-        marginBottom: 2
+        marginBottom: 10
     },
     instructions: {
         marginBottom: 5,

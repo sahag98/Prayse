@@ -11,7 +11,6 @@ const SearchBar = ({ search, setSearch }) => {
           style={styles.textInputStyle}
           value={search}
           placeholder='Search prayers...'
-          // placeholderTextColor={theme == 'light' && '#2f2d51'}
           placeholderTextColor={'#212121'}
           selectionColor={'white'}
           onChangeText={(text) => setSearch(text)}

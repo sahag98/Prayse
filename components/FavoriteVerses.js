@@ -8,7 +8,12 @@ const FavoriteVerses = ({ item, theme }) => {
   const dispatch = useDispatch()
   return (
     <View style={theme == 'dark' ? styles.fvDark : styles.fv} key={item.id}>
-      <Text style={theme == 'dark' ? styles.fvVerseDark : styles.fvVerse}>{item.verse}</Text>
+      <View style={{ width: '100%' }}>
+        <Text
+          style={theme == "dark" ? { color: 'white', fontSize: 15, fontFamily: "Inter-Medium", marginBottom: 2 }
+            : { color: '#2f2d51', fontSize: 15, fontFamily: "Inter-Medium", marginBottom: 2 }}>{item?.date}</Text>
+        <Text style={theme == 'dark' ? styles.fvVerseDark : styles.fvVerse}>{item.verse}</Text>
+      </View>
       <TouchableOpacity onPress={() => dispatch(deleteFavoriteVerse(item.id))} style={{ position: 'absolute', top: 5, right: 5 }}>
         <AntDesign name="close" size={24} color={theme == 'dark' ? "white" : "#2f2d51"} />
       </TouchableOpacity>
@@ -36,15 +41,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fvVerseDark: {
-    width: '90%',
-    fontSize: 16,
+    width: '95%',
+    fontSize: 15,
     fontFamily: 'Inter-Regular',
+    lineHeight: 22,
     color: 'white'
   },
   fvVerse: {
-    width: '90%',
-    fontSize: 16,
+    width: '95%',
+    fontSize: 15,
     fontFamily: 'Inter-Regular',
+    lineHeight: 22,
     color: '#2f2d51'
   }
 })

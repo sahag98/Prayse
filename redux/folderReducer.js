@@ -12,6 +12,12 @@ export const folderSlice = createSlice({
       state.folders = Folders
       // state.folders.push(action.payload);
     },
+    editFolderName: (state, action) => {
+      const newFolders = [...state.folders]
+      const folderIndex = state.folders.findIndex((folder) => folder.id === action.payload.id)
+      newFolders.splice(folderIndex, 1, action.payload)
+      state.folders = newFolders
+    },
     deleteFolder: (state, action) => {
       state.folders = state.folders.filter((folder) => folder.id !== action.payload)
     },
@@ -22,6 +28,6 @@ export const folderSlice = createSlice({
 },
 )
 
-export const { addFolder, deleteFolder, deleteAllFolders } = folderSlice.actions
+export const { addFolder, editFolderName, deleteFolder, deleteAllFolders } = folderSlice.actions
 
 export default folderSlice.reducer

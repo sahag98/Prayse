@@ -35,14 +35,6 @@ export const prayerSlice = createSlice({
       newPrayers.splice(prayerIndex, 1, action.payload)
       state.prayer = newPrayers
     },
-    // addAnswer: (state) => {
-    //   console.log(state)
-    //   state.answeredPrayers = [{
-    //     answeredDate: new Date().toDateString(),
-    //     prayer: { id: 1, prayer: 'test' },
-    //     id: 1
-    //   }]
-    // },
   }
 },
 
