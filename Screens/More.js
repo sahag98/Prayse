@@ -1,16 +1,26 @@
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
-import React from 'react'
-import { Container, HeaderTitle } from '../styles/appStyles'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
+import React, { useState } from 'react'
+import { Container, HeaderTitle, ModalAction, ModalActionGroup, ModalContainer, ModalIcon, ModalView, ModalView2, StyledInput } from '../styles/appStyles'
 import { useSelector } from 'react-redux'
 import { MaterialCommunityIcons, Ionicons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
+import { firebase } from '../firebase'
 import { Platform } from 'react-native'
 import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from '@env'
 import { Linking } from 'react-native'
 import SettingsItems from '../components/SettingsItems'
+import { Button, Snackbar } from 'react-native-paper';
 
 const More = ({ navigation }) => {
+  const [open, setOpen] = useState(false)
   const theme = useSelector(state => state.user.theme)
+
+  const [selectedOption, setSelectedOption] = useState('');
+  const [addedSuggestion, setAddedSuggestion] = useState('');
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [snackbarvisible, setSnackbarVisible] = useState(false)
+
+  const suggestions = ['User based community page: Create a user and reply to prayers and more.', 'Quick prayer: Add a quick prayer by just a press of a button.', 'Reflection on Devotional: Ability to write down thoughts on devotional page.', 'All of the Above']; // Replace with your own options
 
   function giveFeedback(market) {
     if (market == "android") {
@@ -21,6 +31,54 @@ const More = ({ navigation }) => {
         `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${IOS_ITEM_ID}?action=write-review`
       );
     }
+  }
+
+  const handleVote = () => {
+    if (selectedOption) {
+      // Store the vote in Firestore
+      firebase.firestore().collection('votes').add({
+        option: selectedOption,
+      })
+        .then(() => {
+          console.log('Vote added successfully!')
+          setSnackbarVisible(true)
+          setSelectedOption('')
+          setAddedSuggestion('')
+          setOpen(false)
+        })
+        .catch((error) => {
+          console.error('Error adding vote: ', error);
+        });
+    }
+
+    if (addedSuggestion) {
+      firebase.firestore().collection('votes').add({
+        suggestion: addedSuggestion,
+      })
+        .then(() => {
+          setSnackbarVisible(true)
+          setAddedSuggestion('')
+          setSelectedOption('')
+          setOpen(false)
+        })
+        .catch((error) => {
+          console.error('Error adding vote: ', error);
+        });
+    }
+  };
+
+  const handleOptionPress = (option) => {
+    setSelectedOption(option);
+    setSubmitDisabled(false);
+  };
+
+  const handleInputChange = (text) => {
+    setAddedSuggestion(text);
+    setSubmitDisabled(false);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false)
   }
 
   const options = [
@@ -53,12 +111,6 @@ const More = ({ navigation }) => {
       id: 5,
       icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Settings',
-      screen: 'Settings'
-    },
-    {
-      id: 6,
-      icon: <MaterialCommunityIcons name="thought-bubble-outline" style={{ marginRight: 10 }} size={24} color="white" />,
-      title: 'Next Update Suggestions!',
       screen: 'Settings'
     },
   ]
@@ -112,6 +164,66 @@ const More = ({ navigation }) => {
           <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
         </TouchableOpacity>
       }
+      <TouchableOpacity onPress={() => setOpen(true)}
+        style={theme == 'dark' ? styles.verseDark : styles.verse}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Next Update Suggestions</Text>
+        </View>
+        <MaterialCommunityIcons name="thought-bubble-outline" style={{ marginLeft: 10 }} size={24} color="white" />
+      </TouchableOpacity>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={open}
+        onRequestClose={handleCloseModal}
+        statusBarTranslucent={true}
+      >
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+            <ModalView2 style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
+
+              <HeaderTitle style={theme == 'dark' ? { textAlign: 'center', fontFamily: 'Inter-Bold', color: 'white' } : { textAlign: 'center', fontFamily: 'Inter-Bold' }}>Next Update Suggestions</HeaderTitle>
+              <Text style={theme == 'dark' ? { color: 'white', textAlign: 'center', fontFamily: 'Inter-Regular', marginVertical: 5 } : { color: '#2f2d51', textAlign: 'center', marginVertical: 5, fontFamily: 'Inter-Regular' }}>Select an option or enter a suggestion:</Text>
+              {suggestions.map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  onPress={() => handleOptionPress(option)}
+                  style={theme == 'dark' ? {
+                    padding: 10,
+                    borderRadius: 10,
+                    backgroundColor: option === selectedOption ? '#121212' : 'transparent',
+                  } : {
+                    padding: 10,
+                    borderRadius: 10,
+                    backgroundColor: option === selectedOption ? '#4bbef3' : 'transparent',
+                  }}
+                >
+                  <Text style={theme == 'dark' ? { color: '#e0e0e0', fontFamily: 'Inter-Medium' } : { color: '#2f2d51', fontFamily: 'Inter-Medium' }}>{option}</Text>
+                </TouchableOpacity>
+              ))}
+              <TextInput
+                style={theme == 'dark' ? styles.inputDark : styles.input}
+                placeholder='enter suggestion'
+                value={addedSuggestion}
+                placeholderTextColor={theme == 'dark' ? '#aaaaaa' : 'black'}
+                selectionColor={theme == 'dark' ? 'white' : 'black'}
+                onChangeText={handleInputChange}
+              />
+              <TouchableOpacity style={theme == 'dark' ? { backgroundColor: '#121212', paddingVertical: 15, borderRadius: 10, alignItems: 'center' } : { backgroundColor: '#2f2d51', paddingVertical: 15, borderRadius: 10, alignItems: 'center' }} onPress={handleVote} disabled={submitDisabled}>
+                <Text style={{ color: 'white', fontFamily: 'Inter-Bold' }}>Submit Vote</Text>
+              </TouchableOpacity>
+            </ModalView2>
+          </ModalContainer>
+        </KeyboardAvoidingView>
+      </Modal>
+      <Snackbar
+        style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#2f2d51' }}
+        visible={snackbarvisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={5000}
+      >
+        Thank you for submitting a suggestion!
+      </Snackbar>
     </Container>
   )
 }
@@ -119,6 +231,24 @@ const More = ({ navigation }) => {
 export default More
 
 const styles = StyleSheet.create({
+  inputDark: {
+    borderRadius: 10,
+    padding: 8,
+    color: 'white',
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    backgroundColor: '#353535',
+    marginBottom: 5
+  },
+  input: {
+    borderRadius: 10,
+    padding: 8,
+    color: '#2f2d51',
+    borderColor: 'black',
+    fontFamily: 'Inter-Regular',
+    marginBottom: 5,
+    backgroundColor: '#4bbef3'
+  },
   verseDark: {
     width: '100%',
     flexDirection: 'row',

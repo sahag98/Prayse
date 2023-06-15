@@ -10,8 +10,8 @@ const FavoriteVerses = ({ item, theme }) => {
     <View style={theme == 'dark' ? styles.fvDark : styles.fv} key={item.id}>
       <View style={{ width: '100%' }}>
         <Text
-          style={theme == "dark" ? { color: 'white', fontSize: 15, fontFamily: "Inter-Medium", marginBottom: 2 }
-            : { color: '#2f2d51', fontSize: 15, fontFamily: "Inter-Medium", marginBottom: 2 }}>{item?.date}</Text>
+          style={theme == "dark" ? { color: 'white', fontSize: 15, fontFamily: "Inter-Bold", marginBottom: 2 }
+            : { color: '#2f2d51', fontSize: 15, fontFamily: "Inter-Bold", marginBottom: 2 }}>{item?.date}</Text>
         <Text style={theme == 'dark' ? styles.fvVerseDark : styles.fvVerse}>{item.verse}</Text>
       </View>
       <TouchableOpacity onPress={() => dispatch(deleteFavoriteVerse(item.id))} style={{ position: 'absolute', top: 5, right: 5 }}>

@@ -339,19 +339,19 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     date: {
-        fontSize: 10,
+        fontSize: 11,
         letterSpacing: 1,
         color: '#4e4a8a',
-        fontFamily: 'Inter-Light',
+        fontFamily: 'Inter-Regular',
         textTransform: 'uppercase',
         paddingTop: 8,
         textAlign: 'right'
     },
     dateDark: {
-        fontSize: 10,
+        fontSize: 11,
         letterSpacing: 1,
         color: '#8C8C8C',
-        fontFamily: 'Inter-Light',
+        fontFamily: 'Inter-Regular',
         textTransform: 'uppercase',
         paddingTop: 8,
         textAlign: 'right'

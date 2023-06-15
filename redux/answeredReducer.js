@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 const initialState = {
   answeredPrayers: [],
@@ -13,7 +12,6 @@ export const answeredSlice = createSlice({
       state.answeredPrayers = state.answeredPrayers.map(obj => obj.id === action.payload.id ? { ...obj, answerNoted: action.payload.answerNote } : obj)
     },
     addToAnsweredPrayer: (state, action) => {
-      // state.answeredPrayers.push(action.payload)
       const AnsweredPrayers = [action.payload, ...state.answeredPrayers]
       state.answeredPrayers = AnsweredPrayers
 
@@ -21,7 +19,7 @@ export const answeredSlice = createSlice({
     removeAnsweredPrayer: (state, action) => {
       state.answeredPrayers = state.answeredPrayers.filter((prayer) => prayer.prayer.id !== action.payload)
     },
-    deleteAnsweredPrayers: (state, action) => {
+    deleteAnsweredPrayers: (state) => {
       state.answeredPrayers = []
     }
   }
