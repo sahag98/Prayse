@@ -250,32 +250,27 @@ export default function Welcome({ navigation }) {
                             <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
                         </TouchableOpacity>
 
-                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 10, fontSize: 16 }}>What's New in v7.1.0 :</Text>
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 10, fontSize: 16 }}>What's New in v7.2.0 :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Share functionality on verse of the day and prayers</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Ability to change folder name</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Minor styling changes</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Next Update Suggestion section</Text>
                         </Unorderedlist>
                         <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 }}>Bug fixes :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Fixed issue where notification would not show proper page</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Fixed community notification spam</Text>
                         </Unorderedlist>
-                        <Unorderedlist
-                            color={theme == 'dark' ? 'white' : 'black'}
-                            bulletUnicode={0x2713}
-                        >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Changed greeting to properly show correct greeting message</Text>
-                        </Unorderedlist>
+
                     </TouchableOpacity>
                 </ModalContainer>
             </Modal>

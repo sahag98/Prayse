@@ -15,12 +15,17 @@ const More = ({ navigation }) => {
   const [open, setOpen] = useState(false)
   const theme = useSelector(state => state.user.theme)
 
-  const [selectedOption, setSelectedOption] = useState('');
-  const [addedSuggestion, setAddedSuggestion] = useState('');
-  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [selectedOption, setSelectedOption] = useState([])
+  const [addedSuggestion, setAddedSuggestion] = useState('')
+  const [submitDisabled, setSubmitDisabled] = useState(true)
   const [snackbarvisible, setSnackbarVisible] = useState(false)
 
-  const suggestions = ['User based community page: Create a user and reply to prayers and more.', 'Quick prayer: Add a quick prayer by just a press of a button.', 'Reflection on Devotional: Ability to write down thoughts on devotional page.', 'All of the Above']; // Replace with your own options
+  const suggestions = [
+    '- User based community page: Create a user and reply to prayers and more.',
+    '- Quick prayer: Add a quick prayer by just a press of a button.',
+    '- Reflection on Devotional: Ability to write down thoughts on devotional page.',
+    '- All of the Above'
+  ];
 
   function giveFeedback(market) {
     if (market == "android") {
@@ -37,7 +42,7 @@ const More = ({ navigation }) => {
     if (selectedOption) {
       // Store the vote in Firestore
       firebase.firestore().collection('votes').add({
-        option: selectedOption,
+        suggestion: selectedOption,
       })
         .then(() => {
           console.log('Vote added successfully!')
@@ -47,7 +52,7 @@ const More = ({ navigation }) => {
           setOpen(false)
         })
         .catch((error) => {
-          console.error('Error adding vote: ', error);
+          console.error('Error adding vote: ', error)
         });
     }
 
@@ -62,14 +67,14 @@ const More = ({ navigation }) => {
           setOpen(false)
         })
         .catch((error) => {
-          console.error('Error adding vote: ', error);
+          console.error('Error adding vote: ', error)
         });
     }
   };
 
   const handleOptionPress = (option) => {
-    setSelectedOption(option);
-    setSubmitDisabled(false);
+    setSelectedOption(prevArray => [...prevArray, option])
+    setSubmitDisabled(false)
   };
 
   const handleInputChange = (text) => {
@@ -79,6 +84,7 @@ const More = ({ navigation }) => {
 
   const handleCloseModal = () => {
     setOpen(false)
+    setSelectedOption([])
   }
 
   const options = [
@@ -178,7 +184,7 @@ const More = ({ navigation }) => {
         onRequestClose={handleCloseModal}
         statusBarTranslucent={true}
       >
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
           <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
             <ModalView2 style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
 
@@ -191,11 +197,11 @@ const More = ({ navigation }) => {
                   style={theme == 'dark' ? {
                     padding: 10,
                     borderRadius: 10,
-                    backgroundColor: option === selectedOption ? '#121212' : 'transparent',
+                    backgroundColor: selectedOption.includes(option) ? '#121212' : 'transparent',
                   } : {
                     padding: 10,
                     borderRadius: 10,
-                    backgroundColor: option === selectedOption ? '#4bbef3' : 'transparent',
+                    backgroundColor: selectedOption.includes(option) ? '#4bbef3' : 'transparent',
                   }}
                 >
                   <Text style={theme == 'dark' ? { color: '#e0e0e0', fontFamily: 'Inter-Medium' } : { color: '#2f2d51', fontFamily: 'Inter-Medium' }}>{option}</Text>
@@ -205,8 +211,8 @@ const More = ({ navigation }) => {
                 style={theme == 'dark' ? styles.inputDark : styles.input}
                 placeholder='enter suggestion'
                 value={addedSuggestion}
-                placeholderTextColor={theme == 'dark' ? '#aaaaaa' : 'black'}
-                selectionColor={theme == 'dark' ? 'white' : 'black'}
+                placeholderTextColor={theme == 'dark' ? '#aaaaaa' : '#2f2d51'}
+                selectionColor={theme == 'dark' ? 'white' : '#2f2d51'}
                 onChangeText={handleInputChange}
               />
               <TouchableOpacity style={theme == 'dark' ? { backgroundColor: '#121212', paddingVertical: 15, borderRadius: 10, alignItems: 'center' } : { backgroundColor: '#2f2d51', paddingVertical: 15, borderRadius: 10, alignItems: 'center' }} onPress={handleVote} disabled={submitDisabled}>

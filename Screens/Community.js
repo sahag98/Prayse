@@ -77,7 +77,8 @@ const Community = ({ navigation }) => {
 
     const addTodo = () => {
 
-        if (addData == 'Text') {
+        if (addData == 'Text' || addData == 'text') {
+            console.log('here')
             return
         }
         if (addData && addData.length > 0 && addData != 'Text') {
