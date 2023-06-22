@@ -103,22 +103,23 @@ const More = ({ navigation }) => {
     },
     {
       id: 3,
+      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
+      title: 'Settings',
+      screen: 'Settings'
+    },
+    {
+      id: 4,
       icon: <Feather name="shield" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Privacy Policy',
       link: 'https://www.privacypolicies.com/live/887580d1-6bf3-4b0a-a716-a732bf8141fa'
     },
     {
-      id: 4,
+      id: 5,
       icon: <MaterialCommunityIcons name="email-edit-outline" style={{ marginRight: 10 }} size={24} color="white" />,
       title: 'Contact Developer',
       link: 'mailto:arzsahag@gmail.com'
     },
-    {
-      id: 5,
-      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
-      title: 'Settings',
-      screen: 'Settings'
-    },
+
   ]
 
   let [fontsLoaded] = useFonts({

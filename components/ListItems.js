@@ -22,6 +22,7 @@ const ListItems = ({ pickedPrayer,
         'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+        'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf')
     })
 
     const BusyIndicator = () => {
@@ -89,47 +90,47 @@ const ListItems = ({ pickedPrayer,
                                 {categoryItem == "General" &&
                                     <TodoCategory
                                         style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#FFDAA5' } : { borderRadius: 20, backgroundColor: '#FFBF65' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 {categoryItem == "People" &&
                                     <TodoCategory
-                                        style={theme == 'dark' ? { backgroundColor: '#A5C9FF', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#6B7EFF', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }}>
+                                        style={theme == 'dark' ? { backgroundColor: '#A5C9FF', fontFamily: 'Inter-SemiBold', color: 'black' } : { backgroundColor: '#6B7EFF', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'white' }}>
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 {categoryItem == "Praise" &&
                                     <TodoCategory
-                                        style={theme == 'dark' ? { backgroundColor: '#A5FFC9', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#65FFA2', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: '#2F2D51' }} >
+                                        style={theme == 'dark' ? { backgroundColor: '#A5FFC9', fontFamily: 'Inter-SemiBold', color: 'black' } : { backgroundColor: '#65FFA2', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: '#2F2D51' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 {categoryItem == "Personal" &&
                                     <TodoCategory
-                                        style={theme == 'dark' ? { backgroundColor: '#FFB2B2', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#FF5858', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                        style={theme == 'dark' ? { backgroundColor: '#FFB2B2', fontFamily: 'Inter-SemiBold', color: 'black' } : { backgroundColor: '#FF5858', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'white' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 {categoryItem == "Other" &&
                                     <TodoCategory
-                                        style={theme == 'dark' ? { backgroundColor: 'white', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: 'white', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' }} >
+                                        style={theme == 'dark' ? { backgroundColor: 'white', fontFamily: 'Inter-SemiBold', color: 'black' } : { backgroundColor: 'white', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>
                                 }
                                 {categoryItem == "None" &&
                                     <TodoCategory
-                                        style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#8C8C8C', fontFamily: 'Inter-Medium', color: 'black' } : { backgroundColor: '#2F2D51', fontFamily: 'Inter-Regular', color: 'white' }} >
-                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-Medium', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-Medium', color: 'white' }} >
+                                        style={theme == 'dark' ? { borderRadius: 20, backgroundColor: '#8C8C8C', fontFamily: 'Inter-SemiBold', color: 'black' } : { backgroundColor: '#2F2D51', fontFamily: 'Inter-Regular', color: 'white' }} >
+                                        <Text style={theme == 'dark' ? { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'black' } : { fontSize: 11, fontFamily: 'Inter-SemiBold', color: 'white' }} >
                                             {item.category}
                                         </Text>
                                     </TodoCategory>

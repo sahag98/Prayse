@@ -17,7 +17,9 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     const [opacity, setOpacity] = useState(new Animated.Value(1));
     const [categoryValue, setCategoryValue] = useState('')
     const [loading, setLoading] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
     const [extended, setExtended] = useState(true);
+    const [taskName, setTaskName] = useState('Add')
     const [selectedEdit, setSelectedEdit] = useState('')
     const [answeredAlready, setAnsweredAlready] = useState('')
     const [isBoxVisible, setIsBoxVisible] = useState(false);
@@ -83,16 +85,18 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
     }
 
     const [prayertoBeEdited, setPrayertoBeEdited] = useState(null)
+    const [categorytoBeEdited, setCategorytoBeEdited] = useState(null)
 
     const handleTriggerEdit = (item) => {
+        setIsEditing(true)
         Animated.timing(opacity, {
             toValue: 1,
             duration: 500, // in milliseconds
             useNativeDriver: true
         }).start()
+        setTaskName('Edit')
         setSelectedEdit('')
         setIsBoxVisible(false)
-
         setPrayertoBeEdited(item)
         setModalVisible(true)
         setPrayerValue(item.prayer);
@@ -128,6 +132,10 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
 
                 {!isBoxVisible &&
                     <InputModal
+                        isEditing={isEditing}
+                        setIsEditing={setIsEditing}
+                        setTaskName={setTaskName}
+                        taskName={taskName}
                         folderName={folderName}
                         folderId={folderId}
                         visible={visible}
@@ -147,6 +155,8 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                         handleAddOldPrayers={handleAddOldPrayers}
                         prayertoBeEdited={prayertoBeEdited}
                         setPrayertoBeEdited={setPrayertoBeEdited}
+                        categorytoBeEdited={categorytoBeEdited}
+                        setCategorytoBeEdited={setCategorytoBeEdited}
                     />
                 }
             </Animated.View>
@@ -160,6 +170,8 @@ const Home = ({ navigation, prayerList, folderName, oldPrayers, setoldPrayer, fo
                         handleTriggerEdit={handleTriggerEdit}
                         setAnsweredAlready={setAnsweredAlready}
                         setLoading={setLoading}
+                        isEditing={isEditing}
+                        setIsEditing={setIsEditing}
                         theme={theme}
                         selectedEdit={selectedEdit}
                         setSelectedEdit={setSelectedEdit}

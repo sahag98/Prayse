@@ -238,7 +238,7 @@ export const StyledInput = styled.TextInput`
   width: 300px;
   height: 60px;
   background-color: ${colors.tertiary};
-  padding: 10px;
+  padding: 20px;
   font-size: 14px;
   border-radius: 10px;
   color: ${colors.alternative};

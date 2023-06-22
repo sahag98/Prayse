@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   answeredPrayerWrapper: {
     width: '100%',
-    marginBottom: 10,
+    marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'

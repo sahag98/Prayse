@@ -333,11 +333,16 @@ export default function Welcome({ navigation }) {
                     </TouchableOpacity>
                 }
             </View>
-
-            <TouchableOpacity onPress={() => navigation.navigate('Folders')} style={theme == 'dark' ? styles.buttonDark : styles.button}>
-                <Text style={theme == 'dark' ? { color: '#212121', fontFamily: 'Inter-Bold' } : { color: 'white', fontFamily: 'Inter-Bold' }}>Create a Folder</Text>
-                <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? "#212121" : 'white'} />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+                <TouchableOpacity onPress={() => navigation.navigate('Folders')} style={theme == 'dark' ? styles.buttonDark : styles.button}>
+                    <Text style={theme == 'dark' ? { color: '#212121', fontFamily: 'Inter-Bold' } : { color: 'white', fontFamily: 'Inter-Bold' }}>Create Folder</Text>
+                    <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? "#212121" : 'white'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={theme == 'dark' ? [styles.buttonDark, { backgroundColor: '#212121' }] : [styles.button, { backgroundColor: '#93D8F8' }]}>
+                    <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Bold' } : { color: '#2f2d51', fontFamily: 'Inter-Bold' }}>Quick Prayer</Text>
+                    <AntDesign style={{ marginLeft: 10 }} name="pluscircleo" size={24} color={theme == 'dark' ? "white" : '#2f2d51'} />
+                </TouchableOpacity>
+            </View>
         </Container>
     )
 }
@@ -468,8 +473,8 @@ const styles = StyleSheet.create({
         marginTop: 30,
         width: 160,
         backgroundColor: '#2f2d51',
-        padding: 15,
-        borderRadius: 5,
+        padding: 13,
+        borderRadius: 50,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -479,11 +484,12 @@ const styles = StyleSheet.create({
         marginTop: 30,
         width: 160,
         backgroundColor: '#A5C9FF',
-        padding: 15,
-        borderRadius: 5,
+        padding: 13,
+        borderRadius: 50,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
     }
+
 })

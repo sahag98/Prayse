@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
-    KeyboardAvoidingView, View, Text, Modal, StyleSheet, Platform, ActivityIndicator
+    KeyboardAvoidingView, Keyboard, View, Text, Modal, StyleSheet, Platform, ActivityIndicator, Button, TouchableOpacity
 }
     from 'react-native';
 import {
@@ -23,15 +23,18 @@ import { addPrayer, editPrayer } from '../redux/prayerReducer';
 import { useEffect } from 'react';
 
 
-const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
+const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
+    setIsEditing,
+    setCategorytoBeEdited,
+    taskName, isIOS, visible, animatedValue, extended,
     setCategoryValue, modalVisible, folderName, folderId, setModalVisible,
     prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited
 }) => {
     const theme = useSelector(state => state.user.theme)
-    const inputRef = useRef(null)
+    const [inputHeight, setInputHeight] = useState(60);
     const [isExtended, setIsExtended] = useState(true);
 
-
+    console.log('category value: ', categoryValue)
 
     useEffect(() => {
         if (!isIOS) {
@@ -44,15 +47,21 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
 
     const handleCloseModal = () => {
         setModalVisible(false)
+        setIsEditing(false)
         setPrayerValue("")
         setCategoryValue("")
-        // setTodoToBeEdited(null)
     }
     const dispatch = useDispatch()
     let [fontsLoaded] = useFonts({
         'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     })
+
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
+
+    console.log(isEditing)
 
     const data = [
         {
@@ -79,6 +88,10 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
 
     const [selected, setSelected] = useState("")
 
+    const handleContentSizeChange = (event) => {
+        setInputHeight(event.nativeEvent.contentSize.height);
+    };
+
     const BusyIndicator = () => {
 
         return (
@@ -89,12 +102,11 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
     };
 
     const handleSubmit = () => {
-
         if (prayerValue.length == 0) {
             alert("Type in a prayer and try again.")
             return
         }
-        if (!prayertoBeEdited) {
+        if (!prayertoBeEdited && !categorytoBeEdited) {
             dispatch(addPrayer({
                 prayer: prayerValue,
                 folder: folderName,
@@ -112,16 +124,20 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
                 date: prayertoBeEdited.date,
                 id: prayertoBeEdited.id,
             }))
+            setIsEditing(false)
+            setCategorytoBeEdited(null)
             setPrayertoBeEdited(null)
         }
         setModalVisible(false)
         setPrayerValue("")
+        setIsEditing(false)
         setCategoryValue("")
     }
 
     if (!fontsLoaded) {
         return <BusyIndicator />
     }
+
     return (
         <View style={{ position: 'relative', flex: 1 }}>
             <View style={styles.actionButtons}>
@@ -129,20 +145,14 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
                     icon={'plus'}
                     label={'Add prayer'}
                     extended={isExtended}
-                    onPress={() => setModalVisible(true)}
+
+                    onPress={() => { setModalVisible(true); setTaskName('Add') }}
                     visible={visible}
                     animateFrom={'left'}
                     iconMode={'dynamic'}
                     color={'white'}
                     style={theme == 'dark' ? styles.fabStyleDark : styles.fabStyle}
                 />
-                {/* <FAB
-                    icon="plus"
-                    style={styles.fabStyle}
-                    onPress={() => { setModalVisible(true) }}
-                    color="#2F2D51"
-                    customSize={60}
-                /> */}
             </View>
 
             <Modal
@@ -150,24 +160,39 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={handleCloseModal}
-            // onShow={() => inputRef.current?.focus()}
             >
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
                         <ModalView style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
                             <ModalIcon>
-                                <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold' }}>Prayer</HeaderTitle>
-                                <AntDesign style={{ marginTop: 10 }} name='edit' size={32} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 5 }}>
+                                    <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold' }}>{taskName} Prayer</HeaderTitle>
+                                    <AntDesign name='edit' size={24} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                </View>
+                                <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
+                                    <Text style={{ color: '#ff4e4e', fontFamily: 'Inter-Regular', fontSize: 13 }}>Dismiss Keyboard</Text>
+                                </TouchableOpacity>
                             </ModalIcon>
                             <StyledInput
-                                ref={inputRef}
-                                style={theme == 'dark' ? styles.inputDark : styles.input}
+                                style={theme == 'dark' ?
+                                    {
+                                        height: inputHeight, marginTop: 10,
+                                        alignItems: 'center',
+                                        alignSelf: 'center',
+                                        textAlignVertical: 'center',
+                                        fontFamily: 'Inter-Regular', backgroundColor: '#121212'
+                                    } : {
+                                        height: inputHeight, marginTop: 10,
+                                        textAlignVertical: "center",
+                                        fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
+                                    }}
                                 placeholder="Add a prayer"
                                 placeholderTextColor={'white'}
                                 selectionColor={'white'}
                                 autoFocus={true}
                                 onChangeText={(text) => setPrayerValue(text)}
                                 value={prayerValue}
+                                onContentSizeChange={handleContentSizeChange}
                                 onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
                                 multiline={true}
                             />
@@ -179,7 +204,7 @@ const InputModal = ({ categoryValue, isIOS, visible, animatedValue, extended,
                                 setSelected={setCategoryValue}
                                 data={data}
                                 search={false}
-                                defaultOption={{ key: 'None', value: 'None' }}
+                                defaultOption={isEditing ? { key: 'None', value: categoryValue } : { key: 'None', value: 'None' }}
                                 boxStyles={theme == 'dark' ? styles.categoryDark : styles.category}
                                 dropdownStyles={theme == 'dark' ? styles.dropdownDark : styles.dropdown}
                                 dropdownTextStyles={styles.dropdownTextDark}
@@ -255,6 +280,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#2F2D51',
     },
+    dismiss: {
+        marginVertical: 2,
+        padding: 2,
+        borderBottomColor: '#ff4e4e',
+        borderBottomWidth: 0.2
+    },
     fabStyle3Dark: {
         bottom: 10,
         borderRadius: 20,
@@ -314,11 +345,7 @@ const styles = StyleSheet.create({
     },
 
     inputDark: {
-        marginTop: 10,
-        alignItems: 'center',
-        alignSelf: 'center',
-        textAlignVertical: 'center',
-        fontFamily: 'Inter-Regular', backgroundColor: '#121212'
+
     },
     input: {
         textAlignVertical: "center",

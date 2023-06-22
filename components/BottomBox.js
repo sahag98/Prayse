@@ -7,7 +7,8 @@ import { deletePrayer, } from '../redux/prayerReducer';
 import { useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 
-const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlready,
+const BottomBox = ({ slideUpValue, isEditing,
+  setIsEditing, setLoading, handleTriggerEdit, answeredAlready,
   opacity, theme, selectedEdit,
   setSelectedEdit,
   setIsBoxVisible }) => {
@@ -21,6 +22,7 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
   }
 
   const handleAddToAnsweredPrayer = (prayer) => {
+    setIsEditing(false)
     dispatch(addToAnsweredPrayer({
       answeredDate: new Date().toDateString(),
       prayer: prayer,
@@ -87,8 +89,7 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
       },
     })
   ).current;
-  console.log('selectedEdit:', selectedEdit.id)
-  console.log('answeredAlready:', answeredAlready)
+
   return (
     <View style={styles.container}>
       <Animated.View
@@ -129,7 +130,7 @@ const BottomBox = ({ slideUpValue, setLoading, handleTriggerEdit, answeredAlread
         <Divider style={{ marginVertical: 5, backgroundColor: 'grey' }} />
         <TouchableOpacity onPress={() => onShare(selectedEdit.prayer)} style={styles.buttonItems}>
           <Text style={{ color: 'white', fontSize: 15, fontFamily: 'Inter-Medium' }}>Share prayer</Text>
-          <AntDesign name="sharealt" size={20} color={theme == 'dark' ? "#ebebeb" : "#454277"} />
+          <AntDesign name="sharealt" size={20} color="#ebebeb" />
         </TouchableOpacity>
         <Divider style={{ marginVertical: 5, backgroundColor: 'grey' }} />
         <TouchableOpacity onPress={() => handleTriggerEdit(selectedEdit)} style={styles.buttonItems}>
