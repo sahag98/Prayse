@@ -90,32 +90,32 @@ const More = ({ navigation }) => {
   const options = [
     {
       id: 1,
-      icon: <Ionicons name="book-outline" style={{ marginRight: 10 }} size={24} color="white" />,
+      icon: <Ionicons name="book-outline" style={{ marginRight: 10 }} size={24} color={theme=='dark' ? "white": "#2f2d51"} />,
       title: 'Verse of the Day',
       screen: 'VerseOfTheDay'
     },
 
     {
       id: 2,
-      icon: <AntDesign name="infocirlceo" style={{ marginRight: 10 }} size={24} color="white" />,
+      icon: <AntDesign name="infocirlceo" style={{ marginRight: 10 }} size={24} color={theme=='dark' ? "white": "#2f2d51"} />,
       title: 'About',
       link: 'https://prayse-website.vercel.app/'
     },
     {
       id: 3,
-      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color="white" />,
+      icon: <AntDesign name="setting" style={{ marginRight: 10 }} size={24} color={theme=='dark' ? "white": "#2f2d51"} />,
       title: 'Settings',
       screen: 'Settings'
     },
     {
       id: 4,
-      icon: <Feather name="shield" style={{ marginRight: 10 }} size={24} color="white" />,
+      icon: <Feather name="shield" style={{ marginRight: 10 }} size={24} color={theme=='dark' ? "white": "#2f2d51"} />,
       title: 'Privacy Policy',
       link: 'https://www.privacypolicies.com/live/887580d1-6bf3-4b0a-a716-a732bf8141fa'
     },
     {
       id: 5,
-      icon: <MaterialCommunityIcons name="email-edit-outline" style={{ marginRight: 10 }} size={24} color="white" />,
+      icon: <MaterialCommunityIcons name="email-edit-outline" style={{ marginRight: 10 }} size={24} color={theme=='dark' ? "white": "#2f2d51"} />,
       title: 'Contact Developer',
       link: 'mailto:arzsahag@gmail.com'
     },
@@ -165,18 +165,18 @@ const More = ({ navigation }) => {
         <TouchableOpacity onPress={() => giveFeedback('android')}
           style={theme == 'dark' ? styles.verseDark : styles.verse}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color="white" />
-            <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Feedback</Text>
+            <MaterialIcons name="feedback" size={24} style={{ marginRight: 10 }} color={theme=='dark'? 'white' :'#2f2d51'} />
+            <Text style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>Feedback</Text>
           </View>
-          <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
+          <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme=='dark'? 'white' :'#2f2d51'} />
         </TouchableOpacity>
       }
       <TouchableOpacity onPress={() => setOpen(true)}
         style={theme == 'dark' ? styles.verseDark : styles.verse}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }}>Next Update Suggestions</Text>
+          <Text style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>Next Update Suggestions</Text>
         </View>
-        <MaterialCommunityIcons name="thought-bubble-outline" style={{ marginLeft: 10 }} size={24} color="white" />
+        <MaterialCommunityIcons name="thought-bubble-outline" style={{ marginLeft: 10 }} size={24} color={theme=='dark'? 'white' :'#2f2d51'} />
       </TouchableOpacity>
       <Modal
         animationType='fade'
@@ -188,7 +188,10 @@ const More = ({ navigation }) => {
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
           <ModalContainer style={theme == 'dark' ? { backgroundColor: 'rgba(0, 0, 0, 0.8)' } : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
             <ModalView2 style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
-
+              <TouchableOpacity onPress={handleCloseModal} style={{position:'absolute', right:10, top:10}}>
+              <AntDesign   name="close" size={28} color={theme=='dark'? "white" : "#2f2d51"} />
+              </TouchableOpacity>
+            
               <HeaderTitle style={theme == 'dark' ? { textAlign: 'center', fontFamily: 'Inter-Bold', color: 'white' } : { textAlign: 'center', fontFamily: 'Inter-Bold' }}>Next Update Suggestions</HeaderTitle>
               <Text style={theme == 'dark' ? { color: 'white', textAlign: 'center', fontFamily: 'Inter-Regular', marginVertical: 5 } : { color: '#2f2d51', textAlign: 'center', marginVertical: 5, fontFamily: 'Inter-Regular' }}>Select an option or enter a suggestion:</Text>
               {suggestions.map((option) => (
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Inter-Regular',
     backgroundColor: '#353535',
-    marginBottom: 5
+    marginBottom: 12
   },
   input: {
     borderRadius: 10,
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
     color: '#2f2d51',
     borderColor: 'black',
     fontFamily: 'Inter-Regular',
-    marginBottom: 5,
+    marginBottom: 12,
     backgroundColor: '#4bbef3'
   },
   verseDark: {
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#151515',
     padding: 20,
-    borderRadius: 5,
+    borderRadius: 20,
     justifyContent: 'space-between',
     marginBottom: 15
   },
@@ -270,9 +273,9 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2f2d51',
+    backgroundColor: '#b8e5fa',
     padding: 20,
-    borderRadius: 5,
+    borderRadius:20,
     justifyContent: 'space-between',
     marginBottom: 15
   },

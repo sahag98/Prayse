@@ -8,7 +8,7 @@ import { useState } from 'react';
 const FolderItem = ({ item, theme, navigation, open, setOpen, setIdToDelete, idToDelete }) => {
   const dispatch = useDispatch()
   const [openEdit, setOpenEdit] = useState(false)
-  const [newFolderName, setNewFolderName] = useState('')
+  const [newFolderName, setNewFolderName] = useState(item.name)
 
   const handleOpen = (item) => {
     navigation.navigate('PrayerPage', {
@@ -33,6 +33,7 @@ const FolderItem = ({ item, theme, navigation, open, setOpen, setIdToDelete, idT
   function handleDeleteFolder(id) {
     setIdToDelete(id)
   }
+
   return (
     <View key={item.id}>
       <View style={theme == 'dark' ? [styles.containerDark, styles.elevationDark] : [styles.container, styles.elevation]}>

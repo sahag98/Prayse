@@ -15,7 +15,6 @@ import {
 import { SelectList } from 'react-native-dropdown-select-list'
 import { AntDesign } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
-import { useNavigation } from '@react-navigation/native'
 import uuid from 'react-native-uuid';
 import { AnimatedFAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,10 +30,8 @@ const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
     prayerValue, setPrayerValue, prayertoBeEdited, setPrayertoBeEdited
 }) => {
     const theme = useSelector(state => state.user.theme)
-    const [inputHeight, setInputHeight] = useState(60);
+    const [inputHeight, setInputHeight] = useState(60)
     const [isExtended, setIsExtended] = useState(true);
-
-    console.log('category value: ', categoryValue)
 
     useEffect(() => {
         if (!isIOS) {
@@ -60,8 +57,6 @@ const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
     const dismissKeyboard = () => {
         Keyboard.dismiss();
     };
-
-    console.log(isEditing)
 
     const data = [
         {
@@ -89,7 +84,13 @@ const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
     const [selected, setSelected] = useState("")
 
     const handleContentSizeChange = (event) => {
-        setInputHeight(event.nativeEvent.contentSize.height);
+        if (event.nativeEvent.contentSize.height < 60){
+            setInputHeight(60)
+        }
+        else{
+            setInputHeight(event.nativeEvent.contentSize.height);
+        }
+       
     };
 
     const BusyIndicator = () => {
@@ -165,29 +166,27 @@ const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
                     <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
                         <ModalView style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
                             <ModalIcon>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 5 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5}}>
                                     <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold' }}>{taskName} Prayer</HeaderTitle>
                                     <AntDesign name='edit' size={24} color={theme == 'dark' ? 'white' : '#2F2D51'} />
                                 </View>
-                                <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
-                                    <Text style={{ color: '#ff4e4e', fontFamily: 'Inter-Regular', fontSize: 13 }}>Dismiss Keyboard</Text>
-                                </TouchableOpacity>
+                                
                             </ModalIcon>
                             <StyledInput
                                 style={theme == 'dark' ?
                                     {
-                                        height: inputHeight, marginTop: 10,
+                                        height: inputHeight < 60 ? 60 : inputHeight, marginTop: 10,
                                         alignItems: 'center',
                                         alignSelf: 'center',
                                         textAlignVertical: 'center',
                                         fontFamily: 'Inter-Regular', backgroundColor: '#121212'
                                     } : {
-                                        height: inputHeight, marginTop: 10,
+                                        height: inputHeight < 60 ? 60 : inputHeight, marginTop: 10,
                                         textAlignVertical: "center",
                                         fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
                                     }}
                                 placeholder="Add a prayer"
-                                placeholderTextColor={'white'}
+                                placeholderTextColor={'#e0e0e0'}
                                 selectionColor={'white'}
                                 autoFocus={true}
                                 onChangeText={(text) => setPrayerValue(text)}
@@ -196,6 +195,9 @@ const InputModal = ({ categoryValue, setTaskName, categorytoBeEdited, isEditing,
                                 onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
                                 multiline={true}
                             />
+                            <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
+                                    <Text style={{ color: '#ff4e4e', fontFamily: 'Inter-Regular', fontSize: 13 }}>Dismiss Keyboard</Text>
+                                </TouchableOpacity>
                             <Text style={theme == 'dark' ? styles.selectDark : styles.select}>
                                 Select a Category (optional):
                             </Text>
@@ -281,10 +283,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#2F2D51',
     },
     dismiss: {
-        marginVertical: 2,
+        alignSelf:'flex-start',
+        marginVertical: 5,
         padding: 2,
-        borderBottomColor: '#ff4e4e',
-        borderBottomWidth: 0.2
     },
     fabStyle3Dark: {
         bottom: 10,
@@ -293,14 +294,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#A5C9FF',
     },
     select: {
-        fontSize: 12,
-        paddingTop: 10,
-        color: 'black'
+        fontSize: 13,
+        paddingVertical: 5,
+        color: 'black',
+        fontFamily:'Inter-Regular'
     },
     selectDark: {
-        fontSize: 12,
-        paddingTop: 10,
-        color: 'white'
+        fontSize: 13,
+        paddingVertical: 5,
+        color: 'white',
+        fontFamily:'Inter-Regular'
     },
 
     category: {
@@ -343,12 +346,4 @@ const styles = StyleSheet.create({
         elevation: 6,
         shadowColor: '#13588c',
     },
-
-    inputDark: {
-
-    },
-    input: {
-        textAlignVertical: "center",
-        fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
-    }
 })

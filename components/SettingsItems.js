@@ -13,11 +13,11 @@ const SettingsItems = ({ options, theme, navigation }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {option.icon}
               <Text
-                style={{ fontFamily: 'Inter-Regular', color: 'white', fontSize: 16 }}>
+                style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>
                 {option.title}
               </Text>
             </View>
-            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
+            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme=='dark'? 'white' :'#2f2d51'} />
           </TouchableOpacity>
           :
           <TouchableOpacity key={option.id} onPress={() => navigation.navigate(option.screen)}
@@ -25,11 +25,11 @@ const SettingsItems = ({ options, theme, navigation }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {option.icon}
               <Text
-                style={{ fontFamily: 'Inter-Regular', color: 'white', fontSize: 16 }}>
+                style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>
                 {option.title}
               </Text>
             </View>
-            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color='white' />
+            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme=='dark'? 'white' :'#2f2d51'} />
           </TouchableOpacity>
       ))}
     </>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#151515',
     padding: 20,
-    borderRadius: 5,
+    borderRadius: 20,
     justifyContent: 'space-between',
     marginBottom: 15
   },
@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2f2d51',
+    backgroundColor: '#b8e5fa',
     padding: 20,
-    borderRadius: 5,
+    borderRadius: 20,
     justifyContent: 'space-between',
     marginBottom: 15
   },

@@ -4,9 +4,9 @@ import prayer from '../assets/prayer-nobg.png'
 import { Ionicons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { useFonts } from 'expo-font'
 import Unorderedlist from 'react-native-unordered-list';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Divider } from 'react-native-paper';
-import { Container, ModalContainer } from '../styles/appStyles';
+import { Container, HeaderTitle, ModalAction, ModalActionGroup, ModalContainer, ModalIcon, ModalView, StyledInput } from '../styles/appStyles';
 import { Modal } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Device from 'expo-device';
@@ -14,6 +14,13 @@ import * as Notifications from 'expo-notifications';
 import { useIsFocused } from '@react-navigation/native';
 import Animated, { FadeIn } from "react-native-reanimated";
 import { PROJECT_ID, NOTIFICATION_API } from '@env'
+import { addQuickFolder } from '../redux/folderReducer';
+import uuid from 'react-native-uuid';
+import { KeyboardAvoidingView } from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list';
+import { Keyboard } from 'react-native';
+import { addPrayer } from '../redux/prayerReducer';
+import * as Updates from 'expo-updates';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,8 +78,7 @@ async function registerForPushNotificationsAsync() {
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-
-            alert('To recieve notifications in the future, enable Notifications from the App Settings.');
+            console.log('To recieve notifications in the future, enable Notifications from the App Settings.');
             return;
         }
 
@@ -86,12 +92,28 @@ async function registerForPushNotificationsAsync() {
 
 export default function Welcome({ navigation }) {
     const theme = useSelector(state => state.user.theme)
+    const dispatch = useDispatch()
     const token = useSelector(state => state.user.expoToken)
     const [greeting, setGreeting] = useState('')
     const [toolVisible, setToolVisible] = useState(false)
     const [icon, setIcon] = useState(null)
     const [expanded, setExpanded] = useState(true);
     const handlePress = () => setExpanded(!expanded);
+    const folders = useSelector(state => state.folder.folders)
+    const quickFolderExists = useSelector(state => state.folder.quickFolderExists)
+
+    async function onFetchUpdateAsync() {
+        try {
+          const update = await Updates.checkForUpdateAsync();
+          if (update.isAvailable) {
+            await Updates.fetchUpdateAsync();
+            await Updates.reloadAsync();
+          }
+        } catch (error) {
+          // You can also add an alert() to see the error message in case of an error when fetching updates.
+          console.log(`Error fetching latest update: ${error}`);
+        }
+      }
 
     const BusyIndicator = () => {
         return (
@@ -101,18 +123,73 @@ export default function Welcome({ navigation }) {
         );
     };
 
+    async function handleQuickPrayer(){
+        console.log(quickFolderExists)
+    if (quickFolderExists === undefined || quickFolderExists === false){
+        console.log('its undefined')
+        try {
+                    await dispatch(addQuickFolder({
+                        id: 4044,
+                        name: 'Quick Prayers',
+                        prayers: []
+                      }))
+                    
+                } catch (error) {
+                    console.log(error)
+                }
+                console.log('folder created')
+                handleSubmit()
+    } else if (quickFolderExists === true){
+        console.log('folder already exists, adding prayer to it')
+        handleSubmit()
+    }
+    }
+
+    function handleSubmit(){
+        dispatch(addPrayer({
+            prayer: quickprayervalue,
+            folder: 'Quick Prayers',
+            folderId: 4044,
+            category: quickcategoryvalue,
+            date: new Date().toLocaleString(),
+            id: uuid.v4(),
+        }))
+        setQuickModal(false)
+        setQuickprayervalue('')
+    }
+
     function handleCloseTooltip() {
         setToolVisible(false)
+    }
+
+    function handleCloseModal() {
+        setQuickprayervalue('')
+        setQuickModal(false)
     }
 
     const fadeAnim = useRef(new Animated.Value(0)).current
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
+    const [quickModal, setQuickModal] = useState(false)
     const notificationListener = useRef();
     const responseListener = useRef();
     const isFocused = useIsFocused();
     const lastNotificationResponse = Notifications.useLastNotificationResponse()
+    const [inputHeight, setInputHeight] = useState(60);
+    const [quickprayervalue, setQuickprayervalue] = useState('')
+    const [quickcategoryvalue, setQuickcategoryvalue] = useState('')
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
 
+    const handleContentSizeChange = (event) => {
+        if (event.nativeEvent.contentSize.height < 60){
+            setInputHeight(60)
+        }
+        else{
+            setInputHeight(event.nativeEvent.contentSize.height);
+        }
+    };
 
     useEffect(() => {
         if (lastNotificationResponse && lastNotificationResponse.notification.request.content.data) {
@@ -178,34 +255,37 @@ export default function Welcome({ navigation }) {
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             const body = response.notification.request.content.body
             const res = response.notification.request.content.data
-            // console.log(response)
-            // if (res && res.updateLink) {
-            //     console.log('in update')
-            //     if (Platform.OS === 'ios') {
-            //         Linking.openURL('https://apps.apple.com/us/app/prayerlist-app/id6443480347')
-            //     } else if (Platform.OS === 'android') {
-            //         Linking.openURL('https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp')
-            //     }
-            // }
-            // if (res && res.screen) {
-            //     console.log('in screen')
-            //     // navigate to the screen specified in the data object
-            //     if (res.screen == 'VerseOfTheDay') {
-            //         navigation.navigate(res.screen, {
-            //             verse: body,
-            //             title: res.verseTitle
-            //         });
-            //     } else {
-            //         navigation.navigate(res.screen)
-            //     }
-
-            // }
         });
+
+        onFetchUpdateAsync()
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
+
+    const data = [
+        {
+            key: 'General',
+            value: 'General'
+        },
+        {
+            key: 'People',
+            value: 'People'
+        },
+        {
+            key: 'Personal',
+            value: 'Personal'
+        },
+        {
+            key: 'Praise',
+            value: 'Praise'
+        },
+        {
+            key: 'Other',
+            value: 'Other'
+        }
+    ]
 
     const [fontsLoaded] = useFonts({
         'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
@@ -250,26 +330,32 @@ export default function Welcome({ navigation }) {
                             <AntDesign name="close" size={22} color={theme == 'dark' ? 'white' : "#2f2d51"} />
                         </TouchableOpacity>
 
-                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 10, fontSize: 16 }}>What's New in v7.2.0 :</Text>
+                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', fontFamily: 'Inter-Bold', marginBottom: 10, fontSize: 16 }}>What's New in v7.3.1 :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Ability to change folder name</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Quick prayer functionality!</Text>
                         </Unorderedlist>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Next Update Suggestion section</Text>
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Prayer input box size changes based on text.</Text>
                         </Unorderedlist>
-                        <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 }}>Bug fixes :</Text>
+                        <Unorderedlist
+                            color={theme == 'dark' ? 'white' : 'black'}
+                            bulletUnicode={0x2713}
+                        >
+                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Voting on the next update on the more page.</Text>
+                        </Unorderedlist>
+                        {/* <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 }}>Bug fixes :</Text>
                         <Unorderedlist
                             color={theme == 'dark' ? 'white' : 'black'}
                             bulletUnicode={0x2713}
                         >
                             <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Fixed community notification spam</Text>
-                        </Unorderedlist>
+                        </Unorderedlist> */}
 
                     </TouchableOpacity>
                 </ModalContainer>
@@ -338,11 +424,81 @@ export default function Welcome({ navigation }) {
                     <Text style={theme == 'dark' ? { color: '#212121', fontFamily: 'Inter-Bold' } : { color: 'white', fontFamily: 'Inter-Bold' }}>Create Folder</Text>
                     <AntDesign style={{ marginLeft: 10 }} name="right" size={20} color={theme == 'dark' ? "#212121" : 'white'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={theme == 'dark' ? [styles.buttonDark, { backgroundColor: '#212121' }] : [styles.button, { backgroundColor: '#93D8F8' }]}>
+                <TouchableOpacity onPress={()=>setQuickModal(true)} style={theme == 'dark' ? [styles.buttonDark, { backgroundColor: '#212121' }] : [styles.button, { backgroundColor: '#93D8F8' }]}>
                     <Text style={theme == 'dark' ? { color: 'white', fontFamily: 'Inter-Bold' } : { color: '#2f2d51', fontFamily: 'Inter-Bold' }}>Quick Prayer</Text>
                     <AntDesign style={{ marginLeft: 10 }} name="pluscircleo" size={24} color={theme == 'dark' ? "white" : '#2f2d51'} />
                 </TouchableOpacity>
             </View>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={quickModal}
+                onRequestClose={handleCloseModal}
+            >
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                    <ModalContainer style={theme == 'dark' ? { backgroundColor: '#121212' } : { backgroundColor: '#F2F7FF' }}>
+                        <ModalView style={theme == 'dark' ? { backgroundColor: '#212121' } : { backgroundColor: '#93D8F8' }}>
+                            <ModalIcon>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 5 }}>
+                                    <HeaderTitle style={theme == 'dark' ? { fontFamily: 'Inter-Bold', color: 'white' } : { fontFamily: 'Inter-Bold' }}>Quick Prayer</HeaderTitle>
+                                    <AntDesign name='edit' size={24} color={theme == 'dark' ? 'white' : '#2F2D51'} />
+                                </View>
+                            </ModalIcon>
+                            <StyledInput
+                                style={theme == 'dark' ?
+                                    {
+                                        height: inputHeight < 60 ? 60 : inputHeight, marginTop: 10,
+                                        alignItems: 'center',
+                                        alignSelf: 'center',
+                                        textAlignVertical: 'center',
+                                        fontFamily: 'Inter-Regular', backgroundColor: '#121212'
+                                    } : {
+                                        height: inputHeight < 60 ? 60 : inputHeight, marginTop: 10,
+                                        textAlignVertical: "center",
+                                        fontFamily: 'Inter-Regular', backgroundColor: '#2F2D51'
+                                    }}
+                                placeholder="Add a prayer"
+                                placeholderTextColor={'#e0e0e0'}
+                                selectionColor={'white'}
+                                autoFocus={true}
+                                onChangeText={(text) => setQuickprayervalue(text)}
+                                value={quickprayervalue}
+                                onContentSizeChange={handleContentSizeChange}
+                                onSubmitEditing={(e) => { e.key === 'Enter' && e.preventDefault() }}
+                                multiline={true}
+                            />
+                            <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
+                                    <Text style={{ color: '#ff4e4e', fontFamily: 'Inter-Regular', fontSize: 13 }}>Dismiss Keyboard</Text>
+                                </TouchableOpacity>
+                            <Text style={theme == 'dark' ? styles.selectDark : styles.select}>
+                                Select a Category (optional):
+                            </Text>
+                            <SelectList
+                                placeholder="selectcategory"
+                                setSelected={setQuickcategoryvalue}
+                                data={data}
+                                search={false}
+                                defaultOption={{ key: 'None', value: 'None' }}
+                                boxStyles={theme == 'dark' ? styles.categoryDark : styles.category}
+                                dropdownStyles={theme == 'dark' ? styles.dropdownDark : styles.dropdown}
+                                dropdownTextStyles={styles.dropdownTextDark}
+                                inputStyles={styles.inputText}
+                                arrowicon={<AntDesign name="down" size={15} color="white" />}
+                                maxHeight="250"
+                            />
+                            <ModalActionGroup>
+                                <ModalAction color={'white'} onPress={handleCloseModal}>
+                                    <AntDesign name='close' size={28} color={theme == 'dark' ? '#121212' : '#2F2D51'} />
+                                </ModalAction>
+                                <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={handleQuickPrayer}>
+                                    <AntDesign name='check' size={28} color={'white'} />
+                                </ModalAction>
+                            </ModalActionGroup>
+                        </ModalView>
+                    </ModalContainer>
+                </KeyboardAvoidingView>
+            </Modal>
         </Container>
     )
 }
@@ -359,6 +515,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212',
         justifyContent: "center",
         alignItems: 'center'
+    },
+    dismiss: {
+        alignSelf:'flex-start',
+        // alignSelf:'left',
+        marginVertical: 5,
+        padding: 2,
+        // borderBottomColor: '#ff4e4e',
+        // borderBottomWidth: 0.2
     },
     refreshDark: {
         width: '100%',
@@ -395,6 +559,57 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         width: '80%'
+    },
+    select: {
+        fontSize: 13,
+        paddingVertical: 5,
+        color: 'black',
+        fontFamily:'Inter-Regular'
+    },
+    selectDark: {
+        fontSize: 13,
+        paddingVertical: 5,
+        color: 'white',
+        fontFamily:'Inter-Regular'
+    },
+
+    category: {
+        backgroundColor: '#2F2D51',
+        color: 'black',
+        marginTop: 10,
+        height: 50,
+        alignItems: 'center',
+    },
+    categoryDark: {
+        backgroundColor: '#121212',
+        color: 'white',
+        marginTop: 10,
+        height: 50,
+        alignItems: 'center',
+    },
+
+    dropdown: {
+        backgroundColor: '#2F2D51',
+        height: 800
+    },
+    dropdownDark: {
+        backgroundColor: '#121212',
+        height: 800
+    },
+    dropdownText: {
+        color: 'black',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black'
+    },
+    inputText: {
+        color: 'white'
+    },
+    dropdownTextDark: {
+        color: 'white',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'white'
     },
     listText: {
         fontFamily: 'Inter-Regular',
@@ -470,10 +685,10 @@ const styles = StyleSheet.create({
         height: 250,
     },
     button: {
-        marginTop: 30,
+        marginTop: 25,
         width: 160,
         backgroundColor: '#2f2d51',
-        padding: 13,
+        padding: 14,
         borderRadius: 50,
         display: 'flex',
         flexDirection: 'row',
@@ -481,10 +696,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonDark: {
-        marginTop: 30,
+        marginTop: 25,
         width: 160,
         backgroundColor: '#A5C9FF',
-        padding: 13,
+        padding: 14,
         borderRadius: 50,
         display: 'flex',
         flexDirection: 'row',

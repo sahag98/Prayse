@@ -20,6 +20,7 @@ import {
 import More from './Screens/More';
 import VerseOfTheDay from './Screens/VerseOfTheDay';
 import Favorites from './Screens/Favorites';
+import Community2 from './Screens/Community2';
 
 const Tab = createBottomTabNavigator()
 
@@ -145,7 +146,7 @@ const Navigation = () => {
           <Tab.Screen
             name="Community"
             options={() => ({ tabBarLabelStyle: { fontSize: 11, fontFamily: 'Inter-Medium' }, tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 } })}
-            component={Community}
+            component={Community2}
           />
           <Tab.Screen
             name="More"

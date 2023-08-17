@@ -205,7 +205,7 @@ export const ModalButton3 = styled.TouchableOpacity`
 `;
 
 export const ModalContainer = styled.View`
-  padding: 20px;
+  padding: 10px;
   justify-content: center;
   align-items: center;
   flex: 1;
@@ -216,7 +216,6 @@ export const ModalView = styled.View`
   background-color: ${colors.secondary};
   border-radius: 20px;
   padding: 25px;
-
 `;
 
 export const ModalView2 = styled.View`
@@ -236,9 +235,8 @@ export const ToolTipView = styled.View`
 
 export const StyledInput = styled.TextInput`
   width: 300px;
-  height: 60px;
   background-color: ${colors.tertiary};
-  padding: 20px;
+  padding: 10px;
   font-size: 14px;
   border-radius: 10px;
   color: ${colors.alternative};
@@ -298,5 +296,5 @@ export const ModalActionGroup2 = styled.View`
 
 export const ModalIcon = styled.View`
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;

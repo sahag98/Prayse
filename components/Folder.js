@@ -13,7 +13,7 @@ import { TouchableOpacity, Animated } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { AnimatedFAB, Divider } from 'react-native-paper';
 import { Modal } from 'react-native';
-import { addFolder, deleteFolder } from '../redux/folderReducer';
+import { addFolder, deleteFolder, deleteQuickFolder } from '../redux/folderReducer';
 import uuid from 'react-native-uuid';
 import { useFonts } from 'expo-font';
 import { useRef } from 'react';
@@ -93,6 +93,18 @@ const Folder = ({ navigation, todos }) => {
     }))
     setVisible(false)
     setFolderName("")
+  }
+
+  function deleteF(){
+    if (idToDelete == 4044){
+      dispatch(deleteQuickFolder(idToDelete))
+      setOpen(false)
+    }
+    else {
+      dispatch(deleteFolder(idToDelete))
+      setOpen(false)
+    }
+   
   }
 
 
@@ -230,7 +242,7 @@ const Folder = ({ navigation, todos }) => {
               <ModalAction color={'white'} onPress={() => setOpen(false)}>
                 <AntDesign name='close' size={28} color={theme == 'dark' ? 'black' : '#2F2D51'} />
               </ModalAction>
-              <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={() => { dispatch(deleteFolder(idToDelete)); setOpen(false) }}>
+              <ModalAction color={theme == 'dark' ? '#121212' : '#2F2D51'} onPress={deleteF}>
                 <AntDesign name='check' size={28} color={'white'} />
               </ModalAction>
             </ModalActionGroup>

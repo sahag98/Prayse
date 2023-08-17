@@ -91,7 +91,7 @@ const VerseOfTheDay = ({ route }) => {
       </View>
       <Text style={theme == 'dark' ? { fontSize: 15, fontFamily: 'Inter-Medium', color: '#e0e0e0', marginBottom: 10, lineHeight: 22 } : { lineHeight: 22, fontSize: 15, fontFamily: 'Inter-Medium', color: '#2f2d51', marginBottom: 10 }}>
         Welcome to the Verse of the Day page! Our goal is to provide you with a daily reminder of God's love, grace,
-        and wisdom, and to help you grow in your faith journey.
+        and wisdom.
       </Text>
       <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={theme == 'dark' ? styles.favoritesDark : styles.favorites}>
         <Text
@@ -138,7 +138,7 @@ export default VerseOfTheDay
 const styles = StyleSheet.create({
   utiltiesDark: {
     backgroundColor: '#212121',
-    borderRadius: 10,
+    borderRadius: 20,
     height: 45,
     marginTop: 20,
     flexDirection: 'row',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   utilities: {
     backgroundColor: '#2f2d51',
-    borderRadius: 10,
+    borderRadius: 20,
     height: 45,
     marginTop: 20,
     flexDirection: 'row',

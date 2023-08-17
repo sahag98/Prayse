@@ -217,7 +217,7 @@ const Settings = ({ navigation }) => {
           />
         </View>
         <TouchableOpacity onPress={() => setDeleteAllModal(true)} style={theme == 'dark' ? styles.clearAllDark : styles.clearAll}>
-          <Text style={theme == 'dark' ? { color: '#ff6666', fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#ff6262', fontFamily: 'Inter-Bold', fontSize: 16 }}>Clear All Data</Text>
+          <Text style= {{color: '#ff6666', fontFamily: 'Inter-Bold', fontSize: 16 }}>Clear All Data</Text>
         </TouchableOpacity>
         <Modal
           animationType='fade'
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2f2d51',
+    backgroundColor: '#93d8f8',
     borderRadius: 5
   },
   reviewButtonDark: {

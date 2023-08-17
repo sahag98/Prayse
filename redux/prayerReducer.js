@@ -26,7 +26,6 @@ export const prayerSlice = createSlice({
       state.answeredPrayers = state.answeredPrayers.map(obj => obj.id === action.payload.id ? { ...obj, answerNoted: action.payload.answerNote } : obj)
     },
     deletePrayer: (state, action) => {
-      console.log(action.payload)
       state.prayer = state.prayer.filter((prayer) => prayer.id !== action.payload)
     },
     editPrayer: (state, action) => {
