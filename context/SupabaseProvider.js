@@ -19,6 +19,7 @@ const ExpoSecureStoreAdapter = {
 
 export const SupabaseProvider = (props) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [session, setSession] = useState(null);
   const [isNavigationReady, setNavigationReady] = useState(false);
 
@@ -56,6 +57,13 @@ export const SupabaseProvider = (props) => {
     if (error) throw error;
 
     setLoggedIn(data.session !== null);
+
+    let { data: profiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", data.session.user.id);
+
+    setCurrentUser(profiles[0]);
   };
 
   const login = async (email, password) => {
@@ -84,12 +92,20 @@ export const SupabaseProvider = (props) => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setLoggedIn(false);
+    setSession(null);
   };
 
   const checkIfUserIsLoggedIn = async () => {
     const result = await supabase.auth.getSession();
-    console.log(result.data.session);
+    setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
+    console.log("result :", result.data.session.user.id);
+    let { data: profiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", result.data.session.user.id);
+
+    setCurrentUser(profiles[0]);
     setNavigationReady(true);
   };
 
@@ -103,10 +119,11 @@ export const SupabaseProvider = (props) => {
         isLoggedIn,
         login,
         supabase,
+        currentUser,
         register,
+        setLoggedIn,
         getGoogleOAuthUrl,
         setOAuthSession,
-        session,
         forgotPassword,
         logout,
       }}

@@ -9,6 +9,8 @@ import {
 import { useSupabase } from "../context/useSupabase";
 import * as WebBrowser from "expo-web-browser";
 import * as SecureStore from "expo-secure-store";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import React, { useState } from "react";
 import { Container } from "../styles/appStyles";
 import { useSelector } from "react-redux";
@@ -19,15 +21,14 @@ import { Button, Input } from "react-native-elements";
 import { useEffect } from "react";
 import { Session } from "@supabase/supabase-js";
 // import { googleSignIn } from "../lib/googleSignIn";
-const Community2 = () => {
+const Login = () => {
   const theme = useSelector((state) => state.user.theme);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, getGoogleOAuthUrl, isLoggedIn, session, setOAuthSession } =
-    useSupabase();
-  console.log("session :", session);
+  const { getGoogleOAuthUrl, session, setOAuthSession } = useSupabase();
+
   useEffect(() => {
     WebBrowser.warmUpAsync();
 
@@ -41,7 +42,6 @@ const Community2 = () => {
     try {
       const url = await getGoogleOAuthUrl();
       if (!url) return;
-      console.log(url);
       const result = await WebBrowser.openAuthSessionAsync(
         url,
         "exp://192.168.1.110:19000",
@@ -111,23 +111,6 @@ const Community2 = () => {
           A place to connect and pray for one another.
         </Text>
       </View>
-      <Input
-        label="Email"
-        leftIcon={{ type: "font-awesome", name: "envelope" }}
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-        placeholder="email@address.com"
-        autoCapitalize={"none"}
-      />
-      <Input
-        label="Password"
-        leftIcon={{ type: "font-awesome", name: "lock" }}
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        secureTextEntry={true}
-        placeholder="Password"
-        autoCapitalize={"none"}
-      />
       <TouchableOpacity
         onPress={onSignInWithGoogle}
         style={theme == "dark" ? styles.signInButtonDark : styles.signInButton}
@@ -139,9 +122,9 @@ const Community2 = () => {
               : { color: "#2f2d51", fontFamily: "Inter-Medium" }
           }
         >
-          Sign Up
+          Sign In
         </Text>
-        {/* <Image source={google} style={styles.googleIcon} /> */}
+        <Image source={google} style={styles.googleIcon} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.guestButton}>
         <Text
@@ -166,7 +149,7 @@ const Community2 = () => {
   );
 };
 
-export default Community2;
+export default Login;
 
 const styles = StyleSheet.create({
   guestButton: {
