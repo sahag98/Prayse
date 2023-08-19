@@ -1,15 +1,17 @@
 import {
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import uuid from "react-native-uuid";
 import {
   HeaderTitle,
   HeaderView,
@@ -22,7 +24,8 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Image } from "react-native";
 import { TextInput } from "react-native";
-
+import * as ImagePicker from "expo-image-picker";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 const ProfileModal = ({
   logout,
   modalVisible,
@@ -32,11 +35,101 @@ const ProfileModal = ({
 }) => {
   const theme = useSelector((state) => state.user.theme);
   const [name, setName] = useState(user?.full_name);
+  const [image, setImage] = useState(user.avatar_url);
+  const isFocused = useIsFocused();
 
   const handleCloseModal = () => {
     setModalVisible(false);
     setName(user?.full_name);
   };
+
+  function onModalShow() {
+    setName(user.full_name);
+    setImage(user.avatar_url);
+  }
+
+  const photoPermission = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      } else {
+        pickImage();
+      }
+    }
+  };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      const ext = result.assets[0].uri.substring(
+        result.assets[0].uri.lastIndexOf(".") + 1
+      );
+
+      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
+
+      const filePath = `${fileName}`;
+      console.log("path :", filePath);
+      const formData = new FormData();
+      formData.append("files", {
+        uri: result.assets[0].uri,
+        name: fileName,
+        type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
+      });
+
+      let { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, formData);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: imageData, error: getUrlError } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
+
+      if (getUrlError) {
+        throw getUrlError;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          avatar_url: imageData.signedUrl,
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        throw error;
+      }
+    }
+  };
+
+  async function handleAnonymous() {
+    const id = uuid.v4();
+    const newId = id.substring(0, 3);
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: `Anonymous${newId}`,
+        avatar_url:
+          "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
+      })
+      .eq("id", user.id)
+      .select();
+
+    setModalVisible(false);
+  }
 
   const updateProfile = async () => {
     const { data, error } = await supabase
@@ -51,6 +144,7 @@ const ProfileModal = ({
   return (
     <Modal
       animationType="fade"
+      onShow={onModalShow}
       transparent={true}
       visible={modalVisible}
       onRequestClose={handleCloseModal}
@@ -85,7 +179,7 @@ const ProfileModal = ({
               <AntDesign
                 name="close"
                 size={30}
-                color={theme == "dark" ? "white" : "black"}
+                color={theme == "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
             <HeaderTitle
@@ -107,12 +201,9 @@ const ProfileModal = ({
             </TouchableOpacity>
           </HeaderView>
           <View style={styles.iconContainer}>
-            <Image
-              style={styles.profileImg}
-              source={{ uri: user?.avatar_url }}
-            />
+            <Image style={styles.profileImg} source={{ uri: image }} />
             <TouchableOpacity
-              onPress={() => setModalVisible(true)}
+              onPress={photoPermission}
               style={
                 theme == "dark" ? styles.featherIconDark : styles.featherIcon
               }
@@ -125,16 +216,48 @@ const ProfileModal = ({
             </TouchableOpacity>
           </View>
           <View style={styles.inputField}>
-            <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "white", fontFamily: "Inter-Bold" }
+                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+              }
+            >
               Change Name
             </Text>
             <TextInput
-              style={styles.input}
+              style={theme == "dark" ? styles.inputDark : styles.input}
+              autoFocus
+              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
               value={name}
               onChangeText={(text) => setName(text)}
             />
           </View>
-          <TouchableOpacity onPress={logout} style={styles.logout}>
+          <TouchableOpacity
+            style={{ marginBottom: 15 }}
+            onPress={handleAnonymous}
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      fontFamily: "Inter-Medium",
+                      textDecorationLine: "underline",
+                      color: "white",
+                    }
+                  : {
+                      fontFamily: "Inter-Medium",
+                      textDecorationLine: "underline",
+                    }
+              }
+            >
+              Set Anonymous
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={logout}
+            style={theme == "dark" ? styles.logoutDark : styles.logout}
+          >
             <Ionicons name="md-exit-outline" size={25} color="white" />
             <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
               Log Out
@@ -150,18 +273,26 @@ export default ProfileModal;
 
 const styles = StyleSheet.create({
   inputField: {
-    marginVertical: 20,
+    marginVertical: 10,
     width: "100%",
-    gap: 10,
+  },
+  inputDark: {
+    color: "white",
+    fontFamily: "Inter-Regular",
+    width: "100%",
+    borderBottomColor: "white",
+    borderBottomWidth: 1,
+    padding: 2,
   },
   input: {
-    color: "white",
+    color: "#2f2d51",
+    fontFamily: "Inter-Regular",
     width: "100%",
-    borderRadius: 5,
-    backgroundColor: "#212121",
-    padding: 10,
+    borderBottomColor: "#2f2d51",
+    borderBottomWidth: 1,
+    padding: 2,
   },
-  logout: {
+  logoutDark: {
     alignSelf: "flex-end",
     backgroundColor: "#212121",
     width: "100%",
@@ -172,11 +303,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  logout: {
+    alignSelf: "flex-end",
+    backgroundColor: "#2f2d51",
+    width: "100%",
+    paddingVertical: 12,
+    borderRadius: 5,
+    flexDirection: "row",
+    gap: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   profileImg: {
-    marginTop: 20,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 100,
   },
   iconContainer: {
     position: "relative",
@@ -191,7 +332,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 30,
-    bottom: 3,
+    bottom: 6,
     right: 12,
   },
   featherIcon: {
@@ -202,7 +343,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 30,
-    bottom: 3,
+    bottom: 6,
     right: 12,
   },
 });

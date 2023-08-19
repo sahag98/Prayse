@@ -16,7 +16,8 @@ const CommunityHome = () => {
   const { currentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
-  console.log("in Home :", currentUser);
+
+  console.log("in home :", currentUser);
 
   return (
     <Container
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 25,
-    bottom: 0,
+    bottom: 4,
     right: 2,
   },
   featherIcon: {
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 28,
-    bottom: 0,
+    bottom: 4,
     right: 2,
   },
 });

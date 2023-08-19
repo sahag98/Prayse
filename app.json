@@ -13,6 +13,12 @@
     },
     "plugins": [
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let change your profile picture."
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/noti-image.png",
