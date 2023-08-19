@@ -122,29 +122,13 @@ const Login = () => {
               : { color: "#2f2d51", fontFamily: "Inter-Medium" }
           }
         >
-          Sign In
+          Sign In with Google
         </Text>
         <Image source={google} style={styles.googleIcon} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.guestButton}>
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  color: "white",
-                  textDecorationLine: "underline",
-                  fontFamily: "Inter-Medium",
-                }
-              : {
-                  color: "#2f2d51",
-                  textDecorationLine: "underline",
-                  fontFamily: "Inter-Medium",
-                }
-          }
-        >
-          Sign in as guest
-        </Text>
-      </TouchableOpacity>
+      <Text style={theme == "dark" ? styles.anonDark : styles.anon}>
+        You can ensure anonymity by enabling it upon signing in.
+      </Text>
     </Container>
   );
 };
@@ -152,8 +136,17 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-  guestButton: {
-    marginTop: 10,
+  anonDark: {
+    marginTop: 15,
+    fontSize: 12,
+    fontFamily: "Inter-Regular",
+    color: "#cccccc",
+  },
+  anon: {
+    marginTop: 15,
+    fontSize: 12,
+    fontFamily: "Inter-Regular",
+    color: "#5b579d",
   },
   signInButtonDark: {
     flexDirection: "row",

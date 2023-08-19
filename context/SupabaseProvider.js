@@ -43,11 +43,6 @@ export const SupabaseProvider = (props) => {
     return result.data.url;
   };
 
-  const getSession = async () => {
-    const { data } = await supabase.auth.getSession();
-    setSession(data);
-  };
-
   const setOAuthSession = async (tokens) => {
     const { data, error } = await supabase.auth.setSession({
       access_token: tokens.access_token,
@@ -108,6 +103,28 @@ export const SupabaseProvider = (props) => {
     setCurrentUser(profiles[0]);
     setNavigationReady(true);
   };
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("table_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "profiles",
+        },
+        (payload) => {
+          const newRecord = payload.new;
+          setCurrentUser(newRecord);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   useEffect(() => {
     checkIfUserIsLoggedIn();
