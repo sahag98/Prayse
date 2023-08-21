@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -17,20 +17,39 @@ import { useState } from "react";
 
 import { TextInput } from "react-native";
 
-const CommunityModal = ({
-  modalVisible,
-  getPrayers,
+const CommentModal = ({
+  commentVisible,
   supabase,
-  setModalVisible,
+  prayer,
+  setCommentVisible,
   user,
 }) => {
   const theme = useSelector((state) => state.user.theme);
-  const [prayer, setPrayer] = useState("");
+  const [comment, setComment] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
+  const [commentsArray, setCommentsArray] = useState([]);
   const handleCloseModal = () => {
-    setModalVisible(false);
-    setPrayer("");
+    setCommentVisible(false);
+    setComment("");
   };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  async function fetchComments() {
+    const { data: comments, error: commentsError } = await supabase
+      .from("comments")
+      .select("*, profiles(*)")
+      .eq("prayer_id", prayer.id);
+    setCommentsArray(comments);
+    if (commentsError) {
+      console.log(commentsError);
+    }
+  }
+
+  console.log("list of comments :", commentsArray);
+
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
       setInputHeight(60);
@@ -39,24 +58,24 @@ const CommunityModal = ({
     }
   };
 
-  const addPrayer = async () => {
-    console.log(prayer);
-    const { data, error } = await supabase
-      .from("prayers")
-      .insert({ prayer: prayer, user_id: user.id });
+  const addComment = async (id) => {
+    const { data, error } = await supabase.from("comments").insert({
+      prayer_id: id,
+      user_id: user.id,
+      comment: comment,
+    });
     if (error) {
-      alert("try again");
+      alert(error);
     }
-    getPrayers();
-    setModalVisible(false);
-    setPrayer("");
+    // getPrayers();
+    handleCloseModal();
   };
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={modalVisible}
+      visible={commentVisible}
       onRequestClose={handleCloseModal}
     >
       <KeyboardAvoidingView
@@ -67,11 +86,13 @@ const CommunityModal = ({
           style={
             theme == "dark"
               ? {
+                  position: "relative",
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                 }
               : {
+                  position: "relative",
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
@@ -80,9 +101,7 @@ const CommunityModal = ({
         >
           <HeaderView
             style={{
-              width: "100%",
               flexDirection: "row",
-              justifyContent: "space-between",
             }}
           >
             <TouchableOpacity onPress={handleCloseModal}>
@@ -92,47 +111,39 @@ const CommunityModal = ({
                 color={theme == "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
-            <HeaderTitle
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
-            >
-              Add A Prayer
-            </HeaderTitle>
-
-            <TouchableOpacity onPress={addPrayer}>
-              <AntDesign
-                name="check"
-                size={30}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
-            </TouchableOpacity>
           </HeaderView>
+          <View>
+            {commentsArray.map((c) => (
+              <View key={c.id}>
+                <Text>{c.profiles.full_name}</Text>
+                <Text>{c.comment}</Text>
+              </View>
+            ))}
+          </View>
           <View style={styles.inputField}>
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-              }
-            >
-              Prayer
-            </Text>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
               autoFocus
-              placeholder="Add a prayer"
+              placeholder="Add a comment"
               selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={prayer}
-              onChangeText={(text) => setPrayer(text)}
+              value={comment}
+              onChangeText={(text) => setComment(text)}
               onContentSizeChange={handleContentSizeChange}
               onSubmitEditing={(e) => {
                 e.key === "Enter" && e.preventDefault();
               }}
               multiline={true}
             />
+            <TouchableOpacity onPress={() => addComment(prayer.id)}>
+              <Text
+                style={{
+                  color: "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                Post
+              </Text>
+            </TouchableOpacity>
           </View>
         </ModalContainer>
       </KeyboardAvoidingView>
@@ -140,28 +151,35 @@ const CommunityModal = ({
   );
 };
 
-export default CommunityModal;
+export default CommentModal;
 
 const styles = StyleSheet.create({
   inputField: {
-    marginVertical: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 10,
     width: "100%",
+    alignSelf: "center",
   },
   inputDark: {
     color: "white",
     fontFamily: "Inter-Regular",
-    width: "100%",
+    width: "90%",
+    // backgroundColor: "white",
     borderBottomColor: "white",
     borderBottomWidth: 1,
-    padding: 2,
   },
   input: {
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "#2f2d51",
-    borderBottomWidth: 1,
-    padding: 2,
+    width: "90%",
+    borderColor: "#2f2d51",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
   },
   logoutDark: {
     alignSelf: "flex-end",

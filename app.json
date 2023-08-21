@@ -15,7 +15,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let change your profile picture."
+          "photosPermission": "The app accesses your photos to let you change your profile picture."
         }
       ],
       [

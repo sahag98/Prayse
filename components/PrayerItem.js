@@ -8,12 +8,14 @@ import { format } from "timeago.js";
 import { useSupabase } from "../context/useSupabase";
 import Moment from "moment";
 import { useSelector } from "react-redux";
+import CommentModal from "./CommentModal";
 
 const PrayerItem = ({ item }) => {
   const theme = useSelector((state) => state.user.theme);
-
+  const [commentVisible, setCommentVisible] = useState(false);
   const { currentUser, logout, supabase } = useSupabase();
   const [likes, setLikes] = useState([]);
+
   useEffect(() => {
     fetchLikes();
   }, [currentUser.id]);
@@ -152,6 +154,7 @@ const PrayerItem = ({ item }) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => setCommentVisible(true)}
             style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
             <Text style={{ color: "#2f2d51" }}>0</Text>
@@ -160,6 +163,13 @@ const PrayerItem = ({ item }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <CommentModal
+        supabase={supabase}
+        prayer={item}
+        commentVisible={commentVisible}
+        user={currentUser}
+        setCommentVisible={setCommentVisible}
+      />
     </View>
   );
 };

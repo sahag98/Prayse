@@ -13,12 +13,12 @@ import { AnimatedFAB } from "react-native-paper";
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
 import { useIsFocused } from "@react-navigation/native";
-import { Button, Snackbar } from "react-native-paper";
 
 const CommunityHome = () => {
   const { currentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
+
   const [prayerModal, setPrayerModal] = useState(false);
   const isFocused = useIsFocused();
   const [prayers, setPrayers] = useState([]);
@@ -93,6 +93,7 @@ const CommunityHome = () => {
         user={currentUser}
         setModalVisible={setPrayerModal}
       />
+
       <CommunityPrayers
         prayers={prayers}
         setPrayers={setPrayers}

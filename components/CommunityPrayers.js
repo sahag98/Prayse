@@ -7,6 +7,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import PrayerItem from "./PrayerItem";
 import { format } from "timeago.js";
+
 const CommunityPrayers = ({ supabase, currentUser, prayers, setPrayers }) => {
   return (
     <View style={{ flex: 1 }}>
