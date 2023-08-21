@@ -1,42 +1,68 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
-import { useEffect } from "react";
 import { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
 import ProfileModal from "../components/ProfileModal";
 import { Ionicons } from "@expo/vector-icons";
+import { AnimatedFAB } from "react-native-paper";
+import CommunityPrayers from "../components/CommunityPrayers";
+import CommunityModal from "../components/ComunityModal";
+import { useIsFocused } from "@react-navigation/native";
+import { Button, Snackbar } from "react-native-paper";
 
 const CommunityHome = () => {
   const { currentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
+  const [prayerModal, setPrayerModal] = useState(false);
+  const isFocused = useIsFocused();
+  const [prayers, setPrayers] = useState([]);
 
-  console.log("in home :", currentUser);
+  useEffect(() => {
+    getPrayers();
+  }, []);
+
+  async function getPrayers() {
+    let { data: prayers, error } = await supabase
+      .from("prayers")
+      .select("*, profiles(*)")
+      .order("id", { ascending: false });
+    setPrayers(prayers);
+  }
+
+  useEffect(() => {
+    console.log("back on home page");
+  }, [isFocused]);
 
   return (
     <Container
       style={
         theme == "dark"
-          ? { backgroundColor: "#121212" }
-          : { backgroundColor: "#F2F7FF" }
+          ? { backgroundColor: "#121212", position: "relative" }
+          : { backgroundColor: "#F2F7FF", position: "relative" }
       }
     >
       <HeaderView style={{ marginTop: 0 }}>
-        <HeaderTitle
-          style={
-            theme == "dark"
-              ? { fontFamily: "Inter-Bold", color: "white" }
-              : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-          }
-        >
-          Community
-        </HeaderTitle>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <HeaderTitle
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Bold", color: "white" }
+                : {
+                    fontFamily: "Inter-Bold",
+                    color: "#2F2D51",
+                  }
+            }
+          >
+            <Text>Welcome</Text>
+          </HeaderTitle>
+          <MaterialCommunityIcons name="hand-wave" size={30} color="#ffe03b" />
+        </View>
         <View style={styles.iconContainer}>
           <Image
             style={styles.profileImg}
@@ -59,6 +85,33 @@ const CommunityHome = () => {
         user={currentUser}
         setModalVisible={setModalVisible}
       />
+      <CommunityModal
+        getPrayers={getPrayers}
+        logout={logout}
+        supabase={supabase}
+        modalVisible={prayerModal}
+        user={currentUser}
+        setModalVisible={setPrayerModal}
+      />
+      <CommunityPrayers
+        prayers={prayers}
+        setPrayers={setPrayers}
+        supabase={supabase}
+        currentUser={currentUser}
+      />
+      <View style={styles.actionButtons}>
+        <AnimatedFAB
+          icon={"plus"}
+          label={"Add prayer"}
+          extended={true}
+          onPress={() => setPrayerModal(true)}
+          visible={true}
+          animateFrom={"left"}
+          iconMode={"dynamic"}
+          color={"white"}
+          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
+        />
+      </View>
     </Container>
   );
 };
@@ -66,6 +119,24 @@ const CommunityHome = () => {
 export default CommunityHome;
 
 const styles = StyleSheet.create({
+  actionButtons: {
+    position: "absolute",
+    right: 15,
+    bottom: 15,
+    display: "flex",
+  },
+  fabStyleDark: {
+    position: "relative",
+    alignSelf: "flex-end",
+    justifyContent: "center",
+    backgroundColor: "#3b3b3b",
+  },
+  fabStyle: {
+    position: "relative",
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    backgroundColor: "#2f2d51",
+  },
   profileImg: {
     width: 55,
     height: 55,

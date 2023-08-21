@@ -1,5 +1,6 @@
 import {
   Image,
+  Linking,
   StyleSheet,
   Text,
   TextInput,
@@ -24,10 +25,8 @@ import { Session } from "@supabase/supabase-js";
 const Login = () => {
   const theme = useSelector((state) => state.user.theme);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const { getGoogleOAuthUrl, session, setOAuthSession } = useSupabase();
+  const { getGoogleOAuthUrl, setOAuthSession } = useSupabase();
 
   useEffect(() => {
     WebBrowser.warmUpAsync();
@@ -104,6 +103,22 @@ const Login = () => {
     >
       <View style={styles.imgContainer}>
         <Image style={styles.img} source={globe} />
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.freepik.com/")}
+        >
+          <Text style={{ fontSize: 11, fontFamily: "Inter-Regular" }}>
+            Designed by{" "}
+            <Text
+              style={{
+                fontSize: 11,
+                color: "#3b3bff",
+                fontFamily: "Inter-Bold",
+              }}
+            >
+              freepik
+            </Text>
+          </Text>
+        </TouchableOpacity>
         <Text style={theme == "dark" ? styles.welcomeDark : styles.welcome}>
           Welcome to Community
         </Text>
@@ -176,12 +191,14 @@ const styles = StyleSheet.create({
     color: "#2F2D51",
   },
   introDark: {
+    marginTop: 2,
     fontSize: 15,
     fontFamily: "Inter-Regular",
     alignSelf: "center",
     color: "#cccccc",
   },
   intro: {
+    marginTop: 2,
     fontSize: 15,
     fontFamily: "Inter-Regular",
     alignSelf: "center",

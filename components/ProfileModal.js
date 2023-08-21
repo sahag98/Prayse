@@ -35,7 +35,7 @@ const ProfileModal = ({
 }) => {
   const theme = useSelector((state) => state.user.theme);
   const [name, setName] = useState(user?.full_name);
-  const [image, setImage] = useState(user.avatar_url);
+  const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
 
   const handleCloseModal = () => {
@@ -44,8 +44,8 @@ const ProfileModal = ({
   };
 
   function onModalShow() {
-    setName(user.full_name);
-    setImage(user.avatar_url);
+    setName(user?.full_name);
+    setImage(user?.avatar_url);
   }
 
   const photoPermission = async () => {

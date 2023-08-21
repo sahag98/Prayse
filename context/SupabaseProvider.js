@@ -20,6 +20,7 @@ const ExpoSecureStoreAdapter = {
 export const SupabaseProvider = (props) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [prayers, setPrayers] = useState(null);
   const [session, setSession] = useState(null);
   const [isNavigationReady, setNavigationReady] = useState(false);
 
@@ -95,13 +96,13 @@ export const SupabaseProvider = (props) => {
     setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
     console.log("result :", result.data.session.user.id);
-    let { data: profiles, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", result.data.session.user.id);
-
-    setCurrentUser(profiles[0]);
-    setNavigationReady(true);
+    if (result.data.session) {
+      let { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", result.data.session.user.id);
+      setCurrentUser(profiles[0]);
+    }
   };
 
   useEffect(() => {
@@ -122,8 +123,24 @@ export const SupabaseProvider = (props) => {
       )
       .subscribe();
 
+    const prayerChannel = supabase
+      .channel("table_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "prayers",
+        },
+        (payload) => {
+          console.log("new :", payload);
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(prayerChannel);
     };
   }, []);
 
@@ -146,7 +163,7 @@ export const SupabaseProvider = (props) => {
         logout,
       }}
     >
-      {isNavigationReady ? props.children : null}
+      {props.children}
     </SupabaseContext.Provider>
   );
 };
