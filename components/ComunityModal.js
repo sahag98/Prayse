@@ -40,7 +40,6 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
-    console.log(prayer);
     const { data, error } = await supabase
       .from("prayers")
       .insert({ prayer: prayer, user_id: user.id });

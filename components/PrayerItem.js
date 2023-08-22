@@ -15,10 +15,24 @@ const PrayerItem = ({ item }) => {
   const [commentVisible, setCommentVisible] = useState(false);
   const { currentUser, logout, supabase } = useSupabase();
   const [likes, setLikes] = useState([]);
+  const [commentsArray, setCommentsArray] = useState([]);
 
   useEffect(() => {
     fetchLikes();
-  }, [currentUser.id]);
+    fetchComments();
+  }, []);
+
+  async function fetchComments() {
+    const { data: comments, error: commentsError } = await supabase
+      .from("comments")
+      .select("*, profiles(*)")
+      .eq("prayer_id", item.id);
+
+    setCommentsArray(comments);
+    if (commentsError) {
+      console.log(commentsError);
+    }
+  }
 
   async function fetchLikes() {
     const { data: likes, error: likesError } = await supabase
@@ -157,15 +171,27 @@ const PrayerItem = ({ item }) => {
             onPress={() => setCommentVisible(true)}
             style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
-            <Text style={{ color: "#2f2d51" }}>0</Text>
+            <Text
+              style={
+                theme == "dark" ? { color: "#d6d6d6" } : { color: "#2f2d51" }
+              }
+            >
+              {commentsArray.length}
+            </Text>
 
-            <FontAwesome name="comment-o" size={22} color="#2f2d51" />
+            <FontAwesome
+              name="comment-o"
+              size={22}
+              color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+            />
           </TouchableOpacity>
         </View>
       </View>
       <CommentModal
+        fetchComments={fetchComments}
         supabase={supabase}
         prayer={item}
+        commentsArray={commentsArray}
         commentVisible={commentVisible}
         user={currentUser}
         setCommentVisible={setCommentVisible}

@@ -1,4 +1,5 @@
 import {
+  FlatList,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -8,18 +9,20 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import { Modal } from "react-native";
-
 import { AntDesign } from "@expo/vector-icons";
-
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { HeaderView, ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { TextInput } from "react-native";
+import CommentItem from "./CommentItem";
 
 const CommentModal = ({
   commentVisible,
   supabase,
+  fetchComments,
+  commentsArray,
   prayer,
   setCommentVisible,
   user,
@@ -27,28 +30,15 @@ const CommentModal = ({
   const theme = useSelector((state) => state.user.theme);
   const [comment, setComment] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
-  const [commentsArray, setCommentsArray] = useState([]);
-  const handleCloseModal = () => {
-    setCommentVisible(false);
-    setComment("");
-  };
 
   useEffect(() => {
     fetchComments();
   }, []);
 
-  async function fetchComments() {
-    const { data: comments, error: commentsError } = await supabase
-      .from("comments")
-      .select("*, profiles(*)")
-      .eq("prayer_id", prayer.id);
-    setCommentsArray(comments);
-    if (commentsError) {
-      console.log(commentsError);
-    }
-  }
-
-  console.log("list of comments :", commentsArray);
+  const handleCloseModal = () => {
+    setCommentVisible(false);
+    setComment("");
+  };
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -67,86 +57,153 @@ const CommentModal = ({
     if (error) {
       alert(error);
     }
-    // getPrayers();
+    fetchComments();
     handleCloseModal();
   };
 
   return (
     <Modal
       animationType="slide"
+      onShow={() => fetchComments()}
       transparent={true}
       visible={commentVisible}
       onRequestClose={handleCloseModal}
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      <ModalContainer
+        style={
+          theme == "dark"
+            ? {
+                position: "relative",
+                backgroundColor: "#121212",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+              }
+            : {
+                position: "relative",
+                backgroundColor: "#F2F7FF",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+              }
+        }
       >
-        <ModalContainer
-          style={
-            theme == "dark"
-              ? {
-                  position: "relative",
-                  backgroundColor: "#121212",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-              : {
-                  position: "relative",
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-          }
+        <HeaderView
+          style={{
+            flexDirection: "row",
+          }}
         >
-          <HeaderView
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="close"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-          </HeaderView>
-          <View>
-            {commentsArray.map((c) => (
-              <View key={c.id}>
-                <Text>{c.profiles.full_name}</Text>
-                <Text>{c.comment}</Text>
-              </View>
-            ))}
-          </View>
-          <View style={styles.inputField}>
-            <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              autoFocus
-              placeholder="Add a comment"
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={comment}
-              onChangeText={(text) => setComment(text)}
-              onContentSizeChange={handleContentSizeChange}
-              onSubmitEditing={(e) => {
-                e.key === "Enter" && e.preventDefault();
-              }}
-              multiline={true}
+          <TouchableOpacity onPress={handleCloseModal}>
+            <AntDesign
+              name="left"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
             />
-            <TouchableOpacity onPress={() => addComment(prayer.id)}>
+          </TouchableOpacity>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
+            }
+          >
+            Responses
+          </Text>
+        </HeaderView>
+        <View style={{ flex: 1, width: "100%", marginBottom: 20 }}>
+          {commentsArray.length == 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome5
+                name="comment-dots"
+                size={60}
+                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+              />
               <Text
-                style={{
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Medium",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        marginTop: 10,
+                        color: "#A5C9FF",
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        marginTop: 10,
+                        color: "#2f2d51",
+                      }
+                }
               >
-                Post
+                No responses at this moment.
               </Text>
-            </TouchableOpacity>
-          </View>
-        </ModalContainer>
-      </KeyboardAvoidingView>
+            </View>
+          ) : (
+            <FlatList
+              data={commentsArray}
+              keyExtractor={(e, i) => i.toString()}
+              onEndReachedThreshold={0}
+              scrollEventThrottle={16}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <CommentItem item={item} theme={theme} />
+              )}
+            />
+          )}
+        </View>
+        <View style={styles.inputField}>
+          <TextInput
+            style={theme == "dark" ? styles.inputDark : styles.input}
+            autoFocus
+            placeholder="Add a comment"
+            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
+            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            value={comment}
+            onChangeText={(text) => setComment(text)}
+            onContentSizeChange={handleContentSizeChange}
+            onSubmitEditing={(e) => {
+              e.key === "Enter" && e.preventDefault();
+            }}
+            multiline={true}
+          />
+          <TouchableOpacity
+            style={{
+              width: "20%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => addComment(prayer.id)}
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#A5C9FF",
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              Share
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ModalContainer>
     </Modal>
   );
 };
@@ -166,10 +223,12 @@ const styles = StyleSheet.create({
   inputDark: {
     color: "white",
     fontFamily: "Inter-Regular",
-    width: "90%",
-    // backgroundColor: "white",
-    borderBottomColor: "white",
-    borderBottomWidth: 1,
+    width: "85%",
+    borderColor: "#212121",
+    backgroundColor: "#212121",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
   },
   input: {
     color: "#2f2d51",

@@ -8,7 +8,15 @@ import { TouchableOpacity } from "react-native";
 import PrayerItem from "./PrayerItem";
 import { format } from "timeago.js";
 
-const CommunityPrayers = ({ supabase, currentUser, prayers, setPrayers }) => {
+const CommunityPrayers = ({
+  supabase,
+  visible,
+  setVisible,
+  onScroll,
+  currentUser,
+  prayers,
+  setPrayers,
+}) => {
   return (
     <View style={{ flex: 1 }}>
       {prayers.length == 0 ? (
@@ -22,6 +30,7 @@ const CommunityPrayers = ({ supabase, currentUser, prayers, setPrayers }) => {
           data={prayers}
           keyExtractor={(e, i) => i.toString()}
           onEndReachedThreshold={0}
+          onScroll={onScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PrayerItem item={item} />}

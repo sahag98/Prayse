@@ -13,19 +13,42 @@ import { AnimatedFAB } from "react-native-paper";
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
 import { useIsFocused } from "@react-navigation/native";
+import { Animated } from "react-native";
+import { useRef } from "react";
 
 const CommunityHome = () => {
-  const { currentUser, logout, supabase } = useSupabase();
+  const { currentUser, setCurrentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [extended, setExtended] = useState(true);
   const [prayerModal, setPrayerModal] = useState(false);
   const isFocused = useIsFocused();
+  const [visible, setVisible] = useState(true);
   const [prayers, setPrayers] = useState([]);
+  const isIOS = Platform.OS === "ios";
+  const { current: velocity } = useRef(new Animated.Value(0));
+  const scrollTimeoutRef = useRef(null);
+  const onScroll = ({ nativeEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+    if (!isIOS) {
+      return velocity.setValue(currentScrollPosition);
+    }
+
+    if (scrollTimeoutRef.current) {
+      console.log("hey");
+    }
+
+    setExtended(currentScrollPosition <= 0);
+  };
 
   useEffect(() => {
-    getPrayers();
-  }, []);
+    if (!isIOS) {
+      velocity.addListener(({ value }) => {
+        setExtended(value <= 0);
+      });
+    } else setExtended(extended);
+  }, [velocity, extended, isIOS]);
 
   async function getPrayers() {
     let { data: prayers, error } = await supabase
@@ -36,8 +59,8 @@ const CommunityHome = () => {
   }
 
   useEffect(() => {
-    console.log("back on home page");
-  }, [isFocused]);
+    getPrayers();
+  }, []);
 
   return (
     <Container
@@ -79,7 +102,9 @@ const CommunityHome = () => {
         </View>
       </HeaderView>
       <ProfileModal
+        getPrayers={getPrayers}
         logout={logout}
+        setCurrentUser={setCurrentUser}
         supabase={supabase}
         modalVisible={modalVisible}
         user={currentUser}
@@ -95,8 +120,11 @@ const CommunityHome = () => {
       />
 
       <CommunityPrayers
+        visible={visible}
+        setVisible={setVisible}
         prayers={prayers}
         setPrayers={setPrayers}
+        onScroll={onScroll}
         supabase={supabase}
         currentUser={currentUser}
       />
@@ -104,12 +132,12 @@ const CommunityHome = () => {
         <AnimatedFAB
           icon={"plus"}
           label={"Add prayer"}
-          extended={true}
+          extended={extended}
           onPress={() => setPrayerModal(true)}
           visible={true}
-          animateFrom={"left"}
+          animateFrom={"right"}
           iconMode={"dynamic"}
-          color={"white"}
+          color={theme == "dark" ? "#212121" : "white"}
           style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
         />
       </View>
@@ -130,7 +158,7 @@ const styles = StyleSheet.create({
     position: "relative",
     alignSelf: "flex-end",
     justifyContent: "center",
-    backgroundColor: "#3b3b3b",
+    backgroundColor: "#A5C9FF",
   },
   fabStyle: {
     position: "relative",

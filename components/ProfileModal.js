@@ -28,6 +28,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 const ProfileModal = ({
   logout,
+  setCurrentUser,
+  getPrayers,
   modalVisible,
   supabase,
   setModalVisible,
@@ -42,6 +44,14 @@ const ProfileModal = ({
     setModalVisible(false);
     setName(user?.full_name);
   };
+
+  async function getProfile() {
+    const { data: profiles, error: profileError } = await supabase
+      .from("profiles")
+      .select()
+      .eq("id", user.id);
+    setCurrentUser(profiles[0]);
+  }
 
   function onModalShow() {
     setName(user?.full_name);
@@ -118,6 +128,7 @@ const ProfileModal = ({
   async function handleAnonymous() {
     const id = uuid.v4();
     const newId = id.substring(0, 3);
+
     const { data, error } = await supabase
       .from("profiles")
       .update({
@@ -132,12 +143,22 @@ const ProfileModal = ({
   }
 
   const updateProfile = async () => {
+    // const { data: profiles, error: profileError } = await supabase
+    //   .from("profiles")
+    //   .select();
+
+    // profiles.map((profile) => {
+    //   console.log(profile.full_name);
+    // });
+
     const { data, error } = await supabase
       .from("profiles")
       .update({ full_name: name })
       .eq("id", user.id)
       .select();
 
+    getProfile();
+    getPrayers();
     setModalVisible(false);
   };
 

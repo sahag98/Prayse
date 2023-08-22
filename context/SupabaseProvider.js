@@ -95,7 +95,6 @@ export const SupabaseProvider = (props) => {
     const result = await supabase.auth.getSession();
     setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
-    console.log("result :", result.data.session.user.id);
     if (result.data.session) {
       let { data: profiles, error: profileError } = await supabase
         .from("profiles")
@@ -123,24 +122,24 @@ export const SupabaseProvider = (props) => {
       )
       .subscribe();
 
-    const prayerChannel = supabase
-      .channel("table_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "prayers",
-        },
-        (payload) => {
-          console.log("new :", payload);
-        }
-      )
-      .subscribe();
+    // const prayerChannel = supabase
+    //   .channel("table_db_changes")
+    //   .on(
+    //     "postgres_changes",
+    //     {
+    //       event: "*",
+    //       schema: "public",
+    //       table: "prayers",
+    //     },
+    //     (payload) => {
+    //       console.log("new :", payload);
+    //     }
+    //   )
+    //   .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
-      supabase.removeChannel(prayerChannel);
+      // supabase.removeChannel(prayerChannel);
     };
   }, []);
 
@@ -155,6 +154,7 @@ export const SupabaseProvider = (props) => {
         login,
         supabase,
         currentUser,
+        setCurrentUser,
         register,
         setLoggedIn,
         getGoogleOAuthUrl,
