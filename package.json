@@ -78,6 +78,7 @@
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "13.4.0",
     "react-native-swipe-list-view": "^3.2.9",
+    "react-native-toast-message": "^2.1.6",
     "react-native-unordered-list": "^1.0.4",
     "react-native-url-polyfill": "^1.3.0",
     "react-native-uuid": "^2.0.1",

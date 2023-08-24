@@ -14,7 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-
+import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
 
 const CommunityModal = ({
@@ -39,16 +39,31 @@ const CommunityModal = ({
     }
   };
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
+    });
+    console.log("in toast");
+  };
+
   const addPrayer = async () => {
-    const { data, error } = await supabase
-      .from("prayers")
-      .insert({ prayer: prayer, user_id: user.id });
-    if (error) {
-      alert("try again");
+    if (prayer.length <= 0) {
+      showToast("error", "The prayer field can't be left empty.");
+      setModalVisible(false);
+      return;
+    } else {
+      const { data, error } = await supabase
+        .from("prayers")
+        .insert({ prayer: prayer, user_id: user.id });
+      showToast("success", "Prayer added successfully. 🙏🏼");
+      if (error) {
+        showToast("error", "Something went wrong. Try again.");
+      }
+      getPrayers();
+      setModalVisible(false);
+      setPrayer("");
     }
-    getPrayers();
-    setModalVisible(false);
-    setPrayer("");
   };
 
   return (
@@ -123,6 +138,7 @@ const CommunityModal = ({
               style={theme == "dark" ? styles.inputDark : styles.input}
               autoFocus
               placeholder="Add a prayer"
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
               selectionColor={theme == "dark" ? "white" : "#2f2d51"}
               value={prayer}
               onChangeText={(text) => setPrayer(text)}
@@ -152,7 +168,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "white",
     borderBottomWidth: 1,
-    padding: 2,
+    paddingHorizontal: 2,
+    paddingVertical: 5,
   },
   input: {
     color: "#2f2d51",

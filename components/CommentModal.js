@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import { Modal } from "react-native";
+import Toast from "react-native-toast-message";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { HeaderView, ModalContainer } from "../styles/appStyles";
@@ -48,17 +49,31 @@ const CommentModal = ({
     }
   };
 
-  const addComment = async (id) => {
-    const { data, error } = await supabase.from("comments").insert({
-      prayer_id: id,
-      user_id: user.id,
-      comment: comment,
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
     });
-    if (error) {
-      alert(error);
+  };
+
+  const addComment = async (id) => {
+    if (comment.length <= 0) {
+      showToast("error", "The response field can't be left empty.");
+      setCommentVisible(false);
+      return;
+    } else {
+      const { data, error } = await supabase.from("comments").insert({
+        prayer_id: id,
+        user_id: user.id,
+        comment: comment,
+      });
+      showToast("success", "Response shared successfully. ✔️");
+      if (error) {
+        showToast("error", "Something went wrong. Try again.");
+      }
+      fetchComments();
+      handleCloseModal();
     }
-    fetchComments();
-    handleCloseModal();
   };
 
   return (
@@ -167,8 +182,8 @@ const CommentModal = ({
           <TextInput
             style={theme == "dark" ? styles.inputDark : styles.input}
             autoFocus
-            placeholder="Add a comment"
-            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
+            placeholder="Add your response..."
+            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
             selectionColor={theme == "dark" ? "white" : "#2f2d51"}
             value={comment}
             onChangeText={(text) => setComment(text)}
@@ -192,10 +207,12 @@ const CommentModal = ({
                   ? {
                       color: "#A5C9FF",
                       fontFamily: "Inter-Medium",
+                      marginRight: 5,
                     }
                   : {
                       color: "#2f2d51",
                       fontFamily: "Inter-Medium",
+                      marginRight: 5,
                     }
               }
             >
@@ -233,7 +250,7 @@ const styles = StyleSheet.create({
   input: {
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
-    width: "90%",
+    width: "85%",
     borderColor: "#2f2d51",
     backgroundColor: "white",
     borderWidth: 1,

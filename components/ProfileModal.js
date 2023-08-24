@@ -20,6 +20,7 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Image } from "react-native";
@@ -58,12 +59,22 @@ const ProfileModal = ({
     setImage(user?.avatar_url);
   }
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
+    });
+  };
+
   const photoPermission = async () => {
     if (Platform.OS !== "web") {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+        showToast(
+          "error",
+          "We need camera roll permissions to make this work!"
+        );
       } else {
         pickImage();
       }
@@ -122,6 +133,8 @@ const ProfileModal = ({
       if (error) {
         throw error;
       }
+      getProfile();
+      getPrayers();
     }
   };
 
@@ -138,25 +151,24 @@ const ProfileModal = ({
       })
       .eq("id", user.id)
       .select();
-
+    showToast("success", "Anonymous mode is set. ✔️");
+    getProfile();
+    getPrayers();
     setModalVisible(false);
   }
 
   const updateProfile = async () => {
-    // const { data: profiles, error: profileError } = await supabase
-    //   .from("profiles")
-    //   .select();
-
-    // profiles.map((profile) => {
-    //   console.log(profile.full_name);
-    // });
-
+    if (name.length <= 0) {
+      showToast("error", "The name field can't be left empty.");
+      handleCloseModal();
+      return;
+    }
     const { data, error } = await supabase
       .from("profiles")
       .update({ full_name: name })
       .eq("id", user.id)
       .select();
-
+    showToast("success", "Name changed successfully. ✔️");
     getProfile();
     getPrayers();
     setModalVisible(false);
