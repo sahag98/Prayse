@@ -1,30 +1,32 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native";
-
-import prayerIcon from "../assets/prayIcon.png";
-import { FontAwesome } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
 import PrayerItem from "./PrayerItem";
-import { format } from "timeago.js";
+import useIsReady from "../hooks/useIsReady";
+import Skeleton from "./Skeleton";
+import NetInfo from "@react-native-community/netinfo";
+import { useEffect } from "react";
+import { useState } from "react";
 
-const CommunityPrayers = ({
-  supabase,
-  visible,
-  setVisible,
-  onScroll,
-  currentUser,
-  prayers,
-  setPrayers,
-}) => {
+const CommunityPrayers = ({ onScroll, prayers }) => {
+  const isReady = useIsReady();
+  const [isConnected, setIsConnected] = useState(null);
+  useEffect(() => {
+    checkConnection();
+  }, []);
+
+  const checkConnection = () => {
+    console.log("checking connection");
+    NetInfo.fetch().then((state) => {
+      if (state.isConnected == true) {
+        setIsConnected(true);
+      } else setIsConnected(false);
+    });
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      {prayers.length == 0 ? (
-        <View style={{ alignSelf: "center" }}>
-          <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
-            No community prayers at this moment.
-          </Text>
-        </View>
+      {!isReady || !isConnected ? (
+        <Skeleton />
       ) : (
         <FlatList
           data={prayers}
