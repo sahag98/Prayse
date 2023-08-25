@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { PROJECT_ID, NOTIFICATION_API } from "@env";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { useState } from "react";
@@ -13,7 +14,9 @@ import { AnimatedFAB } from "react-native-paper";
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
 import { useIsFocused } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 import { Animated } from "react-native";
+import * as Device from "expo-device";
 import { useRef } from "react";
 
 const CommunityHome = () => {
@@ -57,8 +60,46 @@ const CommunityHome = () => {
       .order("id", { ascending: false });
     setPrayers(prayers);
   }
+  async function sendToken(expoPushToken) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ expoToken: expoPushToken })
+      .eq("id", currentUser.id)
+      .select();
+  }
+
+  async function getPermission() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      console.log(existingStatus);
+
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        console.log(status);
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        console.log("not granted");
+        return;
+      }
+      console.log("permission granted");
+      token = (
+        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+      ).data;
+
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    sendToken(token);
+  }
 
   useEffect(() => {
+    getPermission();
     getPrayers();
   }, []);
 

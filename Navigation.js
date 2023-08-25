@@ -97,7 +97,12 @@ const Navigation = () => {
               return <Ionicons name={iconName} size={size} color={color} />;
             },
 
-            tabBarActiveTintColor: theme == "dark" ? "white" : "#2f2d51",
+            tabBarActiveTintColor:
+              theme == "dark"
+                ? "white"
+                : theme == "BlackWhite"
+                ? "black"
+                : "#2f2d51",
             tabBarInactiveTintColor: "gray",
           })}
         >

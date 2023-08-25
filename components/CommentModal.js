@@ -15,7 +15,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { HeaderView, ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-
+import axios from "axios";
 import { TextInput } from "react-native";
 import CommentItem from "./CommentItem";
 
@@ -56,7 +56,26 @@ const CommentModal = ({
     });
   };
 
-  const addComment = async (id) => {
+  const sendNotification = async (expoToken) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: "New Response",
+      body: `${user.full_name} has responded to your prayer.`,
+      data: { additionalData: "additional data" },
+    };
+
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const addComment = async (id, expoToken) => {
+    console.log("comment token :", expoToken);
     if (comment.length <= 0) {
       showToast("error", "The response field can't be left empty.");
       setCommentVisible(false);
@@ -68,6 +87,7 @@ const CommentModal = ({
         comment: comment,
       });
       showToast("success", "Response shared successfully. ✔️");
+      sendNotification(expoToken);
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
@@ -199,7 +219,7 @@ const CommentModal = ({
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={() => addComment(prayer.id)}
+            onPress={() => addComment(prayer.id, prayer.profiles.expoToken)}
           >
             <Text
               style={

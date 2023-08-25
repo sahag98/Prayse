@@ -4,7 +4,6 @@ import { Image } from "react-native";
 import Moment from "moment";
 
 const CommentItem = ({ item, theme }) => {
-  console.log(theme);
   return (
     <View style={styles.commentContainer}>
       <View style={styles.content}>

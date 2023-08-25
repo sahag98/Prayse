@@ -12,7 +12,7 @@ web-build/
 prayer-app.jks
 google-services.json
 
-
+credentials/
 
 # macOS
 .DS_Store
