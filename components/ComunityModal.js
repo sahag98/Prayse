@@ -44,7 +44,6 @@ const CommunityModal = ({
       type,
       text1: content,
     });
-    console.log("in toast");
   };
 
   const addPrayer = async () => {

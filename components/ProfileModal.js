@@ -99,7 +99,6 @@ const ProfileModal = ({
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
 
       const filePath = `${fileName}`;
-      console.log("path :", filePath);
       const formData = new FormData();
       formData.append("files", {
         uri: result.assets[0].uri,

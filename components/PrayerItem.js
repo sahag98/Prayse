@@ -10,7 +10,7 @@ import Moment from "moment";
 import { useSelector } from "react-redux";
 import CommentModal from "./CommentModal";
 
-const PrayerItem = ({ item }) => {
+const PrayerItem = ({ getPrayers, item }) => {
   const theme = useSelector((state) => state.user.theme);
   const [commentVisible, setCommentVisible] = useState(false);
   const { currentUser, logout, supabase } = useSupabase();
@@ -18,6 +18,7 @@ const PrayerItem = ({ item }) => {
   const [commentsArray, setCommentsArray] = useState([]);
 
   useEffect(() => {
+    console.log("use effect");
     fetchLikes();
     fetchComments();
   }, []);
@@ -29,6 +30,7 @@ const PrayerItem = ({ item }) => {
       .eq("prayer_id", item.id);
 
     setCommentsArray(comments);
+
     if (commentsError) {
       console.log(commentsError);
     }

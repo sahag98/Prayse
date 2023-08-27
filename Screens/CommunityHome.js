@@ -159,8 +159,8 @@ const CommunityHome = () => {
         user={currentUser}
         setModalVisible={setPrayerModal}
       />
-
       <CommunityPrayers
+        getPrayers={getPrayers}
         visible={visible}
         setVisible={setVisible}
         prayers={prayers}
@@ -176,7 +176,7 @@ const CommunityHome = () => {
           extended={extended}
           onPress={() => setPrayerModal(true)}
           visible={true}
-          animateFrom={"left"}
+          animateFrom={"right"}
           iconMode={"dynamic"}
           color={theme == "dark" ? "#212121" : "white"}
           style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}

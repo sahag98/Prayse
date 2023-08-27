@@ -61,8 +61,8 @@ const CommentModal = ({
       to: expoToken,
       sound: "default",
       title: "New Response",
-      body: `${user.full_name} has responded to your prayer.`,
-      data: { additionalData: "additional data" },
+      body: `${user.full_name} has responded.`,
+      data: { screen: "Community" },
     };
 
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -75,7 +75,6 @@ const CommentModal = ({
   };
 
   const addComment = async (id, expoToken) => {
-    console.log("comment token :", expoToken);
     if (comment.length <= 0) {
       showToast("error", "The response field can't be left empty.");
       setCommentVisible(false);
@@ -153,92 +152,100 @@ const CommentModal = ({
             Responses
           </Text>
         </HeaderView>
-        <View style={{ flex: 1, width: "100%", marginBottom: 20 }}>
-          {commentsArray.length == 0 ? (
-            <View
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flex: 1, width: "100%" }}>
+            {commentsArray.length == 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesome5
+                  name="comment-dots"
+                  size={60}
+                  color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                />
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          marginTop: 10,
+                          color: "#A5C9FF",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          marginTop: 10,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  No responses at this moment.
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={commentsArray}
+                keyExtractor={(e, i) => i.toString()}
+                onEndReachedThreshold={0}
+                scrollEventThrottle={16}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <CommentItem item={item} theme={theme} />
+                )}
+              />
+            )}
+          </View>
+          <View style={styles.inputField}>
+            <TextInput
+              style={theme == "dark" ? styles.inputDark : styles.input}
+              placeholder="Add your response..."
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+              value={comment}
+              onChangeText={(text) => setComment(text)}
+              onContentSizeChange={handleContentSizeChange}
+              onSubmitEditing={(e) => {
+                e.key === "Enter" && e.preventDefault();
+              }}
+              multiline={true}
+            />
+            <TouchableOpacity
               style={{
-                flex: 1,
+                width: "20%",
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => addComment(prayer.id, prayer.profiles.expoToken)}
             >
-              <FontAwesome5
-                name="comment-dots"
-                size={60}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
               <Text
                 style={
                   theme == "dark"
                     ? {
-                        fontFamily: "Inter-Medium",
-                        marginTop: 10,
                         color: "#A5C9FF",
+                        fontFamily: "Inter-Medium",
+                        marginRight: 5,
                       }
                     : {
-                        fontFamily: "Inter-Medium",
-                        marginTop: 10,
                         color: "#2f2d51",
+                        fontFamily: "Inter-Medium",
+                        marginRight: 5,
                       }
                 }
               >
-                No responses at this moment.
+                Share
               </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={commentsArray}
-              keyExtractor={(e, i) => i.toString()}
-              onEndReachedThreshold={0}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <CommentItem item={item} theme={theme} />
-              )}
-            />
-          )}
-        </View>
-        <View style={styles.inputField}>
-          <TextInput
-            style={theme == "dark" ? styles.inputDark : styles.input}
-            autoFocus
-            placeholder="Add your response..."
-            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-            value={comment}
-            onChangeText={(text) => setComment(text)}
-            onContentSizeChange={handleContentSizeChange}
-            onSubmitEditing={(e) => {
-              e.key === "Enter" && e.preventDefault();
-            }}
-            multiline={true}
-          />
-          <TouchableOpacity
-            style={{
-              width: "20%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => addComment(prayer.id, prayer.profiles.expoToken)}
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#A5C9FF",
-                      fontFamily: "Inter-Medium",
-                      marginRight: 5,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      marginRight: 5,
-                    }
-              }
-            >
-              Share
-            </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
       </ModalContainer>
     </Modal>
@@ -252,8 +259,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    position: "absolute",
-    bottom: 10,
     width: "100%",
     alignSelf: "center",
   },

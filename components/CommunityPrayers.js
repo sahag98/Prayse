@@ -7,7 +7,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { useState } from "react";
 
-const CommunityPrayers = ({ onScroll, prayers }) => {
+const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
   const isReady = useIsReady();
   const [isConnected, setIsConnected] = useState(null);
   useEffect(() => {
@@ -15,7 +15,6 @@ const CommunityPrayers = ({ onScroll, prayers }) => {
   }, []);
 
   const checkConnection = () => {
-    console.log("checking connection");
     NetInfo.fetch().then((state) => {
       if (state.isConnected == true) {
         setIsConnected(true);
@@ -35,7 +34,9 @@ const CommunityPrayers = ({ onScroll, prayers }) => {
           onScroll={onScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <PrayerItem item={item} />}
+          renderItem={({ item }) => (
+            <PrayerItem getPrayers={getPrayers} item={item} />
+          )}
         />
       )}
     </View>

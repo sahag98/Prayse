@@ -106,11 +106,17 @@ const Login = () => {
         <TouchableOpacity
           onPress={() => Linking.openURL("https://www.freepik.com/")}
         >
-          <Text style={{ fontSize: 11, fontFamily: "Inter-Regular" }}>
+          <Text
+            style={
+              theme == "dark"
+                ? { fontSize: 10, fontFamily: "Inter-Regular", color: "white" }
+                : { fontSize: 10, fontFamily: "Inter-Regular" }
+            }
+          >
             Designed by{" "}
             <Text
               style={{
-                fontSize: 11,
+                fontSize: 12,
                 color: "#3b3bff",
                 fontFamily: "Inter-Bold",
               }}
