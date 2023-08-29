@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -10,24 +10,30 @@ import Moment from "moment";
 import { useSelector } from "react-redux";
 import CommentModal from "./CommentModal";
 
-const PrayerItem = ({ getPrayers, item }) => {
+const PrayerItem = ({ getPrayers, prayers, item }) => {
   const theme = useSelector((state) => state.user.theme);
   const [commentVisible, setCommentVisible] = useState(false);
   const { currentUser, logout, supabase } = useSupabase();
   const [likes, setLikes] = useState([]);
   const [commentsArray, setCommentsArray] = useState([]);
-
+  const [loadingLikes, setLoadingLikes] = useState(false);
+  const isNewItem = item === prayers[0];
   useEffect(() => {
-    console.log("use effect");
-    fetchLikes();
-    fetchComments();
-  }, []);
+    setLoadingLikes(true);
+    // console.log("use effect");
+    fetchLikes(item.id).then(() => {
+      setLoadingLikes(false);
+    });
+    fetchComments(item.id).then(() => {
+      setLoadingLikes(false);
+    });
+  }, [item.id]);
 
-  async function fetchComments() {
+  async function fetchComments(prayerId) {
     const { data: comments, error: commentsError } = await supabase
       .from("comments")
       .select("*, profiles(*)")
-      .eq("prayer_id", item.id);
+      .eq("prayer_id", prayerId);
 
     setCommentsArray(comments);
 
@@ -36,11 +42,11 @@ const PrayerItem = ({ getPrayers, item }) => {
     }
   }
 
-  async function fetchLikes() {
+  async function fetchLikes(prayerId) {
     const { data: likes, error: likesError } = await supabase
       .from("likes")
       .select()
-      .eq("prayer_id", item.id);
+      .eq("prayer_id", prayerId);
     setLikes(likes);
 
     if (likesError) {
@@ -57,7 +63,7 @@ const PrayerItem = ({ getPrayers, item }) => {
         .delete()
         .eq("prayer_id", id)
         .eq("user_id", currentUser.id);
-      fetchLikes();
+      fetchLikes(id);
       return;
     }
     const { data, error } = await supabase.from("likes").insert({
@@ -67,7 +73,7 @@ const PrayerItem = ({ getPrayers, item }) => {
     if (error) {
       console.log(error);
     }
-    fetchLikes();
+    fetchLikes(id);
   }
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
@@ -147,45 +153,59 @@ const PrayerItem = ({ getPrayers, item }) => {
             onPress={() => toggleLike(item.id)}
             style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
-            <Text
-              style={
-                isLikedByMe
-                  ? { color: "#ff4e4e" }
-                  : theme == "dark"
-                  ? { color: "white" }
-                  : { color: "#2f2d51" }
-              }
-            >
-              {likes.length}
-            </Text>
-            <Image
-              style={
-                isLikedByMe
-                  ? { width: 22, height: 22, tintColor: "#ff4e4e" }
-                  : theme == "dark"
-                  ? { width: 22, height: 22, tintColor: "white" }
-                  : { width: 22, height: 22, tintColor: "#2f2d51" }
-              }
-              source={prayerIcon}
-            />
+            {isNewItem && loadingLikes ? (
+              <ActivityIndicator size="small" color={"black"} />
+            ) : (
+              <>
+                <Text
+                  style={
+                    isLikedByMe
+                      ? { color: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { color: "white" }
+                      : { color: "#2f2d51" }
+                  }
+                >
+                  {likes.length}
+                </Text>
+                <Image
+                  style={
+                    isLikedByMe
+                      ? { width: 22, height: 22, tintColor: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { width: 22, height: 22, tintColor: "white" }
+                      : { width: 22, height: 22, tintColor: "#2f2d51" }
+                  }
+                  source={prayerIcon}
+                />
+              </>
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setCommentVisible(true)}
             style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
-            <Text
-              style={
-                theme == "dark" ? { color: "#d6d6d6" } : { color: "#2f2d51" }
-              }
-            >
-              {commentsArray.length}
-            </Text>
+            {isNewItem && loadingLikes ? (
+              <ActivityIndicator size="small" color={"black"} />
+            ) : (
+              <>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { color: "#d6d6d6" }
+                      : { color: "#2f2d51" }
+                  }
+                >
+                  {commentsArray.length}
+                </Text>
 
-            <FontAwesome
-              name="comment-o"
-              size={22}
-              color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-            />
+                <FontAwesome
+                  name="comment-o"
+                  size={22}
+                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                />
+              </>
+            )}
           </TouchableOpacity>
         </View>
       </View>

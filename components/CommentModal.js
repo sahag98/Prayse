@@ -33,7 +33,7 @@ const CommentModal = ({
   const [inputHeight, setInputHeight] = useState(60);
 
   useEffect(() => {
-    fetchComments();
+    fetchComments(prayer.id);
   }, []);
 
   const handleCloseModal = () => {
@@ -90,7 +90,7 @@ const CommentModal = ({
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
-      fetchComments();
+      fetchComments(prayer.id);
       handleCloseModal();
     }
   };
@@ -98,7 +98,7 @@ const CommentModal = ({
   return (
     <Modal
       animationType="slide"
-      onShow={() => fetchComments()}
+      onShow={() => fetchComments(prayer.id)}
       transparent={true}
       visible={commentVisible}
       onRequestClose={handleCloseModal}

@@ -53,6 +53,11 @@ const CommunityHome = () => {
     } else setExtended(extended);
   }, [velocity, extended, isIOS]);
 
+  useEffect(() => {
+    // getPermission();
+    getPrayers();
+  }, []);
+
   async function getPrayers() {
     let { data: prayers, error } = await supabase
       .from("prayers")
@@ -97,11 +102,6 @@ const CommunityHome = () => {
     }
     sendToken(token);
   }
-
-  useEffect(() => {
-    getPermission();
-    getPrayers();
-  }, []);
 
   return (
     <Container

@@ -35,7 +35,7 @@ const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <PrayerItem getPrayers={getPrayers} item={item} />
+            <PrayerItem prayers={prayers} getPrayers={getPrayers} item={item} />
           )}
         />
       )}
