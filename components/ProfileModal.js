@@ -27,10 +27,15 @@ import { Image } from "react-native";
 import { TextInput } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import ProfilePrayers from "./ProfilePrayers";
+import { FlatList } from "react-native";
 const ProfileModal = ({
   logout,
   setCurrentUser,
   getPrayers,
+  setPrayerModal,
+  userPrayers,
+  getUserPrayers,
   modalVisible,
   supabase,
   setModalVisible,
@@ -41,9 +46,18 @@ const ProfileModal = ({
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
 
+  useEffect(() => {
+    getUserPrayers();
+  }, []);
+
   const handleCloseModal = () => {
     setModalVisible(false);
     setName(user?.full_name);
+  };
+
+  const addPrayer = () => {
+    setModalVisible(false);
+    setPrayerModal(true);
   };
 
   async function getProfile() {
@@ -63,6 +77,7 @@ const ProfileModal = ({
     Toast.show({
       type,
       text1: content,
+      visibilityTime: 2000,
     });
   };
 
@@ -167,7 +182,7 @@ const ProfileModal = ({
       .update({ full_name: name })
       .eq("id", user.id)
       .select();
-    showToast("success", "Name changed successfully. ✔️");
+    showToast("success", "Profile updated successfully. ✔️");
     getProfile();
     getPrayers();
     setModalVisible(false);
@@ -259,16 +274,12 @@ const ProfileModal = ({
             </Text>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
-              autoFocus
               selectionColor={theme == "dark" ? "white" : "#2f2d51"}
               value={name}
               onChangeText={(text) => setName(text)}
             />
           </View>
-          <TouchableOpacity
-            style={{ marginBottom: 15 }}
-            onPress={handleAnonymous}
-          >
+          <TouchableOpacity onPress={handleAnonymous}>
             <Text
               style={
                 theme == "dark"
@@ -286,6 +297,74 @@ const ProfileModal = ({
               Set Anonymous
             </Text>
           </TouchableOpacity>
+
+          <Text
+            style={{
+              padding: 10,
+              fontSize: 17,
+              color: "#2f2d51",
+              fontFamily: "Inter-Medium",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            Prayers Shared
+          </Text>
+          {userPrayers.length == 0 ? (
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                borderWidth: 1,
+                borderColor: "#2f2d51",
+                borderRadius: 10,
+                height: 120,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 5,
+              }}
+            >
+              <Text style={{ fontFamily: "Inter-Regular", color: "#2f2d51" }}>
+                You haven't posted any prayers yet.
+              </Text>
+              <TouchableOpacity onPress={addPrayer}>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Bold",
+                    textDecorationLine: "underline",
+                    color: "#2f2d51",
+                  }}
+                >
+                  Post a prayer
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <FlatList
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                borderWidth: 1,
+                borderColor: "#2f2d51",
+                borderRadius: 10,
+              }}
+              data={userPrayers}
+              keyExtractor={(e, i) => i.toString()}
+              onEndReachedThreshold={0}
+              scrollEventThrottle={16}
+              showsVerticalScrollIndicator={true}
+              renderItem={({ item }) => (
+                <ProfilePrayers
+                  item={item}
+                  theme={theme}
+                  user={user}
+                  getUserPrayers={getUserPrayers}
+                  supabase={supabase}
+                  getPrayers={getPrayers}
+                />
+              )}
+            />
+          )}
           <TouchableOpacity
             onPress={logout}
             style={theme == "dark" ? styles.logoutDark : styles.logout}
@@ -327,8 +406,8 @@ const styles = StyleSheet.create({
   logoutDark: {
     alignSelf: "flex-end",
     backgroundColor: "#212121",
-    width: "100%",
-    paddingVertical: 15,
+    marginVertical: 10,
+    padding: 10,
     borderRadius: 5,
     flexDirection: "row",
     gap: 5,
@@ -337,9 +416,10 @@ const styles = StyleSheet.create({
   },
   logout: {
     alignSelf: "flex-end",
+    marginVertical: 15,
     backgroundColor: "#2f2d51",
-    width: "100%",
-    paddingVertical: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 5,
     flexDirection: "row",
     gap: 5,

@@ -20,6 +20,7 @@ import { TextInput } from "react-native";
 const CommunityModal = ({
   modalVisible,
   getPrayers,
+  getUserPrayers,
   supabase,
   setModalVisible,
   user,
@@ -43,6 +44,7 @@ const CommunityModal = ({
     Toast.show({
       type,
       text1: content,
+      visibilityTime: 2000,
     });
   };
 
@@ -60,6 +62,7 @@ const CommunityModal = ({
         showToast("error", "Something went wrong. Try again.");
       }
       getPrayers();
+      getUserPrayers();
       setModalVisible(false);
       setPrayer("");
     }

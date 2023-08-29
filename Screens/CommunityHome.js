@@ -28,6 +28,7 @@ const CommunityHome = () => {
   const isFocused = useIsFocused();
   const [visible, setVisible] = useState(true);
   const [prayers, setPrayers] = useState([]);
+  const [userPrayers, setUserPrayers] = useState([]);
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
@@ -54,6 +55,7 @@ const CommunityHome = () => {
   }, [velocity, extended, isIOS]);
 
   useEffect(() => {
+    getUserPrayers();
     // getPermission();
     getPrayers();
   }, []);
@@ -65,6 +67,16 @@ const CommunityHome = () => {
       .order("id", { ascending: false });
     setPrayers(prayers);
   }
+
+  async function getUserPrayers() {
+    let { data: prayers, error } = await supabase
+      .from("prayers")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("id", { ascending: false });
+    setUserPrayers(prayers);
+  }
+
   async function sendToken(expoPushToken) {
     const { data, error } = await supabase
       .from("profiles")
@@ -143,6 +155,9 @@ const CommunityHome = () => {
         </View>
       </HeaderView>
       <ProfileModal
+        getUserPrayers={getUserPrayers}
+        userPrayers={userPrayers}
+        setPrayerModal={setPrayerModal}
         getPrayers={getPrayers}
         logout={logout}
         setCurrentUser={setCurrentUser}
@@ -152,6 +167,7 @@ const CommunityHome = () => {
         setModalVisible={setModalVisible}
       />
       <CommunityModal
+        getUserPrayers={getUserPrayers}
         getPrayers={getPrayers}
         logout={logout}
         supabase={supabase}
