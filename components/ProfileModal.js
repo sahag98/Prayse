@@ -77,7 +77,7 @@ const ProfileModal = ({
     Toast.show({
       type,
       text1: content,
-      visibilityTime: 2000,
+      visibilityTime: 3000,
     });
   };
 
@@ -266,8 +266,8 @@ const ProfileModal = ({
             <Text
               style={
                 theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                  ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
+                  : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
               }
             >
               Change Name
@@ -299,14 +299,25 @@ const ProfileModal = ({
           </TouchableOpacity>
 
           <Text
-            style={{
-              padding: 10,
-              fontSize: 17,
-              color: "#2f2d51",
-              fontFamily: "Inter-Medium",
-              width: "100%",
-              textAlign: "center",
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    padding: 10,
+                    fontSize: 17,
+                    color: "#A5C9FF",
+                    fontFamily: "Inter-Medium",
+                    width: "100%",
+                    textAlign: "center",
+                  }
+                : {
+                    padding: 10,
+                    fontSize: 17,
+                    color: "#2f2d51",
+                    fontFamily: "Inter-Medium",
+                    width: "100%",
+                    textAlign: "center",
+                  }
+            }
           >
             Prayers Shared
           </Text>
@@ -341,13 +352,23 @@ const ProfileModal = ({
             </View>
           ) : (
             <FlatList
-              style={{
-                width: "100%",
-                backgroundColor: "white",
-                borderWidth: 1,
-                borderColor: "#2f2d51",
-                borderRadius: 10,
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      backgroundColor: "#212121",
+                      borderWidth: 1,
+                      borderColor: "#A5C9FF",
+                      borderRadius: 10,
+                    }
+                  : {
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderWidth: 1,
+                      borderColor: "#2f2d51",
+                      borderRadius: 10,
+                    }
+              }
               data={userPrayers}
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
@@ -369,8 +390,18 @@ const ProfileModal = ({
             onPress={logout}
             style={theme == "dark" ? styles.logoutDark : styles.logout}
           >
-            <Ionicons name="md-exit-outline" size={25} color="white" />
-            <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+            <Ionicons
+              name="md-exit-outline"
+              size={25}
+              color={theme == "dark" ? "white" : "white"}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "white", fontFamily: "Inter-Bold" }
+                  : { color: "white", fontFamily: "Inter-Bold" }
+              }
+            >
               Log Out
             </Text>
           </TouchableOpacity>
@@ -393,7 +424,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "white",
     borderBottomWidth: 1,
-    padding: 2,
+    padding: 1,
   },
   input: {
     color: "#2f2d51",
@@ -401,14 +432,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "#2f2d51",
     borderBottomWidth: 1,
-    padding: 2,
+    padding: 1,
   },
   logoutDark: {
     alignSelf: "flex-end",
     backgroundColor: "#212121",
     marginVertical: 10,
+    width: "100%",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     flexDirection: "row",
     gap: 5,
     justifyContent: "center",
@@ -418,9 +450,10 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginVertical: 15,
     backgroundColor: "#2f2d51",
+    width: "100%",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius: 5,
+    borderRadius: 10,
     flexDirection: "row",
     gap: 5,
     justifyContent: "center",

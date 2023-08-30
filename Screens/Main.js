@@ -15,7 +15,10 @@ export default function Main({ navigation }) {
   const BusyIndicator = () => {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="white" />
+        <ActivityIndicator
+          size="large"
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
       </View>
     );
   };

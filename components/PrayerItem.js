@@ -80,144 +80,163 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
 
   return (
     <View
-      style={
-        theme == "dark" ? styles.prayerContainerDark : styles.prayerContainer
-      }
+      style={{
+        gap: 10,
+        marginBottom: 15,
+      }}
     >
       <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        style={
+          theme == "dark" ? styles.prayerContainerDark : styles.prayerContainer
+        }
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Image
-            style={styles.profileImg}
-            source={{ uri: item.profiles.avatar_url }}
-          />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Image
+              style={styles.profileImg}
+              source={{ uri: item.profiles.avatar_url }}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? { fontFamily: "Inter-Bold", color: "white" }
+                  : { fontFamily: "Inter-Bold" }
+              }
+            >
+              {item.profiles.full_name}
+            </Text>
+          </View>
           <Text
             style={
               theme == "dark"
-                ? { fontFamily: "Inter-Medium", color: "white" }
-                : { fontFamily: "Inter-Medium" }
+                ? {
+                    color: "#d6d6d6",
+                    fontFamily: "Inter-Light",
+                    fontSize: 12,
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontFamily: "Inter-Light",
+                    fontSize: 12,
+                  }
             }
           >
-            {item.profiles.full_name}
+            {Moment(item.created_at).fromNow()}
           </Text>
         </View>
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  color: "#d6d6d6",
-                  fontFamily: "Inter-Light",
-                  fontSize: 12,
-                }
-              : {
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Light",
-                  fontSize: 12,
-                }
-          }
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          {Moment(item.created_at).fromNow()}
-        </Text>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    marginLeft: 10,
+                    paddingVertical: 5,
+                    lineHeight: 20,
+                    width: "100%",
+                    color: "white",
+                    fontFamily: "Inter-Regular",
+                  }
+                : {
+                    marginLeft: 10,
+                    lineHeight: 20,
+                    paddingVertical: 5,
+                    width: "100%",
+                    color: "#2f2d51",
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            {item.prayer}
+          </Text>
+
+          <CommentModal
+            fetchComments={fetchComments}
+            supabase={supabase}
+            prayer={item}
+            commentsArray={commentsArray}
+            commentVisible={commentVisible}
+            user={currentUser}
+            setCommentVisible={setCommentVisible}
+          />
+        </View>
       </View>
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-end",
+          justifyContent: "flex-end",
+          gap: 10,
         }}
       >
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  marginLeft: 10,
-                  color: "white",
-                  fontFamily: "Inter-Regular",
-                }
-              : {
-                  marginLeft: 10,
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Regular",
-                }
-          }
+        <TouchableOpacity
+          onPress={() => toggleLike(item.id)}
+          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
         >
-          {item.prayer}
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <TouchableOpacity
-            onPress={() => toggleLike(item.id)}
-            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-          >
-            {isNewItem && loadingLikes ? (
-              <ActivityIndicator size="small" color={"black"} />
-            ) : (
-              <>
-                <Text
-                  style={
-                    isLikedByMe
-                      ? { color: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { color: "white" }
-                      : { color: "#2f2d51" }
-                  }
-                >
-                  {likes.length}
-                </Text>
-                <Image
-                  style={
-                    isLikedByMe
-                      ? { width: 22, height: 22, tintColor: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { width: 22, height: 22, tintColor: "white" }
-                      : { width: 22, height: 22, tintColor: "#2f2d51" }
-                  }
-                  source={prayerIcon}
-                />
-              </>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setCommentVisible(true)}
-            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-          >
-            {isNewItem && loadingLikes ? (
-              <ActivityIndicator size="small" color={"black"} />
-            ) : (
-              <>
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { color: "#d6d6d6" }
-                      : { color: "#2f2d51" }
-                  }
-                >
-                  {commentsArray.length}
-                </Text>
+          {isNewItem && loadingLikes ? (
+            <ActivityIndicator size="small" color={"black"} />
+          ) : (
+            <>
+              <Text
+                style={
+                  isLikedByMe
+                    ? { color: "#ff4e4e" }
+                    : theme == "dark"
+                    ? { color: "white" }
+                    : { color: "#2f2d51" }
+                }
+              >
+                {likes.length}
+              </Text>
+              <Image
+                style={
+                  isLikedByMe
+                    ? { width: 22, height: 22, tintColor: "#ff4e4e" }
+                    : theme == "dark"
+                    ? { width: 22, height: 22, tintColor: "white" }
+                    : { width: 22, height: 22, tintColor: "#2f2d51" }
+                }
+                source={prayerIcon}
+              />
+            </>
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setCommentVisible(true)}
+          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+        >
+          {isNewItem && loadingLikes ? (
+            <ActivityIndicator size="small" color={"black"} />
+          ) : (
+            <>
+              <Text
+                style={
+                  theme == "dark" ? { color: "#d6d6d6" } : { color: "#2f2d51" }
+                }
+              >
+                {commentsArray.length}
+              </Text>
 
-                <FontAwesome
-                  name="comment-o"
-                  size={22}
-                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                />
-              </>
-            )}
-          </TouchableOpacity>
-        </View>
+              <FontAwesome
+                name="comment-o"
+                size={22}
+                color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              />
+            </>
+          )}
+        </TouchableOpacity>
       </View>
-      <CommentModal
-        fetchComments={fetchComments}
-        supabase={supabase}
-        prayer={item}
-        commentsArray={commentsArray}
-        commentVisible={commentVisible}
-        user={currentUser}
-        setCommentVisible={setCommentVisible}
-      />
     </View>
   );
 };
@@ -232,8 +251,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "space-between",
     padding: 10,
-    height: 100,
-    marginBottom: 20,
   },
   prayerContainerDark: {
     backgroundColor: "#212121",
@@ -242,12 +259,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "space-between",
     padding: 10,
-    height: 100,
-    marginBottom: 20,
   },
   profileImg: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 50,
   },
 });

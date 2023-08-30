@@ -44,7 +44,7 @@ const CommunityModal = ({
     Toast.show({
       type,
       text1: content,
-      visibilityTime: 2000,
+      visibilityTime: 3000,
     });
   };
 

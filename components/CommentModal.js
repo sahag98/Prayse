@@ -53,6 +53,7 @@ const CommentModal = ({
     Toast.show({
       type,
       text1: content,
+      visibilityTime: 3000,
     });
   };
 

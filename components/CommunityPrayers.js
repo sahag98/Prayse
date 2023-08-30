@@ -6,8 +6,11 @@ import Skeleton from "./Skeleton";
 import NetInfo from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Divider } from "react-native-paper";
+import { useSelector } from "react-redux";
 
 const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
+  const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const [isConnected, setIsConnected] = useState(null);
   useEffect(() => {
@@ -32,6 +35,15 @@ const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
           keyExtractor={(e, i) => i.toString()}
           onEndReachedThreshold={0}
           onScroll={onScroll}
+          ItemSeparatorComponent={() => (
+            <Divider
+              style={
+                theme == "dark"
+                  ? { backgroundColor: "#525252", marginBottom: 18 }
+                  : { backgroundColor: "#2f2d51", marginBottom: 18 }
+              }
+            />
+          )}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
