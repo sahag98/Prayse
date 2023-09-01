@@ -15,6 +15,8 @@ import uuid from "react-native-uuid";
 import {
   HeaderTitle,
   HeaderView,
+  ModalAction,
+  ModalActionGroup,
   ModalContainer,
   ModalIcon,
   ModalView,
@@ -29,6 +31,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import ProfilePrayers from "./ProfilePrayers";
 import { FlatList } from "react-native";
+import { Keyboard } from "react-native";
 const ProfileModal = ({
   logout,
   setCurrentUser,
@@ -150,6 +153,10 @@ const ProfileModal = ({
       getProfile();
       getPrayers();
     }
+  };
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   async function handleAnonymous() {
@@ -279,25 +286,44 @@ const ProfileModal = ({
               onChangeText={(text) => setName(text)}
             />
           </View>
-          <TouchableOpacity onPress={handleAnonymous}>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Medium",
-                      textDecorationLine: "underline",
-                      color: "white",
-                    }
-                  : {
-                      fontFamily: "Inter-Medium",
-                      textDecorationLine: "underline",
-                    }
-              }
-            >
-              Set Anonymous
-            </Text>
-          </TouchableOpacity>
-
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity onPress={handleAnonymous}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        textDecorationLine: "underline",
+                        color: "white",
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        textDecorationLine: "underline",
+                      }
+                }
+              >
+                Set Anonymous
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
+              <Text
+                style={{
+                  color: "#ff4e4e",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                }}
+              >
+                Dismiss Keyboard
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Text
             style={
               theme == "dark"
@@ -425,6 +451,9 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     padding: 1,
+  },
+  dismiss: {
+    padding: 2,
   },
   input: {
     color: "#2f2d51",

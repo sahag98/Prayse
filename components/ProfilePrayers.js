@@ -1,6 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import { Modal } from "react-native";
+import {
+  HeaderTitle,
+  ModalAction,
+  ModalActionGroup,
+  ModalContainer,
+  ModalIcon,
+  ModalView,
+} from "../styles/appStyles";
 
 const ProfilePrayers = ({
   item,
@@ -10,7 +19,9 @@ const ProfilePrayers = ({
   getUserPrayers,
   supabase,
 }) => {
+  const [deleteModal, setDeleteModal] = useState(false);
   async function handleDelete(id) {
+    setDeleteModal(false);
     const { error } = await supabase.from("prayers").delete().eq("id", id);
     getUserPrayers();
     getPrayers();
@@ -42,7 +53,7 @@ const ProfilePrayers = ({
       </Text>
       <TouchableOpacity
         // style={{ backgroundColor: "red", height: "100%", width: "20%" }}
-        onPress={() => handleDelete(item.id)}
+        onPress={() => setDeleteModal(true)}
       >
         <AntDesign
           style={{ alignSelf: "center", verticalAlign: "middle" }}
@@ -51,6 +62,60 @@ const ProfilePrayers = ({
           color={theme == "dark" ? "#ff4e4e" : "#cb3f68"}
         />
       </TouchableOpacity>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={deleteModal}
+        onRequestClose={() => setDeleteModal(false)}
+        statusBarTranslucent={true}
+        // onShow={() => inputRef.current?.focus()}
+      >
+        <ModalContainer
+          style={
+            theme == "dark"
+              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+          }
+        >
+          <ModalView
+            style={
+              theme == "dark"
+                ? { backgroundColor: "#212121" }
+                : { backgroundColor: "#93D8F8" }
+            }
+          >
+            <ModalIcon>
+              <HeaderTitle
+                style={
+                  theme == "dark"
+                    ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
+                    : { fontSize: 18, fontFamily: "Inter-Bold" }
+                }
+              >
+                Are you sure you want to delete this prayer?
+              </HeaderTitle>
+            </ModalIcon>
+            <ModalActionGroup>
+              <ModalAction
+                color={"white"}
+                onPress={() => setDeleteModal(false)}
+              >
+                <AntDesign
+                  name="close"
+                  size={28}
+                  color={theme == "dark" ? "black" : "#2F2D51"}
+                />
+              </ModalAction>
+              <ModalAction
+                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                onPress={() => handleDelete(item.id)}
+              >
+                <AntDesign name="check" size={28} color={"white"} />
+              </ModalAction>
+            </ModalActionGroup>
+          </ModalView>
+        </ModalContainer>
+      </Modal>
     </View>
   );
 };

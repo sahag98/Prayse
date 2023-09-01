@@ -9,6 +9,7 @@ import { useSupabase } from "../context/useSupabase";
 import Moment from "moment";
 import { useSelector } from "react-redux";
 import CommentModal from "./CommentModal";
+import axios from "axios";
 
 const PrayerItem = ({ getPrayers, prayers, item }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -55,8 +56,25 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
   }
 
   // console.log("created at: ", format(item.created_at));
+  const sendNotification = async (expoToken) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: "New Response 💭",
+      body: `${currentUser.full_name} is praying on ${item.prayer}.`,
+      data: { screen: "Community" },
+    };
 
-  async function toggleLike(id) {
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  async function toggleLike(id, expoToken) {
     if (isLikedByMe) {
       const { data, error } = await supabase
         .from("likes")
@@ -70,6 +88,9 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
       prayer_id: id,
       user_id: currentUser.id,
     });
+    if (expoToken.length > 0) {
+      sendNotification(expoToken);
+    }
     if (error) {
       console.log(error);
     }
@@ -181,7 +202,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
         }}
       >
         <TouchableOpacity
-          onPress={() => toggleLike(item.id)}
+          onPress={() => toggleLike(item.id, item.profiles?.expoToken)}
           style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
         >
           {isNewItem && loadingLikes ? (

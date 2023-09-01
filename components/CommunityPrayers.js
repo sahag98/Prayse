@@ -20,27 +20,6 @@ const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
     checkConnection();
   }, []);
 
-  const onViewableItemsChanged = ({ viewableItems, changed }) => {
-    // `viewableItems` is an array of currently viewable items
-    // `changed` is an array of items that have changed their visibility state
-
-    // Update state or perform actions based on viewable items
-    // For example:
-    setViewableItems(viewableItems);
-
-    // You can also perform actions on items that changed visibility
-    // For example:
-    changed.forEach(({ item, isViewable }) => {
-      if (isViewable) {
-        console.log(`Item ${item.id} became viewable`);
-        // Perform actions when an item becomes viewable
-      } else {
-        console.log(`Item ${item.id} became not viewable`);
-        // Perform actions when an item becomes not viewable
-      }
-    });
-  };
-
   const checkConnection = () => {
     NetInfo.fetch().then((state) => {
       if (state.isConnected == true) {

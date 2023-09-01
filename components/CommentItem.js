@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   profileImg: {
-    width: 45,
-    height: 45,
+    width: 50,
+    height: 50,
     borderColor: "#A5C9FF",
     borderWidth: 1,
     marginRight: 10,

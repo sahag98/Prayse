@@ -61,8 +61,8 @@ const CommentModal = ({
     const message = {
       to: expoToken,
       sound: "default",
-      title: "New Response",
-      body: `${user.full_name} has responded.`,
+      title: "New Response 💭",
+      body: `${user.full_name} has responded to ${prayer.prayer}.`,
       data: { screen: "Community" },
     };
 
@@ -87,7 +87,9 @@ const CommentModal = ({
         comment: comment,
       });
       showToast("success", "Response shared successfully. ✔️");
-      sendNotification(expoToken);
+      if (expoToken.length > 0) {
+        sendNotification(expoToken);
+      }
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
@@ -226,7 +228,7 @@ const CommentModal = ({
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              onPress={() => addComment(prayer.id, prayer.profiles.expoToken)}
+              onPress={() => addComment(prayer.id, prayer.profiles?.expoToken)}
             >
               <Text
                 style={

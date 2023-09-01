@@ -19,6 +19,14 @@ import { Animated } from "react-native";
 import * as Device from "expo-device";
 import { useRef } from "react";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 const CommunityHome = () => {
   const { currentUser, setCurrentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
@@ -56,7 +64,7 @@ const CommunityHome = () => {
 
   useEffect(() => {
     getUserPrayers();
-    // getPermission();
+    getPermission();
     getPrayers();
   }, []);
 

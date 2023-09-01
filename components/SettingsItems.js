@@ -1,62 +1,105 @@
-import { Linking, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { TouchableOpacity } from 'react-native'
-import { AntDesign } from '@expo/vector-icons';
+import { Linking, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { TouchableOpacity } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 const SettingsItems = ({ options, theme, navigation }) => {
   return (
     <>
-      {options.map((option) => (
-        option.link ?
-          <TouchableOpacity key={option.id} onPress={() => Linking.openURL(option.link)}
-            style={theme == 'dark' ? styles.verseDark : styles.verse}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      {options.map((option) =>
+        option.link ? (
+          <TouchableOpacity
+            key={option.id}
+            onPress={() => Linking.openURL(option.link)}
+            style={theme == "dark" ? styles.verseDark : styles.verse}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               {option.icon}
               <Text
-                style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        color: "white",
+                        fontSize: 16,
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        color: "#2f2d51",
+                        fontSize: 16,
+                      }
+                }
+              >
                 {option.title}
               </Text>
             </View>
-            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme=='dark'? 'white' :'#2f2d51'} />
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="right"
+              size={14}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
-          :
-          <TouchableOpacity key={option.id} onPress={() => navigation.navigate(option.screen)}
-            style={theme == 'dark' ? styles.verseDark : styles.verse}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        ) : (
+          <TouchableOpacity
+            key={option.id}
+            onPress={() => navigation.navigate(option.screen)}
+            style={theme == "dark" ? styles.verseDark : styles.verse}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               {option.icon}
               <Text
-                style={theme=='dark'? { fontFamily: 'Inter-Medium', color: 'white', fontSize: 16 }: { fontFamily: 'Inter-Medium', color: '#2f2d51', fontSize: 16 }}>
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        color: "white",
+                        fontSize: 16,
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        color: "#2f2d51",
+                        fontSize: 16,
+                      }
+                }
+              >
                 {option.title}
               </Text>
             </View>
-            <AntDesign style={{ marginLeft: 10 }} name="right" size={14} color={theme=='dark'? 'white' :'#2f2d51'} />
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="right"
+              size={14}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
-      ))}
+        )
+      )}
     </>
-  )
-}
+  );
+};
 
-export default SettingsItems
+export default SettingsItems;
 
 const styles = StyleSheet.create({
   verseDark: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#151515',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#212121",
     padding: 20,
     borderRadius: 20,
-    justifyContent: 'space-between',
-    marginBottom: 15
+    justifyContent: "space-between",
+    marginBottom: 15,
   },
   verse: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#b8e5fa',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#b8e5fa",
     padding: 20,
     borderRadius: 20,
-    justifyContent: 'space-between',
-    marginBottom: 15
+    justifyContent: "space-between",
+    marginBottom: 15,
   },
-})
+});
