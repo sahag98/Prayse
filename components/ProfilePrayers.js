@@ -20,12 +20,14 @@ const ProfilePrayers = ({
   supabase,
 }) => {
   const [deleteModal, setDeleteModal] = useState(false);
+
   async function handleDelete(id) {
     setDeleteModal(false);
     const { error } = await supabase.from("prayers").delete().eq("id", id);
     getUserPrayers();
     getPrayers();
   }
+
   return (
     <View
       style={

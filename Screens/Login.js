@@ -53,7 +53,6 @@ const Login = () => {
         const data = extractParamsFromUrl(result.url);
 
         if (!data.access_token || !data.refresh_token) return;
-
         setOAuthSession({
           access_token: data.access_token,
           refresh_token: data.refresh_token,

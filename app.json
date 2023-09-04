@@ -2,6 +2,7 @@
   "expo": {
     "name": "Prayse",
     "slug": "prayer-app",
+    "scheme": "prayseapp",
     "version": "7.3.1",
     "orientation": "portrait",
     "owner": "sahag98",

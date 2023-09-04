@@ -88,7 +88,7 @@ const CommentModal = ({
       });
       showToast("success", "Response shared successfully. ✔️");
       if (expoToken.length > 0) {
-        sendNotification(expoToken);
+        sendNotification(expoToken, "New Response 💭");
       }
       if (error) {
         showToast("error", "Something went wrong. Try again.");

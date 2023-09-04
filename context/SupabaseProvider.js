@@ -51,7 +51,7 @@ export const SupabaseProvider = (props) => {
     });
 
     if (error) throw error;
-
+    console.log("in auth session: ", data.session.user.id);
     setLoggedIn(data.session !== null);
 
     let { data: profiles, error: profileError } = await supabase
@@ -60,6 +60,7 @@ export const SupabaseProvider = (props) => {
       .eq("id", data.session.user.id);
 
     setCurrentUser(profiles[0]);
+    setLoggedIn(true);
   };
 
   const login = async (email, password) => {

@@ -56,11 +56,11 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
   }
 
   // console.log("created at: ", format(item.created_at));
-  const sendNotification = async (expoToken) => {
+  const sendNotification = async (expoToken, title) => {
     const message = {
       to: expoToken,
       sound: "default",
-      title: "New Response 💭",
+      title: title,
       body: `${currentUser.full_name} is praying on ${item.prayer}.`,
       data: { screen: "Community" },
     };
@@ -89,7 +89,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
       user_id: currentUser.id,
     });
     if (expoToken.length > 0) {
-      sendNotification(expoToken);
+      sendNotification(expoToken, "Community");
     }
     if (error) {
       console.log(error);

@@ -72,6 +72,7 @@ const ProfileModal = ({
   }
 
   function onModalShow() {
+    getUserPrayers();
     setName(user?.full_name);
     setImage(user?.avatar_url);
   }
@@ -349,28 +350,56 @@ const ProfileModal = ({
           </Text>
           {userPrayers.length == 0 ? (
             <View
-              style={{
-                width: "100%",
-                backgroundColor: "white",
-                borderWidth: 1,
-                borderColor: "#2f2d51",
-                borderRadius: 10,
-                height: 120,
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 5,
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      backgroundColor: "#212121",
+                      borderWidth: 1,
+                      borderColor: "#797979",
+                      borderRadius: 10,
+                      height: 120,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 5,
+                    }
+                  : {
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderWidth: 1,
+                      borderColor: "#2f2d51",
+                      borderRadius: 10,
+                      height: 120,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 5,
+                    }
+              }
             >
-              <Text style={{ fontFamily: "Inter-Regular", color: "#2f2d51" }}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? { fontFamily: "Inter-Regular", color: "#bebebe" }
+                    : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                }
+              >
                 You haven't posted any prayers yet.
               </Text>
               <TouchableOpacity onPress={addPrayer}>
                 <Text
-                  style={{
-                    fontFamily: "Inter-Bold",
-                    textDecorationLine: "underline",
-                    color: "#2f2d51",
-                  }}
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Bold",
+                          textDecorationLine: "underline",
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Bold",
+                          textDecorationLine: "underline",
+                          color: "#2f2d51",
+                        }
+                  }
                 >
                   Post a prayer
                 </Text>
