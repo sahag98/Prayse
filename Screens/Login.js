@@ -147,7 +147,8 @@ const Login = () => {
         <Image source={google} style={styles.googleIcon} />
       </TouchableOpacity>
       <Text style={theme == "dark" ? styles.anonDark : styles.anon}>
-        You can ensure anonymity by enabling it upon signing in.
+        You can ensure anonymity by enabling it upon signing in on the profile
+        settings page.
       </Text>
     </Container>
   );

@@ -25,6 +25,7 @@ import Favorites from "./Screens/Favorites";
 import { useSupabase } from "./context/useSupabase";
 import CommunityHome from "./Screens/CommunityHome";
 import Login from "./Screens/Login";
+import Question from "./Screens/Question";
 
 const Tab = createBottomTabNavigator();
 
@@ -138,6 +139,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={OldPrayerPage}
+          />
+          <Tab.Screen
+            name="Question"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Question}
           />
           <Tab.Screen
             name="Settings"

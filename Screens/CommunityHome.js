@@ -6,14 +6,14 @@ import { PROJECT_ID, NOTIFICATION_API } from "@env";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { useState } from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import ProfileModal from "../components/ProfileModal";
 import { Ionicons } from "@expo/vector-icons";
 import { AnimatedFAB } from "react-native-paper";
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import { Animated } from "react-native";
 import * as Device from "expo-device";
@@ -28,6 +28,7 @@ Notifications.setNotificationHandler({
 });
 
 const CommunityHome = () => {
+  const navigation = useNavigation();
   const { currentUser, setCurrentUser, logout, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
@@ -162,6 +163,21 @@ const CommunityHome = () => {
           </TouchableOpacity>
         </View>
       </HeaderView>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Question")}
+        style={theme == "dark" ? styles.questionDark : styles.question}
+      >
+        <Text
+          style={
+            theme == "dark"
+              ? { color: "white", fontFamily: "Inter-Medium" }
+              : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+          }
+        >
+          Question of the Week
+        </Text>
+        <AntDesign name="right" size={24} color="black" />
+      </TouchableOpacity>
       <ProfileModal
         getUserPrayers={getUserPrayers}
         userPrayers={userPrayers}
@@ -213,6 +229,26 @@ const CommunityHome = () => {
 export default CommunityHome;
 
 const styles = StyleSheet.create({
+  question: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#93d8f8",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  questionDark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#212121",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
   actionButtons: {
     position: "absolute",
     right: 15,
