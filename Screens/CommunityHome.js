@@ -176,7 +176,11 @@ const CommunityHome = () => {
         >
           Question of the Week
         </Text>
-        <AntDesign name="right" size={24} color="black" />
+        <AntDesign
+          name="right"
+          size={24}
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
       </TouchableOpacity>
       <ProfileModal
         getUserPrayers={getUserPrayers}
@@ -233,9 +237,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#93d8f8",
+    borderColor: "#93d8f8",
+    borderWidth: 1,
+    // backgroundColor: "#93d8f8",
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 5,
     marginBottom: 20,
   },
@@ -243,9 +249,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#212121",
+    borderColor: "#f1d592",
+    borderWidth: 0.8,
+    // backgroundColor: "#f1d592",
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 5,
     marginBottom: 20,
   },

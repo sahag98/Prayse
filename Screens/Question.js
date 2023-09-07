@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
@@ -9,6 +15,9 @@ import { useIsFocused } from "@react-navigation/native";
 import { TextInput } from "react-native";
 import AnswerItem from "../components/AnswerItem";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useSupabase } from "../context/useSupabase";
+import Toast from "react-native-toast-message";
+import { Divider } from "react-native-paper";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase } = useSupabase();
@@ -36,9 +45,9 @@ const Question = ({ navigation }) => {
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
       .from("answers")
-      .select("*");
-
-    setAnswersArray(comments);
+      .select("*, profiles(*)")
+      .order("id", { ascending: false });
+    setAnswersArray(answers);
 
     if (answersError) {
       console.log(answersError);
@@ -57,6 +66,14 @@ const Question = ({ navigation }) => {
       });
   };
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
+      visibilityTime: 3000,
+    });
+  };
+
   const addAnswer = async () => {
     if (answer.length <= 0) {
       showToast("error", "The answer field can't be left empty.");
@@ -64,15 +81,23 @@ const Question = ({ navigation }) => {
     } else {
       const { data, error } = await supabase.from("answers").insert({
         user_id: currentUser.id,
-        comment: answer,
+        answer,
       });
-      showToast("success", "Response shared successfully. ✔️");
+      showToast("success", "Answer submitted successfully. ✔️");
+      setAnswer("");
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
       fetchAnswers();
     }
   };
+
+  function convertDigitIn(str) {
+    if (str) {
+      let newStr = str.replace(/-/g, "/");
+      return newStr.split("/").reverse().join("/");
+    }
+  }
 
   return (
     <Container
@@ -116,29 +141,54 @@ const Question = ({ navigation }) => {
         <Text
           style={
             theme == "dark"
-              ? { fontFamily: "Inter-Medium" }
-              : { fontSize: 17, color: "#2f2d51", fontFamily: "Inter-Medium" }
+              ? { fontSize: 20, color: "white", fontFamily: "Inter-Bold" }
+              : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
           }
         >
           {weeklyQuestion[0]?.title}
         </Text>
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  color: "white",
-                  fontFamily: "Inter-Regular",
-                  alignSelf: "flex-end",
-                }
-              : {
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Regular",
-                  alignSelf: "flex-end",
-                }
-          }
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          Date: {weeklyQuestion[0]?.date}
-        </Text>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontFamily: "Inter-Regular",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            {answersArray.length} answers
+          </Text>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "#d6d6d6",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                    alignSelf: "flex-end",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                    alignSelf: "flex-end",
+                  }
+            }
+          >
+            {convertDigitIn(weeklyQuestion[0]?.date)}
+          </Text>
+        </View>
       </View>
       <View
         style={{
@@ -160,7 +210,7 @@ const Question = ({ navigation }) => {
               <MaterialIcons
                 name="question-answer"
                 size={50}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
               />
               <Text
                 style={
@@ -187,6 +237,15 @@ const Question = ({ navigation }) => {
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={() => (
+                <Divider
+                  style={
+                    theme == "dark"
+                      ? { backgroundColor: "#525252", marginBottom: 10 }
+                      : { backgroundColor: "#2f2d51", marginBottom: 10 }
+                  }
+                />
+              )}
               renderItem={({ item }) => (
                 <AnswerItem item={item} theme={theme} />
               )}
@@ -212,6 +271,7 @@ const Question = ({ navigation }) => {
           <TouchableOpacity
             style={{
               width: "20%",
+              height: "100%",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -244,14 +304,24 @@ const Question = ({ navigation }) => {
 export default Question;
 
 const styles = StyleSheet.create({
-  questionDark: {},
-  question: {
-    backgroundColor: "#93d8f8",
+  questionDark: {
     borderRadius: 15,
     padding: 10,
+    borderBottomColor: "#3e3e3e",
+    borderBottomWidth: 2,
+    marginBottom: 10,
+  },
+  question: {
+    // backgroundColor: "#93d8f8",
+    borderRadius: 15,
+    padding: 10,
+    borderBottomColor: "#93d8f8",
+    borderBottomWidth: 2,
+    marginBottom: 10,
   },
   inputField: {
     marginVertical: 10,
+    height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

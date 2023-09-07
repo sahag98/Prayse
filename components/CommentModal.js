@@ -18,6 +18,7 @@ import { useState } from "react";
 import axios from "axios";
 import { TextInput } from "react-native";
 import CommentItem from "./CommentItem";
+import { Divider } from "react-native-paper";
 
 const CommentModal = ({
   commentVisible,
@@ -202,6 +203,15 @@ const CommentModal = ({
                 onEndReachedThreshold={0}
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={() => (
+                  <Divider
+                    style={
+                      theme == "dark"
+                        ? { backgroundColor: "#525252", marginBottom: 10 }
+                        : { backgroundColor: "#2f2d51", marginBottom: 10 }
+                    }
+                  />
+                )}
                 renderItem={({ item }) => (
                   <CommentItem item={item} theme={theme} />
                 )}

@@ -7,58 +7,59 @@ const CommentItem = ({ item, theme }) => {
   return (
     <View style={styles.commentContainer}>
       <View style={styles.content}>
-        <Image
-          style={styles.profileImg}
-          source={{ uri: item.profiles.avatar_url }}
-        />
-
-        <View style={{ gap: 5 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+          <Image
+            style={styles.profileImg}
+            source={{ uri: item.profiles.avatar_url }}
+          />
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontSize: 13, fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontSize: 13, fontFamily: "Inter-Bold" }
+                ? { color: "white", fontSize: 14, fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontSize: 14, fontFamily: "Inter-Bold" }
             }
           >
             {item.profiles.full_name}
           </Text>
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    fontSize: 13,
-                    color: "white",
-                    fontFamily: "Inter-Regular",
-                  }
-                : {
-                    fontSize: 13,
-                    color: "#2f2d51",
-                    fontFamily: "Inter-Regular",
-                  }
-            }
-          >
-            {item.comment}
-          </Text>
         </View>
+
+        <Text
+          style={
+            theme == "dark"
+              ? {
+                  color: "#d6d6d6",
+                  fontFamily: "Inter-Light",
+                  fontSize: 11,
+                  marginTop: 2,
+                }
+              : {
+                  color: "#2f2d51",
+                  fontFamily: "Inter-Light",
+                  fontSize: 11,
+                  marginTop: 2,
+                }
+          }
+        >
+          {Moment(item.created_at).fromNow()}
+        </Text>
       </View>
       <Text
         style={
           theme == "dark"
             ? {
-                color: "#d6d6d6",
-                fontFamily: "Inter-Light",
-                fontSize: 11,
-                marginTop: 2,
+                fontSize: 14,
+                color: "white",
+                fontFamily: "Inter-Regular",
+                lineHeight: 20,
               }
             : {
+                fontSize: 14,
                 color: "#2f2d51",
-                fontFamily: "Inter-Light",
-                fontSize: 11,
-                marginTop: 2,
+                fontFamily: "Inter-Regular",
               }
         }
       >
-        {Moment(item.created_at).fromNow()}
+        {item.comment}
       </Text>
     </View>
   );
@@ -69,17 +70,21 @@ export default CommentItem;
 const styles = StyleSheet.create({
   content: {
     flexDirection: "row",
-    gap: 5,
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 5,
+    // justifyContent: "center",
   },
   commentContainer: {
     paddingVertical: 10,
+
     justifyContent: "space-between",
-    flexDirection: "row",
+    flexDirection: "column",
     marginBottom: 5,
   },
   profileImg: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderColor: "#A5C9FF",
     borderWidth: 1,
     marginRight: 10,
