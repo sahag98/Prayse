@@ -17,7 +17,8 @@ import AnswerItem from "../components/AnswerItem";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
 import Toast from "react-native-toast-message";
-import { Divider } from "react-native-paper";
+import { AnimatedFAB, Divider } from "react-native-paper";
+import { Touchable } from "react-native";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase } = useSupabase();
@@ -252,50 +253,19 @@ const Question = ({ navigation }) => {
             />
           )}
         </View>
-
-        <View style={styles.inputField}>
-          <TextInput
-            // onPressIn={() => setAnswersVisible(false)}
-            style={theme == "dark" ? styles.inputDark : styles.input}
-            placeholder="Add your answer..."
-            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-            value={answer}
-            onChangeText={(text) => setAnswer(text)}
-            onContentSizeChange={handleContentSizeChange}
-            onSubmitEditing={(e) => {
-              e.key === "Enter" && e.preventDefault();
-            }}
-            multiline={true}
-          />
-          <TouchableOpacity
-            style={{
-              width: "20%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={addAnswer}
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#A5C9FF",
-                      fontFamily: "Inter-Medium",
-                      marginRight: 5,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      marginRight: 5,
-                    }
-              }
-            >
-              Answer
-            </Text>
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View style={styles.actionButtons}>
+        <AnimatedFAB
+          icon={"plus"}
+          label={"Add answer"}
+          extended={true}
+          // onPress={() => setPrayerModal(true)}
+          visible={true}
+          animateFrom={"right"}
+          iconMode={"dynamic"}
+          color={theme == "dark" ? "#212121" : "white"}
+          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
+        />
       </View>
     </Container>
   );
@@ -310,6 +280,24 @@ const styles = StyleSheet.create({
     borderBottomColor: "#3e3e3e",
     borderBottomWidth: 2,
     marginBottom: 10,
+  },
+  actionButtons: {
+    position: "absolute",
+    right: 15,
+    bottom: 15,
+    display: "flex",
+  },
+  fabStyleDark: {
+    position: "relative",
+    alignSelf: "flex-end",
+    justifyContent: "center",
+    backgroundColor: "#A5C9FF",
+  },
+  fabStyle: {
+    position: "relative",
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    backgroundColor: "#2f2d51",
   },
   question: {
     // backgroundColor: "#93d8f8",

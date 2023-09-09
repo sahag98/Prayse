@@ -348,7 +348,7 @@ const ProfileModal = ({
           >
             Prayers Shared
           </Text>
-          {userPrayers.length == 0 ? (
+          {userPrayers?.length == 0 ? (
             <View
               style={
                 theme == "dark"

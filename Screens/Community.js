@@ -71,7 +71,6 @@ const Community = ({ navigation }) => {
     });
   };
 
-  var badwordsArray = require("badwords/array");
   const [loading, setLoading] = useState(false);
 
   setTimeout(() => {
@@ -100,14 +99,6 @@ const Community = ({ navigation }) => {
         body: JSON.stringify(message),
       });
       setError(false);
-      const foundSwears = badwordsArray.filter((word) =>
-        addData.toLowerCase().includes(word.toLowerCase())
-      );
-      if (foundSwears.length) {
-        setSwearError(true);
-        setAddData("");
-        return;
-      }
       const timestamp = firebase.firestore.FieldValue.serverTimestamp();
       const data = {
         heading: addData,
@@ -177,7 +168,7 @@ const Community = ({ navigation }) => {
                   : { fontFamily: "Inter-Bold", color: "#2F2D51" }
               }
             >
-              Community
+              Community NEW
             </HeaderTitle>
           </HeaderView>
           <Text

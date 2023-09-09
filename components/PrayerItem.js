@@ -127,7 +127,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
               style={
                 theme == "dark"
                   ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold" }
+                  : { fontFamily: "Inter-Bold", color: "#2f2d51" }
               }
             >
               {item.profiles.full_name}
@@ -162,17 +162,19 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
             style={
               theme == "dark"
                 ? {
-                    marginLeft: 10,
+                    marginLeft: 5,
                     paddingVertical: 5,
+                    paddingHorizontal: 5,
                     lineHeight: 20,
                     width: "100%",
                     color: "white",
                     fontFamily: "Inter-Regular",
                   }
                 : {
-                    marginLeft: 10,
+                    marginLeft: 5,
                     lineHeight: 20,
                     paddingVertical: 5,
+                    paddingHorizontal: 5,
                     width: "100%",
                     color: "#2f2d51",
                     fontFamily: "Inter-Regular",
@@ -233,30 +235,59 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
             </>
           )}
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setCommentVisible(true)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-        >
-          {isNewItem && loadingLikes ? (
-            <ActivityIndicator size="small" color={"black"} />
-          ) : (
-            <>
-              <Text
-                style={
-                  theme == "dark" ? { color: "#d6d6d6" } : { color: "#2f2d51" }
-                }
-              >
-                {commentsArray.length}
-              </Text>
 
+        {item.disable_response ? (
+          <TouchableOpacity
+            disabled={item.disable_response}
+            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+          >
+            {isNewItem && loadingLikes ? (
+              <ActivityIndicator size="small" color={"#c6c6df"} />
+            ) : (
               <FontAwesome
                 name="comment-o"
                 size={22}
-                color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
               />
-            </>
-          )}
-        </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => setCommentVisible(true)}
+            style={
+              item.disable_response
+                ? {
+                    color: "red",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }
+                : { flexDirection: "row", alignItems: "center", gap: 5 }
+            }
+          >
+            {isNewItem && loadingLikes ? (
+              <ActivityIndicator size="small" color={"black"} />
+            ) : (
+              <>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { color: "#d6d6d6" }
+                      : { color: "#2f2d51" }
+                  }
+                >
+                  {commentsArray.length}
+                </Text>
+
+                <FontAwesome
+                  name="comment-o"
+                  size={22}
+                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                />
+              </>
+            )}
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

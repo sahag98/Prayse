@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
+import { Switch } from "react-native-paper";
 
 const CommunityModal = ({
   modalVisible,
@@ -28,6 +29,8 @@ const CommunityModal = ({
   const theme = useSelector((state) => state.user.theme);
   const [prayer, setPrayer] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
+  const [isEnabled, setIsEnabled] = useState(false);
+
   const handleCloseModal = () => {
     setModalVisible(false);
     setPrayer("");
@@ -38,6 +41,10 @@ const CommunityModal = ({
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
+  };
+
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
   };
 
   const showToast = (type, content) => {
@@ -54,9 +61,11 @@ const CommunityModal = ({
       setModalVisible(false);
       return;
     } else {
-      const { data, error } = await supabase
-        .from("prayers")
-        .insert({ prayer: prayer, user_id: user.id });
+      const { data, error } = await supabase.from("prayers").insert({
+        prayer: prayer,
+        user_id: user.id,
+        disable_response: isEnabled,
+      });
       showToast("success", "Prayer added successfully. 🙏🏼");
       if (error) {
         showToast("error", "Something went wrong. Try again.");
@@ -64,6 +73,7 @@ const CommunityModal = ({
       getPrayers();
       getUserPrayers();
       setModalVisible(false);
+      setIsEnabled(false);
       setPrayer("");
     }
   };
@@ -77,7 +87,7 @@ const CommunityModal = ({
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
       >
         <ModalContainer
           style={
@@ -149,6 +159,36 @@ const CommunityModal = ({
                 e.key === "Enter" && e.preventDefault();
               }}
               multiline={true}
+            />
+          </View>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 10,
+            }}
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "white", fontFamily: "Inter-Medium", fontSize: 16 }
+                  : {
+                      color: "#2f2d51",
+                      fontFamily: "Inter-Medium",
+                      fontSize: 16,
+                    }
+              }
+            >
+              Turn off responses
+            </Text>
+            <Switch
+              trackColor={{ false: "grey", true: "grey" }}
+              thumbColor={isEnabled ? "green" : "white"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
             />
           </View>
         </ModalContainer>

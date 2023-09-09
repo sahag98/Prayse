@@ -193,6 +193,7 @@ const Navigation = () => {
             })}
             component={PrayerPage}
           />
+
           {isLoggedIn ? (
             <Tab.Screen
               name="Community"
