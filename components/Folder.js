@@ -290,6 +290,8 @@ const Folder = ({ navigation, todos }) => {
             onEndReachedThreshold={0}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
+            initialNumToRender={4}
+            windowSize={8}
             onScroll={onScroll}
             renderItem={renderItem}
             numColumns={2}

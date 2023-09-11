@@ -19,12 +19,13 @@ import { useSupabase } from "../context/useSupabase";
 import Toast from "react-native-toast-message";
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { Touchable } from "react-native";
+import QuestionModal from "../components/QuestionModal";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [weeklyQuestion, setWeeklyquestion] = useState([]);
-  const [answersVisible, setAnswersVisible] = useState(true);
+  const [answersVisible, setAnswersVisible] = useState(false);
   const [answer, setAnswer] = useState("");
   const [answersArray, setAnswersArray] = useState([]);
   const isFocused = useIsFocused();
@@ -73,24 +74,6 @@ const Question = ({ navigation }) => {
       text1: content,
       visibilityTime: 3000,
     });
-  };
-
-  const addAnswer = async () => {
-    if (answer.length <= 0) {
-      showToast("error", "The answer field can't be left empty.");
-      return;
-    } else {
-      const { data, error } = await supabase.from("answers").insert({
-        user_id: currentUser.id,
-        answer,
-      });
-      showToast("success", "Answer submitted successfully. ✔️");
-      setAnswer("");
-      if (error) {
-        showToast("error", "Something went wrong. Try again.");
-      }
-      fetchAnswers();
-    }
   };
 
   function convertDigitIn(str) {
@@ -238,6 +221,23 @@ const Question = ({ navigation }) => {
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
               showsVerticalScrollIndicator={false}
+              ListFooterComponent={() => (
+                <View
+                  style={
+                    theme == "dark"
+                      ? {
+                          borderTopColor: "#A5C9FF",
+                          borderTopWidth: 0.8,
+                          height: 100,
+                        }
+                      : {
+                          borderTopColor: "#2f2d51",
+                          borderTopWidth: 0.8,
+                          height: 100,
+                        }
+                  }
+                />
+              )}
               ItemSeparatorComponent={() => (
                 <Divider
                   style={
@@ -259,7 +259,7 @@ const Question = ({ navigation }) => {
           icon={"plus"}
           label={"Add answer"}
           extended={true}
-          // onPress={() => setPrayerModal(true)}
+          onPress={() => setAnswersVisible(true)}
           visible={true}
           animateFrom={"right"}
           iconMode={"dynamic"}
@@ -267,6 +267,16 @@ const Question = ({ navigation }) => {
           style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
         />
       </View>
+      <QuestionModal
+        user={currentUser}
+        question={weeklyQuestion[0]}
+        fetchAnswers={fetchAnswers}
+        showToast
+        theme={theme}
+        supabase={supabase}
+        setAnswersVisible={setAnswersVisible}
+        answersVisible={answersVisible}
+      />
     </Container>
   );
 };

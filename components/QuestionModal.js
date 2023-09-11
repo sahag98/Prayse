@@ -1,5 +1,4 @@
 import {
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -7,193 +6,120 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import {
+  HeaderTitle,
+  HeaderView,
+  ModalAction,
+  ModalActionGroup,
+  ModalContainer,
+  ModalIcon,
+  ModalView,
+  StyledInput,
+} from "../styles/appStyles";
 import { AntDesign } from "@expo/vector-icons";
+import { useState } from "react";
 
-import { TextInput } from "react-native";
-import AnswerItem from "../components/AnswerItem";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useSupabase } from "../context/useSupabase";
-import Toast from "react-native-toast-message";
-import { Divider } from "react-native-paper";
-
-const QuestionModal = () => {
-  const { currentUser, supabase } = useSupabase();
-  const theme = useSelector((state) => state.user.theme);
-  const [weeklyQuestion, setWeeklyquestion] = useState([]);
-  const [answersVisible, setAnswersVisible] = useState(true);
+const QuestionModal = ({
+  theme,
+  fetchAnswers,
+  question,
+  user,
+  supabase,
+  showToast,
+  setAnswersVisible,
+  answersVisible,
+}) => {
   const [answer, setAnswer] = useState("");
-  const [answersArray, setAnswersArray] = useState([]);
   const [inputHeight, setInputHeight] = useState(60);
-  return (
-    <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212", position: "relative" }
-          : { backgroundColor: "#F2F7FF", position: "relative" }
+
+  const handleContentSizeChange = (event) => {
+    if (event.nativeEvent.contentSize.height < 60) {
+      setInputHeight(60);
+    } else {
+      setInputHeight(event.nativeEvent.contentSize.height);
+    }
+  };
+
+  const addAnswer = async () => {
+    if (answer.length <= 0) {
+      showToast("error", "The answer field can't be left empty.");
+      setAnswersVisible(false);
+      return;
+    } else {
+      const { data, error } = await supabase.from("answers").insert({
+        user_id: user.id,
+        answer,
+        question_id: question._id,
+      });
+      handleCloseModal();
+      fetchAnswers();
+      // showToast("success", "Answer submitted successfully. ✔️");
+      if (error) {
+        showToast("error", "Something went wrong. Try again.");
       }
+    }
+  };
+
+  const handleCloseModal = () => {
+    setAnswersVisible(false);
+    setAnswer("");
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={answersVisible}
+      onRequestClose={handleCloseModal}
+      statusBarTranslucent={true}
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -inputHeight - 20}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={-130}
       >
-        <HeaderView>
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <TouchableOpacity onPress={() => navigation.navigate("Community")}>
-              <AntDesign
-                name="left"
-                size={24}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-            <HeaderTitle
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      color: "#2F2D51",
-                    }
-              }
-            >
-              <Text>Question of the Week</Text>
-            </HeaderTitle>
-          </View>
-        </HeaderView>
-        <View style={theme == "dark" ? styles.questionDark : styles.question}>
-          <Text
+        <ModalContainer
+          style={
+            theme == "dark"
+              ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+          }
+        >
+          <ModalView
             style={
               theme == "dark"
-                ? { fontSize: 20, color: "white", fontFamily: "Inter-Bold" }
-                : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
+                ? { backgroundColor: "#212121" }
+                : { backgroundColor: "#93D8F8" }
             }
           >
-            {weeklyQuestion[0]?.title}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text
+            <StyledInput
               style={
                 theme == "dark"
                   ? {
-                      color: "white",
+                      height: inputHeight < 60 ? 60 : inputHeight,
+                      alignItems: "center",
+                      alignSelf: "center",
+                      textAlignVertical: "center",
                       fontFamily: "Inter-Regular",
+                      marginBottom: 5,
+                      backgroundColor: "#121212",
                     }
                   : {
-                      color: "#2f2d51",
+                      height: inputHeight < 60 ? 60 : inputHeight,
+                      textAlignVertical: "center",
                       fontFamily: "Inter-Regular",
+                      marginBottom: 5,
+                      backgroundColor: "#2F2D51",
                     }
               }
-            >
-              {answersArray.length} answers
-            </Text>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#d6d6d6",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                      alignSelf: "flex-end",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                      alignSelf: "flex-end",
-                    }
-              }
-            >
-              {convertDigitIn(weeklyQuestion[0]?.date)}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            width: "100%",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flex: 1, width: "100%" }}>
-            {answersArray.length == 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <MaterialIcons
-                  name="question-answer"
-                  size={50}
-                  color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-                />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Medium",
-                          marginTop: 10,
-                          color: "#A5C9FF",
-                        }
-                      : {
-                          fontFamily: "Inter-Medium",
-                          marginTop: 10,
-                          color: "#2f2d51",
-                        }
-                  }
-                >
-                  No answers at this moment.
-                </Text>
-              </View>
-            ) : (
-              <FlatList
-                data={answersArray}
-                keyExtractor={(e, i) => i.toString()}
-                onEndReachedThreshold={0}
-                scrollEventThrottle={16}
-                showsVerticalScrollIndicator={false}
-                ItemSeparatorComponent={() => (
-                  <Divider
-                    style={
-                      theme == "dark"
-                        ? { backgroundColor: "#525252", marginBottom: 10 }
-                        : { backgroundColor: "#2f2d51", marginBottom: 10 }
-                    }
-                  />
-                )}
-                renderItem={({ item }) => (
-                  <AnswerItem item={item} theme={theme} />
-                )}
-              />
-            )}
-          </View>
-
-          <View style={styles.inputField}>
-            <TextInput
-              // onPressIn={() => setAnswersVisible(false)}
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              placeholder="Add your answer..."
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={answer}
+              placeholder="Add answer"
+              placeholderTextColor={"#e0e0e0"}
+              selectionColor={"white"}
+              autoFocus={true}
               onChangeText={(text) => setAnswer(text)}
+              value={answer}
               onContentSizeChange={handleContentSizeChange}
               onSubmitEditing={(e) => {
                 e.key === "Enter" && e.preventDefault();
@@ -201,84 +127,41 @@ const QuestionModal = () => {
               multiline={true}
             />
             <TouchableOpacity
-              style={{
-                width: "20%",
-
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={addAnswer}
+              style={styles.dismiss}
+              onPress={() => Keyboard.dismiss()}
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#A5C9FF",
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontFamily: "Inter-Medium",
-                      }
-                }
+                style={{
+                  color: "#ff4e4e",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                }}
               >
-                Answer
+                Dismiss Keyboard
               </Text>
             </TouchableOpacity>
-          </View>
-        </View>
+            <ModalActionGroup>
+              <ModalAction color={"white"} onPress={handleCloseModal}>
+                <AntDesign
+                  name="close"
+                  size={28}
+                  color={theme == "dark" ? "#121212" : "#2F2D51"}
+                />
+              </ModalAction>
+              <ModalAction
+                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                onPress={addAnswer}
+              >
+                <AntDesign name="check" size={28} color={"white"} />
+              </ModalAction>
+            </ModalActionGroup>
+          </ModalView>
+        </ModalContainer>
       </KeyboardAvoidingView>
-    </Container>
+    </Modal>
   );
 };
 
 export default QuestionModal;
 
-const styles = StyleSheet.create({
-  questionDark: {
-    borderRadius: 15,
-    padding: 10,
-    borderBottomColor: "#3e3e3e",
-    borderBottomWidth: 2,
-    marginBottom: 10,
-  },
-  question: {
-    // backgroundColor: "#93d8f8",
-    borderRadius: 15,
-    padding: 10,
-    borderBottomColor: "#93d8f8",
-    borderBottomWidth: 2,
-    marginBottom: 10,
-  },
-  inputField: {
-    marginVertical: 0,
-    minHeight: 50,
-    maxHeight: 100,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    alignSelf: "center",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "80%",
-    borderColor: "#212121",
-    backgroundColor: "#212121",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "80%",
-    borderColor: "#2f2d51",
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-});
+const styles = StyleSheet.create({});

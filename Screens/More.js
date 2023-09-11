@@ -4,22 +4,9 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Modal,
-  KeyboardAvoidingView,
-  TextInput,
 } from "react-native";
-import React, { useState } from "react";
-import {
-  Container,
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  ModalView2,
-  StyledInput,
-} from "../styles/appStyles";
+import React from "react";
+import { Container, HeaderTitle } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import {
   MaterialCommunityIcons,
@@ -35,23 +22,9 @@ import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from "@env";
 import { Linking } from "react-native";
 
 import SettingsItems from "../components/SettingsItems";
-import { Button, Snackbar } from "react-native-paper";
 
 const More = ({ navigation }) => {
-  const [open, setOpen] = useState(false);
   const theme = useSelector((state) => state.user.theme);
-
-  const [selectedOption, setSelectedOption] = useState([]);
-  const [addedSuggestion, setAddedSuggestion] = useState("");
-  const [submitDisabled, setSubmitDisabled] = useState(true);
-  const [snackbarvisible, setSnackbarVisible] = useState(false);
-
-  const suggestions = [
-    "- User based community page: Create a user and reply to prayers and more.",
-    "- Quick prayer: Add a quick prayer by just a press of a button.",
-    "- Reflection on Devotional: Ability to write down thoughts on devotional page.",
-    "- All of the Above",
-  ];
 
   function giveFeedback(market) {
     if (market == "android") {
@@ -291,176 +264,6 @@ const More = ({ navigation }) => {
           />
         </TouchableOpacity>
       )}
-      <TouchableOpacity
-        onPress={() => setOpen(true)}
-        style={theme == "dark" ? styles.verseDark : styles.verse}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Medium", color: "white", fontSize: 16 }
-                : { fontFamily: "Inter-Medium", color: "#2f2d51", fontSize: 16 }
-            }
-          >
-            Next Update Suggestions
-          </Text>
-        </View>
-        <MaterialCommunityIcons
-          name="thought-bubble-outline"
-          style={{ marginLeft: 10 }}
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      </TouchableOpacity>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={open}
-        onRequestClose={handleCloseModal}
-        statusBarTranslucent={true}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "padding"}
-        >
-          <ModalContainer
-            style={
-              theme == "dark"
-                ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-                : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-            }
-          >
-            <ModalView2
-              style={
-                theme == "dark"
-                  ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#93D8F8" }
-              }
-            >
-              <TouchableOpacity
-                onPress={handleCloseModal}
-                style={{ position: "absolute", right: 10, top: 10 }}
-              >
-                <AntDesign
-                  name="close"
-                  size={28}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
-                />
-              </TouchableOpacity>
-
-              <HeaderTitle
-                style={
-                  theme == "dark"
-                    ? {
-                        textAlign: "center",
-                        fontFamily: "Inter-Bold",
-                        color: "white",
-                      }
-                    : { textAlign: "center", fontFamily: "Inter-Bold" }
-                }
-              >
-                Next Update Suggestions
-              </HeaderTitle>
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "white",
-                        textAlign: "center",
-                        fontFamily: "Inter-Regular",
-                        marginVertical: 5,
-                      }
-                    : {
-                        color: "#2f2d51",
-                        textAlign: "center",
-                        marginVertical: 5,
-                        fontFamily: "Inter-Regular",
-                      }
-                }
-              >
-                Select an option or enter a suggestion:
-              </Text>
-              {suggestions.map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  onPress={() => handleOptionPress(option)}
-                  style={
-                    theme == "dark"
-                      ? {
-                          padding: 10,
-                          borderRadius: 10,
-                          backgroundColor: selectedOption.includes(option)
-                            ? "#121212"
-                            : "transparent",
-                        }
-                      : {
-                          padding: 10,
-                          borderRadius: 10,
-                          backgroundColor: selectedOption.includes(option)
-                            ? "#4bbef3"
-                            : "transparent",
-                        }
-                  }
-                >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? { color: "#e0e0e0", fontFamily: "Inter-Medium" }
-                        : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-                    }
-                  >
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-              <TextInput
-                style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="enter suggestion"
-                value={addedSuggestion}
-                placeholderTextColor={theme == "dark" ? "#aaaaaa" : "#2f2d51"}
-                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-                onChangeText={handleInputChange}
-              />
-              <TouchableOpacity
-                style={
-                  theme == "dark"
-                    ? {
-                        backgroundColor: "#121212",
-                        paddingVertical: 15,
-                        borderRadius: 10,
-                        alignItems: "center",
-                      }
-                    : {
-                        backgroundColor: "#2f2d51",
-                        paddingVertical: 15,
-                        borderRadius: 10,
-                        alignItems: "center",
-                      }
-                }
-                onPress={handleVote}
-                disabled={submitDisabled}
-              >
-                <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
-                  Submit Vote
-                </Text>
-              </TouchableOpacity>
-            </ModalView2>
-          </ModalContainer>
-        </KeyboardAvoidingView>
-      </Modal>
-      <Snackbar
-        style={
-          theme == "dark"
-            ? { backgroundColor: "#212121" }
-            : { backgroundColor: "#2f2d51" }
-        }
-        visible={snackbarvisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={5000}
-      >
-        Thank you for submitting a suggestion!
-      </Snackbar>
     </Container>
   );
 };

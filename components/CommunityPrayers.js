@@ -1,19 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native";
 import PrayerItem from "./PrayerItem";
-import useIsReady from "../hooks/useIsReady";
 import Skeleton from "./Skeleton";
 import NetInfo from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
+import communityReady from "../hooks/communityReady";
 
 const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
   const theme = useSelector((state) => state.user.theme);
-  const isReady = useIsReady();
-
-  const [viewableItems, setViewableItems] = useState([]);
+  const isReady = communityReady();
 
   const [isConnected, setIsConnected] = useState(null);
   useEffect(() => {
