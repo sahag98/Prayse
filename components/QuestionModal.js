@@ -32,11 +32,11 @@ const QuestionModal = ({
   answersVisible,
 }) => {
   const [answer, setAnswer] = useState("");
-  const [inputHeight, setInputHeight] = useState(60);
+  const [inputHeight, setInputHeight] = useState(100);
 
   const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 60) {
-      setInputHeight(60);
+    if (event.nativeEvent.contentSize.height < 100) {
+      setInputHeight(100);
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
@@ -98,17 +98,15 @@ const QuestionModal = ({
               style={
                 theme == "dark"
                   ? {
-                      height: inputHeight < 60 ? 60 : inputHeight,
-                      alignItems: "center",
-                      alignSelf: "center",
-                      textAlignVertical: "center",
+                      height: inputHeight < 100 ? 100 : inputHeight,
+                      verticalAlign: "top",
                       fontFamily: "Inter-Regular",
                       marginBottom: 5,
                       backgroundColor: "#121212",
                     }
                   : {
-                      height: inputHeight < 60 ? 60 : inputHeight,
-                      textAlignVertical: "center",
+                      height: inputHeight < 100 ? 100 : inputHeight,
+                      verticalAlign: "top",
                       fontFamily: "Inter-Regular",
                       marginBottom: 5,
                       backgroundColor: "#2F2D51",

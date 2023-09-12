@@ -117,7 +117,6 @@ export const SupabaseProvider = (props) => {
         },
         (payload) => {
           const newRecord = payload.new;
-          console.log("new :", newRecord);
           setCurrentUser(newRecord);
         }
       )

@@ -85,114 +85,109 @@ const CommunityModal = ({
       visible={modalVisible}
       onRequestClose={handleCloseModal}
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      <ModalContainer
+        style={
+          theme == "dark"
+            ? {
+                backgroundColor: "#121212",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+              }
+            : {
+                backgroundColor: "#F2F7FF",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+              }
+        }
       >
-        <ModalContainer
-          style={
-            theme == "dark"
-              ? {
-                  backgroundColor: "#121212",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-              : {
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-          }
+        <HeaderView
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
         >
-          <HeaderView
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
+          <TouchableOpacity onPress={handleCloseModal}>
+            <AntDesign
+              name="close"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+          </TouchableOpacity>
+          <HeaderTitle
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Bold", color: "white" }
+                : { fontFamily: "Inter-Bold", color: "#2F2D51" }
+            }
           >
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="close"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-            <HeaderTitle
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
-            >
-              Add A Prayer
-            </HeaderTitle>
+            Add A Prayer
+          </HeaderTitle>
 
-            <TouchableOpacity onPress={addPrayer}>
-              <AntDesign
-                name="check"
-                size={30}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-          </HeaderView>
-          <View style={styles.inputField}>
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-              }
-            >
-              Prayer
-            </Text>
-            <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              autoFocus
-              placeholder="Add a prayer"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={prayer}
-              onChangeText={(text) => setPrayer(text)}
-              onContentSizeChange={handleContentSizeChange}
-              onSubmitEditing={(e) => {
-                e.key === "Enter" && e.preventDefault();
-              }}
-              multiline={true}
+          <TouchableOpacity onPress={addPrayer}>
+            <AntDesign
+              name="check"
+              size={30}
+              color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
             />
-          </View>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 10,
-            }}
+          </TouchableOpacity>
+        </HeaderView>
+        <View style={styles.inputField}>
+          <Text
+            style={
+              theme == "dark"
+                ? { color: "white", fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+            }
           >
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Medium", fontSize: 16 }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 16,
-                    }
-              }
-            >
-              Turn off responses
-            </Text>
-            <Switch
-              trackColor={{ false: "grey", true: "grey" }}
-              thumbColor={isEnabled ? "green" : "white"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            />
-          </View>
-        </ModalContainer>
-      </KeyboardAvoidingView>
+            Prayer
+          </Text>
+          <TextInput
+            style={theme == "dark" ? styles.inputDark : styles.input}
+            autoFocus={modalVisible}
+            placeholder="Add a prayer"
+            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            value={prayer}
+            onChangeText={(text) => setPrayer(text)}
+            onContentSizeChange={handleContentSizeChange}
+            onSubmitEditing={(e) => {
+              e.key === "Enter" && e.preventDefault();
+            }}
+            multiline={true}
+          />
+        </View>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 10,
+          }}
+        >
+          <Text
+            style={
+              theme == "dark"
+                ? { color: "white", fontFamily: "Inter-Medium", fontSize: 16 }
+                : {
+                    color: "#2f2d51",
+                    fontFamily: "Inter-Medium",
+                    fontSize: 16,
+                  }
+            }
+          >
+            Turn off responses
+          </Text>
+          <Switch
+            trackColor={{ false: "grey", true: "grey" }}
+            thumbColor={isEnabled ? "green" : "white"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
+      </ModalContainer>
     </Modal>
   );
 };

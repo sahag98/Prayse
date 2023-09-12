@@ -19,7 +19,7 @@ import {
 import { useFonts } from "expo-font";
 import Unorderedlist from "react-native-unordered-list";
 import { useDispatch, useSelector } from "react-redux";
-import { Divider } from "react-native-paper";
+import { Button, Divider } from "react-native-paper";
 import {
   Container,
   HeaderTitle,
@@ -37,6 +37,7 @@ import * as Notifications from "expo-notifications";
 import { useIsFocused } from "@react-navigation/native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { PROJECT_ID, NOTIFICATION_API } from "@env";
+import moment from "moment";
 import { addQuickFolder } from "../redux/folderReducer";
 import uuid from "react-native-uuid";
 import { KeyboardAvoidingView } from "react-native";
@@ -44,6 +45,10 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { Keyboard } from "react-native";
 import { addPrayer } from "../redux/prayerReducer";
 import * as Updates from "expo-updates";
+import { Badge, Menu, PaperProvider } from "react-native-paper";
+import { addNoti, deleteAll } from "../redux/notiReducer";
+import NotiItem from "../components/NotiItem";
+import { FlatList } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -127,6 +132,7 @@ export default function Welcome({ navigation }) {
   const [icon, setIcon] = useState(null);
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
+  const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
     (state) => state.folder.quickFolderExists
@@ -214,6 +220,8 @@ export default function Welcome({ navigation }) {
   const [inputHeight, setInputHeight] = useState(60);
   const [quickprayervalue, setQuickprayervalue] = useState("");
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
+  const [notiVisible, setNotiVisible] = useState(false);
+
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -233,6 +241,7 @@ export default function Welcome({ navigation }) {
     ) {
       const data = lastNotificationResponse.notification.request.content.data;
       const body = lastNotificationResponse.notification.request.content.body;
+
       if (data && data.updateLink) {
         console.log("in update");
         if (Platform.OS === "ios") {
@@ -308,6 +317,16 @@ export default function Welcome({ navigation }) {
       .catch((err) => console.log(err));
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
+        let date = moment(notification.date);
+
+        dispatch(
+          addNoti({
+            noti_id: uuid.v4(),
+            date: date.format("M/D/YYYY h:mm A"),
+            notification: notification.request.content.body,
+            screen: notification.request.content.data.screen,
+          })
+        );
         setNotification(notification);
       });
 
@@ -374,6 +393,7 @@ export default function Welcome({ navigation }) {
           ? {
               display: "flex",
               justifyContent: "center",
+              position: "relative",
               alignItems: "center",
               backgroundColor: "#121212",
             }
@@ -394,36 +414,130 @@ export default function Welcome({ navigation }) {
             }
       }
     >
-      <Animated.View
-        entering={FadeIn.duration(2000)}
-        style={{ flexDirection: "row", alignItems: "center" }}
+      <View
+        style={{
+          alignItems: "center",
+
+          flexDirection: "row",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
       >
-        <Animated.Text
+        <Animated.View
+          entering={FadeIn.duration(2000)}
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
+          <Animated.Text
+            style={
+              theme == "dark"
+                ? styles.greetingDark
+                : theme == "BlackWhite"
+                ? styles.greetingBlack
+                : styles.greeting
+            }
+          >
+            {greeting}
+          </Animated.Text>
+          {icon}
+        </Animated.View>
+        <View style={{ position: "relative", padding: 10 }}>
+          <TouchableOpacity
+            onPress={() => setNotiVisible((prev) => !prev)}
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: "#A5C9FF",
+                    borderRadius: 50,
+                    padding: 5,
+                  }
+                : {
+                    backgroundColor: "#2f2d51",
+                    borderRadius: 50,
+                    padding: 5,
+                  }
+            }
+          >
+            <Ionicons
+              name="notifications-outline"
+              size={22}
+              color={theme == "dark" ? "#121212" : "white"}
+            />
+          </TouchableOpacity>
+          <Badge
+            size={17}
+            style={{
+              position: "absolute",
+              fontFamily: "Inter-Bold",
+              fontSize: 11,
+              top: 5,
+              right: 2,
+            }}
+          >
+            {notis.length}
+          </Badge>
+        </View>
+      </View>
+      <View style={{ width: "100%" }}>
+        <Text
           style={
             theme == "dark"
-              ? styles.greetingDark
+              ? styles.welcomeDark
               : theme == "BlackWhite"
-              ? styles.greetingBlack
-              : styles.greeting
+              ? styles.welcomeBlack
+              : styles.welcome
           }
         >
-          {greeting}
-        </Animated.Text>
-        {icon}
-      </Animated.View>
-      <Text
-        style={
-          theme == "dark"
-            ? styles.welcomeDark
-            : theme == "BlackWhite"
-            ? styles.welcomeBlack
-            : styles.welcome
-        }
-      >
-        Welcome to Prayse
-      </Text>
-      <View style={styles.imgContainer}>
-        <Image style={styles.img} source={prayer} />
+          Welcome to Prayse
+        </Text>
+        <View style={styles.imgContainer}>
+          <Image style={styles.img} source={prayer} />
+        </View>
+        {notiVisible && (
+          <View
+            style={{
+              backgroundColor: "#93d8f8",
+              position: "absolute",
+              borderRadius: 10,
+              overflow: "hidden",
+              top: 0,
+              right: 0,
+            }}
+          >
+            {notis.length == 0 ? (
+              <View style={{ padding: 10 }}>
+                <Text style={{ color: "#2f2d51", fontFamily: "Inter-Medium" }}>
+                  No new notifications yet!
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={notis}
+                keyExtractor={(item) => item.noti_id}
+                onEndReachedThreshold={0}
+                initialNumToRender={4}
+                windowSize={8}
+                ItemSeparatorComponent={() => (
+                  <Divider
+                    style={
+                      theme == "dark"
+                        ? { backgroundColor: "#525252" }
+                        : { backgroundColor: "#2f2d51" }
+                    }
+                  />
+                )}
+                scrollEventThrottle={16}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <NotiItem
+                    navigation={navigation}
+                    setNotiVisible={setNotiVisible}
+                    item={item}
+                  />
+                )}
+              />
+            )}
+          </View>
+        )}
       </View>
       <Modal
         animationType="fade"
@@ -1259,6 +1373,7 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     backgroundColor: "white",
+    position: "relative",
     height: 180,
     width: 180,
     borderRadius: 100,

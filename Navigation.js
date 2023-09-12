@@ -147,7 +147,7 @@ const Navigation = () => {
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Question}
+            component={isLoggedIn ? Question : Login}
           />
           <Tab.Screen
             name="Settings"

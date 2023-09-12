@@ -43,13 +43,9 @@ const CommunityPrayers = ({ onScroll, prayers, getPrayers }) => {
               style={
                 theme == "dark"
                   ? {
-                      borderTopColor: "#A5C9FF",
-                      borderTopWidth: 0.8,
                       height: 100,
                     }
                   : {
-                      borderTopColor: "#2f2d51",
-                      borderTopWidth: 0.8,
                       height: 100,
                     }
               }

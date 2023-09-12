@@ -20,6 +20,8 @@ import Toast from "react-native-toast-message";
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { Touchable } from "react-native";
 import QuestionModal from "../components/QuestionModal";
+import moment from "moment";
+import { ActivityIndicator } from "react-native";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase } = useSupabase();
@@ -67,20 +69,40 @@ const Question = ({ navigation }) => {
         console.error(error);
       });
   };
+  const dateObject = new Date(weeklyQuestion[0]?.date);
 
-  const showToast = (type, content) => {
-    Toast.show({
-      type,
-      text1: content,
-      visibilityTime: 3000,
-    });
-  };
+  const endDate = moment(dateObject).add(7, "days").toDate();
 
   function convertDigitIn(str) {
+    let newDate;
     if (str) {
       let newStr = str.replace(/-/g, "/");
-      return newStr.split("/").reverse().join("/");
+      newDate = newStr.split("/").reverse().join("/");
     }
+    const parsedDate = moment(newDate, "MM/DD/YYYY");
+    const formattedDate = parsedDate.format("M/D/YYYY");
+    return formattedDate;
+  }
+
+  const BusyIndicator = () => {
+    return (
+      <View
+        style={
+          theme == "dark"
+            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
+            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
+        }
+      >
+        <ActivityIndicator
+          size="large"
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      </View>
+    );
+  };
+
+  if (weeklyQuestion.length == 0) {
+    return <BusyIndicator />;
   }
 
   return (
@@ -143,34 +165,37 @@ const Question = ({ navigation }) => {
               theme == "dark"
                 ? {
                     color: "white",
+                    fontSize: 13,
                     fontFamily: "Inter-Regular",
                   }
                 : {
                     color: "#2f2d51",
+                    fontSize: 13,
                     fontFamily: "Inter-Regular",
                   }
             }
           >
             {answersArray.length} answers
           </Text>
+
           <Text
             style={
               theme == "dark"
                 ? {
                     color: "#d6d6d6",
                     fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    fontFamily: "Inter-Medium",
                     alignSelf: "flex-end",
                   }
                 : {
                     color: "#2f2d51",
                     fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    fontFamily: "Inter-Medium",
                     alignSelf: "flex-end",
                   }
             }
           >
-            {convertDigitIn(weeklyQuestion[0]?.date)}
+            Ends on {endDate?.toLocaleDateString()}
           </Text>
         </View>
       </View>
@@ -226,13 +251,9 @@ const Question = ({ navigation }) => {
                   style={
                     theme == "dark"
                       ? {
-                          borderTopColor: "#A5C9FF",
-                          borderTopWidth: 0.8,
                           height: 100,
                         }
                       : {
-                          borderTopColor: "#2f2d51",
-                          borderTopWidth: 0.8,
                           height: 100,
                         }
                   }

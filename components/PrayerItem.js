@@ -89,6 +89,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
       user_id: currentUser.id,
     });
     if (expoToken.length > 0) {
+      console.log("expo");
       sendNotification(expoToken, "Community");
     }
     if (error) {
