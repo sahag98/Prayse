@@ -417,7 +417,9 @@ export default function Welcome({ navigation }) {
       <View
         style={{
           alignItems: "center",
-
+          // backgroundColor: "#93d8f8",
+          // borderRadius: 10,
+          // paddingHorizontal: 10,
           flexDirection: "row",
           justifyContent: "space-between",
           width: "100%",
@@ -494,18 +496,35 @@ export default function Welcome({ navigation }) {
         </View>
         {notiVisible && (
           <View
-            style={{
-              backgroundColor: "#93d8f8",
-              position: "absolute",
-              borderRadius: 10,
-              overflow: "hidden",
-              top: 0,
-              right: 0,
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: "#212121",
+                    position: "absolute",
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    top: 0,
+                    right: 0,
+                  }
+                : {
+                    backgroundColor: "#93d8f8",
+                    position: "absolute",
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    top: 0,
+                    right: 0,
+                  }
+            }
           >
             {notis.length == 0 ? (
               <View style={{ padding: 10 }}>
-                <Text style={{ color: "#2f2d51", fontFamily: "Inter-Medium" }}>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { color: "white", fontFamily: "Inter-Medium" }
+                      : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                  }
+                >
                   No new notifications yet!
                 </Text>
               </View>
@@ -516,6 +535,26 @@ export default function Welcome({ navigation }) {
                 onEndReachedThreshold={0}
                 initialNumToRender={4}
                 windowSize={8}
+                // ListHeaderComponent={()=>}
+                ListFooterComponent={() => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      dispatch(deleteAll());
+                      setNotiVisible(false);
+                    }}
+                    style={{ padding: 10, alignSelf: "flex-end" }}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { fontFamily: "Inter-Bold", color: "#e24774" }
+                          : { fontFamily: "Inter-Bold", color: "#ff6262" }
+                      }
+                    >
+                      Clear all
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 ItemSeparatorComponent={() => (
                   <Divider
                     style={
@@ -529,6 +568,7 @@ export default function Welcome({ navigation }) {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
                   <NotiItem
+                    theme={theme}
                     navigation={navigation}
                     setNotiVisible={setNotiVisible}
                     item={item}

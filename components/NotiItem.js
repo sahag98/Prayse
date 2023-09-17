@@ -4,7 +4,7 @@ import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { deleteNoti } from "../redux/notiReducer";
 
-const NotiItem = ({ item, setNotiVisible, navigation }) => {
+const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dispatch = useDispatch();
   const viewNotification = (screen) => {
     setNotiVisible(false);
@@ -22,26 +22,52 @@ const NotiItem = ({ item, setNotiVisible, navigation }) => {
       key={item.noti_id}
     >
       <View style={{ gap: 5, padding: 10, width: "80%" }}>
-        <Text style={{ color: "#2f2d51", fontFamily: "Inter-Regular" }}>
+        <Text
+          style={
+            theme == "dark"
+              ? { color: "white", fontFamily: "Inter-Regular" }
+              : { color: "#2f2d51", fontFamily: "Inter-Regular" }
+          }
+        >
           {item.notification}
         </Text>
         <Text
-          style={{ color: "#2f2d51", fontFamily: "Inter-Light", fontSize: 13 }}
+          style={
+            theme == "dark"
+              ? { color: "white", fontFamily: "Inter-Light", fontSize: 12 }
+              : { color: "#2f2d51", fontFamily: "Inter-Light", fontSize: 12 }
+          }
         >
           {item.date}
         </Text>
       </View>
       <TouchableOpacity
         onPress={() => viewNotification(item.screen)}
-        style={{
-          position: "relative",
-          borderLeftColor: "#2f2d51",
-          borderLeftWidth: 1,
-          alignItems: "center",
-          width: "20%",
-        }}
+        style={
+          theme == "dark"
+            ? {
+                position: "relative",
+                borderLeftColor: "#A5C9FF",
+                borderLeftWidth: 1,
+                alignItems: "center",
+                width: "20%",
+              }
+            : {
+                position: "relative",
+                borderLeftColor: "#2f2d51",
+                borderLeftWidth: 1,
+                alignItems: "center",
+                width: "20%",
+              }
+        }
       >
-        <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
+        <Text
+          style={
+            theme == "dark"
+              ? { fontFamily: "Inter-Medium", color: "#A5C9FF" }
+              : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+          }
+        >
           View
         </Text>
       </TouchableOpacity>

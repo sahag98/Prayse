@@ -22,6 +22,8 @@ import { Touchable } from "react-native";
 import QuestionModal from "../components/QuestionModal";
 import moment from "moment";
 import { ActivityIndicator } from "react-native";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import QuestionHelpModal from "../components/QuestionHelpModal";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase } = useSupabase();
@@ -32,7 +34,7 @@ const Question = ({ navigation }) => {
   const [answersArray, setAnswersArray] = useState([]);
   const isFocused = useIsFocused();
   const [inputHeight, setInputHeight] = useState(60);
-
+  const [questionHelpModal, setQuestionHelpModal] = useState(false);
   useEffect(() => {
     loadQuestion();
     fetchAnswers();
@@ -113,10 +115,9 @@ const Question = ({ navigation }) => {
           : { backgroundColor: "#F2F7FF", position: "relative" }
       }
     >
-      <HeaderView>
+      <HeaderView style={{ marginTop: 10, alignItems: "center" }}>
         <View
           style={{
-            marginTop: 10,
             flexDirection: "row",
             alignItems: "center",
             gap: 10,
@@ -142,6 +143,20 @@ const Question = ({ navigation }) => {
             <Text>Question of the Week</Text>
           </HeaderTitle>
         </View>
+        <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
+          <FontAwesome5
+            name="question-circle"
+            size={28}
+            color={theme == "dark" ? "#c8c8c8" : "#2f2d51"}
+          />
+        </TouchableOpacity>
+        {questionHelpModal && (
+          <QuestionHelpModal
+            theme={theme}
+            questionHelpModal={questionHelpModal}
+            setQuestionHelpModal={setQuestionHelpModal}
+          />
+        )}
       </HeaderView>
       <View style={theme == "dark" ? styles.questionDark : styles.question}>
         <Text
@@ -164,39 +179,52 @@ const Question = ({ navigation }) => {
             style={
               theme == "dark"
                 ? {
-                    color: "white",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    color: "#A5C9FF",
+                    fontSize: 14,
+                    fontFamily: "Inter-Medium",
                   }
                 : {
                     color: "#2f2d51",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    fontSize: 14,
+                    fontFamily: "Inter-Medium",
                   }
             }
           >
             {answersArray.length} answers
           </Text>
 
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    color: "#d6d6d6",
-                    fontSize: 13,
-                    fontFamily: "Inter-Medium",
-                    alignSelf: "flex-end",
-                  }
-                : {
-                    color: "#2f2d51",
-                    fontSize: 13,
-                    fontFamily: "Inter-Medium",
-                    alignSelf: "flex-end",
-                  }
-            }
+          <View
+            style={{
+              flexDirection: "row",
+
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 5,
+            }}
           >
-            Ends on {endDate?.toLocaleDateString()}
-          </Text>
+            <Ionicons
+              name="time-outline"
+              size={24}
+              color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#d6d6d6",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              Ends on {endDate?.toLocaleDateString()}
+            </Text>
+          </View>
         </View>
       </View>
       <View
