@@ -7,10 +7,12 @@ import { useState } from "react";
 import { Transition, Transitioning } from "react-native-reanimated";
 import { Button } from "react-native";
 import { useRef } from "react";
-import { SvgUri } from "react-native-svg";
 
 import questionLight from "../assets/questionLight.png";
 import questionDark from "../assets/questionDark.png";
+import expire from "../assets/expire.png";
+import insta from "../assets/insta.png";
+import { Linking } from "react-native";
 const QuestionHelpModal = ({
   questionHelpModal,
   setQuestionHelpModal,
@@ -26,11 +28,14 @@ const QuestionHelpModal = ({
   const ref = useRef();
 
   const onNextPage = () => {
-    if (page < 1) {
+    if (page < 2) {
       ref.current.animateNextTransition();
       setPage(page + 1);
     }
   };
+
+  console.log(page);
+
   return (
     <Modal
       animationType="fade"
@@ -66,12 +71,23 @@ const QuestionHelpModal = ({
           }
         >
           <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Inter-Bold",
-              fontSize: 16,
-              marginBottom: 10,
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    textAlign: "center",
+                    fontFamily: "Inter-Bold",
+                    color: "#A5C9FF",
+                    fontSize: 18,
+                    marginBottom: 10,
+                  }
+                : {
+                    textAlign: "center",
+                    fontFamily: "Inter-Bold",
+                    color: "#2f2d51",
+                    fontSize: 18,
+                    marginBottom: 10,
+                  }
+            }
           >
             Welcome to Question of the Week!
           </Text>
@@ -83,95 +99,160 @@ const QuestionHelpModal = ({
                   source={theme == "dark" ? questionDark : questionLight}
                 />
 
-                <Text style={{ fontFamily: "Inter-Regular" }}>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Regular", color: "white" }
+                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                  }
+                >
                   This is a place where we can come together and explore
                   important questions related to our faith.
                 </Text>
                 <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    width: "100%",
-                    backgroundColor: "#2f2d51",
-                    padding: 15,
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+                  style={
+                    theme == "dark"
+                      ? {
+                          width: "100%",
+                          borderColor: "#A5C9FF",
+                          borderWidth: 1,
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                      : {
+                          width: "100%",
+                          backgroundColor: "#caecfc",
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                  }
                   onPress={onNextPage}
                 >
-                  <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "white", fontFamily: "Inter-Bold" }
+                        : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                    }
+                  >
                     Next
                   </Text>
                 </TouchableOpacity>
               </View>
             )}
             {page === 1 && (
-              <View>
-                <Text>Page 2: This is the second page.</Text>
-                <Button
-                  title="Close"
+              <View style={{ alignItems: "center", gap: 10 }}>
+                <Image style={styles.img} source={expire} />
+
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Regular", color: "white" }
+                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                  }
+                >
+                  Each question will expire at the start of each week and be
+                  replaced with a new one.
+                </Text>
+                <TouchableOpacity
+                  style={
+                    theme == "dark"
+                      ? {
+                          width: "100%",
+                          borderColor: "#A5C9FF",
+                          borderWidth: 1,
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                      : {
+                          width: "100%",
+                          backgroundColor: "#caecfc",
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                  }
+                  onPress={onNextPage}
+                >
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "white", fontFamily: "Inter-Bold" }
+                        : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                    }
+                  >
+                    Next
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {page === 2 && (
+              <View style={{ alignItems: "center", gap: 10 }}>
+                <Image style={styles.img} source={insta} />
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL("https://www.instagram.com/prayse.app/")
+                    }
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { fontFamily: "Inter-Regular", color: "white" }
+                          : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                      }
+                    >
+                      Follow us on Instagram{" "}
+                      <Text style={{ fontFamily: "Inter-Medium" }}>
+                        @prayse.app
+                      </Text>{" "}
+                      to get insight on the next possible question.
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  style={
+                    theme == "dark"
+                      ? {
+                          width: "100%",
+                          backgroundColor: "#A5C9FF",
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                      : {
+                          width: "100%",
+                          backgroundColor: "#2f2d51",
+                          padding: 15,
+                          borderRadius: 10,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }
+                  }
                   onPress={() => setQuestionHelpModal(false)}
-                />
+                >
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "#121212", fontFamily: "Inter-Bold" }
+                        : { color: "white", fontFamily: "Inter-Bold" }
+                    }
+                  >
+                    Got it!
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
           </Transitioning.View>
         </View>
-        {/* <View
-          style={
-            theme == "dark"
-              ? {
-                  borderRadius: 5,
-                  position: "relative",
-                  padding: 15,
-                  width: "100%",
-                  backgroundColor: "#212121",
-                }
-              : {
-                  borderRadius: 5,
-                  position: "relative",
-                  padding: 15,
-                  width: "100%",
-                  backgroundColor: "#93D8F8",
-                }
-          }
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Inter-Bold",
-              fontSize: 16,
-              marginBottom: 10,
-            }}
-          >
-            Welcome to Question of the Week!
-          </Text>
-          <View style={{ gap: 5 }}>
-            <Text style={{ fontFamily: "Inter-Regular" }}>
-              This is a place where we can come together and explore important
-              questions related to our faith.
-            </Text>
-            <Text style={{ fontFamily: "Inter-Regular" }}>
-              A new question will be posted every week and we are looking
-              forward to seeing your thoughtful answers.
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              marginTop: 20,
-              width: "100%",
-              backgroundColor: "#2f2d51",
-              padding: 15,
-              borderRadius: 10,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => setQuestionHelpModal(false)}
-          >
-            <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
-              Got it!
-            </Text>
-          </TouchableOpacity>
-        </View> */}
       </ModalContainer>
     </Modal>
   );
@@ -181,6 +262,7 @@ export default QuestionHelpModal;
 
 const styles = StyleSheet.create({
   img: {
+    marginVertical: 10,
     width: 150,
     height: 150,
   },

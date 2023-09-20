@@ -417,7 +417,7 @@ export default function Welcome({ navigation }) {
       <View
         style={{
           alignItems: "center",
-          // backgroundColor: "#93d8f8",
+          marginBottom: 10,
           // borderRadius: 10,
           // paddingHorizontal: 10,
           flexDirection: "row",
@@ -450,12 +450,12 @@ export default function Welcome({ navigation }) {
                 ? {
                     backgroundColor: "#A5C9FF",
                     borderRadius: 50,
-                    padding: 5,
+                    padding: 10,
                   }
                 : {
                     backgroundColor: "#2f2d51",
                     borderRadius: 50,
-                    padding: 5,
+                    padding: 10,
                   }
             }
           >
@@ -466,13 +466,13 @@ export default function Welcome({ navigation }) {
             />
           </TouchableOpacity>
           <Badge
-            size={17}
+            size={18}
             style={{
               position: "absolute",
-              fontFamily: "Inter-Bold",
-              fontSize: 11,
-              top: 5,
-              right: 2,
+              fontFamily: "Inter-Medium",
+              fontSize: 12,
+              top: 8,
+              right: 4,
             }}
           >
             {notis.length}
@@ -517,7 +517,7 @@ export default function Welcome({ navigation }) {
             }
           >
             {notis.length == 0 ? (
-              <View style={{ padding: 10 }}>
+              <View style={{ padding: 12 }}>
                 <Text
                   style={
                     theme == "dark"
@@ -1389,14 +1389,14 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 19,
-    marginVertical: 5,
+    // marginVertical: 5,
     fontFamily: "Inter-Medium",
     letterSpacing: 2,
     alignSelf: "center",
     color: "#2F2D51",
   },
   greetingDark: {
-    marginVertical: 5,
+    // marginVertical: 5,
     fontSize: 19,
     fontFamily: "Inter-Medium",
     alignSelf: "flex-start",
