@@ -97,6 +97,7 @@ export const SupabaseProvider = (props) => {
     setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
+      console.log("session: ", result.data.session.user.id);
       let { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("*")

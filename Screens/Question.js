@@ -22,6 +22,7 @@ import { Touchable } from "react-native";
 import QuestionModal from "../components/QuestionModal";
 import moment from "moment";
 import { ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import QuestionHelpModal from "../components/QuestionHelpModal";
 
@@ -36,6 +37,23 @@ const Question = ({ navigation }) => {
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   useEffect(() => {
+    console.log("in question effect");
+    AsyncStorage.removeItem("modalShown");
+    // AsyncStorage.getItem("modalShown").then((value) => {
+    //   console.log(value);
+
+    //   // if (value === true) {
+    //   //   console.log("setting null");
+    //   //   AsyncStorage.setItem("modalShown", null);
+    //   //   return;
+    //   // }
+
+    //   // if (value === null) {
+    //   //   // If the modal hasn't been shown before, show it and set the flag
+    //   //   setQuestionHelpModal(true);
+    //   //   AsyncStorage.setItem("modalShown", "true");
+    //   // }
+    // });
     loadQuestion();
     fetchAnswers();
   }, [isFocused]);
@@ -65,12 +83,14 @@ const Question = ({ navigation }) => {
     client
       .fetch(query)
       .then((data) => {
+        console.log("data ", data);
         setWeeklyquestion(data);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+
   const dateObject = new Date(weeklyQuestion[0]?.date);
 
   const endDate = moment(dateObject).add(7, "days").toDate();
@@ -105,6 +125,18 @@ const Question = ({ navigation }) => {
 
   if (weeklyQuestion.length == 0) {
     return <BusyIndicator />;
+  }
+
+  async function removeAnswers(admin) {
+    if (admin === true) {
+      console.log("deleting");
+      const { error } = await supabase
+        .from("answers")
+        .delete()
+        .neq("question_id", "342");
+    }
+    setAnswersArray([]);
+    fetchAnswers();
   }
 
   return (
@@ -143,6 +175,11 @@ const Question = ({ navigation }) => {
             <Text>Question of the Week</Text>
           </HeaderTitle>
         </View>
+        {currentUser.admin === true && (
+          <TouchableOpacity onPress={() => removeAnswers(currentUser.admin)}>
+            <Text style={{ color: "red" }}>Clear</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
           <FontAwesome5
             name="question-circle"
@@ -150,13 +187,12 @@ const Question = ({ navigation }) => {
             color={theme == "dark" ? "#c8c8c8" : "#2f2d51"}
           />
         </TouchableOpacity>
-        {questionHelpModal && (
-          <QuestionHelpModal
-            theme={theme}
-            questionHelpModal={questionHelpModal}
-            setQuestionHelpModal={setQuestionHelpModal}
-          />
-        )}
+
+        <QuestionHelpModal
+          theme={theme}
+          questionHelpModal={questionHelpModal}
+          setQuestionHelpModal={setQuestionHelpModal}
+        />
       </HeaderView>
       <View style={theme == "dark" ? styles.questionDark : styles.question}>
         <Text

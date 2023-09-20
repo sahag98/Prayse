@@ -41,6 +41,8 @@ const CommunityHome = () => {
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
+
+  console.log("current user : ", currentUser);
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -81,7 +83,7 @@ const CommunityHome = () => {
     let { data: prayers, error } = await supabase
       .from("prayers")
       .select("*")
-      .eq("user_id", currentUser.id)
+      .eq("user_id", currentUser?.id)
       .order("id", { ascending: false });
     setUserPrayers(prayers);
   }
@@ -90,7 +92,7 @@ const CommunityHome = () => {
     const { data, error } = await supabase
       .from("profiles")
       .update({ expoToken: expoPushToken })
-      .eq("id", currentUser.id)
+      .eq("id", currentUser?.id)
       .select();
   }
 

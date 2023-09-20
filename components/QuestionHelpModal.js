@@ -4,6 +4,7 @@ import { Modal } from "react-native";
 import { ModalContainer } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native";
 import { useState } from "react";
+import { AntDesign } from "@expo/vector-icons";
 import { Transition, Transitioning } from "react-native-reanimated";
 import { Button } from "react-native";
 import { useRef } from "react";
@@ -34,7 +35,10 @@ const QuestionHelpModal = ({
     }
   };
 
-  console.log(page);
+  function StartOver() {
+    setQuestionHelpModal(false);
+    setPage(0);
+  }
 
   return (
     <Modal
@@ -158,6 +162,23 @@ const QuestionHelpModal = ({
                   Each question will expire at the start of each week and be
                   replaced with a new one.
                 </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 13,
+                          color: "#ff8989",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 13,
+                          color: "#ff6262",
+                        }
+                  }
+                >
+                  Refresh app if question is not updated.
+                </Text>
                 <TouchableOpacity
                   style={
                     theme == "dark"
@@ -196,7 +217,7 @@ const QuestionHelpModal = ({
             {page === 2 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Image style={styles.img} source={insta} />
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={{ alignItems: "center", gap: 10 }}>
                   <TouchableOpacity
                     onPress={() =>
                       Linking.openURL("https://www.instagram.com/prayse.app/")
@@ -216,6 +237,16 @@ const QuestionHelpModal = ({
                       to get insight on the next possible question.
                     </Text>
                   </TouchableOpacity>
+                  {/* <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "white" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    Once you answer the question you will not be able to edit or
+                    delete your question.
+                  </Text> */}
                 </View>
                 <TouchableOpacity
                   style={
@@ -237,7 +268,7 @@ const QuestionHelpModal = ({
                           alignItems: "center",
                         }
                   }
-                  onPress={() => setQuestionHelpModal(false)}
+                  onPress={StartOver}
                 >
                   <Text
                     style={
