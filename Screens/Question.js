@@ -137,6 +137,7 @@ const Question = ({ navigation }) => {
     }
     setAnswersArray([]);
     fetchAnswers();
+    loadQuestion();
   }
 
   return (
@@ -175,9 +176,15 @@ const Question = ({ navigation }) => {
             <Text>Question of the Week</Text>
           </HeaderTitle>
         </View>
-        {currentUser.admin === true && (
+        {currentUser.admin === true ? (
           <TouchableOpacity onPress={() => removeAnswers(currentUser.admin)}>
-            <Text style={{ color: "red" }}>Clear</Text>
+            <Text style={{ fontFamily: "Inter-Regular", color: "#ff8989" }}>
+              Clear
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => loadQuestion()}>
+            <Ionicons name="refresh" size={24} color="#ff8989" />
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
@@ -206,6 +213,7 @@ const Question = ({ navigation }) => {
         </Text>
         <View
           style={{
+            marginTop: 10,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",

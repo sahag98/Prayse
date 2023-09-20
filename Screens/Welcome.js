@@ -35,7 +35,11 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useIsFocused } from "@react-navigation/native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  Transition,
+  Transitioning,
+} from "react-native-reanimated";
 import { PROJECT_ID, NOTIFICATION_API } from "@env";
 import moment from "moment";
 import { addQuickFolder } from "../redux/folderReducer";
@@ -49,6 +53,7 @@ import { Badge, Menu, PaperProvider } from "react-native-paper";
 import { addNoti, deleteAll } from "../redux/notiReducer";
 import NotiItem from "../components/NotiItem";
 import { FlatList } from "react-native";
+import NewFeaturesModal from "../components/NewFeaturesModal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -128,7 +133,7 @@ export default function Welcome({ navigation }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
   const [greeting, setGreeting] = useState("");
-  const [toolVisible, setToolVisible] = useState(false);
+  const [featureVisible, setFeatureVisible] = useState(false);
   const [icon, setIcon] = useState(null);
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
@@ -375,6 +380,27 @@ export default function Welcome({ navigation }) {
     "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
   });
 
+  const [page, setPage] = useState(0);
+  const transition = (
+    <Transition.Together>
+      <Transition.In type="fade" durationMs={500} />
+      <Transition.Out type="fade" durationMs={500} />
+    </Transition.Together>
+  );
+  const ref = useRef();
+
+  const onNextPage = () => {
+    if (page < 2) {
+      ref.current.animateNextTransition();
+      setPage(page + 1);
+    }
+  };
+
+  function StartOver() {
+    setQuestionHelpModal(false);
+    setPage(0);
+  }
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -450,18 +476,18 @@ export default function Welcome({ navigation }) {
                 ? {
                     backgroundColor: "#A5C9FF",
                     borderRadius: 50,
-                    padding: 10,
+                    padding: 8,
                   }
                 : {
                     backgroundColor: "#2f2d51",
                     borderRadius: 50,
-                    padding: 10,
+                    padding: 8,
                   }
             }
           >
             <Ionicons
               name="notifications-outline"
-              size={22}
+              size={24}
               color={theme == "dark" ? "#121212" : "white"}
             />
           </TouchableOpacity>
@@ -579,110 +605,11 @@ export default function Welcome({ navigation }) {
           </View>
         )}
       </View>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={toolVisible}
-        onRequestClose={handleCloseTooltip}
-        statusBarTranslucent={true}
-      >
-        <ModalContainer
-          style={
-            theme == "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-          }
-        >
-          <TouchableOpacity
-            onPress={handleCloseTooltip}
-            style={
-              theme == "dark"
-                ? {
-                    borderRadius: 5,
-                    position: "relative",
-                    padding: 15,
-                    width: "100%",
-                    backgroundColor: "#212121",
-                  }
-                : {
-                    borderRadius: 5,
-                    position: "relative",
-                    padding: 15,
-                    width: "100%",
-                    backgroundColor: "#93D8F8",
-                  }
-            }
-          >
-            <TouchableOpacity
-              style={{ position: "absolute", top: 5, right: 5, padding: 10 }}
-              onPress={handleCloseTooltip}
-            >
-              <AntDesign
-                name="close"
-                size={22}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "white",
-                      marginBottom: 10,
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Bold",
-                      marginBottom: 10,
-                      fontSize: 16,
-                    }
-              }
-            >
-              What's New in v7.3.1 :
-            </Text>
-            <Unorderedlist
-              color={theme == "dark" ? "white" : "black"}
-              bulletUnicode={0x2713}
-            >
-              <Text
-                style={theme == "dark" ? styles.listTextDark : styles.listText}
-              >
-                Quick prayer functionality!
-              </Text>
-            </Unorderedlist>
-            <Unorderedlist
-              color={theme == "dark" ? "white" : "black"}
-              bulletUnicode={0x2713}
-            >
-              <Text
-                style={theme == "dark" ? styles.listTextDark : styles.listText}
-              >
-                Prayer input box size changes based on text.
-              </Text>
-            </Unorderedlist>
-            <Unorderedlist
-              color={theme == "dark" ? "white" : "black"}
-              bulletUnicode={0x2713}
-            >
-              <Text
-                style={theme == "dark" ? styles.listTextDark : styles.listText}
-              >
-                Voting on the next update on the more page.
-              </Text>
-            </Unorderedlist>
-            {/* <Text style={theme == 'dark' ? { color: 'white', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 } : { color: '#2f2d51', marginBottom: 10, fontFamily: 'Inter-Bold', fontSize: 16 }}>Bug fixes :</Text>
-                        <Unorderedlist
-                            color={theme == 'dark' ? 'white' : 'black'}
-                            bulletUnicode={0x2713}
-                        >
-                            <Text style={theme == 'dark' ? styles.listTextDark : styles.listText}>Fixed community notification spam</Text>
-                        </Unorderedlist> */}
-          </TouchableOpacity>
-        </ModalContainer>
-      </Modal>
+      <NewFeaturesModal
+        theme={theme}
+        setFeatureVisible={setFeatureVisible}
+        featureVisible={featureVisible}
+      />
       <View style={{ width: "100%" }}>
         <Text
           style={
@@ -703,7 +630,7 @@ export default function Welcome({ navigation }) {
           }
         />
         <TouchableOpacity
-          onPress={() => setToolVisible(true)}
+          onPress={() => setFeatureVisible(true)}
           style={
             theme == "dark"
               ? styles.refreshDark

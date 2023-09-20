@@ -29,8 +29,8 @@ export default function App() {
         style={{ borderLeftColor: "#93d8f8", height: 50 }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
-          fontSize: 13,
-          fontWeight: "500",
+          fontSize: 14,
+          fontWeight: "400",
         }}
       />
     ),
@@ -48,8 +48,8 @@ export default function App() {
         }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
-          fontSize: 13,
-          fontWeight: "500",
+          fontSize: 14,
+          fontWeight: "400",
         }}
         text2Style={{
           fontSize: 15,
