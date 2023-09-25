@@ -109,22 +109,8 @@ const More = ({ navigation }) => {
       title: "Verse of the Day",
       screen: "VerseOfTheDay",
     },
-
     {
       id: 2,
-      icon: (
-        <AntDesign
-          name="infocirlceo"
-          style={{ marginRight: 10 }}
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      ),
-      title: "About",
-      link: "https://prayse-website.vercel.app/",
-    },
-    {
-      id: 3,
       icon: (
         <AntDesign
           name="setting"
@@ -136,6 +122,20 @@ const More = ({ navigation }) => {
       title: "Settings",
       screen: "Settings",
     },
+    {
+      id: 3,
+      icon: (
+        <AntDesign
+          name="infocirlceo"
+          style={{ marginRight: 10 }}
+          size={24}
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      ),
+      title: "About",
+      link: "https://prayse-website.vercel.app/",
+    },
+
     {
       id: 4,
       icon: (
@@ -161,6 +161,19 @@ const More = ({ navigation }) => {
       ),
       title: "Contact Developer",
       link: "mailto:arzsahag@gmail.com",
+    },
+    {
+      id: 6,
+      icon: (
+        <AntDesign
+          name="instagram"
+          style={{ marginRight: 10 }}
+          size={24}
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      ),
+      title: "Follow us on Instagram",
+      link: "https://instagram.com/prayse.app",
     },
   ];
 
@@ -245,7 +258,11 @@ const More = ({ navigation }) => {
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Medium", color: "white", fontSize: 16 }
+                  ? {
+                      fontFamily: "Inter-Medium",
+                      color: "#dbdbdb",
+                      fontSize: 16,
+                    }
                   : {
                       fontFamily: "Inter-Medium",
                       color: "#2f2d51",

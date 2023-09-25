@@ -18,6 +18,7 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 
@@ -42,7 +43,26 @@ const QuestionModal = ({
     }
   };
 
+  const sendNotification = async (expoToken) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: "Question of the Week",
+      body: `${user.full_name} has answered the weekly question.`,
+      data: { screen: "Question" },
+    };
+
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   const addAnswer = async () => {
+    console.log(user.expoToken);
     if (answer.length <= 0) {
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
@@ -55,6 +75,11 @@ const QuestionModal = ({
       });
       handleCloseModal();
       fetchAnswers();
+      sendNotification();
+      if (user.expoToken.length > 0) {
+        console.log("expo");
+        sendNotification(user.expoToken);
+      }
       // showToast("success", "Answer submitted successfully. ✔️");
       if (error) {
         showToast("error", "Something went wrong. Try again.");

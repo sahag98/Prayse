@@ -34,8 +34,8 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
     const { data: comments, error: commentsError } = await supabase
       .from("comments")
       .select("*, profiles(*)")
-      .eq("prayer_id", prayerId);
-
+      .eq("prayer_id", prayerId)
+      .order("id", { ascending: false });
     setCommentsArray(comments);
 
     if (commentsError) {
@@ -152,49 +152,44 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
             {Moment(item.created_at).fromNow()}
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    marginLeft: 5,
-                    paddingVertical: 5,
-                    paddingHorizontal: 5,
-                    lineHeight: 20,
-                    width: "100%",
-                    color: "white",
-                    fontFamily: "Inter-Regular",
-                  }
-                : {
-                    marginLeft: 5,
-                    lineHeight: 20,
-                    paddingVertical: 5,
-                    paddingHorizontal: 5,
-                    width: "100%",
-                    color: "#2f2d51",
-                    fontFamily: "Inter-Regular",
-                  }
-            }
-          >
-            {item.prayer}
-          </Text>
 
-          <CommentModal
-            fetchComments={fetchComments}
-            supabase={supabase}
-            prayer={item}
-            commentsArray={commentsArray}
-            commentVisible={commentVisible}
-            user={currentUser}
-            setCommentVisible={setCommentVisible}
-          />
-        </View>
+        <Text
+          style={
+            theme == "dark"
+              ? {
+                  marginTop: 5,
+                  marginLeft: 5,
+                  paddingVertical: 5,
+                  paddingHorizontal: 5,
+                  lineHeight: 20,
+                  width: "100%",
+                  color: "white",
+                  fontFamily: "Inter-Regular",
+                }
+              : {
+                  marginTop: 5,
+                  marginLeft: 5,
+                  lineHeight: 20,
+                  paddingVertical: 5,
+                  paddingHorizontal: 5,
+                  width: "100%",
+                  color: "#2f2d51",
+                  fontFamily: "Inter-Regular",
+                }
+          }
+        >
+          {item.prayer}
+        </Text>
+
+        <CommentModal
+          fetchComments={fetchComments}
+          supabase={supabase}
+          prayer={item}
+          commentsArray={commentsArray}
+          commentVisible={commentVisible}
+          user={currentUser}
+          setCommentVisible={setCommentVisible}
+        />
       </View>
       <View
         style={{

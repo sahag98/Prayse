@@ -42,7 +42,6 @@ const CommunityHome = () => {
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
 
-  console.log("current user : ", currentUser);
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -161,7 +160,7 @@ const CommunityHome = () => {
               theme == "dark" ? styles.featherIconDark : styles.featherIcon
             }
           >
-            <Ionicons name="settings" size={18} color="black" />
+            <Ionicons name="settings" size={16} color="black" />
           </TouchableOpacity>
         </View>
       </HeaderView>
@@ -301,10 +300,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#93d8f8",
     borderRadius: 50,
-    width: 28,
+    width: 25,
     alignItems: "center",
     justifyContent: "center",
-    height: 28,
+    height: 25,
     bottom: 4,
     right: 2,
   },

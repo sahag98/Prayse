@@ -3,10 +3,16 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { deleteNoti } from "../redux/notiReducer";
+import { useSupabase } from "../context/useSupabase";
 
 const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dispatch = useDispatch();
+  const { isLoggedIn } = useSupabase();
   const viewNotification = (screen) => {
+    if (screen == "Question" && !isLoggedIn) {
+      console.log("not logged in");
+      navigation.navigate(screen);
+    }
     setNotiVisible(false);
     navigation.navigate(screen);
     dispatch(deleteNoti(item.noti_id));

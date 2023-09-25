@@ -529,19 +529,23 @@ export default function Welcome({ navigation }) {
               theme == "dark"
                 ? {
                     backgroundColor: "#212121",
+                    borderColor: "#A5C9FF",
+                    borderWidth: 1,
                     position: "absolute",
                     borderRadius: 10,
                     overflow: "hidden",
-                    top: 0,
-                    right: 0,
+                    top: -5,
+                    right: 5,
                   }
                 : {
                     backgroundColor: "#93d8f8",
+                    borderColor: "#2f2d51",
+                    borderWidth: 1,
                     position: "absolute",
                     borderRadius: 10,
                     overflow: "hidden",
-                    top: 0,
-                    right: 0,
+                    top: -5,
+                    right: 5,
                   }
             }
           >
@@ -933,6 +937,7 @@ export default function Welcome({ navigation }) {
       </View>
       <View
         style={{
+          marginBottom: 10,
           flexDirection: "row",
           justifyContent: "space-around",
           width: "100%",
@@ -942,7 +947,7 @@ export default function Welcome({ navigation }) {
           onPress={() => navigation.navigate("Folders")}
           style={
             theme == "dark"
-              ? styles.buttonDark
+              ? [styles.buttonDark, { backgroundColor: "#212121" }]
               : theme == "BlackWhite"
               ? styles.buttonBlack
               : styles.button
@@ -951,7 +956,7 @@ export default function Welcome({ navigation }) {
           <Text
             style={
               theme == "dark"
-                ? { color: "#212121", fontFamily: "Inter-Bold" }
+                ? { color: "white", fontFamily: "Inter-Bold" }
                 : theme == "BlackWhite"
                 ? { color: "white", fontFamily: "Inter-Bold" }
                 : { color: "white", fontFamily: "Inter-Bold" }
@@ -963,14 +968,14 @@ export default function Welcome({ navigation }) {
             style={{ marginLeft: 10 }}
             name="right"
             size={20}
-            color={theme == "dark" ? "#212121" : "white"}
+            color={theme == "dark" ? "white" : "white"}
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setQuickModal(true)}
           style={
             theme == "dark"
-              ? [styles.buttonDark, { backgroundColor: "#212121" }]
+              ? [styles.buttonDark]
               : theme == "BlackWhite"
               ? [
                   styles.buttonDark,
@@ -986,7 +991,7 @@ export default function Welcome({ navigation }) {
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold" }
+                ? { color: "#121212", fontFamily: "Inter-Bold" }
                 : theme == "BlackWhite"
                 ? { color: "black", fontFamily: "Inter-Bold" }
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
@@ -1000,7 +1005,7 @@ export default function Welcome({ navigation }) {
             size={24}
             color={
               theme == "dark"
-                ? "white"
+                ? "#121212"
                 : theme == "BlackWhite"
                 ? "black"
                 : "#2f2d51"

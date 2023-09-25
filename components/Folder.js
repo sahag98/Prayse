@@ -295,6 +295,19 @@ const Folder = ({ navigation, todos }) => {
             onScroll={onScroll}
             renderItem={renderItem}
             numColumns={2}
+            ListFooterComponent={() => (
+              <View
+                style={
+                  theme == "dark"
+                    ? {
+                        height: 80,
+                      }
+                    : {
+                        height: 80,
+                      }
+                }
+              />
+            )}
             columnWrapperStyle={{
               justifyContent: "space-between",
               columnGap: 8,
@@ -312,7 +325,7 @@ const Folder = ({ navigation, todos }) => {
               visible={fabvisible}
               animateFrom={"left"}
               iconMode={"dynamic"}
-              color={"white"}
+              color={theme == "dark" ? "#121212" : "white"}
               style={
                 theme == "dark"
                   ? styles.fabStyleDark
@@ -482,7 +495,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 20,
     justifyContent: "center",
-    backgroundColor: "#353535",
+    backgroundColor: "#A5C9FF",
   },
   fabStyleBlack: {
     position: "relative",

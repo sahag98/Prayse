@@ -46,6 +46,7 @@ const ProfileModal = ({
 }) => {
   const theme = useSelector((state) => state.user.theme);
   const [name, setName] = useState(user?.full_name);
+  const [isUnique, setIsUnique] = useState(true);
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
 
@@ -179,18 +180,38 @@ const ProfileModal = ({
     setModalVisible(false);
   }
 
+  const checkIfUnique = async () => {
+    const { data: profiles, profileError } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .neq("id", user.id);
+
+    profiles.map((prof) => {
+      if (name.toLowerCase() == prof.full_name.toLowerCase()) {
+        console.log("same name");
+        setIsUnique(false);
+        showToast("error", "This name already exists. Try another one.");
+        return;
+      }
+    });
+  };
+
   const updateProfile = async () => {
-    if (name.length <= 0) {
+    if (name.length <= 1) {
       showToast("error", "The name field can't be left empty.");
       handleCloseModal();
       return;
     }
-    const { data, error } = await supabase
-      .from("profiles")
-      .update({ full_name: name })
-      .eq("id", user.id)
-      .select();
-    showToast("success", "Profile updated successfully. ✔️");
+
+    checkIfUnique();
+    if (isUnique) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({ full_name: name })
+        .eq("id", user.id)
+        .select();
+      showToast("success", "Profile updated successfully. ✔️");
+    }
     getProfile();
     getPrayers();
     setModalVisible(false);
@@ -307,6 +328,7 @@ const ProfileModal = ({
                     : {
                         fontFamily: "Inter-Medium",
                         textDecorationLine: "underline",
+                        color: "#2f2d51",
                       }
                 }
               >

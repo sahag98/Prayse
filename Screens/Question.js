@@ -37,7 +37,6 @@ const Question = ({ navigation }) => {
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   useEffect(() => {
-    console.log("in question effect");
     AsyncStorage.removeItem("modalShown");
     // AsyncStorage.getItem("modalShown").then((value) => {
     //   console.log(value);
@@ -134,6 +133,7 @@ const Question = ({ navigation }) => {
         .from("answers")
         .delete()
         .neq("question_id", "342");
+      console.log(error);
     }
     setAnswersArray([]);
     fetchAnswers();
@@ -249,19 +249,19 @@ const Question = ({ navigation }) => {
             <Ionicons
               name="time-outline"
               size={24}
-              color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              color={theme == "dark" ? "#ff8989" : "#ff4e4e"}
             />
             <Text
               style={
                 theme == "dark"
                   ? {
-                      color: "#d6d6d6",
-                      fontSize: 13,
+                      color: "#ff8989",
+                      fontSize: 12,
                       fontFamily: "Inter-Medium",
                     }
                   : {
-                      color: "#2f2d51",
-                      fontSize: 13,
+                      color: "#ff4e4e",
+                      fontSize: 12,
                       fontFamily: "Inter-Medium",
                     }
               }

@@ -15,12 +15,13 @@ const SettingsItems = ({ options, theme, navigation }) => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {option.icon}
+
               <Text
                 style={
                   theme == "dark"
                     ? {
                         fontFamily: "Inter-Medium",
-                        color: "white",
+                        color: "#dbdbdb",
                         fontSize: 16,
                       }
                     : {
@@ -53,7 +54,7 @@ const SettingsItems = ({ options, theme, navigation }) => {
                   theme == "dark"
                     ? {
                         fontFamily: "Inter-Medium",
-                        color: "white",
+                        color: "#dbdbdb",
                         fontSize: 16,
                       }
                     : {
