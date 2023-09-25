@@ -4,6 +4,8 @@ import {
   Platform,
   Linking,
   View,
+  Modal,
+  FlatList,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -17,7 +19,7 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import Unorderedlist from "react-native-unordered-list";
+// import Unorderedlist from "react-native-unordered-list";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider } from "react-native-paper";
 import {
@@ -30,12 +32,14 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { Modal } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useIsFocused } from "@react-navigation/native";
 import Animated, {
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useSharedValue,
   FadeIn,
   Transition,
   Transitioning,
@@ -52,7 +56,6 @@ import * as Updates from "expo-updates";
 import { Badge, Menu, PaperProvider } from "react-native-paper";
 import { addNoti, deleteAll } from "../redux/notiReducer";
 import NotiItem from "../components/NotiItem";
-import { FlatList } from "react-native";
 import NewFeaturesModal from "../components/NewFeaturesModal";
 
 SplashScreen.preventAutoHideAsync();
@@ -662,18 +665,18 @@ export default function Welcome({ navigation }) {
                 theme == "dark"
                   ? {
                       color: "#f1d592",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : theme == "BlackWhite"
                   ? {
                       color: "black",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : {
                       color: "#bb8b18",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
               }
@@ -720,18 +723,18 @@ export default function Welcome({ navigation }) {
                 theme == "dark"
                   ? {
                       color: "#A5C9FF",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : theme == "BlackWhite"
                   ? {
                       color: "black",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : {
                       color: "#738cb2",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
               }
@@ -780,23 +783,23 @@ export default function Welcome({ navigation }) {
                 theme == "dark"
                   ? {
                       color: "#e24774",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : theme == "BlackWhite"
                   ? {
                       color: "black",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
                   : {
                       color: "#cb3f68",
-                      marginLeft: 5,
+                      marginLeft: 10,
                       fontFamily: "Inter-Regular",
                     }
               }
             >
-              Donate to support future updates!
+              Support Prayse
             </Text>
           </View>
           <AntDesign
@@ -850,18 +853,18 @@ export default function Welcome({ navigation }) {
                     ? {
                         color: "#f0f0f0",
                         fontFamily: "Inter-Regular",
-                        marginLeft: 5,
+                        marginLeft: 10,
                       }
                     : theme == "BlackWhite"
                     ? {
                         color: "black",
                         fontFamily: "Inter-Regular",
-                        marginLeft: 5,
+                        marginLeft: 10,
                       }
                     : {
                         color: "#606060",
                         fontFamily: "Inter-Regular",
-                        marginLeft: 5,
+                        marginLeft: 10,
                       }
                 }
               >
@@ -908,12 +911,12 @@ export default function Welcome({ navigation }) {
                     ? {
                         color: "#f0f0f0",
                         fontFamily: "Inter-Regular",
-                        marginLeft: 5,
+                        marginLeft: 10,
                       }
                     : {
                         color: "#606060",
                         fontFamily: "Inter-Regular",
-                        marginLeft: 5,
+                        marginLeft: 10,
                       }
                 }
               >
