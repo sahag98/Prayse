@@ -93,7 +93,8 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.9",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "expo-application": "~5.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

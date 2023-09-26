@@ -2,41 +2,58 @@ import { StyleSheet, Text, Share, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container, HeaderTitle } from "../styles/appStyles";
 import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites } from "../redux/favoritesReducer";
+import { addToFavorites, deleteFavorites } from "../redux/favoritesReducer";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import uuid from "react-native-uuid";
 import * as Speech from "expo-speech";
+import { client } from "../lib/client";
+import { ActivityIndicator } from "react-native";
 
 const VerseOfTheDay = ({ route }) => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
-  const [verse, setVerse] = useState("");
+  const [verse, setVerse] = useState([]);
   const [verseTitle, setVerseTitle] = useState("");
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const speak = (verse) => {
-    if (verse) {
-      Speech.speak(verse);
+  const speak = async (verse, chapter) => {
+    if (verse && chapter) {
+      const speakVerse = verse + " - " + chapter;
+
+      Speech.speak(speakVerse);
     }
   };
   useEffect(() => {
     loadDailyVerse();
-    loadDailyVerseTitle();
-    if (route.params) {
-      AsyncStorage.setItem("storedVerse", route.params.verse);
-      AsyncStorage.setItem("storedVerseTitle", route.params.title);
-      loadDailyVerse();
-    }
+    // if (route.params) {
+    //   AsyncStorage.setItem("storedVerse", route.params.verse);
+    //   AsyncStorage.setItem("storedVerseTitle", route.params.title);
+    //   loadDailyVerse();
+    // }
   }, [isFocused]);
 
-  const onShare = async (verse) => {
-    if (verse) {
+  const loadDailyVerse = () => {
+    const query = '*[_type=="verse"]';
+    client
+      .fetch(query)
+      .then((data) => {
+        setVerse(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const onShare = async (verse, chapter) => {
+    if (verse && chapter) {
+      const shareVerse = verse + " - " + chapter;
+
       try {
         await Share.share({
-          message: verse,
+          message: shareVerse,
         });
       } catch (error) {
         Alert.alert(error.message);
@@ -44,41 +61,60 @@ const VerseOfTheDay = ({ route }) => {
     }
   };
 
-  const loadDailyVerse = () => {
-    AsyncStorage.getItem("storedVerse")
-      .then((data) => {
-        if (data !== null) {
-          setVerse(data);
-        } else {
-          setVerse("No daily verse just yet");
-        }
-      })
-      .catch((error) => console.log(error));
-  };
+  // const loadDailyVerse = () => {
+  //   AsyncStorage.getItem("storedVerse")
+  //     .then((data) => {
+  //       if (data !== null) {
+  //         setVerse(data);
+  //       } else {
+  //         setVerse("No daily verse just yet");
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
-  const loadDailyVerseTitle = () => {
-    AsyncStorage.getItem("storedVerseTitle")
-      .then((data) => {
-        if (data !== null) {
-          setVerseTitle(data);
-        } else {
-          setVerseTitle("");
-        }
-      })
-      .catch((error) => console.log(error));
-  };
+  // const loadDailyVerseTitle = () => {
+  //   AsyncStorage.getItem("storedVerseTitle")
+  //     .then((data) => {
+  //       if (data !== null) {
+  //         setVerseTitle(data);
+  //       } else {
+  //         setVerseTitle("");
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   const HandleFavorites = (verse) => {
     dispatch(
       addToFavorites({
-        verse: verse,
-        id: uuid.v4(),
-        date: new Date().toDateString(),
+        verse,
       })
     );
   };
 
-  const message = verse.split("-");
+  const BusyIndicator = () => {
+    return (
+      <View
+        style={
+          theme == "dark"
+            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
+            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
+        }
+      >
+        <ActivityIndicator
+          size="large"
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      </View>
+    );
+  };
+
+  if (verse.length == 0) {
+    return <BusyIndicator />;
+  }
+
+  // const message = verse.split("-");
 
   return (
     <Container
@@ -159,24 +195,24 @@ const VerseOfTheDay = ({ route }) => {
       </TouchableOpacity>
       <View style={{ justifyContent: "center", marginTop: 15 }}>
         <Text style={theme == "dark" ? styles.verseDark : styles.verse}>
-          {message[0]}
+          {verse[0].verse}
         </Text>
         <View>
-          {verse !=
+          {verse[0] !=
             "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
             <Text
               style={
                 theme == "dark" ? styles.verseTitleDark : styles.verseTitle
               }
             >
-              -{message[1]}
+              - {verse[0].chapter}
             </Text>
           )}
           <View
             style={theme == "dark" ? styles.utiltiesDark : styles.utilities}
           >
             <TouchableOpacity
-              onPress={() => onShare(verse)}
+              onPress={() => onShare(verse[0].verse, verse[0].chapter)}
               style={{
                 flexDirection: "row",
                 width: "33.33%",
@@ -213,7 +249,7 @@ const VerseOfTheDay = ({ route }) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => speak(verse)}
+              onPress={() => speak(verse[0].verse, verse[0].chapter)}
               style={{
                 flexDirection: "row",
                 width: "33.33%",
@@ -249,7 +285,7 @@ const VerseOfTheDay = ({ route }) => {
                 color={theme == "dark" ? "#ebebeb" : "white"}
               />
             </TouchableOpacity>
-            {favorites?.some((item) => item.verse === verse) ? (
+            {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
               <TouchableOpacity
                 disabled={true}
                 style={{
@@ -287,7 +323,7 @@ const VerseOfTheDay = ({ route }) => {
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                onPress={() => HandleFavorites(verse)}
+                onPress={() => HandleFavorites(verse[0])}
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",

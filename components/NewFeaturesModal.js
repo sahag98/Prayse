@@ -243,8 +243,27 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
                 >
-                  Answer and meditate on a weekly question and see the answers
-                  of your fellow Prayse friends.
+                  Meditate on a weekly question and see the answers of your
+                  fellow Prayse friends.
+                </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
+                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                  }
+                >
+                  Follow our Instagram page{" "}
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Bold", color: "#dbdbdb" }
+                        : { fontFamily: "Inter-Bold", color: "#2f2d51" }
+                    }
+                  >
+                    @prayse.app
+                  </Text>{" "}
+                  to get insights on the next question.
                 </Text>
 
                 <View
