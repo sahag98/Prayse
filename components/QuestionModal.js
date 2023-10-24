@@ -52,6 +52,16 @@ const QuestionModal = ({
       data: { screen: "Question" },
     };
 
+    // fetch("https://prayse.herokuapp.com/message", {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Accept-encoding": "gzip, deflate",
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(message),
+    //   });
+
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
       headers: {
         Accept: "application/json",

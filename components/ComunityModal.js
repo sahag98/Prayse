@@ -56,6 +56,7 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
+    console.log("add prayer: ", user.id);
     if (prayer.length <= 0) {
       showToast("error", "The prayer field can't be left empty.");
       setModalVisible(false);
@@ -63,7 +64,7 @@ const CommunityModal = ({
     } else {
       const { data, error } = await supabase.from("prayers").insert({
         prayer: prayer,
-        user_id: user.id,
+        user_id: user?.id,
         disable_response: isEnabled,
       });
       showToast("success", "Prayer added successfully. 🙏🏼");
@@ -214,7 +215,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "#2f2d51",
     borderBottomWidth: 1,
-    padding: 2,
+    paddingHorizontal: 2,
+    paddingVertical: 5,
   },
   logoutDark: {
     alignSelf: "flex-end",

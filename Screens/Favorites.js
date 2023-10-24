@@ -12,7 +12,6 @@ const Favorites = ({ navigation }) => {
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
   const renderFavoriteVerses = ({ item }) => {
-    console.log("render :", item.verse);
     return <FavoriteVerses item={item.verse} theme={theme} />;
   };
   return (

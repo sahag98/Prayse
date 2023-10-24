@@ -22,6 +22,8 @@ export const SupabaseProvider = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [prayers, setPrayers] = useState(null);
   const [session, setSession] = useState(null);
+  const [newPost, setNewPost] = useState(false);
+  const [newAnswer, setNewAnswer] = useState(false);
   const [isNavigationReady, setNavigationReady] = useState(false);
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
@@ -37,7 +39,9 @@ export const SupabaseProvider = (props) => {
     const result = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "exp://192.168.1.110:19000",
+        redirectTo: "prayseapp://google-auth",
+        // prayseapp://google-auth
+        // exp://192.168.1.110:19000
       },
     });
 
@@ -64,19 +68,21 @@ export const SupabaseProvider = (props) => {
   };
 
   const login = async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    await checkIfUserIsLoggedIn();
     if (error) throw error;
     setLoggedIn(true);
   };
 
   const register = async (email, password) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
+    console.log("in register: ", data);
     if (error) throw error;
   };
 
@@ -94,66 +100,96 @@ export const SupabaseProvider = (props) => {
 
   const checkIfUserIsLoggedIn = async () => {
     const result = await supabase.auth.getSession();
+    console.log("checking :", result);
     setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
-      console.log("session: ", result.data.session.user.id);
       let { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", result.data.session.user.id);
+
+      if (profileError) {
+        console.log(profileError);
+      }
       setCurrentUser(profiles[0]);
+
+      return profiles;
     }
   };
 
   useEffect(() => {
-    const channel = supabase
-      .channel("table_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "profiles",
-        },
-        (payload) => {
-          const newRecord = payload.new;
-          setCurrentUser(newRecord);
-        }
-      )
-      .subscribe();
+    const fetchData = async () => {
+      const profiles = await checkIfUserIsLoggedIn();
+      console.log("profiles: ", profiles[0]);
+      // Check if user is logged in before setting up subscriptions
+      if (profiles[0] && profiles.length > 0) {
+        const prayersChannel = supabase
+          .channel("table_db_changes")
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "prayers",
+            },
+            (payload) => {
+              console.log(
+                "prayer user: ",
+                profiles[0].id + "payload: ",
+                payload.new.user_id
+              );
+              if (
+                payload.eventType === "INSERT" &&
+                profiles[0].id !== payload.new.user_id
+              ) {
+                setNewPost(true);
+              }
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "answers",
+            },
+            (payload) => {
+              console.log(
+                "prayer user: ",
+                profiles[0].id + "payload: ",
+                payload.new.user_id
+              );
+              if (
+                payload.eventType === "INSERT" &&
+                profiles[0].id !== payload.new.user_id
+              ) {
+                setNewAnswer(true);
+              }
+            }
+          )
+          .subscribe();
 
-    // const prayerChannel = supabase
-    //   .channel("table_db_changes")
-    //   .on(
-    //     "postgres_changes",
-    //     {
-    //       event: "*",
-    //       schema: "public",
-    //       table: "prayers",
-    //     },
-    //     (payload) => {
-    //       console.log("new :", payload);
-    //     }
-    //   )
-    //   .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-      // supabase.removeChannel(prayerChannel);
+        return () => {
+          supabase.removeChannel(prayersChannel);
+        };
+      }
     };
-  }, []);
 
-  useEffect(() => {
-    checkIfUserIsLoggedIn();
+    fetchData();
   }, []);
 
   return (
     <SupabaseContext.Provider
       value={{
+        newPost,
+        setNewPost,
+        newAnswer,
+        setNewAnswer,
         isLoggedIn,
         login,
         supabase,
+        session,
         currentUser,
         setCurrentUser,
         register,

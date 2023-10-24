@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { deleteNoti } from "../redux/notiReducer";
 import { useSupabase } from "../context/useSupabase";
+import * as Notifications from "expo-notifications";
 
 const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dispatch = useDispatch();
@@ -14,9 +15,16 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
       navigation.navigate(screen);
     }
     setNotiVisible(false);
+    dismissNotification(item);
     navigation.navigate(screen);
     dispatch(deleteNoti(item.noti_id));
   };
+
+  const dismissNotification = async (item) => {
+    await Notifications.dismissNotificationAsync(item.identifier);
+  };
+
+  console.log(item.notification + ": " + item.identifier);
   return (
     <View
       style={{

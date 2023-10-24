@@ -8,7 +8,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 const PaginationElement = ({ length, x }) => {
-  console.log(length);
   const { width: SCREEN_WIDTH } = useWindowDimensions();
 
   const PaginationComponent = useCallback(({ index }) => {

@@ -15,7 +15,6 @@
     "@miblanchard/react-native-slider": "^2.3.1",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/blur": "^4.3.0",
-    "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "9.3.7",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.2",
@@ -33,6 +32,7 @@
     "buttercms": "^1.2.10",
     "expo": "^48.0.11",
     "expo-app-loading": "^2.1.1",
+    "expo-application": "~5.1.1",
     "expo-auth-session": "~4.0.3",
     "expo-blur": "~12.2.2",
     "expo-clipboard": "~4.1.2",
@@ -42,6 +42,7 @@
     "expo-device": "~5.2.1",
     "expo-font": "~11.1.1",
     "expo-image-picker": "~14.1.1",
+    "expo-insights": "^0.4.0",
     "expo-linear-gradient": "~12.1.2",
     "expo-linking": "^4.0.1",
     "expo-localization": "~14.1.1",
@@ -94,7 +95,7 @@
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.9",
     "timeago.js": "^4.0.2",
-    "expo-application": "~5.1.1"
+    "@react-native-masked-view/masked-view": "0.2.8"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

@@ -161,7 +161,7 @@ const Settings = ({ navigation }) => {
           : { backgroundColor: "#F2F7FF", justifyContent: "space-between" }
       }
     >
-      <View>
+      <View style={{ gap: 10 }}>
         <View>
           <View
             style={{
@@ -537,12 +537,12 @@ const Settings = ({ navigation }) => {
               : { color: "#2f2d51", fontFamily: "Inter-Medium" }
           }
         >
-          {Application.applicationName}, {Application.nativeApplicationVersion}
+          {Application.applicationName} v {Application.nativeApplicationVersion}
         </Text>
         <Text
           style={
             theme == "dark"
-              ? { fontFamily: "Inter-Regular", fontSize: 12, color: "white" }
+              ? { fontFamily: "Inter-Regular", fontSize: 12, color: "#c8c8c8" }
               : {
                   color: "#2f2d51",
                   fontSize: 12,

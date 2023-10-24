@@ -247,6 +247,7 @@ export default function Welcome({ navigation }) {
       lastNotificationResponse &&
       lastNotificationResponse.notification.request.content.data
     ) {
+      console.log("last noti: ", lastNotificationResponse);
       const data = lastNotificationResponse.notification.request.content.data;
       const body = lastNotificationResponse.notification.request.content.body;
 
@@ -293,7 +294,7 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="sun"
-            size={24}
+            size={26}
             color={theme == "dark" ? "#d8d800" : "#ffff27"}
           />
         );
@@ -302,7 +303,7 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="sun"
-            size={24}
+            size={26}
             color={theme == "dark" ? "#d8d800" : "#c4c400"}
           />
         );
@@ -311,7 +312,7 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="moon"
-            size={24}
+            size={26}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
           />
         );
@@ -326,13 +327,14 @@ export default function Welcome({ navigation }) {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         let date = moment(notification.date);
-
+        console.log("notification recieved: ", notification.request.identifier);
         dispatch(
           addNoti({
             noti_id: uuid.v4(),
             date: date.format("M/D/YYYY h:mm A"),
             notification: notification.request.content.body,
             screen: notification.request.content.data.screen,
+            identifier: notification.request.identifier,
           })
         );
         setNotification(notification);
@@ -382,27 +384,6 @@ export default function Welcome({ navigation }) {
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
   });
-
-  const [page, setPage] = useState(0);
-  const transition = (
-    <Transition.Together>
-      <Transition.In type="fade" durationMs={500} />
-      <Transition.Out type="fade" durationMs={500} />
-    </Transition.Together>
-  );
-  const ref = useRef();
-
-  const onNextPage = () => {
-    if (page < 2) {
-      ref.current.animateNextTransition();
-      setPage(page + 1);
-    }
-  };
-
-  function StartOver() {
-    setQuestionHelpModal(false);
-    setPage(0);
-  }
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -477,29 +458,25 @@ export default function Welcome({ navigation }) {
             style={
               theme == "dark"
                 ? {
-                    backgroundColor: "#A5C9FF",
+                    backgroundColor: "#212121",
                     borderRadius: 50,
-                    padding: 8,
+                    padding: 10,
                   }
                 : {
                     backgroundColor: "#2f2d51",
                     borderRadius: 50,
-                    padding: 8,
+                    padding: 10,
                   }
             }
           >
-            <Ionicons
-              name="notifications-outline"
-              size={24}
-              color={theme == "dark" ? "#121212" : "white"}
-            />
+            <Ionicons name="notifications-outline" size={24} color="white" />
           </TouchableOpacity>
           <Badge
-            size={18}
+            size={16}
             style={{
               position: "absolute",
               fontFamily: "Inter-Medium",
-              fontSize: 12,
+              fontSize: 11,
               top: 8,
               right: 4,
             }}

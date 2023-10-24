@@ -34,6 +34,7 @@ import { FlatList } from "react-native";
 import { Keyboard } from "react-native";
 const ProfileModal = ({
   logout,
+  session,
   setCurrentUser,
   getPrayers,
   setPrayerModal,
@@ -45,11 +46,13 @@ const ProfileModal = ({
   user,
 }) => {
   const theme = useSelector((state) => state.user.theme);
+
   const [name, setName] = useState(user?.full_name);
+
   const [isUnique, setIsUnique] = useState(true);
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
-
+  console.log("session: ", session.user.email);
   useEffect(() => {
     getUserPrayers();
   }, []);
@@ -68,7 +71,7 @@ const ProfileModal = ({
     const { data: profiles, error: profileError } = await supabase
       .from("profiles")
       .select()
-      .eq("id", user.id);
+      .eq("id", user?.id);
     setCurrentUser(profiles[0]);
   }
 
@@ -188,7 +191,6 @@ const ProfileModal = ({
 
     profiles.map((prof) => {
       if (name.toLowerCase() == prof.full_name.toLowerCase()) {
-        console.log("same name");
         setIsUnique(false);
         showToast("error", "This name already exists. Try another one.");
         return;
@@ -197,12 +199,12 @@ const ProfileModal = ({
   };
 
   const updateProfile = async () => {
+    console.log(name);
     if (name.length <= 1) {
       showToast("error", "The name field can't be left empty.");
       handleCloseModal();
       return;
     }
-
     checkIfUnique();
     if (isUnique) {
       const { data, error } = await supabase
@@ -277,7 +279,14 @@ const ProfileModal = ({
             </TouchableOpacity>
           </HeaderView>
           <View style={styles.iconContainer}>
-            <Image style={styles.profileImg} source={{ uri: image }} />
+            <Image
+              style={styles.profileImg}
+              source={{
+                uri: image
+                  ? image
+                  : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+              }}
+            />
             <TouchableOpacity
               onPress={photoPermission}
               style={
@@ -299,7 +308,7 @@ const ProfileModal = ({
                   : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
               }
             >
-              Change Name
+              Enter Name
             </Text>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}

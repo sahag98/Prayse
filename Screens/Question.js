@@ -25,9 +25,11 @@ import { ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import QuestionHelpModal from "../components/QuestionHelpModal";
+import MaskedView from "@react-native-masked-view/masked-view";
+import LinearGradient from "react-native-linear-gradient";
 
 const Question = ({ navigation }) => {
-  const { currentUser, supabase } = useSupabase();
+  const { currentUser, supabase, newAnswer, setNewAnswer } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [weeklyQuestion, setWeeklyquestion] = useState([]);
   const [answersVisible, setAnswersVisible] = useState(false);
@@ -36,23 +38,8 @@ const Question = ({ navigation }) => {
   const isFocused = useIsFocused();
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
+
   useEffect(() => {
-    AsyncStorage.removeItem("modalShown");
-    // AsyncStorage.getItem("modalShown").then((value) => {
-    //   console.log(value);
-
-    //   // if (value === true) {
-    //   //   console.log("setting null");
-    //   //   AsyncStorage.setItem("modalShown", null);
-    //   //   return;
-    //   // }
-
-    //   // if (value === null) {
-    //   //   // If the modal hasn't been shown before, show it and set the flag
-    //   //   setQuestionHelpModal(true);
-    //   //   AsyncStorage.setItem("modalShown", "true");
-    //   // }
-    // });
     loadQuestion();
     fetchAnswers();
   }, [isFocused]);
@@ -88,6 +75,8 @@ const Question = ({ navigation }) => {
       .catch((error) => {
         console.error(error);
       });
+    fetchAnswers();
+    setNewAnswer(false);
   };
 
   const dateObject = new Date(weeklyQuestion[0]?.date);
@@ -177,14 +166,21 @@ const Question = ({ navigation }) => {
           </HeaderTitle>
         </View>
         {currentUser.admin === true ? (
-          <TouchableOpacity onPress={() => removeAnswers(currentUser.admin)}>
-            <Text style={{ fontFamily: "Inter-Regular", color: "#ff8989" }}>
-              Clear
-            </Text>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={() => removeAnswers(currentUser.admin)}>
+              <Text style={{ fontFamily: "Inter-Regular", color: "#ff4e4e" }}>
+                Clear
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => loadQuestion()}>
+              <Text style={{ fontFamily: "Inter-Regular", color: "#ff4e4e" }}>
+                Refresh
+              </Text>
+            </TouchableOpacity>
+          </>
         ) : (
           <TouchableOpacity onPress={() => loadQuestion()}>
-            <Ionicons name="refresh" size={24} color="#ff8989" />
+            <Ionicons name="refresh" size={24} color="#ff4e4e" />
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
@@ -249,13 +245,13 @@ const Question = ({ navigation }) => {
             <Ionicons
               name="time-outline"
               size={24}
-              color={theme == "dark" ? "#ff8989" : "#ff4e4e"}
+              color={theme == "dark" ? "#ff6262" : "#ff4e4e"}
             />
             <Text
               style={
                 theme == "dark"
                   ? {
-                      color: "#ff8989",
+                      color: "#ff6262",
                       fontSize: 12,
                       fontFamily: "Inter-Medium",
                     }
@@ -271,6 +267,32 @@ const Question = ({ navigation }) => {
           </View>
         </View>
       </View>
+      {newAnswer && (
+        <MaskedView
+          style={{ height: 20, marginBottom: 10 }}
+          maskElement={
+            <Text
+              style={{
+                fontFamily: "Inter-Bold",
+
+                textAlign: "center",
+                fontSize: 13,
+              }}
+            >
+              New Answer! Press the reload icon to refresh.
+            </Text>
+          }
+        >
+          <LinearGradient
+            colors={
+              theme == "dark" ? ["#A5C9FF", "#fabada"] : ["#2f2d51", "#fabada"]
+            }
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0.33 }}
+            style={{ flex: 1 }}
+          />
+        </MaskedView>
+      )}
       <View
         style={{
           flex: 1,

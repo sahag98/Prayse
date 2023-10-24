@@ -8,7 +8,6 @@ const FavoriteVerses = ({ item, theme }) => {
   const dispatch = useDispatch();
 
   const dateObject = new Date(item?._createdAt);
-  console.log(dateObject?.toDateString());
   return (
     <View style={theme == "dark" ? styles.fvDark : styles.fv} key={item.id}>
       <View style={{ width: "100%" }}>

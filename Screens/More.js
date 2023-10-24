@@ -147,7 +147,7 @@ const More = ({ navigation }) => {
         />
       ),
       title: "Privacy Policy",
-      link: "https://www.privacypolicies.com/live/887580d1-6bf3-4b0a-a716-a732bf8141fa",
+      link: "https://www.privacypolicies.com/live/663d74fd-fe04-44bd-8f66-e8bc9b974d8a",
     },
     {
       id: 5,

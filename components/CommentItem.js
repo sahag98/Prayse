@@ -10,17 +10,50 @@ const CommentItem = ({ item, theme }) => {
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <Image
             style={styles.profileImg}
-            source={{ uri: item.profiles.avatar_url }}
+            source={{
+              uri: item.profiles.avatar_url
+                ? item.profiles.avatar_url
+                : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+            }}
           />
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontSize: 14, fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontSize: 14, fontFamily: "Inter-Bold" }
+                ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Bold" }
             }
           >
             {item.profiles.full_name}
           </Text>
+          {item.profiles.admin == true && (
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#ff4e4e",
+                      paddingVertical: 3,
+                      paddingHorizontal: 6,
+                      fontFamily: "Inter-Medium",
+                      fontSize: 10,
+                      color: "white",
+                      borderRadius: 10,
+                      marginLeft: 10,
+                    }
+                  : {
+                      backgroundColor: "#ff3b3b",
+                      marginLeft: 10,
+                      paddingVertical: 3,
+                      paddingHorizontal: 6,
+                      fontFamily: "Inter-Medium",
+                      fontSize: 10,
+                      color: "white",
+                      borderRadius: 10,
+                    }
+              }
+            >
+              admin
+            </Text>
+          )}
         </View>
 
         <Text

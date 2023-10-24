@@ -18,6 +18,7 @@ import * as Notifications from "expo-notifications";
 import { Animated } from "react-native";
 import * as Device from "expo-device";
 import { useRef } from "react";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,7 +30,15 @@ Notifications.setNotificationHandler({
 
 const CommunityHome = () => {
   const navigation = useNavigation();
-  const { currentUser, setCurrentUser, logout, supabase } = useSupabase();
+  const {
+    currentUser,
+    setCurrentUser,
+    session,
+    newPost,
+    setNewPost,
+    logout,
+    supabase,
+  } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [extended, setExtended] = useState(true);
@@ -41,7 +50,7 @@ const CommunityHome = () => {
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
-
+  console.log("current user: ", currentUser);
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -68,7 +77,7 @@ const CommunityHome = () => {
     getUserPrayers();
     getPermission();
     getPrayers();
-  }, []);
+  }, [isFocused]);
 
   async function getPrayers() {
     let { data: prayers, error } = await supabase
@@ -117,8 +126,6 @@ const CommunityHome = () => {
       token = (
         await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
       ).data;
-
-      console.log(token);
     } else {
       alert("Must use physical device for Push Notifications");
     }
@@ -152,7 +159,11 @@ const CommunityHome = () => {
         <View style={styles.iconContainer}>
           <Image
             style={styles.profileImg}
-            source={{ uri: currentUser?.avatar_url }}
+            source={{
+              uri: currentUser?.avatar_url
+                ? currentUser?.avatar_url
+                : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+            }}
           />
           <TouchableOpacity
             onPress={() => setModalVisible(true)}
@@ -183,12 +194,53 @@ const CommunityHome = () => {
           color={theme == "dark" ? "white" : "#2f2d51"}
         />
       </TouchableOpacity>
+      {newPost && (
+        <MaskedView
+          style={{ height: 20, marginBottom: 10 }}
+          maskElement={
+            <Text
+              style={{
+                fontFamily: "Inter-Bold",
+
+                textAlign: "center",
+                fontSize: 13,
+              }}
+            >
+              New Prayers! Pull down to refresh.
+            </Text>
+          }
+        >
+          <LinearGradient
+            colors={
+              theme == "dark" ? ["#A5C9FF", "#fabada"] : ["#2f2d51", "#fabada"]
+            }
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0.33 }}
+            style={{ flex: 1 }}
+          />
+        </MaskedView>
+        // <Text
+        //   style={{
+        //     fontFamily: "Inter-Medium",
+        //     textAlign: "center",
+        //     marginBottom: 10,
+        //     textDecorationLine: "underline",
+        //     textShadowColor: "grey",
+        //     textShadowOffset: { width: -1, height: 1 },
+        //     textShadowRadius: 10,
+        //   }}
+        // >
+        //   New Prayers! Pull down to refresh.
+        // </Text>
+      )}
+
       <ProfileModal
         getUserPrayers={getUserPrayers}
         userPrayers={userPrayers}
         setPrayerModal={setPrayerModal}
         getPrayers={getPrayers}
         logout={logout}
+        session={session}
         setCurrentUser={setCurrentUser}
         supabase={supabase}
         modalVisible={modalVisible}
@@ -206,6 +258,7 @@ const CommunityHome = () => {
       />
       <CommunityPrayers
         getPrayers={getPrayers}
+        setNewPost={setNewPost}
         visible={visible}
         setVisible={setVisible}
         prayers={prayers}
@@ -244,7 +297,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   questionDark: {
     flexDirection: "row",
@@ -256,7 +309,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   actionButtons: {
     position: "absolute",
@@ -277,8 +330,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#2f2d51",
   },
   profileImg: {
-    width: 55,
-    height: 55,
+    width: 50,
+    height: 50,
     borderRadius: 50,
   },
   iconContainer: {

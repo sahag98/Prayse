@@ -19,6 +19,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
   const [commentsArray, setCommentsArray] = useState([]);
   const [loadingLikes, setLoadingLikes] = useState(false);
   const isNewItem = item === prayers[0];
+
   useEffect(() => {
     setLoadingLikes(true);
     // console.log("use effect");
@@ -89,7 +90,6 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
       user_id: currentUser.id,
     });
     if (expoToken.length > 0) {
-      console.log("expo");
       sendNotification(expoToken, "Community");
     }
     if (error) {
@@ -99,7 +99,6 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
   }
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
-
   return (
     <View
       style={{
@@ -121,8 +120,14 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Image
-              style={styles.profileImg}
-              source={{ uri: item.profiles.avatar_url }}
+              style={
+                theme == "dark" ? styles.profileImgDark : styles.profileImg
+              }
+              source={{
+                uri: item.profiles.avatar_url
+                  ? item.profiles.avatar_url
+                  : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+              }}
             />
             <Text
               style={
@@ -133,6 +138,33 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
             >
               {item.profiles.full_name}
             </Text>
+            {item.profiles.admin == true && (
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        backgroundColor: "#ff4e4e",
+                        paddingVertical: 3,
+                        paddingHorizontal: 6,
+                        fontFamily: "Inter-Medium",
+                        fontSize: 10,
+                        color: "white",
+                        borderRadius: 10,
+                      }
+                    : {
+                        backgroundColor: "#ff3b3b",
+                        paddingVertical: 3,
+                        paddingHorizontal: 6,
+                        fontFamily: "Inter-Medium",
+                        fontSize: 10,
+                        color: "white",
+                        borderRadius: 10,
+                      }
+                }
+              >
+                admin
+              </Text>
+            )}
           </View>
           <Text
             style={
@@ -309,6 +341,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   profileImg: {
+    borderColor: "#2F2D51",
+    borderWidth: 0.2,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  profileImgDark: {
     width: 50,
     height: 50,
     borderRadius: 50,
