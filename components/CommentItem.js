@@ -3,7 +3,7 @@ import React from "react";
 import { Image } from "react-native";
 import Moment from "moment";
 
-const CommentItem = ({ item, theme }) => {
+const CommentItem = ({ item, theme, session }) => {
   return (
     <View style={styles.commentContainer}>
       <View style={styles.content}>
@@ -13,7 +13,7 @@ const CommentItem = ({ item, theme }) => {
             source={{
               uri: item.profiles.avatar_url
                 ? item.profiles.avatar_url
-                : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
             }}
           />
           <Text

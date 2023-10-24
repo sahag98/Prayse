@@ -21,6 +21,7 @@ import { Switch } from "react-native-paper";
 const CommunityModal = ({
   modalVisible,
   getPrayers,
+  session,
   getUserPrayers,
   supabase,
   setModalVisible,

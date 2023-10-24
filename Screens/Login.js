@@ -19,6 +19,8 @@ import globe from "../assets/globe.png";
 import google from "../assets/google-icon.png";
 import Toast from "react-native-toast-message";
 import { useEffect } from "react";
+import CheckInboxModal from "../components/CheckInboxModal";
+import { set } from "react-native-reanimated";
 
 const Login = () => {
   const theme = useSelector((state) => state.user.theme);
@@ -26,6 +28,7 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [checkInbox, setCheckInbox] = useState(false);
   const { register, login } = useSupabase();
   const { getGoogleOAuthUrl, setOAuthSession } = useSupabase();
   const [isLoggingIn, setIsLoggingIn] = useState(true);
@@ -52,6 +55,7 @@ const Login = () => {
     } else {
       register(email, password);
       setIsLoggingIn(true);
+      // setCheckInbox(true);
     }
   };
 
@@ -164,15 +168,29 @@ const Login = () => {
           <>
             <TextInput
               onChangeText={(text) => setEmail(text)}
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
               value={email}
               blurOnSubmit={true}
-              style={{
-                backgroundColor: "#caecfc",
-                padding: 10,
-                width: "100%",
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#212121",
+                      color: "#d6d6d6",
+                      padding: 10,
+                      width: "100%",
+                      marginBottom: 10,
+                      fontFamily: "Inter-Regular",
+                      borderRadius: 10,
+                    }
+                  : {
+                      backgroundColor: "#caecfc",
+                      padding: 10,
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+              }
               placeholder="Enter Email"
             />
 
@@ -181,13 +199,27 @@ const Login = () => {
               value={password}
               blurOnSubmit={true}
               secureTextEntry={true}
-              style={{
-                backgroundColor: "#caecfc",
-                padding: 10,
-                width: "100%",
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#212121",
+                      padding: 10,
+                      color: "#d6d6d6",
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+                  : {
+                      backgroundColor: "#caecfc",
+                      padding: 10,
+                      fontFamily: "Inter-Regular",
+                      width: "100%",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+              }
               placeholder="Enter Password"
             />
 
@@ -204,7 +236,7 @@ const Login = () => {
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Medium" }
+                    ? { color: "#212121", fontFamily: "Inter-Medium" }
                     : { color: "#2f2d51", fontFamily: "Inter-Medium" }
                 }
               >
@@ -218,11 +250,19 @@ const Login = () => {
               }
             >
               <Text
-                style={{
-                  color: "#2f2d51",
-                  textDecorationLine: "underline",
-                  fontFamily: "Inter-Medium",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#A5C9FF",
+                        textDecorationLine: "underline",
+                        fontFamily: "Inter-Medium",
+                      }
+                    : {
+                        color: "#2f2d51",
+                        textDecorationLine: "underline",
+                        fontFamily: "Inter-Medium",
+                      }
+                }
               >
                 Don't have an account yet? Sign up.
               </Text>
@@ -233,31 +273,56 @@ const Login = () => {
           <>
             <TextInput
               onChangeText={(text) => setEmail(text)}
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
               value={email}
               blurOnSubmit={true}
-              selectionColor={"#2f2d51"}
-              style={{
-                backgroundColor: "#caecfc",
-                padding: 10,
-                width: "100%",
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#212121",
+                      padding: 10,
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+                  : {
+                      backgroundColor: "#caecfc",
+                      padding: 10,
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+              }
               placeholder="Enter Email"
             />
+
             <TextInput
               onChangeText={(text) => setPassword(text)}
               value={password}
               blurOnSubmit={true}
               secureTextEntry={true}
-              selectionColor={"#2f2d51"}
-              style={{
-                backgroundColor: "#caecfc",
-                padding: 10,
-                width: "100%",
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#212121",
+                      padding: 10,
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+                  : {
+                      backgroundColor: "#caecfc",
+                      padding: 10,
+                      width: "100%",
+                      fontFamily: "Inter-Regular",
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    }
+              }
               placeholder="Enter Password"
             />
 
@@ -270,7 +335,7 @@ const Login = () => {
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Medium" }
+                    ? { color: "#212121", fontFamily: "Inter-Medium" }
                     : { color: "#2f2d51", fontFamily: "Inter-Medium" }
                 }
               >
@@ -284,11 +349,19 @@ const Login = () => {
               }
             >
               <Text
-                style={{
-                  color: "#2f2d51",
-                  textDecorationLine: "underline",
-                  fontFamily: "Inter-Medium",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#A5C9FF",
+                        textDecorationLine: "underline",
+                        fontFamily: "Inter-Medium",
+                      }
+                    : {
+                        color: "#2f2d51",
+                        textDecorationLine: "underline",
+                        fontFamily: "Inter-Medium",
+                      }
+                }
               >
                 Already have an account? Sign in.
               </Text>
@@ -300,6 +373,7 @@ const Login = () => {
           settings page.
         </Text>
       </Container>
+      {/* <CheckInboxModal checkInbox={checkInbox} setCheckInbox={setCheckInbox} /> */}
     </KeyboardAvoidingView>
   );
 };
@@ -323,9 +397,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    width: "50%",
+    width: "100%",
     justifyContent: "center",
-    backgroundColor: "#212121",
+    backgroundColor: "#A5C9FF",
     paddingVertical: 13,
     paddingHorizontal: 15,
     borderRadius: 10,
@@ -346,7 +420,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#93d8f8",
     paddingVertical: 13,
-    width: "50%",
+    width: "100%",
     paddingHorizontal: 15,
     borderRadius: 10,
   },
@@ -384,12 +458,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
-  googleIcon: {
-    width: 25,
-    height: 25,
-  },
+
   imgContainer: {
-    marginBottom: 30,
+    marginBottom: 20,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",

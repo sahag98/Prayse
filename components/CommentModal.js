@@ -26,6 +26,7 @@ const CommentModal = ({
   fetchComments,
   commentsArray,
   prayer,
+  session,
   setCommentVisible,
   user,
 }) => {
@@ -217,7 +218,7 @@ const CommentModal = ({
                     />
                   )}
                   renderItem={({ item }) => (
-                    <CommentItem item={item} theme={theme} />
+                    <CommentItem session={session} item={item} theme={theme} />
                   )}
                 />
               )}

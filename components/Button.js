@@ -51,7 +51,6 @@ const Button = ({ currentIndex, length, setFeatureVisible, flatListRef }) => {
 
   const onPress = useCallback(() => {
     if (currentIndex.value === length - 1) {
-      console.log("Get Started");
       return;
     } else {
       flatListRef?.current?.scrollToIndex({

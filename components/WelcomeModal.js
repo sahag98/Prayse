@@ -9,6 +9,7 @@ import {
 import React, { useEffect } from "react";
 import { Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { PROJECT_ID } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import uuid from "react-native-uuid";
@@ -27,59 +28,30 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Image } from "react-native";
 import { TextInput } from "react-native";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import ProfilePrayers from "./ProfilePrayers";
-import { FlatList } from "react-native";
-import { Keyboard } from "react-native";
-const ProfileModal = ({
-  logout,
-  session,
-  setCurrentUser,
-  getPrayers,
-  setPrayerModal,
-  userPrayers,
-  getUserPrayers,
-  modalVisible,
-  supabase,
-  setModalVisible,
+
+const WelcomeModal = ({
   user,
+  isShowingWelcome,
+  supabase,
+  setCurrentUser,
+  setIsShowingWelcome,
 }) => {
   const theme = useSelector((state) => state.user.theme);
 
-  const [name, setName] = useState(user?.full_name);
+  const [name, setName] = useState("");
 
   const [isUnique, setIsUnique] = useState(true);
-  const [image, setImage] = useState(user?.avatar_url);
+  const [image, setImage] = useState("");
   const isFocused = useIsFocused();
-  console.log("session: ", session.user.email);
-  useEffect(() => {
-    getUserPrayers();
-  }, []);
 
   const handleCloseModal = () => {
-    setModalVisible(false);
-    setName(user?.full_name);
+    setIsShowingWelcome(false);
+    setName("");
   };
-
-  const addPrayer = () => {
-    setModalVisible(false);
-    setPrayerModal(true);
-  };
-
-  async function getProfile() {
-    const { data: profiles, error: profileError } = await supabase
-      .from("profiles")
-      .select()
-      .eq("id", user?.id);
-    setCurrentUser(profiles[0]);
-  }
-
-  function onModalShow() {
-    getUserPrayers();
-    setName(user?.full_name);
-    setImage(user?.avatar_url);
-  }
 
   const showToast = (type, content) => {
     Toast.show({
@@ -160,14 +132,55 @@ const ProfileModal = ({
     }
   };
 
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
+  const handleNext = async () => {
+    if (name.length == 0) {
+      showToast("error", "Username field is required.");
+      return;
+    }
+    checkIfUnique();
+
+    if (isUnique) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: name,
+          avatar_url: image
+            ? image
+            : "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
+        })
+        .eq("id", user.id)
+        .select();
+      showToast("success", "Profile has been created.");
+      console.log("data :", data[0]);
+      setCurrentUser(data[0]);
+      setIsShowingWelcome(false);
+    }
   };
 
+  const checkIfUnique = async () => {
+    console.log("checking", name);
+    const { data: profiles, profileError } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .neq("id", user.id);
+
+    profiles.map((prof) => {
+      if (name.toLowerCase() == prof.full_name.toLowerCase()) {
+        setIsUnique(false);
+        console.log("name exists");
+        return;
+      } else {
+        setIsUnique(true);
+      }
+    });
+  };
   async function handleAnonymous() {
     const id = uuid.v4();
     const newId = id.substring(0, 3);
-
+    setName(`Anonymous${newId}`);
+    setImage(
+      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559"
+    );
     const { data, error } = await supabase
       .from("profiles")
       .update({
@@ -177,26 +190,43 @@ const ProfileModal = ({
       })
       .eq("id", user.id)
       .select();
-    showToast("success", "Anonymous mode is set. ✔️");
-    getProfile();
-    getPrayers();
-    setModalVisible(false);
   }
 
-  const checkIfUnique = async () => {
-    const { data: profiles, profileError } = await supabase
+  async function sendToken(expoPushToken) {
+    const { data, error } = await supabase
       .from("profiles")
-      .select("full_name")
-      .neq("id", user.id);
+      .update({ expoToken: expoPushToken })
+      .eq("id", user?.id)
+      .select();
+  }
 
-    profiles.map((prof) => {
-      if (name.toLowerCase() == prof.full_name.toLowerCase()) {
-        setIsUnique(false);
-        showToast("error", "This name already exists. Try another one.");
+  async function getPermission() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      console.log(existingStatus);
+
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        console.log(status);
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        console.log("not granted");
         return;
       }
-    });
-  };
+      console.log("permission granted");
+      token = (
+        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+      ).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    sendToken(token);
+  }
 
   const updateProfile = async () => {
     console.log(name);
@@ -221,10 +251,10 @@ const ProfileModal = ({
 
   return (
     <Modal
+      onShow={getPermission}
       animationType="fade"
-      onShow={onModalShow}
       transparent={true}
-      visible={modalVisible}
+      visible={isShowingWelcome}
       onRequestClose={handleCloseModal}
     >
       <KeyboardAvoidingView
@@ -236,13 +266,15 @@ const ProfileModal = ({
             theme == "dark"
               ? {
                   backgroundColor: "#121212",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 20,
                 }
               : {
                   backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
+                  gap: 20,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }
           }
         >
@@ -250,54 +282,54 @@ const ProfileModal = ({
             style={{
               width: "100%",
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
             }}
           >
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="close"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
+                  ? {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      color: "#a5c9ff",
+                      fontSize: 20,
+                    }
+                  : {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      color: "#2F2D51",
+                      fontSize: 20,
+                    }
               }
             >
-              Profile Settings
+              Welcome to Prayse Community
             </HeaderTitle>
-
-            <TouchableOpacity onPress={updateProfile}>
-              <AntDesign
-                name="check"
-                size={30}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
-            </TouchableOpacity>
           </HeaderView>
           <View style={styles.iconContainer}>
-            <Image
-              style={styles.profileImg}
-              source={{
-                uri: image
-                  ? image
-                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-              }}
-            />
             <TouchableOpacity
               onPress={photoPermission}
               style={
                 theme == "dark" ? styles.featherIconDark : styles.featherIcon
               }
             >
-              <AntDesign
-                name="plus"
-                size={20}
-                color={theme == "dark" ? "white" : "black"}
-              />
+              {image.length == 0 ? (
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Medium", color: "white" }
+                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                  }
+                >
+                  Upload an Image + (Optional)
+                </Text>
+              ) : (
+                <Image
+                  style={styles.profileImg}
+                  source={{
+                    uri: image,
+                  }}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <View style={styles.inputField}>
@@ -308,7 +340,7 @@ const ProfileModal = ({
                   : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
               }
             >
-              Enter Name
+              Enter username: (Required)
             </Text>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
@@ -316,13 +348,59 @@ const ProfileModal = ({
               value={name}
               onChangeText={(text) => setName(text)}
             />
+            {!isUnique && (
+              <Text style={{ color: "#ff6262" }}>
+                This name already exists. Try again.
+              </Text>
+            )}
           </View>
           <View
             style={{
-              flexDirection: "row",
+              position: "relative",
+
+              height: 20,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={
+                theme == "dark"
+                  ? { height: 1, width: "100%", backgroundColor: "#a5c9ff" }
+                  : { height: 1, width: "100%", backgroundColor: "#2f2d51" }
+              }
+            />
+
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      position: "absolute",
+                      backgroundColor: "#121212",
+                      color: "white",
+                      letterSpacing: 2,
+                      paddingHorizontal: 5,
+                    }
+                  : {
+                      position: "absolute",
+                      backgroundColor: "#F2F7FF",
+                      color: "#2f2d51",
+                      letterSpacing: 2,
+                      paddingHorizontal: 5,
+                    }
+              }
+            >
+              Or
+            </Text>
+          </View>
+
+          <View
+            style={{
               width: "100%",
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyContent: "center",
+              gap: 20,
             }}
           >
             <TouchableOpacity onPress={handleAnonymous}>
@@ -332,7 +410,7 @@ const ProfileModal = ({
                     ? {
                         fontFamily: "Inter-Medium",
                         textDecorationLine: "underline",
-                        color: "white",
+                        color: "#a5c9ff",
                       }
                     : {
                         fontFamily: "Inter-Medium",
@@ -344,7 +422,53 @@ const ProfileModal = ({
                 Set Anonymous
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#c2c2c2",
+                      fontFamily: "Inter-Regular",
+                      fontSize: 13,
+                    }
+                  : { fontFamily: "Inter-Regular", fontSize: 13 }
+              }
+            >
+              You can change your username and profile image again through the
+              profile settings page.
+            </Text>
+            <TouchableOpacity
+              onPress={handleNext}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#a5c9ff",
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+                  : {
+                      backgroundColor: "#2f2d51",
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+              }
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "#121212", fontFamily: "Inter-Bold" }
+                    : { color: "white", fontFamily: "Inter-Bold" }
+                }
+              >
+                Get Right in!
+              </Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
               <Text
                 style={{
                   color: "#ff4e4e",
@@ -354,163 +478,28 @@ const ProfileModal = ({
               >
                 Dismiss Keyboard
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    padding: 10,
-                    fontSize: 17,
-                    color: "#A5C9FF",
-                    fontFamily: "Inter-Medium",
-                    width: "100%",
-                    textAlign: "center",
-                  }
-                : {
-                    padding: 10,
-                    fontSize: 17,
-                    color: "#2f2d51",
-                    fontFamily: "Inter-Medium",
-                    width: "100%",
-                    textAlign: "center",
-                  }
-            }
-          >
-            Prayers Shared
-          </Text>
-          {userPrayers?.length == 0 ? (
-            <View
-              style={
-                theme == "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      borderWidth: 1,
-                      borderColor: "#797979",
-                      borderRadius: 10,
-                      height: 120,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 5,
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
-                      borderRadius: 10,
-                      height: 120,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 5,
-                    }
-              }
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? { fontFamily: "Inter-Regular", color: "#bebebe" }
-                    : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                }
-              >
-                You haven't posted any prayers yet.
-              </Text>
-              <TouchableOpacity onPress={addPrayer}>
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          textDecorationLine: "underline",
-                          color: "white",
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          textDecorationLine: "underline",
-                          color: "#2f2d51",
-                        }
-                  }
-                >
-                  Post a prayer
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <FlatList
-              style={
-                theme == "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      borderWidth: 1,
-                      borderColor: "#A5C9FF",
-                      borderRadius: 10,
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
-                      borderRadius: 10,
-                    }
-              }
-              data={userPrayers}
-              keyExtractor={(e, i) => i.toString()}
-              onEndReachedThreshold={0}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={true}
-              renderItem={({ item }) => (
-                <ProfilePrayers
-                  item={item}
-                  theme={theme}
-                  user={user}
-                  getUserPrayers={getUserPrayers}
-                  supabase={supabase}
-                  getPrayers={getPrayers}
-                />
-              )}
-            />
-          )}
-          <TouchableOpacity
-            onPress={logout}
-            style={theme == "dark" ? styles.logoutDark : styles.logout}
-          >
-            <Ionicons
-              name="md-exit-outline"
-              size={25}
-              color={theme == "dark" ? "white" : "white"}
-            />
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "white", fontFamily: "Inter-Bold" }
-              }
-            >
-              Log Out
-            </Text>
-          </TouchableOpacity>
         </ModalContainer>
       </KeyboardAvoidingView>
     </Modal>
   );
 };
 
-export default ProfileModal;
+export default WelcomeModal;
 
 const styles = StyleSheet.create({
   inputField: {
-    marginVertical: 10,
+    gap: 5,
     width: "100%",
   },
   inputDark: {
     color: "white",
     fontFamily: "Inter-Regular",
     width: "100%",
-    borderBottomColor: "white",
-    borderBottomWidth: 1,
-    padding: 1,
+    backgroundColor: "#212121",
+    padding: 10,
+    borderRadius: 10,
   },
   dismiss: {
     padding: 2,
@@ -519,9 +508,9 @@ const styles = StyleSheet.create({
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
     width: "100%",
-    borderBottomColor: "#2f2d51",
-    borderBottomWidth: 1,
-    padding: 1,
+    backgroundColor: "#caecfc",
+    padding: 10,
+    borderRadius: 10,
   },
   logoutDark: {
     alignSelf: "flex-end",
@@ -556,28 +545,31 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: "relative",
     alignSelf: "center",
-    padding: 8,
+    width: "100%",
+    height: 120,
+    justifyContent: "center",
+    alignItems: "center",
   },
   featherIconDark: {
+    backgroundColor: "#212121",
+
     position: "absolute",
-    backgroundColor: "#3e3e3e",
-    borderRadius: 50,
-    width: 30,
+
+    borderRadius: 100,
+    padding: 10,
+    width: 120,
     alignItems: "center",
     justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
+    height: 120,
   },
   featherIcon: {
     position: "absolute",
-    backgroundColor: "#93d8f8",
-    borderRadius: 50,
-    width: 30,
+    backgroundColor: "#caecfc",
+    borderRadius: 100,
+    padding: 10,
+    width: 130,
     alignItems: "center",
     justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
+    height: 130,
   },
 });

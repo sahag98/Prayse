@@ -19,6 +19,7 @@ import { Animated } from "react-native";
 import * as Device from "expo-device";
 import { useRef } from "react";
 import MaskedView from "@react-native-masked-view/masked-view";
+import WelcomeModal from "../components/WelcomeModal";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -43,6 +44,7 @@ const CommunityHome = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [extended, setExtended] = useState(true);
   const [prayerModal, setPrayerModal] = useState(false);
+  const [isShowingWelcome, setIsShowingWelcome] = useState(false);
   const isFocused = useIsFocused();
   const [visible, setVisible] = useState(true);
   const [prayers, setPrayers] = useState([]);
@@ -51,6 +53,7 @@ const CommunityHome = () => {
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
   console.log("current user: ", currentUser);
+
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -132,6 +135,18 @@ const CommunityHome = () => {
     sendToken(token);
   }
 
+  if (currentUser?.full_name == null) {
+    return (
+      <WelcomeModal
+        supabase={supabase}
+        setCurrentUser={setCurrentUser}
+        isShowingWelcome={true}
+        setIsShowingWelcome={setIsShowingWelcome}
+        user={currentUser}
+      />
+    );
+  }
+
   return (
     <Container
       style={
@@ -162,7 +177,7 @@ const CommunityHome = () => {
             source={{
               uri: currentUser?.avatar_url
                 ? currentUser?.avatar_url
-                : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
             }}
           />
           <TouchableOpacity
@@ -219,19 +234,6 @@ const CommunityHome = () => {
             style={{ flex: 1 }}
           />
         </MaskedView>
-        // <Text
-        //   style={{
-        //     fontFamily: "Inter-Medium",
-        //     textAlign: "center",
-        //     marginBottom: 10,
-        //     textDecorationLine: "underline",
-        //     textShadowColor: "grey",
-        //     textShadowOffset: { width: -1, height: 1 },
-        //     textShadowRadius: 10,
-        //   }}
-        // >
-        //   New Prayers! Pull down to refresh.
-        // </Text>
       )}
 
       <ProfileModal
@@ -252,11 +254,13 @@ const CommunityHome = () => {
         getPrayers={getPrayers}
         logout={logout}
         supabase={supabase}
+        session={session}
         modalVisible={prayerModal}
         user={currentUser}
         setModalVisible={setPrayerModal}
       />
       <CommunityPrayers
+        session={session}
         getPrayers={getPrayers}
         setNewPost={setNewPost}
         visible={visible}

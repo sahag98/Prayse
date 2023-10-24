@@ -26,7 +26,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const ref = useRef();
 
   const onNextPage = () => {
-    if (page < 2) {
+    if (page < 3) {
       ref.current.animateNextTransition();
       setPage(page + 1);
     }
@@ -48,8 +48,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
       <ModalContainer
         style={
           theme == "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+            ? { backgroundColor: "rgba(0, 0, 0, 0.9)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.9)" }
         }
       >
         <View
@@ -372,6 +372,159 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     Check all notifications through the notification box on the
                     home screen.
+                  </Text>
+
+                  {/* <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "white" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    Once you answer the question you will not be able to edit or
+                    delete your question.
+                  </Text> */}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            borderColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#caecfc",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={StartOver}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "white", fontFamily: "Inter-Bold" }
+                          : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Exit
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            backgroundColor: "#A5C9FF",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#2f2d51",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={onNextPage}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "#121212", fontFamily: "Inter-Bold" }
+                          : { color: "white", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Next
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {page === 3 && (
+              <View style={{ alignItems: "center", gap: 10 }}>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 18,
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 18,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Small Changes:
+                </Text>
+                <View style={{ alignItems: "center", gap: 10 }}>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    - Verse of the Day design changes.
+                  </Text>
+
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    - Fixed Community swear word error.
+                  </Text>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    - Changed Settings page design.
+                  </Text>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Regular",
+                            marginBottom: 10,
+                            color: "#dbdbdb",
+                          }
+                        : {
+                            fontFamily: "Inter-Regular",
+                            marginBottom: 10,
+                            color: "#2f2d51",
+                          }
+                    }
+                  >
+                    - Removed update suggestion for now.
                   </Text>
 
                   {/* <Text

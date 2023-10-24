@@ -9,7 +9,13 @@ import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
 import communityReady from "../hooks/communityReady";
 
-const CommunityPrayers = ({ onScroll, setNewPost, prayers, getPrayers }) => {
+const CommunityPrayers = ({
+  onScroll,
+  session,
+  setNewPost,
+  prayers,
+  getPrayers,
+}) => {
   const theme = useSelector((state) => state.user.theme);
   // const { currentUser, setCurrentUser, newPost, logout, supabase } =
   //   useSupabase();
@@ -76,7 +82,12 @@ const CommunityPrayers = ({ onScroll, setNewPost, prayers, getPrayers }) => {
           }
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <PrayerItem prayers={prayers} getPrayers={getPrayers} item={item} />
+            <PrayerItem
+              session={session}
+              prayers={prayers}
+              getPrayers={getPrayers}
+              item={item}
+            />
           )}
         />
       )}

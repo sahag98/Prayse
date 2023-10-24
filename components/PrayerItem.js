@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import CommentModal from "./CommentModal";
 import axios from "axios";
 
-const PrayerItem = ({ getPrayers, prayers, item }) => {
+const PrayerItem = ({ getPrayers, prayers, session, item }) => {
   const theme = useSelector((state) => state.user.theme);
   const [commentVisible, setCommentVisible] = useState(false);
   const { currentUser, logout, supabase } = useSupabase();
@@ -124,9 +124,9 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
                 theme == "dark" ? styles.profileImgDark : styles.profileImg
               }
               source={{
-                uri: item.profiles.avatar_url
-                  ? item.profiles.avatar_url
-                  : "https://cdn-icons-png.flaticon.com/512/6915/6915987.png",
+                uri: item.profiles?.avatar_url
+                  ? item.profiles?.avatar_url
+                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
               }}
             />
             <Text
@@ -136,9 +136,9 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
                   : { fontFamily: "Inter-Bold", color: "#2f2d51" }
               }
             >
-              {item.profiles.full_name}
+              {item.profiles?.full_name}
             </Text>
-            {item.profiles.admin == true && (
+            {item.profiles?.admin == true && (
               <Text
                 style={
                   theme == "dark"
@@ -216,6 +216,7 @@ const PrayerItem = ({ getPrayers, prayers, item }) => {
         <CommentModal
           fetchComments={fetchComments}
           supabase={supabase}
+          session={session}
           prayer={item}
           commentsArray={commentsArray}
           commentVisible={commentVisible}
