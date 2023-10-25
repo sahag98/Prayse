@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { useSupabase } from "../context/useSupabase";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import {
@@ -31,7 +31,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { register, login, forgotPassword } = useSupabase();
-
+  const [passVisible, setPassVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   useEffect(() => {
     WebBrowser.warmUpAsync();
@@ -169,6 +169,7 @@ const Login = () => {
           <>
             <TextInput
               onChangeText={(text) => setEmail(text)}
+              autoCapitalize="none"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
               value={email}
               blurOnSubmit={true}
@@ -194,35 +195,64 @@ const Login = () => {
               }
               placeholder="Enter Email"
             />
-
-            <TextInput
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              blurOnSubmit={true}
-              secureTextEntry={true}
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
-              style={
-                theme == "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      padding: 10,
-                      color: "#d6d6d6",
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 5,
-                      borderRadius: 10,
-                    }
-                  : {
-                      backgroundColor: "#caecfc",
-                      padding: 10,
-                      fontFamily: "Inter-Regular",
-                      width: "100%",
-                      marginBottom: 5,
-                      borderRadius: 10,
-                    }
-              }
-              placeholder="Enter Password"
-            />
+            <View
+              style={{
+                width: "100%",
+                position: "relative",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setPassVisible(!passVisible)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  padding: 5,
+                  zIndex: 99,
+                }}
+              >
+                <Ionicons
+                  name="eye-outline"
+                  size={20}
+                  style={{ marginBottom: 4, marginRight: 2 }}
+                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+              <TextInput
+                cursorColor={theme == "dark" ? "white" : "#2f2d51"}
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+                autoCapitalize="none"
+                blurOnSubmit={true}
+                secureTextEntry={!passVisible}
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+                style={
+                  theme == "dark"
+                    ? {
+                        backgroundColor: "#212121",
+                        padding: 10,
+                        color: "#d6d6d6",
+                        width: "100%",
+                        fontFamily: "Inter-Regular",
+                        marginBottom: 5,
+                        borderRadius: 10,
+                      }
+                    : {
+                        backgroundColor: "#caecfc",
+                        padding: 10,
+                        fontFamily: "Inter-Regular",
+                        width: "100%",
+                        marginBottom: 5,
+                        borderRadius: 10,
+                      }
+                }
+                placeholder="Enter Password"
+              />
+            </View>
             <TouchableOpacity
               onPress={() => setForgotModal(true)}
               style={{

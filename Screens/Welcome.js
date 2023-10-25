@@ -57,6 +57,8 @@ import { Badge, Menu, PaperProvider } from "react-native-paper";
 import { addNoti, deleteAll } from "../redux/notiReducer";
 import NotiItem from "../components/NotiItem";
 import NewFeaturesModal from "../components/NewFeaturesModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DonationModal from "../components/DonationModal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -135,11 +137,14 @@ export default function Welcome({ navigation }) {
   const theme = useSelector((state) => state.user.theme);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
+  const [openings, setOpenings] = useState(0);
+  const [donationModal, setDonationModal] = useState(false);
   const [greeting, setGreeting] = useState("");
   const [featureVisible, setFeatureVisible] = useState(false);
   const [icon, setIcon] = useState(null);
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
+
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
@@ -222,6 +227,7 @@ export default function Welcome({ navigation }) {
   const [notification, setNotification] = useState(false);
   const [quickModal, setQuickModal] = useState(false);
   const notificationListener = useRef();
+  const [isReminderOff, setIsReminderOff] = useState(false);
   const responseListener = useRef();
   const isFocused = useIsFocused();
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
@@ -279,7 +285,32 @@ export default function Welcome({ navigation }) {
     }
   }, [lastNotificationResponse]);
 
+  // const handleReminder = async () => {
+  //   const reminder = await AsyncStorage.getItem("ReminderOn");
+  //   set(reminder);
+  // };
+
   useEffect(() => {
+    const loadOpenings = async () => {
+      console.log("quick modal: ", isReminderOff);
+      // await AsyncStorage.removeItem("AppOpenings");
+      // await AsyncStorage.removeItem("ReminderOn");
+      const reminder = await AsyncStorage.getItem("ReminderOn");
+      if (reminder === null || reminder !== "false") {
+        try {
+          const storedOpenings = await AsyncStorage.getItem("appOpenings");
+          console.log("getting openings :", storedOpenings);
+          if (storedOpenings !== null) {
+            console.log("not null");
+            setOpenings(parseInt(storedOpenings, 10));
+          }
+        } catch (error) {
+          console.error("Error loading app openings ", error);
+        }
+      }
+    };
+    loadOpenings();
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 3000,
@@ -317,6 +348,31 @@ export default function Welcome({ navigation }) {
           />
         );
       }
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    console.log("in effect");
+
+    // Save the number of openings to AsyncStorage
+
+    const saveOpenings = async () => {
+      const reminder = await AsyncStorage.getItem("ReminderOn");
+      if (reminder === null || reminder !== "false") {
+        try {
+          await AsyncStorage.setItem("appOpenings", (openings + 1).toString());
+        } catch (error) {
+          console.error("Error saving app openings", error);
+        }
+      }
+    };
+
+    saveOpenings();
+
+    // Check if it's the 10th opening
+    if (openings > 0 && openings % 10 === 0) {
+      console.log("modal should open");
+      setDonationModal(true);
     }
   }, [isFocused]);
 
@@ -428,8 +484,6 @@ export default function Welcome({ navigation }) {
         style={{
           alignItems: "center",
           marginBottom: 10,
-          // borderRadius: 10,
-          // paddingHorizontal: 10,
           flexDirection: "row",
           justifyContent: "space-between",
           width: "100%",
@@ -452,6 +506,12 @@ export default function Welcome({ navigation }) {
           </Animated.Text>
           {icon}
         </Animated.View>
+        <DonationModal
+          donationModal={donationModal}
+          setDonationModal={setDonationModal}
+          theme={theme}
+          setIsReminderOn={setIsReminderOff}
+        />
         <View style={{ position: "relative", padding: 10 }}>
           <TouchableOpacity
             onPress={() => setNotiVisible((prev) => !prev)}
