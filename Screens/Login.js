@@ -10,27 +10,28 @@ import {
   View,
 } from "react-native";
 import { useSupabase } from "../context/useSupabase";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
-import * as SecureStore from "expo-secure-store";
 import React, { useState } from "react";
-import { Container } from "../styles/appStyles";
+import {
+  Container,
+  ModalActionGroup,
+  ModalContainer,
+  ModalView,
+} from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import globe from "../assets/globe.png";
-import google from "../assets/google-icon.png";
 import Toast from "react-native-toast-message";
 import { useEffect } from "react";
-import CheckInboxModal from "../components/CheckInboxModal";
-import { set } from "react-native-reanimated";
+import { Modal } from "react-native";
 
 const Login = () => {
   const theme = useSelector((state) => state.user.theme);
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
+  const [forgotModal, setForgotModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [checkInbox, setCheckInbox] = useState(false);
-  const { register, login } = useSupabase();
-  const { getGoogleOAuthUrl, setOAuthSession } = useSupabase();
+  const { register, login, forgotPassword } = useSupabase();
+
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   useEffect(() => {
     WebBrowser.warmUpAsync();
@@ -44,7 +45,7 @@ const Login = () => {
     Toast.show({
       type,
       text1: content,
-      visibilityTime: 4000,
+      visibilityTime: 5000,
     });
   };
 
@@ -208,7 +209,7 @@ const Login = () => {
                       color: "#d6d6d6",
                       width: "100%",
                       fontFamily: "Inter-Regular",
-                      marginBottom: 10,
+                      marginBottom: 5,
                       borderRadius: 10,
                     }
                   : {
@@ -216,13 +217,114 @@ const Login = () => {
                       padding: 10,
                       fontFamily: "Inter-Regular",
                       width: "100%",
-                      marginBottom: 10,
+                      marginBottom: 5,
                       borderRadius: 10,
                     }
               }
               placeholder="Enter Password"
             />
+            <TouchableOpacity
+              onPress={() => setForgotModal(true)}
+              style={{
+                alignSelf: "flex-end",
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ color: "#ff6262", fontSize: 13 }}>
+                Forgot password?
+              </Text>
+            </TouchableOpacity>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={forgotModal}
+              onRequestClose={() => setForgotModal(false)}
+              statusBarTranslucent={true}
+              // onShow={() => inputRef.current?.focus()}
+            >
+              <ModalContainer
+                style={
+                  theme == "dark"
+                    ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+                    : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+                }
+              >
+                <ModalView
+                  style={
+                    theme == "dark"
+                      ? { backgroundColor: "#121212", width: "100%" }
+                      : { backgroundColor: "#93D8F8" }
+                  }
+                >
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            color: "white",
+                            fontFamily: "Inter-Regular",
+                            textAlign: "center",
+                          }
+                        : {
+                            color: "#2f2d51",
+                            fontFamily: "Inter-Regular",
+                            textAlign: "center",
+                          }
+                    }
+                  >
+                    Password recovery has not been implemented yet. Contact
+                    Developer to reset your account.
+                  </Text>
 
+                  <ModalActionGroup>
+                    {/* <ModalAction color={"white"} onPress={{}}>
+                      <Text>Close</Text>
+                    </ModalAction> */}
+                    <TouchableOpacity
+                      onPress={() =>
+                        Linking.openURL("mailto:arzsahag@gmail.com")
+                      }
+                      style={
+                        theme == "dark"
+                          ? {
+                              backgroundColor: "#A5C9FF",
+                              width: "100%",
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              padding: 15,
+                              borderRadius: 10,
+                            }
+                          : {
+                              backgroundColor: "#2f2d51",
+                              width: "100%",
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              padding: 15,
+                              borderRadius: 10,
+                            }
+                      }
+                    >
+                      <MaterialCommunityIcons
+                        name="email-edit-outline"
+                        style={{ marginRight: 10 }}
+                        size={24}
+                        color={theme == "dark" ? "#121212" : "white"}
+                      />
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? { color: "#121212", fontFamily: "Inter-SemiBold" }
+                            : { color: "white", fontFamily: "Inter-SemiBold" }
+                        }
+                      >
+                        Contact Developer
+                      </Text>
+                    </TouchableOpacity>
+                  </ModalActionGroup>
+                </ModalView>
+              </ModalContainer>
+            </Modal>
             <TouchableOpacity
               onPress={() => {
                 login(email, password);
@@ -329,14 +431,16 @@ const Login = () => {
             <TouchableOpacity
               onPress={SignUp}
               style={
-                theme == "dark" ? styles.signInButtonDark : styles.signInButton
+                theme == "dark"
+                  ? [styles.signInButtonDark, { backgroundColor: "#f1d592" }]
+                  : [styles.signInButton, { backgroundColor: "#2f2d51" }]
               }
             >
               <Text
                 style={
                   theme == "dark"
                     ? { color: "#212121", fontFamily: "Inter-Medium" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                    : { color: "white", fontFamily: "Inter-Medium" }
                 }
               >
                 Sign Up

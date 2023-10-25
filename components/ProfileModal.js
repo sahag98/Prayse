@@ -48,8 +48,9 @@ const ProfileModal = ({
   const theme = useSelector((state) => state.user.theme);
 
   const [name, setName] = useState(user?.full_name);
-
+  const [nameError, setNameError] = useState(false);
   const [isUnique, setIsUnique] = useState(true);
+  const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
   console.log("session: ", session.user.email);
@@ -59,6 +60,8 @@ const ProfileModal = ({
 
   const handleCloseModal = () => {
     setModalVisible(false);
+    setIsUnique(true);
+    setIsEmpty(false);
     setName(user?.full_name);
   };
 
@@ -77,6 +80,7 @@ const ProfileModal = ({
 
   function onModalShow() {
     getUserPrayers();
+    setIsUnique(true);
     setName(user?.full_name);
     setImage(user?.avatar_url);
   }
@@ -189,34 +193,41 @@ const ProfileModal = ({
       .select("full_name")
       .neq("id", user.id);
 
-    profiles.map((prof) => {
-      if (name.toLowerCase() == prof.full_name.toLowerCase()) {
-        setIsUnique(false);
-        showToast("error", "This name already exists. Try another one.");
-        return;
-      }
-    });
+    return profiles.every(
+      (prof) => name.toLowerCase() !== prof.full_name.toLowerCase()
+    );
   };
 
   const updateProfile = async () => {
-    console.log(name);
     if (name.length <= 1) {
-      showToast("error", "The name field can't be left empty.");
-      handleCloseModal();
+      setIsEmpty(true);
       return;
+      // showToast("error", "The name field can't be left empty.");
+      // handleCloseModal();
     }
-    checkIfUnique();
-    if (isUnique) {
+    console.log("Is unique before checking :", isUnique);
+
+    // Wait for checkIfUnique to complete and get the result
+    const isUniqueName = await checkIfUnique();
+
+    console.log("Is unique after checking :", isUnique);
+
+    if (!isUniqueName) {
+      setIsUnique(false);
+    }
+
+    if (isUniqueName) {
       const { data, error } = await supabase
         .from("profiles")
         .update({ full_name: name })
         .eq("id", user.id)
         .select();
       showToast("success", "Profile updated successfully. ✔️");
+      setModalVisible(false);
     }
     getProfile();
     getPrayers();
-    setModalVisible(false);
+    setIsEmpty(false);
   };
 
   return (
@@ -316,6 +327,30 @@ const ProfileModal = ({
               value={name}
               onChangeText={(text) => setName(text)}
             />
+            {!isUnique && (
+              <Text
+                style={{
+                  color: "#ff6262",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 12,
+                  marginTop: 5,
+                }}
+              >
+                This name already exists.
+              </Text>
+            )}
+            {isEmpty && (
+              <Text
+                style={{
+                  color: "#ff6262",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 12,
+                  marginTop: 5,
+                }}
+              >
+                Name field can't be empty.
+              </Text>
+            )}
           </View>
           <View
             style={{

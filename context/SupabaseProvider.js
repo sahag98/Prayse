@@ -87,7 +87,10 @@ export const SupabaseProvider = (props) => {
   };
 
   const forgotPassword = async (email) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://www.prayse.app/password",
+    });
+    console.log("password reset link sent");
     if (error) throw error;
   };
 

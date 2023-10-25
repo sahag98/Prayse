@@ -133,7 +133,7 @@ const More = ({ navigation }) => {
         />
       ),
       title: "About",
-      link: "https://prayse-website.vercel.app/",
+      link: "https://www.prayse.app/",
     },
 
     {
@@ -147,7 +147,7 @@ const More = ({ navigation }) => {
         />
       ),
       title: "Privacy Policy",
-      link: "https://www.privacypolicies.com/live/663d74fd-fe04-44bd-8f66-e8bc9b974d8a",
+      link: "https://www.prayse.app/privacy",
     },
     {
       id: 5,

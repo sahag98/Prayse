@@ -52,7 +52,6 @@ const CommunityHome = () => {
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
-  console.log("current user: ", currentUser);
 
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =

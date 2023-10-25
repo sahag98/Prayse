@@ -32,6 +32,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { Keyboard } from "react-native";
 
 const WelcomeModal = ({
   user,
@@ -132,14 +133,29 @@ const WelcomeModal = ({
     }
   };
 
+  const checkIfUnique = async () => {
+    const { data: profiles, profileError } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .neq("id", user.id);
+
+    return profiles.every(
+      (prof) => name.toLowerCase() !== prof.full_name.toLowerCase()
+    );
+  };
+
   const handleNext = async () => {
     if (name.length == 0) {
       showToast("error", "Username field is required.");
       return;
     }
-    checkIfUnique();
+    const isUniqueName = await checkIfUnique();
 
-    if (isUnique) {
+    if (!isUniqueName) {
+      setIsUnique(false);
+    }
+
+    if (isUniqueName) {
       const { data, error } = await supabase
         .from("profiles")
         .update({
@@ -157,23 +173,6 @@ const WelcomeModal = ({
     }
   };
 
-  const checkIfUnique = async () => {
-    console.log("checking", name);
-    const { data: profiles, profileError } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .neq("id", user.id);
-
-    profiles.map((prof) => {
-      if (name.toLowerCase() == prof.full_name.toLowerCase()) {
-        setIsUnique(false);
-        console.log("name exists");
-        return;
-      } else {
-        setIsUnique(true);
-      }
-    });
-  };
   async function handleAnonymous() {
     const id = uuid.v4();
     const newId = id.substring(0, 3);
@@ -235,14 +234,14 @@ const WelcomeModal = ({
       handleCloseModal();
       return;
     }
-    checkIfUnique();
-    if (isUnique) {
+    const isUniqueName = await checkIfUnique();
+    if (isUniqueName) {
       const { data, error } = await supabase
         .from("profiles")
         .update({ full_name: name })
         .eq("id", user.id)
         .select();
-      showToast("success", "Profile updated successfully. ✔️");
+      showToast("success", "Profile created successfully. ✔️");
     }
     getProfile();
     getPrayers();
@@ -333,15 +332,46 @@ const WelcomeModal = ({
             </TouchableOpacity>
           </View>
           <View style={styles.inputField}>
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
-              }
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
             >
-              Enter username: (Required)
-            </Text>
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
+                    : {
+                        color: "#2f2d51",
+                        fontFamily: "Inter-Bold",
+                        fontSize: 15,
+                      }
+                }
+              >
+                Enter username: (Required)
+              </Text>
+              <TouchableOpacity onPress={() => Keyboard.dismiss()}>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "#ff6262",
+                          fontFamily: "Inter-Regular",
+                          fontSize: 13,
+                        }
+                      : {
+                          color: "#ff6262",
+                          fontFamily: "Inter-Regular",
+                          fontSize: 13,
+                        }
+                  }
+                >
+                  Dismiss Keyboard
+                </Text>
+              </TouchableOpacity>
+            </View>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
               selectionColor={theme == "dark" ? "white" : "#2f2d51"}
