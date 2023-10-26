@@ -218,7 +218,15 @@ const CommentModal = ({
                     />
                   )}
                   renderItem={({ item }) => (
-                    <CommentItem session={session} item={item} theme={theme} />
+                    <CommentItem
+                      prayerId={prayer.id}
+                      handleCloseModal={handleCloseModal}
+                      user={user}
+                      supabase={supabase}
+                      session={session}
+                      item={item}
+                      theme={theme}
+                    />
                   )}
                 />
               )}
