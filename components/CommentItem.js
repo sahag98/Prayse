@@ -11,7 +11,7 @@ import { Image } from "react-native";
 import Moment from "moment";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-
+import axios from "axios";
 const CommentItem = ({
   prayerId,
   item,
@@ -42,13 +42,29 @@ const CommentItem = ({
     }
   }
 
-  console.log("replies :", replyArray);
-
   const showToast = (type, content) => {
     Toast.show({
       type,
       text1: content,
       visibilityTime: 3000,
+    });
+  };
+
+  const sendNotification = async (expoToken) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: "New Reply ✏️",
+      body: `${user.full_name} has replied to ${item.comment}.`,
+      data: { screen: "Community" },
+    };
+
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
     });
   };
 
@@ -66,7 +82,9 @@ const CommentItem = ({
       });
 
       showToast("success", "Reply added successfully. ✔️");
-
+      if (user.expoToken.length > 0) {
+        sendNotification(user.expoToken, "New Response 💭");
+      }
       if (error) {
         showToast("error", error);
       }
@@ -181,86 +199,255 @@ const CommentItem = ({
         }}
       >
         <Text
-          style={{
-            color: "#2f2d51",
-            fontSize: 13,
-            fontFamily: "Inter-Regular",
-          }}
+          style={
+            theme == "dark"
+              ? {
+                  color: "#A5C9FF",
+                  fontSize: 13,
+                  fontFamily: "Inter-Regular",
+                }
+              : {
+                  color: "#2f2d51",
+                  fontSize: 13,
+                  fontFamily: "Inter-Regular",
+                }
+          }
         >
           Reply
         </Text>
-        <FontAwesome5 name="reply" size={17} color="#2f2d51" />
+        <FontAwesome5
+          name="reply"
+          size={17}
+          color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+        />
       </TouchableOpacity>
       {isReplying && (
-        <>
+        <View style={{ marginVertical: 10 }}>
           <TextInput
-            style={{ backgroundColor: "white", height: 50 }}
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: "#212121",
+                    padding: 8,
+                    paddingHorizontal: 10,
+                    color: "white",
+                    borderRadius: 10,
+                  }
+                : {
+                    backgroundColor: "white",
+                    padding: 8,
+
+                    borderRadius: 10,
+                    borderColor: "#2f2d51",
+                    borderWidth: 1,
+                  }
+            }
+            placeholder="Write a reply"
+            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
             value={reply}
             onChangeText={(text) => setReply(text)}
           />
-          <Button onPress={() => addReply(item.id)} title="Reply">
-            Reply
-          </Button>
-        </>
+          <TouchableOpacity
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: "#A5C9FF",
+                    padding: 12,
+                    borderRadius: 10,
+                    marginTop: 5,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+                : {
+                    backgroundColor: "#2f2d51",
+                    padding: 12,
+                    borderRadius: 10,
+                    marginTop: 5,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+            }
+            onPress={() => addReply(item.id)}
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "#121212", fontFamily: "Inter-Medium" }
+                  : { color: "white", fontFamily: "Inter-Medium" }
+              }
+            >
+              Reply
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
-      <TouchableOpacity onPress={() => setIsShowingReplies(!isShowingReplies)}>
-        <Text
-          style={{ color: "#2f2d51", fontSize: 13, fontFamily: "Inter-Medium" }}
+      {replyArray.length > 0 && (
+        <TouchableOpacity
+          onPress={() => setIsShowingReplies(!isShowingReplies)}
         >
-          View replies ({replyArray.length})
-        </Text>
-      </TouchableOpacity>
+          {isShowingReplies ? (
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              Close replies ({replyArray.length})
+            </Text>
+          ) : (
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              View replies ({replyArray.length})
+            </Text>
+          )}
+        </TouchableOpacity>
+      )}
       {isShowingReplies && (
         <View
-          style={{
-            backgroundColor: "#93d8f8",
-            gap: 10,
-            padding: 5,
-            borderRadius: 5,
-            marginTop: 5,
-          }}
+          style={
+            theme == "dark"
+              ? {
+                  backgroundColor: "#212121",
+                  gap: 10,
+                  padding: 10,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }
+              : {
+                  backgroundColor: "#93d8f8",
+                  gap: 10,
+                  padding: 10,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }
+          }
         >
           <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Inter-Medium",
-              color: "#2f2d51",
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    textAlign: "center",
+                    fontFamily: "Inter-Medium",
+                    color: "white",
+                  }
+                : {
+                    textAlign: "center",
+                    fontFamily: "Inter-Medium",
+                    color: "#2f2d51",
+                  }
+            }
           >
             Replies
           </Text>
-          {replyArray.map((r) => (
+          {replyArray.lengh == 0 ? (
+            <Text style={{ backgroundColor: "red", height: 10, width: 20 }}>
+              No replies yet.
+            </Text>
+          ) : (
             <>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  style={styles.replyprofileImg}
-                  source={{
-                    uri: item.profiles.avatar_url
-                      ? item.profiles.avatar_url
-                      : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-                  }}
-                />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "white",
+              {replyArray.map((r) => (
+                <>
+                  <View
+                    key={r.id}
+                    style={{
+                      flexDirection: "row",
 
-                          fontFamily: "Inter-Bold",
-                        }
-                      : {
-                          color: "#2f2d51",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 5,
+                      }}
+                    >
+                      <Image
+                        style={styles.replyprofileImg}
+                        source={{
+                          uri: item.profiles.avatar_url
+                            ? item.profiles.avatar_url
+                            : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                        }}
+                      />
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                color: "white",
 
-                          fontFamily: "Inter-Bold",
+                                fontFamily: "Inter-Bold",
+                              }
+                            : {
+                                color: "#2f2d51",
+
+                                fontFamily: "Inter-Bold",
+                              }
                         }
-                  }
-                >
-                  {item.profiles.full_name}
-                </Text>
-              </View>
-              <Text style={{ marginLeft: 5 }}>{r.comment}</Text>
+                      >
+                        {item.profiles.full_name}
+                      </Text>
+                    </View>
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              color: "#d6d6d6",
+                              fontFamily: "Inter-Light",
+                              fontSize: 11,
+                              marginTop: 2,
+                            }
+                          : {
+                              color: "#2f2d51",
+                              fontFamily: "Inter-Light",
+                              fontSize: 11,
+                              marginTop: 2,
+                            }
+                      }
+                    >
+                      {Moment(r.created_at).fromNow()}
+                    </Text>
+                  </View>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Regular",
+                            color: "white",
+                            marginLeft: 5,
+                          }
+                        : { fontFamily: "Inter-Regular", marginLeft: 5 }
+                    }
+                  >
+                    {r.comment}
+                  </Text>
+                </>
+              ))}
             </>
-          ))}
+          )}
         </View>
       )}
     </View>

@@ -344,8 +344,8 @@ const Login = () => {
                       <Text
                         style={
                           theme == "dark"
-                            ? { color: "#121212", fontFamily: "Inter-SemiBold" }
-                            : { color: "white", fontFamily: "Inter-SemiBold" }
+                            ? { color: "#121212", fontFamily: "Inter-Bold" }
+                            : { color: "white", fontFamily: "Inter-Bold" }
                         }
                       >
                         Contact Developer
@@ -368,8 +368,8 @@ const Login = () => {
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "#212121", fontFamily: "Inter-Medium" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                    ? { color: "#212121", fontFamily: "Inter-Bold" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                 }
               >
                 Sign In
@@ -387,10 +387,12 @@ const Login = () => {
                     ? {
                         color: "#A5C9FF",
                         textDecorationLine: "underline",
+                        fontSize: 13,
                         fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#2f2d51",
+                        fontSize: 13,
                         textDecorationLine: "underline",
                         fontFamily: "Inter-Medium",
                       }
@@ -407,12 +409,14 @@ const Login = () => {
               onChangeText={(text) => setEmail(text)}
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
               value={email}
+              autoCapitalize="none"
               blurOnSubmit={true}
               style={
                 theme == "dark"
                   ? {
                       backgroundColor: "#212121",
                       padding: 10,
+                      color: "white",
                       width: "100%",
                       fontFamily: "Inter-Regular",
                       marginBottom: 10,
@@ -421,6 +425,7 @@ const Login = () => {
                   : {
                       backgroundColor: "#caecfc",
                       padding: 10,
+                      color: "#2f2d51",
                       width: "100%",
                       fontFamily: "Inter-Regular",
                       marginBottom: 10,
@@ -429,48 +434,83 @@ const Login = () => {
               }
               placeholder="Enter Email"
             />
-
-            <TextInput
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              blurOnSubmit={true}
-              secureTextEntry={true}
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
-              style={
-                theme == "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      padding: 10,
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 10,
-                      borderRadius: 10,
-                    }
-                  : {
-                      backgroundColor: "#caecfc",
-                      padding: 10,
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 10,
-                      borderRadius: 10,
-                    }
-              }
-              placeholder="Enter Password"
-            />
-
+            <View
+              style={{
+                width: "100%",
+                position: "relative",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setPassVisible(!passVisible)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  padding: 5,
+                  zIndex: 99,
+                }}
+              >
+                <Ionicons
+                  name="eye-outline"
+                  size={20}
+                  style={{ marginBottom: 4, marginRight: 2 }}
+                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+              <TextInput
+                cursorColor={theme == "dark" ? "white" : "#2f2d51"}
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+                autoCapitalize="none"
+                blurOnSubmit={true}
+                secureTextEntry={!passVisible}
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+                style={
+                  theme == "dark"
+                    ? {
+                        backgroundColor: "#212121",
+                        padding: 10,
+                        color: "#d6d6d6",
+                        width: "100%",
+                        fontFamily: "Inter-Regular",
+                        marginBottom: 5,
+                        borderRadius: 10,
+                      }
+                    : {
+                        backgroundColor: "#caecfc",
+                        padding: 10,
+                        fontFamily: "Inter-Regular",
+                        width: "100%",
+                        marginBottom: 5,
+                        borderRadius: 10,
+                      }
+                }
+                placeholder="Enter Password"
+              />
+            </View>
             <TouchableOpacity
               onPress={SignUp}
               style={
                 theme == "dark"
-                  ? [styles.signInButtonDark, { backgroundColor: "#f1d592" }]
-                  : [styles.signInButton, { backgroundColor: "#2f2d51" }]
+                  ? [
+                      styles.signInButtonDark,
+                      { backgroundColor: "#f1d592", marginTop: 5 },
+                    ]
+                  : [
+                      styles.signInButton,
+                      { backgroundColor: "#2f2d51", marginTop: 5 },
+                    ]
               }
             >
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "#212121", fontFamily: "Inter-Medium" }
-                    : { color: "white", fontFamily: "Inter-Medium" }
+                    ? { color: "#212121", fontFamily: "Inter-Bold" }
+                    : { color: "white", fontFamily: "Inter-Bold" }
                 }
               >
                 Sign Up
@@ -487,11 +527,13 @@ const Login = () => {
                   theme == "dark"
                     ? {
                         color: "#A5C9FF",
+                        fontSize: 13,
                         textDecorationLine: "underline",
                         fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#2f2d51",
+                        fontSize: 13,
                         textDecorationLine: "underline",
                         fontFamily: "Inter-Medium",
                       }

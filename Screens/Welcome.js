@@ -568,6 +568,7 @@ export default function Welcome({ navigation }) {
                     backgroundColor: "#212121",
                     borderColor: "#A5C9FF",
                     borderWidth: 1,
+                    zIndex: 99,
                     position: "absolute",
                     borderRadius: 10,
                     overflow: "hidden",
@@ -654,7 +655,7 @@ export default function Welcome({ navigation }) {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", zIndex: -1 }}>
         <Text
           style={
             theme == "dark"

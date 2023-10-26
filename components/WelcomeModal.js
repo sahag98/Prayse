@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import { Modal } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { PROJECT_ID } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -452,7 +452,29 @@ const WelcomeModal = ({
                 Set Anonymous
               </Text>
             </TouchableOpacity>
-            <Text
+            <View
+              style={{
+                borderWidth: 1.5,
+                borderColor: "#ffa500",
+                borderRadius: 5,
+                backgroundColor: "#ffd589",
+                padding: 10,
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
+                <Feather name="alert-triangle" size={24} color="#eb9800" />
+                <Text style={{ color: "#eb9800", fontFamily: "Inter-Bold" }}>
+                  Alert
+                </Text>
+              </View>
+              <Text>
+                To ensure that you recieve notifications, make sure you are
+                signed in only on one device.
+              </Text>
+            </View>
+            {/* <Text
               style={
                 theme == "dark"
                   ? {
@@ -465,7 +487,7 @@ const WelcomeModal = ({
             >
               You can change your username and profile image again through the
               profile settings page.
-            </Text>
+            </Text> */}
             <TouchableOpacity
               onPress={handleNext}
               style={

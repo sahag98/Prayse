@@ -28,6 +28,7 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   return (
     <View
       style={{
+        zIndex: 99,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",

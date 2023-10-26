@@ -129,6 +129,8 @@ const Question = ({ navigation }) => {
     loadQuestion();
   }
 
+  console.log(currentUser);
+
   return (
     <Container
       style={
