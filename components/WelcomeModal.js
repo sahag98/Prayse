@@ -457,6 +457,7 @@ const WelcomeModal = ({
                 borderWidth: 1.5,
                 borderColor: "#ffa500",
                 borderRadius: 5,
+                width: "100%",
                 backgroundColor: "#ffd589",
                 padding: 10,
               }}
@@ -470,8 +471,8 @@ const WelcomeModal = ({
                 </Text>
               </View>
               <Text>
-                To ensure that you recieve notifications, make sure you are
-                signed in only on one device.
+                To ensure that setup is done correctly, make sure you are signed
+                in on one device per account.
               </Text>
             </View>
             {/* <Text
@@ -520,6 +521,39 @@ const WelcomeModal = ({
                 Get Right in!
               </Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={(handleNext)}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#a5c9ff",
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+                  : {
+                      borderColor: "#2f2d51",
+                      borderWidth: 1,
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+              }
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "#121212", fontFamily: "Inter-Bold" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                }
+              >
+                Not Now
+              </Text>
+            </TouchableOpacity> */}
             {/* <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
               <Text
                 style={{

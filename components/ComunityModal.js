@@ -1,6 +1,8 @@
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -102,7 +104,7 @@ const CommunityModal = ({
               }
         }
       >
-        <HeaderView
+        {/* <HeaderView
           style={{
             width: "100%",
             flexDirection: "row",
@@ -133,13 +135,13 @@ const CommunityModal = ({
               color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
             />
           </TouchableOpacity>
-        </HeaderView>
+        </HeaderView> */}
         <View style={styles.inputField}>
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                ? { color: "white", fontSize: 16, fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontSize: 16, fontFamily: "Inter-Bold" }
             }
           >
             Prayer
@@ -158,6 +160,27 @@ const CommunityModal = ({
             }}
             multiline={true}
           />
+          <TouchableOpacity onPress={() => Keyboard.dismiss()}>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      marginTop: 5,
+                      color: "#ff6262",
+                      fontFamily: "Inter-Regular",
+                      fontSize: 13,
+                    }
+                  : {
+                      marginTop: 5,
+                      color: "#ff6262",
+                      fontFamily: "Inter-Regular",
+                      fontSize: 13,
+                    }
+              }
+            >
+              Dismiss Keyboard
+            </Text>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -189,6 +212,80 @@ const CommunityModal = ({
             value={isEnabled}
           />
         </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <TouchableOpacity
+            onPress={handleCloseModal}
+            style={
+              theme == "dark"
+                ? {
+                    borderWidth: 1,
+                    borderColor: "#A5C9FF",
+                    width: "45%",
+                    padding: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+                : {
+                    borderWidth: 1,
+                    borderColor: "#2f2d51",
+                    width: "45%",
+                    padding: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+            }
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "#A5C9FF", fontFamily: "Inter-Bold" }
+                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+              }
+            >
+              Close
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={addPrayer}
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: "#A5C9FF",
+                    width: "45%",
+                    padding: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+                : {
+                    backgroundColor: "#2f2d51",
+                    width: "45%",
+                    padding: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+            }
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "#121212", fontFamily: "Inter-Bold" }
+                  : { color: "white", fontFamily: "Inter-Bold" }
+              }
+            >
+              Add
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ModalContainer>
     </Modal>
   );
@@ -198,6 +295,7 @@ export default CommunityModal;
 
 const styles = StyleSheet.create({
   inputField: {
+    marginTop: 50,
     marginVertical: 10,
     width: "100%",
   },

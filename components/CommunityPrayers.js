@@ -78,7 +78,11 @@ const CommunityPrayers = ({
           )}
           scrollEventThrottle={16}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            <RefreshControl
+              tintColor={theme == "dark" ? "white" : "#2f2d51"}
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+            />
           }
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (

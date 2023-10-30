@@ -32,6 +32,11 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import ProfilePrayers from "./ProfilePrayers";
 import { FlatList } from "react-native";
 import { Keyboard } from "react-native";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+
 const ProfileModal = ({
   logout,
   session,
@@ -46,7 +51,7 @@ const ProfileModal = ({
   user,
 }) => {
   const theme = useSelector((state) => state.user.theme);
-
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState(user?.full_name);
   const [nameError, setNameError] = useState(false);
   const [isUnique, setIsUnique] = useState(true);
@@ -249,11 +254,15 @@ const ProfileModal = ({
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
+                  paddingTop: insets.top,
+                  paddingBottom: insets.bottom,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
+                  paddingTop: insets.top,
+                  paddingBottom: insets.bottom,
                 }
           }
         >
@@ -319,7 +328,7 @@ const ProfileModal = ({
                   : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
               }
             >
-              Enter Name
+              Change Name
             </Text>
             <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
@@ -545,7 +554,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "white",
     borderBottomWidth: 1,
-    padding: 1,
+    padding: 5,
   },
   dismiss: {
     padding: 2,
@@ -556,7 +565,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "#2f2d51",
     borderBottomWidth: 1,
-    padding: 1,
+    padding: 5,
   },
   logoutDark: {
     alignSelf: "flex-end",

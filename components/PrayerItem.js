@@ -2,8 +2,8 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
-import prayerIcon from "../assets/prayIcon.png";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+// import prayerIcon from "../assets/prayIcon.png";
 import { format } from "timeago.js";
 import { useSupabase } from "../context/useSupabase";
 import Moment from "moment";
@@ -261,7 +261,9 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                     ? { width: 22, height: 22, tintColor: "white" }
                     : { width: 22, height: 22, tintColor: "#2f2d51" }
                 }
-                source={prayerIcon}
+                source={{
+                  uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
+                }}
               />
             </>
           )}

@@ -9,19 +9,20 @@ import {
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import Moment from "moment";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 const CommentItem = ({
   prayerId,
   item,
   user,
+  isReplying,
+  setIsReplying,
   handleCloseModal,
   supabase,
   theme,
   session,
 }) => {
-  const [isReplying, setIsReplying] = useState(false);
   const [isShowingReplies, setIsShowingReplies] = useState(false);
   const [reply, setReply] = useState("");
   const [replyArray, setReplyArray] = useState([]);
@@ -94,6 +95,8 @@ const CommentItem = ({
       setReply("");
     }
   };
+
+  console.log("comment profile: ", item.profiles);
 
   return (
     <View style={styles.commentContainer}>
@@ -188,8 +191,77 @@ const CommentItem = ({
       >
         {item.comment}
       </Text>
-      <TouchableOpacity
-        onPress={() => setIsReplying(!isReplying)}
+      {isReplying != item.id ? (
+        <TouchableOpacity
+          onPress={() => setIsReplying(item.id)}
+          style={{
+            alignSelf: "flex-end",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+            marginRight: 10,
+          }}
+        >
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "#A5C9FF",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            Reply
+          </Text>
+          <FontAwesome5
+            name="reply"
+            size={17}
+            color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+          />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => setIsReplying("")}
+          style={{
+            alignSelf: "flex-end",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+            marginRight: 10,
+          }}
+        >
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "#A5C9FF",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 13,
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            Close Reply
+          </Text>
+          <AntDesign
+            name="close"
+            size={17}
+            color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+          />
+        </TouchableOpacity>
+      )}
+      {/* <TouchableOpacity
+        onPress={() => setIsReplying(item.id)}
         style={{
           alignSelf: "flex-end",
           flexDirection: "row",
@@ -220,8 +292,9 @@ const CommentItem = ({
           size={17}
           color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
         />
-      </TouchableOpacity>
-      {isReplying && (
+      </TouchableOpacity> */}
+
+      {isReplying == item.id && (
         <View style={{ marginVertical: 10 }}>
           <TextInput
             style={
@@ -379,6 +452,7 @@ const CommentItem = ({
                     }}
                   >
                     <View
+                      key={r.id}
                       style={{
                         flexDirection: "row",
                         alignItems: "center",

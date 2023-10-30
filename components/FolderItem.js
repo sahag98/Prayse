@@ -115,7 +115,7 @@ const FolderItem = ({
             <Text
               style={{
                 color: "white",
-                fontSize: 15,
+                fontSize: 16,
                 marginVertical: 5,
                 maxWidth: "90%",
                 fontFamily: "Inter-Bold",
@@ -129,13 +129,7 @@ const FolderItem = ({
             onPress={() => {
               handleOpen(item);
             }}
-            style={
-              theme == "dark"
-                ? styles.viewDark
-                : theme == "BlackWhite"
-                ? styles.viewBlack
-                : styles.view
-            }
+            style={theme == "dark" ? styles.viewDark : styles.view}
           >
             <Text
               style={
@@ -329,7 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     position: "absolute",
     bottom: 0,
-    padding: 9,
+    padding: 10,
     width: "100%",
     backgroundColor: "#2e2e2e",
     borderRadius: 5,
@@ -351,7 +345,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     position: "absolute",
     bottom: 0,
-    padding: 7,
+    padding: 10,
     width: "100%",
     backgroundColor: "#423f72",
     borderRadius: 5,

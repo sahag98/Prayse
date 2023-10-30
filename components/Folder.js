@@ -186,10 +186,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : theme == "BlackWhite"
-                  ? { fontFamily: "Inter-Bold", color: "black" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
+                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
               }
             >
               Your Folders
@@ -200,10 +198,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "#979797" }
-                  : theme == "BlackWhite"
-                  ? { fontFamily: "Inter-Bold", color: "#979797" }
-                  : { fontFamily: "Inter-Bold", color: "#716dae" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "#979797" }
+                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
               }
             >
               Your Folders
@@ -224,10 +220,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "#979797" }
-                  : theme == "BlackWhite"
-                  ? { fontFamily: "Inter-Bold", color: "#979797" }
-                  : { fontFamily: "Inter-Bold", color: "#716dae" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "#979797" }
+                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
               }
             >
               Answered Prayers
@@ -238,10 +232,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : theme == "BlackWhite"
-                  ? { fontFamily: "Inter-Bold", color: "black" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
+                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
               }
             >
               Answered Prayers

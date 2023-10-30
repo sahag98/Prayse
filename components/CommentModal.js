@@ -19,6 +19,10 @@ import axios from "axios";
 import { TextInput } from "react-native";
 import CommentItem from "./CommentItem";
 import { Divider } from "react-native-paper";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const CommentModal = ({
   commentVisible,
@@ -33,13 +37,15 @@ const CommentModal = ({
   const theme = useSelector((state) => state.user.theme);
   const [comment, setComment] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
-
+  const [isReplying, setIsReplying] = useState("");
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     fetchComments(prayer.id);
   }, []);
 
   const handleCloseModal = () => {
     setCommentVisible(false);
+    setIsReplying("");
     setComment("");
   };
 
@@ -100,186 +106,203 @@ const CommentModal = ({
     }
   };
 
+  const onModalShow = () => {
+    setIsReplying("");
+    fetchComments(prayer.id);
+  };
+
   return (
-    <Modal
-      animationType="slide"
-      onShow={() => fetchComments(prayer.id)}
-      transparent={true}
-      visible={commentVisible}
-      onRequestClose={handleCloseModal}
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <SafeAreaProvider>
+      <Modal
+        animationType="slide"
+        onShow={onModalShow}
+        transparent={true}
+        visible={commentVisible}
+        onRequestClose={handleCloseModal}
       >
-        <ModalContainer
-          style={
-            theme == "dark"
-              ? {
-                  position: "relative",
-                  backgroundColor: "#121212",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-              : {
-                  position: "relative",
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                }
-          }
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <HeaderView
-            style={{
-              flexDirection: "row",
-            }}
+          <ModalContainer
+            style={
+              theme == "dark"
+                ? {
+                    position: "relative",
+                    backgroundColor: "#121212",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom,
+                  }
+                : {
+                    position: "relative",
+                    backgroundColor: "#F2F7FF",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom,
+                  }
+            }
           >
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="left"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "white",
-                      fontSize: 20,
-                      marginLeft: 10,
-                      fontFamily: "Inter-Bold",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontSize: 20,
-                      marginLeft: 10,
-                      fontFamily: "Inter-Bold",
-                    }
-              }
+            <HeaderView
+              style={{
+                flexDirection: "row",
+              }}
             >
-              Responses
-            </Text>
-          </HeaderView>
-          <View
-            style={{
-              flex: 1,
-              width: "100%",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ flex: 1, width: "100%" }}>
-              {commentsArray.length == 0 ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome5
-                    name="comment-dots"
-                    size={60}
-                    color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-                  />
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? {
-                            fontFamily: "Inter-Medium",
-                            marginTop: 10,
-                            color: "#A5C9FF",
-                          }
-                        : {
-                            fontFamily: "Inter-Medium",
-                            marginTop: 10,
-                            color: "#2f2d51",
-                          }
-                    }
-                  >
-                    No responses at this moment.
-                  </Text>
-                </View>
-              ) : (
-                <FlatList
-                  data={commentsArray}
-                  keyExtractor={(e, i) => i.toString()}
-                  onEndReachedThreshold={0}
-                  scrollEventThrottle={16}
-                  showsVerticalScrollIndicator={false}
-                  ItemSeparatorComponent={() => (
-                    <Divider
-                      style={
-                        theme == "dark"
-                          ? { backgroundColor: "#525252", marginBottom: 10 }
-                          : { backgroundColor: "#2f2d51", marginBottom: 10 }
-                      }
-                    />
-                  )}
-                  renderItem={({ item }) => (
-                    <CommentItem
-                      prayerId={prayer.id}
-                      handleCloseModal={handleCloseModal}
-                      user={user}
-                      supabase={supabase}
-                      session={session}
-                      item={item}
-                      theme={theme}
-                    />
-                  )}
+              <TouchableOpacity onPress={handleCloseModal}>
+                <AntDesign
+                  name="left"
+                  size={30}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
                 />
-              )}
-            </View>
-            <View style={styles.inputField}>
-              <TextInput
-                style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Add your response..."
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-                value={comment}
-                onChangeText={(text) => setComment(text)}
-                onContentSizeChange={handleContentSizeChange}
-                onSubmitEditing={(e) => {
-                  e.key === "Enter" && e.preventDefault();
-                }}
-                // multiline={true}
-                // // ios fix for centering it at the top-left corner
-                // numberOfLines={5}
-              />
-              <TouchableOpacity
-                style={{
-                  width: "20%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={() =>
-                  addComment(prayer.id, prayer.profiles?.expoToken)
+              </TouchableOpacity>
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "white",
+                        fontSize: 20,
+                        marginLeft: 10,
+                        fontFamily: "Inter-Bold",
+                      }
+                    : {
+                        color: "#2f2d51",
+                        fontSize: 20,
+                        marginLeft: 10,
+                        fontFamily: "Inter-Bold",
+                      }
                 }
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "#A5C9FF",
-                          fontFamily: "Inter-Medium",
-                          marginRight: 5,
+                Responses
+              </Text>
+            </HeaderView>
+            <View
+              style={{
+                flex: 1,
+                width: "100%",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flex: 1, width: "100%" }}>
+                {commentsArray.length == 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FontAwesome5
+                      name="comment-dots"
+                      size={60}
+                      color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                    />
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              fontFamily: "Inter-Medium",
+                              marginTop: 10,
+                              color: "#A5C9FF",
+                            }
+                          : {
+                              fontFamily: "Inter-Medium",
+                              marginTop: 10,
+                              color: "#2f2d51",
+                            }
+                      }
+                    >
+                      No responses at this moment.
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    data={commentsArray}
+                    keyExtractor={(e, i) => i.toString()}
+                    onEndReachedThreshold={0}
+                    scrollEventThrottle={16}
+                    showsVerticalScrollIndicator={false}
+                    ItemSeparatorComponent={() => (
+                      <Divider
+                        style={
+                          theme == "dark"
+                            ? { backgroundColor: "#525252", marginBottom: 10 }
+                            : { backgroundColor: "#2f2d51", marginBottom: 10 }
                         }
-                      : {
-                          color: "#2f2d51",
-                          fontFamily: "Inter-Medium",
-                          marginRight: 5,
-                        }
-                  }
-                >
-                  Share
-                </Text>
-              </TouchableOpacity>
+                      />
+                    )}
+                    renderItem={({ item }) => (
+                      <CommentItem
+                        isReplying={isReplying}
+                        setIsReplying={setIsReplying}
+                        prayerId={prayer.id}
+                        handleCloseModal={handleCloseModal}
+                        user={user}
+                        supabase={supabase}
+                        session={session}
+                        item={item}
+                        theme={theme}
+                      />
+                    )}
+                  />
+                )}
+              </View>
+              {!isReplying && (
+                <View style={styles.inputField}>
+                  <TextInput
+                    style={theme == "dark" ? styles.inputDark : styles.input}
+                    placeholder="Add your response..."
+                    placeholderTextColor={
+                      theme == "dark" ? "#d6d6d6" : "#2f2d51"
+                    }
+                    selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+                    value={comment}
+                    onChangeText={(text) => setComment(text)}
+                    onContentSizeChange={handleContentSizeChange}
+                    onSubmitEditing={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
+                    // multiline={true}
+                    // // ios fix for centering it at the top-left corner
+                    // numberOfLines={5}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      width: "20%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onPress={() =>
+                      addComment(prayer.id, prayer.profiles?.expoToken)
+                    }
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              color: "#A5C9FF",
+                              fontFamily: "Inter-Medium",
+                              marginRight: 5,
+                            }
+                          : {
+                              color: "#2f2d51",
+                              fontFamily: "Inter-Medium",
+                              marginRight: 5,
+                            }
+                      }
+                    >
+                      Share
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-          </View>
-        </ModalContainer>
-      </KeyboardAvoidingView>
-    </Modal>
+          </ModalContainer>
+        </KeyboardAvoidingView>
+      </Modal>
+    </SafeAreaProvider>
   );
 };
 

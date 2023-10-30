@@ -60,6 +60,11 @@ const Login = () => {
     }
   };
 
+  const resetAccount = () => {
+    setForgotModal(false);
+    Linking.openURL("mailto:arzsahag@gmail.com");
+  };
+
   // const onSignInWithGoogle = async () => {
   //   setLoading(true);
   //   try {
@@ -178,7 +183,7 @@ const Login = () => {
                   ? {
                       backgroundColor: "#212121",
                       color: "#d6d6d6",
-                      padding: 10,
+                      padding: 15,
                       width: "100%",
                       marginBottom: 10,
                       fontFamily: "Inter-Regular",
@@ -186,7 +191,7 @@ const Login = () => {
                     }
                   : {
                       backgroundColor: "#caecfc",
-                      padding: 10,
+                      padding: 15,
                       width: "100%",
                       fontFamily: "Inter-Regular",
                       marginBottom: 10,
@@ -234,7 +239,7 @@ const Login = () => {
                   theme == "dark"
                     ? {
                         backgroundColor: "#212121",
-                        padding: 10,
+                        padding: 15,
                         color: "#d6d6d6",
                         width: "100%",
                         fontFamily: "Inter-Regular",
@@ -243,7 +248,7 @@ const Login = () => {
                       }
                     : {
                         backgroundColor: "#caecfc",
-                        padding: 10,
+                        padding: 15,
                         fontFamily: "Inter-Regular",
                         width: "100%",
                         marginBottom: 5,
@@ -310,9 +315,7 @@ const Login = () => {
                       <Text>Close</Text>
                     </ModalAction> */}
                     <TouchableOpacity
-                      onPress={() =>
-                        Linking.openURL("mailto:arzsahag@gmail.com")
-                      }
+                      onPress={resetAccount}
                       style={
                         theme == "dark"
                           ? {
@@ -415,7 +418,7 @@ const Login = () => {
                 theme == "dark"
                   ? {
                       backgroundColor: "#212121",
-                      padding: 10,
+                      padding: 15,
                       color: "white",
                       width: "100%",
                       fontFamily: "Inter-Regular",
@@ -424,7 +427,7 @@ const Login = () => {
                     }
                   : {
                       backgroundColor: "#caecfc",
-                      padding: 10,
+                      padding: 15,
                       color: "#2f2d51",
                       width: "100%",
                       fontFamily: "Inter-Regular",
@@ -473,7 +476,7 @@ const Login = () => {
                   theme == "dark"
                     ? {
                         backgroundColor: "#212121",
-                        padding: 10,
+                        padding: 15,
                         color: "#d6d6d6",
                         width: "100%",
                         fontFamily: "Inter-Regular",
@@ -482,7 +485,7 @@ const Login = () => {
                       }
                     : {
                         backgroundColor: "#caecfc",
-                        padding: 10,
+                        padding: 15,
                         fontFamily: "Inter-Regular",
                         width: "100%",
                         marginBottom: 5,
@@ -576,7 +579,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     backgroundColor: "#A5C9FF",
-    paddingVertical: 13,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     borderRadius: 10,
   },
@@ -595,7 +598,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#93d8f8",
-    paddingVertical: 13,
+    paddingVertical: 15,
     width: "100%",
     paddingHorizontal: 15,
     borderRadius: 10,

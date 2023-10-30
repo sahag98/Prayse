@@ -17,6 +17,7 @@
       }
     },
     "production": {
+      "channel": "production",
       "ios": {
         "image": "latest"
       }

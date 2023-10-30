@@ -53,7 +53,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { Keyboard } from "react-native";
 import { addPrayer } from "../redux/prayerReducer";
 import * as Updates from "expo-updates";
-import { Badge, Menu, PaperProvider } from "react-native-paper";
+import { Badge } from "react-native-paper";
 import { addNoti, deleteAll } from "../redux/notiReducer";
 import NotiItem from "../components/NotiItem";
 import NewFeaturesModal from "../components/NewFeaturesModal";
@@ -376,6 +376,8 @@ export default function Welcome({ navigation }) {
     }
   }, [isFocused]);
 
+  console.log("donation Moda: ", donationModal);
+
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => sendToken(token).then(console.log("token sent")))
@@ -506,13 +508,14 @@ export default function Welcome({ navigation }) {
           </Animated.Text>
           {icon}
         </Animated.View>
-        <DonationModal
-          donationModal={donationModal}
-          setDonationModal={setDonationModal}
-          theme={theme}
-          setIsReminderOn={setIsReminderOff}
-        />
+
         <View style={{ position: "relative", padding: 10 }}>
+          <DonationModal
+            donationModal={donationModal}
+            setDonationModal={setDonationModal}
+            theme={theme}
+            setIsReminderOn={setIsReminderOff}
+          />
           <TouchableOpacity
             onPress={() => setNotiVisible((prev) => !prev)}
             style={
@@ -655,7 +658,9 @@ export default function Welcome({ navigation }) {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
-      <View style={{ width: "100%", zIndex: -1 }}>
+      <View
+        style={notiVisible ? { width: "100%", zIndex: -10 } : { width: "100%" }}
+      >
         <Text
           style={
             theme == "dark"

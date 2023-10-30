@@ -20,6 +20,7 @@ import * as Device from "expo-device";
 import { useRef } from "react";
 import MaskedView from "@react-native-masked-view/masked-view";
 import WelcomeModal from "../components/WelcomeModal";
+import LinearGradient from "react-native-linear-gradient";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -133,6 +134,8 @@ const CommunityHome = () => {
     }
     sendToken(token);
   }
+
+  console.log(currentUser?.avatar_url);
 
   if (currentUser?.full_name == null) {
     return (

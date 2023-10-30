@@ -44,7 +44,7 @@ const Settings = ({ navigation }) => {
   const [deleteAllModal, setDeleteAllModal] = useState(false);
   const size = useSelector((state) => state.user.fontSize);
   const dispatch = useDispatch();
-  console.log(Application.applicationName);
+  // console.log(Application.applicationName);
   useEffect(() => {
     getlastUpdate();
     getPermission();

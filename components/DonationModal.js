@@ -32,7 +32,7 @@ const DonationModal = ({
   const handleCloseModal = () => {
     setDonationModal(false);
   };
-
+  console.log("modal :", donationModal);
   const stopReminder = async () => {
     setDonationModal(false);
     await AsyncStorage.removeItem("AppOpenings");
@@ -137,8 +137,8 @@ const DonationModal = ({
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-SemiBold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-SemiBold" }
+                    ? { color: "white", fontFamily: "Inter-Bold" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                 }
               >
                 Close
@@ -172,8 +172,8 @@ const DonationModal = ({
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-SemiBold" }
-                    : { color: "white", fontFamily: "Inter-SemiBold" }
+                    ? { color: "white", fontFamily: "Inter-Bold" }
+                    : { color: "white", fontFamily: "Inter-Bold" }
                 }
               >
                 Donate

@@ -224,14 +224,22 @@ const More = ({ navigation }) => {
               name="feedback"
               size={24}
               style={{ marginRight: 10 }}
-              color="white"
+              color={theme == "dark" ? "white" : "#2f2d51"}
             />
             <Text
-              style={{
-                fontFamily: "Inter-Medium",
-                color: "white",
-                fontSize: 16,
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      fontFamily: "Inter-Medium",
+                      color: "white",
+                      fontSize: 16,
+                    }
+                  : {
+                      fontFamily: "Inter-Medium",
+                      color: "#2f2d51",
+                      fontSize: 16,
+                    }
+              }
             >
               Feedback
             </Text>
@@ -240,7 +248,7 @@ const More = ({ navigation }) => {
             style={{ marginLeft: 10 }}
             name="right"
             size={14}
-            color={theme == "dark" ? "white" : "white"}
+            color={theme == "dark" ? "white" : "#2f2d51"}
           />
         </TouchableOpacity>
       ) : (

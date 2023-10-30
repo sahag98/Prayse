@@ -56,13 +56,6 @@ export default function App() {
         }}
       />
     ),
-    /*
-      Or create a completely new type - `tomatoToast`,
-      building the layout from scratch.
-  
-      I can consume any custom `props` I want.
-      They will be passed when calling the `show` method (see below)
-    */
   };
 
   setTimeout(() => {
