@@ -50,7 +50,6 @@ const Settings = ({ navigation }) => {
     getPermission();
   }, []);
   async function sendToken(expoPushToken) {
-    console.log(" in send");
     const message = {
       to: expoPushToken,
       sound: "default",
@@ -127,7 +126,6 @@ const Settings = ({ navigation }) => {
   };
 
   function clearAll() {
-    console.log("in clear all function");
     dispatch(clearPrayerData());
     dispatch(deleteAllFolders());
     dispatch(deleteAnsweredPrayers());
@@ -538,19 +536,6 @@ const Settings = ({ navigation }) => {
           }
         >
           {Application.applicationName} v {Application.nativeApplicationVersion}
-        </Text>
-        <Text
-          style={
-            theme == "dark"
-              ? { fontFamily: "Inter-Regular", fontSize: 12, color: "#c8c8c8" }
-              : {
-                  color: "#2f2d51",
-                  fontSize: 12,
-                  fontFamily: "Inter-Regular",
-                }
-          }
-        >
-          Last Updated {updatedTime}
         </Text>
       </View>
     </Container>

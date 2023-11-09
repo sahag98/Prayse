@@ -23,7 +23,6 @@ import { Switch } from "react-native-paper";
 const CommunityModal = ({
   modalVisible,
   getPrayers,
-  session,
   getUserPrayers,
   supabase,
   setModalVisible,
@@ -59,12 +58,13 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
-    console.log("add prayer: ", user.id);
     if (prayer.length <= 0) {
       showToast("error", "The prayer field can't be left empty.");
       setModalVisible(false);
       return;
     } else {
+      //prayers for production
+      //prayers_test for testing
       const { data, error } = await supabase.from("prayers").insert({
         prayer: prayer,
         user_id: user?.id,
@@ -104,38 +104,6 @@ const CommunityModal = ({
               }
         }
       >
-        {/* <HeaderView
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <TouchableOpacity onPress={handleCloseModal}>
-            <AntDesign
-              name="close"
-              size={30}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            />
-          </TouchableOpacity>
-          <HeaderTitle
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Bold", color: "white" }
-                : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-            }
-          >
-            Add A Prayer
-          </HeaderTitle>
-
-          <TouchableOpacity onPress={addPrayer}>
-            <AntDesign
-              name="check"
-              size={30}
-              color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-            />
-          </TouchableOpacity>
-        </HeaderView> */}
         <View style={styles.inputField}>
           <Text
             style={

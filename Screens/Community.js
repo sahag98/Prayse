@@ -122,7 +122,6 @@ const Community = ({ navigation }) => {
   };
 
   const checkConnection = () => {
-    console.log("checking connection");
     NetInfo.fetch().then((state) => {
       if (state.isConnected == true) {
         setIsConnected(true);

@@ -7,7 +7,7 @@ import { deleteFavoriteVerse } from "../redux/favoritesReducer";
 const FavoriteVerses = ({ item, theme }) => {
   const dispatch = useDispatch();
 
-  const dateObject = new Date(item?._createdAt);
+  const dateObject = new Date(item?._updatedAt);
   return (
     <View style={theme == "dark" ? styles.fvDark : styles.fv} key={item.id}>
       <View style={{ width: "100%" }}>

@@ -23,6 +23,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const CommentModal = ({
   commentVisible,
@@ -70,7 +71,7 @@ const CommentModal = ({
       to: expoToken,
       sound: "default",
       title: "New Response 💭",
-      body: `${user.full_name} has responded to ${prayer.prayer}.`,
+      body: `${user.full_name} has responded to: ${prayer.prayer}.`,
       data: { screen: "Community" },
     };
 
@@ -89,6 +90,8 @@ const CommentModal = ({
       setCommentVisible(false);
       return;
     } else {
+      //prayer_id for production
+      //prayertest_id for testing
       const { data, error } = await supabase.from("comments").insert({
         prayer_id: id,
         user_id: user.id,
@@ -250,12 +253,16 @@ const CommentModal = ({
                 )}
               </View>
               {!isReplying && (
-                <View style={styles.inputField}>
+                <Animated.View
+                  entering={FadeIn.duration(500)}
+                  exiting={FadeOut.duration(500)}
+                  style={styles.inputField}
+                >
                   <TextInput
                     style={theme == "dark" ? styles.inputDark : styles.input}
                     placeholder="Add your response..."
                     placeholderTextColor={
-                      theme == "dark" ? "#d6d6d6" : "#2f2d51"
+                      theme == "dark" ? "#b8b8b8" : "#2f2d51"
                     }
                     selectionColor={theme == "dark" ? "white" : "#2f2d51"}
                     value={comment}
@@ -296,7 +303,7 @@ const CommentModal = ({
                       Share
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Animated.View>
               )}
             </View>
           </ModalContainer>
@@ -324,21 +331,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#212121",
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
   },
   input: {
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
     width: "85%",
-    paddingTop: 0,
-    paddingBottom: 0,
-    height: 40,
     borderColor: "#2f2d51",
-    textAlignVertical: "center",
     backgroundColor: "white",
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
   },
   logoutDark: {
     alignSelf: "flex-end",

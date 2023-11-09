@@ -11,7 +11,6 @@ const QuestionItem = ({ theme, question }) => {
     fetchAnswers();
   }, [question._id]);
 
-  console.log(question);
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
       .from("answers")

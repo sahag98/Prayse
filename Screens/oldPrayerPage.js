@@ -69,7 +69,6 @@ const OldPrayerPage = ({ navigation }) => {
   }
 
   const renderItem = ({ item }) => {
-    console.log(item);
     return (
       <View>
         <ListView1

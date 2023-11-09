@@ -17,8 +17,6 @@ const CommunityPrayers = ({
   getPrayers,
 }) => {
   const theme = useSelector((state) => state.user.theme);
-  // const { currentUser, setCurrentUser, newPost, logout, supabase } =
-  //   useSupabase();
   const isReady = communityReady();
   const [refreshing, setRefreshing] = useState(false);
 

@@ -77,6 +77,14 @@ const WelcomeModal = ({
     }
   };
 
+  // async function getProfile() {
+  //   const { data: profiles, error: profileError } = await supabase
+  //     .from("profiles")
+  //     .select()
+  //     .eq("id", user?.id);
+  //   setCurrentUser(profiles[0]);
+  // }
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -160,14 +168,10 @@ const WelcomeModal = ({
         .from("profiles")
         .update({
           full_name: name,
-          avatar_url: image
-            ? image
-            : "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
         })
         .eq("id", user.id)
         .select();
       showToast("success", "Profile has been created.");
-      console.log("data :", data[0]);
       setCurrentUser(data[0]);
       setIsShowingWelcome(false);
     }

@@ -3,25 +3,18 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   Modal,
+  Linking,
 } from "react-native";
 import {
   HeaderTitle,
-  HeaderView,
-  ModalAction,
-  ModalActionGroup,
   ModalContainer,
   ModalIcon,
   ModalView,
-  StyledInput,
 } from "../styles/appStyles";
-import axios from "axios";
+
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
-import { Feather } from "@expo/vector-icons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const DonationModal = ({
   theme,
@@ -32,7 +25,6 @@ const DonationModal = ({
   const handleCloseModal = () => {
     setDonationModal(false);
   };
-  console.log("modal :", donationModal);
   const stopReminder = async () => {
     setDonationModal(false);
     await AsyncStorage.removeItem("AppOpenings");
@@ -88,9 +80,11 @@ const DonationModal = ({
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
+                    fontSize: 15,
                   }
                 : {
                     color: "#2f2d51",
+                    fontSize: 15,
                     fontFamily: "Inter-Regular",
                   }
             }
@@ -118,6 +112,7 @@ const DonationModal = ({
                       width: "48%",
                       borderWidth: 1,
                       borderColor: "#121212",
+                      backgroundColor: "#121212",
                       justifyContent: "center",
                       alignItems: "center",
                       padding: 15,
@@ -145,6 +140,9 @@ const DonationModal = ({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() =>
+                Linking.openURL("https://www.buymeacoffee.com/prayse")
+              }
               style={
                 theme == "dark"
                   ? {
@@ -213,7 +211,7 @@ const DonationModal = ({
                   : { color: "#2f2d51", fontFamily: "Inter-Medium" }
               }
             >
-              Dont Remind me again.{" "}
+              Dont Remind me again
             </Text>
           </TouchableOpacity>
         </ModalView>

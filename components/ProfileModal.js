@@ -58,7 +58,7 @@ const ProfileModal = ({
   const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
-  console.log("session: ", session.user.email);
+
   useEffect(() => {
     getUserPrayers();
   }, []);

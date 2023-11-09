@@ -14,6 +14,7 @@ import community from "../assets/community.png";
 import quest2 from "../assets/quest2.png";
 
 import notif from "../assets/notif.png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const [page, setPage] = useState(0);
@@ -32,7 +33,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
     }
   };
 
-  function StartOver() {
+  async function StartOver() {
     setFeatureVisible(false);
     setPage(0);
   }

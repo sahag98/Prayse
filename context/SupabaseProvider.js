@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import React, { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SupabaseContext } from "./SupabaseContext";
+import Toast from "react-native-toast-message";
 import { SUPABASE_URL, SUPABASE_ANON } from "@env";
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -25,7 +26,8 @@ export const SupabaseProvider = (props) => {
   const [newPost, setNewPost] = useState(false);
   const [newAnswer, setNewAnswer] = useState(false);
   const [isNavigationReady, setNavigationReady] = useState(false);
-
+  const [refreshLikes, setRefreshLikes] = useState(false);
+  const [refreshComments, setRefreshComments] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
       storage: ExpoSecureStoreAdapter,
@@ -35,36 +37,44 @@ export const SupabaseProvider = (props) => {
     },
   });
 
-  const getGoogleOAuthUrl = async () => {
-    const result = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "prayseapp://google-auth",
-        // prayseapp://google-auth
-        // exp://192.168.1.110:19000
-      },
+  // const getGoogleOAuthUrl = async () => {
+  //   const result = await supabase.auth.signInWithOAuth({
+  //     provider: "google",
+  //     options: {
+  //       redirectTo: "prayseapp://google-auth",
+  //       // prayseapp://google-auth
+  //       // exp://192.168.1.110:19000
+  //     },
+  //   });
+
+  //   return result.data.url;
+  // };
+
+  // const setOAuthSession = async (tokens) => {
+  //   const { data, error } = await supabase.auth.setSession({
+  //     access_token: tokens.access_token,
+  //     refresh_token: tokens.refresh_token,
+  //   });
+
+  //   if (error) throw error;
+  //   console.log("in auth session: ", data.session.user.id);
+  //   setLoggedIn(data.session !== null);
+
+  //   let { data: profiles, error: profileError } = await supabase
+  //     .from("profiles")
+  //     .select("*")
+  //     .eq("id", data.session.user.id);
+
+  //   setCurrentUser(profiles[0]);
+  //   setLoggedIn(true);
+  // };
+
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
+      visibilityTime: 3000,
     });
-
-    return result.data.url;
-  };
-
-  const setOAuthSession = async (tokens) => {
-    const { data, error } = await supabase.auth.setSession({
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-    });
-
-    if (error) throw error;
-    console.log("in auth session: ", data.session.user.id);
-    setLoggedIn(data.session !== null);
-
-    let { data: profiles, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", data.session.user.id);
-
-    setCurrentUser(profiles[0]);
-    setLoggedIn(true);
   };
 
   const login = async (email, password) => {
@@ -73,6 +83,7 @@ export const SupabaseProvider = (props) => {
       password,
     });
     await checkIfUserIsLoggedIn();
+    if (error) showToast("error", "Invalid login credentials.");
     if (error) throw error;
     setLoggedIn(true);
   };
@@ -82,7 +93,6 @@ export const SupabaseProvider = (props) => {
       email,
       password,
     });
-    console.log("in register: ", data);
     if (error) throw error;
   };
 
@@ -103,7 +113,6 @@ export const SupabaseProvider = (props) => {
 
   const checkIfUserIsLoggedIn = async () => {
     const result = await supabase.auth.getSession();
-    console.log("checking :", result);
     setSession(result.data.session);
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
@@ -127,6 +136,8 @@ export const SupabaseProvider = (props) => {
       console.log("profiles: ", profiles[0]);
       // Check if user is logged in before setting up subscriptions
       if (profiles[0] && profiles.length > 0) {
+        //prayers for production
+        //prayers_test for testing
         const prayersChannel = supabase
           .channel("table_db_changes")
           .on(
@@ -137,6 +148,8 @@ export const SupabaseProvider = (props) => {
               table: "prayers",
             },
             (payload) => {
+              console.log("new prayer :", payload);
+
               console.log(
                 "prayer user: ",
                 profiles[0].id + "payload: ",
@@ -171,6 +184,35 @@ export const SupabaseProvider = (props) => {
               }
             }
           )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "likes",
+            },
+            (payload) => {
+              if (
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE"
+              ) {
+                setRefreshLikes(true);
+              }
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "comments",
+            },
+            (payload) => {
+              if (payload.eventType === "INSERT") {
+                setRefreshComments(true);
+              }
+            }
+          )
           .subscribe();
 
         return () => {
@@ -197,8 +239,10 @@ export const SupabaseProvider = (props) => {
         setCurrentUser,
         register,
         setLoggedIn,
-        getGoogleOAuthUrl,
-        setOAuthSession,
+        refreshComments,
+        setRefreshComments,
+        refreshLikes,
+        setRefreshLikes,
         forgotPassword,
         logout,
       }}

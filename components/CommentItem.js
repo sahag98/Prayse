@@ -1,5 +1,4 @@
 import {
-  Button,
   StyleSheet,
   Text,
   TextInput,
@@ -12,8 +11,9 @@ import Moment from "moment";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 const CommentItem = ({
-  prayerId,
   item,
   user,
   isReplying,
@@ -21,14 +21,15 @@ const CommentItem = ({
   handleCloseModal,
   supabase,
   theme,
-  session,
 }) => {
   const [isShowingReplies, setIsShowingReplies] = useState(false);
   const [reply, setReply] = useState("");
   const [replyArray, setReplyArray] = useState([]);
+
   useEffect(() => {
     fetchReplies();
   }, [item.id]);
+
   async function fetchReplies() {
     const { data: replies, error: repliesError } = await supabase
       .from("comments")
@@ -56,7 +57,7 @@ const CommentItem = ({
       to: expoToken,
       sound: "default",
       title: "New Reply ✏️",
-      body: `${user.full_name} has replied to ${item.comment}.`,
+      body: `${user.full_name} has replied to: ${item.comment}.`,
       data: { screen: "Community" },
     };
 
@@ -90,13 +91,10 @@ const CommentItem = ({
         showToast("error", error);
       }
       fetchReplies();
-      // fetchComments(prayer.id);
       handleCloseModal();
       setReply("");
     }
   };
-
-  console.log("comment profile: ", item.profiles);
 
   return (
     <View style={styles.commentContainer}>
@@ -242,12 +240,12 @@ const CommentItem = ({
                 ? {
                     color: "#A5C9FF",
                     fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    fontFamily: "Inter-Medium",
                   }
                 : {
                     color: "#2f2d51",
                     fontSize: 13,
-                    fontFamily: "Inter-Regular",
+                    fontFamily: "Inter-Medium",
                   }
             }
           >
@@ -260,55 +258,25 @@ const CommentItem = ({
           />
         </TouchableOpacity>
       )}
-      {/* <TouchableOpacity
-        onPress={() => setIsReplying(item.id)}
-        style={{
-          alignSelf: "flex-end",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-          marginRight: 10,
-        }}
-      >
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  color: "#A5C9FF",
-                  fontSize: 13,
-                  fontFamily: "Inter-Regular",
-                }
-              : {
-                  color: "#2f2d51",
-                  fontSize: 13,
-                  fontFamily: "Inter-Regular",
-                }
-          }
-        >
-          Reply
-        </Text>
-        <FontAwesome5
-          name="reply"
-          size={17}
-          color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-        />
-      </TouchableOpacity> */}
-
       {isReplying == item.id && (
-        <View style={{ marginVertical: 10 }}>
+        <Animated.View
+          entering={FadeIn.duration(500)}
+          exiting={FadeOut.duration(500)}
+          style={{ marginVertical: 10 }}
+        >
           <TextInput
             style={
               theme == "dark"
                 ? {
                     backgroundColor: "#212121",
-                    padding: 8,
+                    padding: 10,
                     paddingHorizontal: 10,
                     color: "white",
                     borderRadius: 10,
                   }
                 : {
                     backgroundColor: "white",
-                    padding: 8,
+                    padding: 10,
 
                     borderRadius: 10,
                     borderColor: "#2f2d51",
@@ -316,7 +284,7 @@ const CommentItem = ({
                   }
             }
             placeholder="Write a reply"
-            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+            placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
             value={reply}
             onChangeText={(text) => setReply(text)}
           />
@@ -352,7 +320,7 @@ const CommentItem = ({
               Reply
             </Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       )}
       {replyArray.length > 0 && (
         <TouchableOpacity
@@ -398,7 +366,9 @@ const CommentItem = ({
         </TouchableOpacity>
       )}
       {isShowingReplies && (
-        <View
+        <Animated.View
+          entering={FadeIn.duration(500)}
+          exiting={FadeOut.duration(500)}
           style={
             theme == "dark"
               ? {
@@ -442,6 +412,7 @@ const CommentItem = ({
             <>
               {replyArray.map((r) => (
                 <>
+                  {console.log(r.profiles)}
                   <View
                     key={r.id}
                     style={{
@@ -462,8 +433,8 @@ const CommentItem = ({
                       <Image
                         style={styles.replyprofileImg}
                         source={{
-                          uri: item.profiles.avatar_url
-                            ? item.profiles.avatar_url
+                          uri: r.profiles.avatar_url
+                            ? r.profiles.avatar_url
                             : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
                         }}
                       />
@@ -482,7 +453,7 @@ const CommentItem = ({
                               }
                         }
                       >
-                        {item.profiles.full_name}
+                        {r.profiles.full_name}
                       </Text>
                     </View>
                     <Text
@@ -522,7 +493,7 @@ const CommentItem = ({
               ))}
             </>
           )}
-        </View>
+        </Animated.View>
       )}
     </View>
   );

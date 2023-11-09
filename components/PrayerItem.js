@@ -10,34 +10,57 @@ import Moment from "moment";
 import { useSelector } from "react-redux";
 import CommentModal from "./CommentModal";
 import axios from "axios";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSequence,
+  withSpring,
+} from "react-native-reanimated";
 
 const PrayerItem = ({ getPrayers, prayers, session, item }) => {
   const theme = useSelector((state) => state.user.theme);
+  const scale = useSharedValue(1);
   const [commentVisible, setCommentVisible] = useState(false);
-  const { currentUser, logout, supabase } = useSupabase();
+  const {
+    currentUser,
+    logout,
+    supabase,
+    refreshComments,
+    setRefreshComments,
+    refreshLikes,
+    setRefreshLikes,
+  } = useSupabase();
   const [likes, setLikes] = useState([]);
   const [commentsArray, setCommentsArray] = useState([]);
   const [loadingLikes, setLoadingLikes] = useState(false);
   const isNewItem = item === prayers[0];
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
 
   useEffect(() => {
     setLoadingLikes(true);
     // console.log("use effect");
     fetchLikes(item.id).then(() => {
       setLoadingLikes(false);
+      setRefreshLikes(false);
     });
     fetchComments(item.id).then(() => {
       setLoadingLikes(false);
+      setRefreshComments(false);
     });
-  }, [item.id]);
+  }, [item.id, refreshLikes, refreshComments]);
 
   async function fetchComments(prayerId) {
+    //prayer_id for production
+    //prayertest_id for testing
     const { data: comments, error: commentsError } = await supabase
       .from("comments")
       .select("*, profiles(*)")
       .eq("prayer_id", prayerId)
-      // .neq("parent_comment_id", prayerId)
-      // .eq("parent_comment_id", null)
       .order("id", { ascending: false });
     setCommentsArray(comments);
 
@@ -47,6 +70,8 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
   }
 
   async function fetchLikes(prayerId) {
+    //prayer_id for production
+    //prayertest_id for testing
     const { data: likes, error: likesError } = await supabase
       .from("likes")
       .select()
@@ -64,7 +89,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
       to: expoToken,
       sound: "default",
       title: title,
-      body: `${currentUser.full_name} is praying on ${item.prayer}.`,
+      body: `${currentUser.full_name} is praying on: ${item.prayer}.`,
       data: { screen: "Community" },
     };
 
@@ -79,6 +104,10 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
 
   async function toggleLike(id, expoToken) {
     if (isLikedByMe) {
+      scale.value = withSequence(
+        withSpring(1.2, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
+      );
       const { data, error } = await supabase
         .from("likes")
         .delete()
@@ -87,6 +116,12 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
       fetchLikes(id);
       return;
     }
+    scale.value = withSequence(
+      withSpring(1.2, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
+    );
+    //prayer_id for production
+    //prayertest_id for testing
     const { data, error } = await supabase.from("likes").insert({
       prayer_id: id,
       user_id: currentUser.id,
@@ -134,38 +169,43 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2f2d51" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 15, color: "white" }
+                  : { fontFamily: "Inter-Bold", fontSize: 15, color: "#2f2d51" }
               }
             >
               {item.profiles?.full_name}
             </Text>
             {item.profiles?.admin == true && (
-              <Text
+              <View
                 style={
                   theme == "dark"
-                    ? {
-                        backgroundColor: "#ff4e4e",
-                        paddingVertical: 3,
-                        paddingHorizontal: 6,
-                        fontFamily: "Inter-Medium",
-                        fontSize: 10,
-                        color: "white",
-                        borderRadius: 10,
-                      }
-                    : {
-                        backgroundColor: "#ff3b3b",
-                        paddingVertical: 3,
-                        paddingHorizontal: 6,
-                        fontFamily: "Inter-Medium",
-                        fontSize: 10,
-                        color: "white",
-                        borderRadius: 10,
-                      }
+                    ? { borderRadius: 10, backgroundColor: "#ff4e4e" }
+                    : { borderRadius: 10, backgroundColor: "#ff3b3b" }
                 }
               >
-                admin
-              </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          paddingVertical: 3,
+                          paddingHorizontal: 6,
+                          fontFamily: "Inter-Medium",
+                          fontSize: 11,
+                          color: "white",
+                        }
+                      : {
+                          paddingVertical: 3,
+                          paddingHorizontal: 6,
+                          fontFamily: "Inter-Medium",
+                          fontSize: 10,
+                          color: "white",
+                          borderRadius: 10,
+                        }
+                  }
+                >
+                  admin
+                </Text>
+              </View>
             )}
           </View>
           <Text
@@ -239,8 +279,6 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
           style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
         >
           {isNewItem && loadingLikes ? (
-            <ActivityIndicator size="small" color={"black"} />
-          ) : (
             <>
               <Text
                 style={
@@ -256,15 +294,43 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
               <Image
                 style={
                   isLikedByMe
-                    ? { width: 22, height: 22, tintColor: "#ff4e4e" }
+                    ? { width: 25, height: 25, tintColor: "#ff4e4e" }
                     : theme == "dark"
-                    ? { width: 22, height: 22, tintColor: "white" }
-                    : { width: 22, height: 22, tintColor: "#2f2d51" }
+                    ? { width: 25, height: 25, tintColor: "white" }
+                    : { width: 25, height: 25, tintColor: "#2f2d51" }
                 }
                 source={{
                   uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
                 }}
               />
+            </>
+          ) : (
+            <>
+              <Text
+                style={
+                  isLikedByMe
+                    ? { color: "#ff4e4e" }
+                    : theme == "dark"
+                    ? { color: "white" }
+                    : { color: "#2f2d51" }
+                }
+              >
+                {likes.length}
+              </Text>
+              <Animated.View style={animatedStyle}>
+                <Image
+                  style={
+                    isLikedByMe
+                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { width: 25, height: 25, tintColor: "white" }
+                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                  }
+                  source={{
+                    uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
+                  }}
+                />
+              </Animated.View>
             </>
           )}
         </TouchableOpacity>
@@ -275,11 +341,15 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
             style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
             {isNewItem && loadingLikes ? (
-              <ActivityIndicator size="small" color={"#c6c6df"} />
+              <FontAwesome
+                name="comment-o"
+                size={25}
+                color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
+              />
             ) : (
               <FontAwesome
                 name="comment-o"
-                size={22}
+                size={25}
                 color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
               />
             )}
@@ -287,19 +357,25 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
         ) : (
           <TouchableOpacity
             onPress={() => setCommentVisible(true)}
-            style={
-              item.disable_response
-                ? {
-                    color: "red",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }
-                : { flexDirection: "row", alignItems: "center", gap: 5 }
-            }
+            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
           >
             {isNewItem && loadingLikes ? (
-              <ActivityIndicator size="small" color={"black"} />
+              <>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { color: "#d6d6d6" }
+                      : { color: "#2f2d51" }
+                  }
+                >
+                  {commentsArray.length}
+                </Text>
+                <FontAwesome
+                  name="comment-o"
+                  size={25}
+                  color={theme == "dark" ? "#d6d6d6" : "#c6c6df"}
+                />
+              </>
             ) : (
               <>
                 <Text
@@ -314,7 +390,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
 
                 <FontAwesome
                   name="comment-o"
-                  size={22}
+                  size={25}
                   color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 />
               </>
@@ -353,6 +429,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   profileImgDark: {
+    borderColor: "#A5C9FF",
+    borderWidth: 0.2,
     width: 50,
     height: 50,
     borderRadius: 50,

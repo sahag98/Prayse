@@ -289,10 +289,15 @@ export default function Welcome({ navigation }) {
   //   const reminder = await AsyncStorage.getItem("ReminderOn");
   //   set(reminder);
   // };
-
   useEffect(() => {
+    AsyncStorage.getItem("modalShown").then((value) => {
+      if (value === null) {
+        // If the modal hasn't been shown before, show it and set the flag
+        setFeatureVisible(true);
+        AsyncStorage.setItem("modalShown", "true");
+      }
+    });
     const loadOpenings = async () => {
-      console.log("quick modal: ", isReminderOff);
       // await AsyncStorage.removeItem("AppOpenings");
       // await AsyncStorage.removeItem("ReminderOn");
       const reminder = await AsyncStorage.getItem("ReminderOn");
@@ -352,8 +357,6 @@ export default function Welcome({ navigation }) {
   }, [isFocused]);
 
   useEffect(() => {
-    console.log("in effect");
-
     // Save the number of openings to AsyncStorage
 
     const saveOpenings = async () => {
@@ -375,8 +378,6 @@ export default function Welcome({ navigation }) {
       setDonationModal(true);
     }
   }, [isFocused]);
-
-  console.log("donation Moda: ", donationModal);
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -523,25 +524,25 @@ export default function Welcome({ navigation }) {
                 ? {
                     backgroundColor: "#212121",
                     borderRadius: 50,
-                    padding: 10,
+                    padding: 12,
                   }
                 : {
                     backgroundColor: "#2f2d51",
                     borderRadius: 50,
-                    padding: 10,
+                    padding: 12,
                   }
             }
           >
             <Ionicons name="notifications-outline" size={24} color="white" />
           </TouchableOpacity>
           <Badge
-            size={16}
+            size={18}
             style={{
               position: "absolute",
               fontFamily: "Inter-Medium",
-              fontSize: 11,
+              fontSize: 12,
               top: 8,
-              right: 4,
+              right: 6,
             }}
           >
             {notis.length}
@@ -564,7 +565,8 @@ export default function Welcome({ navigation }) {
           <Image style={styles.img} source={prayer} />
         </View>
         {notiVisible && (
-          <View
+          <Animated.View
+            entering={FadeIn.duration(300)}
             style={
               theme == "dark"
                 ? {
@@ -650,7 +652,7 @@ export default function Welcome({ navigation }) {
                 )}
               />
             )}
-          </View>
+          </Animated.View>
         )}
       </View>
       <NewFeaturesModal
@@ -802,9 +804,7 @@ export default function Welcome({ navigation }) {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>
-            Linking.openURL("https://www.buymeacoffee.com/arzsahag")
-          }
+          onPress={() => Linking.openURL("https://www.buymeacoffee.com/prayse")}
           style={
             theme == "dark"
               ? styles.refreshDark
@@ -980,7 +980,7 @@ export default function Welcome({ navigation }) {
       </View>
       <View
         style={{
-          marginBottom: 10,
+          marginBottom: 15,
           flexDirection: "row",
           justifyContent: "space-around",
           width: "100%",
@@ -1342,7 +1342,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 22,
     marginVertical: 15,
     fontFamily: "Inter-Bold",
     letterSpacing: 2,
@@ -1351,7 +1351,7 @@ const styles = StyleSheet.create({
   },
   welcomeDark: {
     marginVertical: 15,
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "Inter-Bold",
     alignSelf: "center",
     letterSpacing: 2,
@@ -1359,7 +1359,7 @@ const styles = StyleSheet.create({
   },
   welcomeBlack: {
     marginVertical: 15,
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "Inter-Bold",
     alignSelf: "center",
     letterSpacing: 2,

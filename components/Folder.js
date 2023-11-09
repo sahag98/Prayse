@@ -7,6 +7,7 @@ import {
   Platform,
   FlatList,
   Dimensions,
+  TextInput,
 } from "react-native";
 import {
   HeaderTitle,
@@ -35,6 +36,7 @@ import { useRef } from "react";
 import AnsweredPrayer from "./AnsweredPrayer";
 import { SectionList } from "react-native";
 import FolderItem from "./FolderItem";
+import AddFolderModal from "./AddFolderModal";
 
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null);
@@ -44,7 +46,7 @@ const Folder = ({ navigation, todos }) => {
     (state) => state.answered.answeredPrayers
   );
   const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [addVisible, setAddVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [folderClicked, setFolderClicked] = useState(true);
   const [isExtended, setIsExtended] = useState(true);
@@ -95,7 +97,7 @@ const Folder = ({ navigation, todos }) => {
 
   const dispatch = useDispatch();
   const handleCloseModal = () => {
-    setVisible(false);
+    setAddVisible(false);
     setOpen(false);
     setFolderName("");
   };
@@ -104,7 +106,7 @@ const Folder = ({ navigation, todos }) => {
     navigation.navigate("OldPrayerPage");
   }
 
-  function add() {
+  function addNewFolder() {
     dispatch(
       addFolder({
         id: uuid.v4(),
@@ -112,8 +114,12 @@ const Folder = ({ navigation, todos }) => {
         prayers: [],
       })
     );
-    setVisible(false);
-    setFolderName("");
+    setTimeout(() => {
+      setAddVisible(false);
+      setFolderName("");
+    }, 0);
+    // setAddVisible(false);
+    // setFolderName("");
   }
 
   function deleteF() {
@@ -312,7 +318,7 @@ const Folder = ({ navigation, todos }) => {
               label={"Add Folder"}
               extended={isExtended}
               onPress={() => {
-                setVisible(true);
+                setAddVisible(true);
               }}
               visible={fabvisible}
               animateFrom={"left"}
@@ -404,12 +410,41 @@ const Folder = ({ navigation, todos }) => {
         </ModalContainer>
       </Modal>
 
-      <Modal
+      {/* {addVisible && (
+        <View>
+          <TextInput
+            ref={folderInputRef}
+            style={theme == "dark" ? styles.inputDark : styles.input}
+            placeholder="Enter folder name"
+            placeholderTextColor={"white"}
+            selectionColor={"white"}
+            // autoFocus={true}
+            onChangeText={(text) => setFolderName(text)}
+            value={folderName}
+            onSubmitEditing={(e) => {
+              e.key === "Enter" && e.preventDefault();
+            }}
+            multiline={true}
+          />
+          <TouchableOpacity onPress={add}>
+            <Text>Add</Text>
+          </TouchableOpacity>
+        </View>
+      )} */}
+      <AddFolderModal
+        addVisible={addVisible}
+        addNewFolder={addNewFolder}
+        theme={theme}
+        folderName={folderName}
+        setAddVisible={setAddVisible}
+        handleCloseModal={handleCloseModal}
+        setFolderName={setFolderName}
+      />
+      {/* <Modal
         animationType="fade"
         transparent={true}
-        visible={visible}
-        onRequestClose={handleCloseModal}
-        onModalShow={() => folderInputRef.current.focus()}
+        visible={addVisible}
+        // onRequestClose={handleCloseModal}
       >
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -433,8 +468,12 @@ const Folder = ({ navigation, todos }) => {
                 <HeaderTitle
                   style={
                     theme == "dark"
-                      ? { fontFamily: "Inter-Bold", color: "white" }
-                      : { fontFamily: "Inter-Bold" }
+                      ? {
+                          fontFamily: "Inter-Bold",
+                          fontSize: 20,
+                          color: "white",
+                        }
+                      : { fontFamily: "Inter-Bold", fontSize: 20 }
                   }
                 >
                   Folder
@@ -446,8 +485,8 @@ const Folder = ({ navigation, todos }) => {
                   color={theme == "dark" ? "white" : "#2F2D51"}
                 />
               </ModalIcon>
-              <StyledInput
-                ref={folderInputRef}
+              <TextInput
+                // ref={folderInputRef}
                 style={theme == "dark" ? styles.inputDark : styles.input}
                 placeholder="Enter folder name"
                 placeholderTextColor={"white"}
@@ -460,13 +499,17 @@ const Folder = ({ navigation, todos }) => {
                 }}
                 multiline={true}
               />
+
               <ModalActionGroup>
-                <ModalAction color={"white"} onPress={handleCloseModal}>
+                <ModalAction
+                  color={"white"}
+                  onPress={() => setAddVisible(false)}
+                >
                   <AntDesign name="close" size={28} color={"#2F2D51"} />
                 </ModalAction>
                 <ModalAction
                   color={theme == "dark" ? "#121212" : "#2F2D51"}
-                  onPress={add}
+                  onPress={addNewFolder}
                 >
                   <AntDesign name="check" size={28} color={"white"} />
                 </ModalAction>
@@ -474,7 +517,7 @@ const Folder = ({ navigation, todos }) => {
             </ModalView>
           </ModalContainer>
         </KeyboardAvoidingView>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };
@@ -540,6 +583,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#A5C9FF",
   },
   inputDark: {
+    width: 250,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    borderRadius: 10,
     alignItems: "center",
     alignSelf: "center",
     textAlignVertical: "center",
@@ -548,6 +595,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#121212",
   },
   input: {
+    width: 250,
+    fontSize: 14,
+    color: "white",
+    // height: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    borderRadius: 10,
     alignItems: "center",
     alignSelf: "center",
     textAlignVertical: "center",

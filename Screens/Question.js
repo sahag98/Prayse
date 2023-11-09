@@ -69,7 +69,6 @@ const Question = ({ navigation }) => {
     client
       .fetch(query)
       .then((data) => {
-        console.log("data ", data);
         setWeeklyquestion(data);
       })
       .catch((error) => {
@@ -117,7 +116,6 @@ const Question = ({ navigation }) => {
 
   async function removeAnswers(admin) {
     if (admin === true) {
-      console.log("deleting");
       const { error } = await supabase
         .from("answers")
         .delete()
@@ -128,8 +126,6 @@ const Question = ({ navigation }) => {
     fetchAnswers();
     loadQuestion();
   }
-
-  console.log(currentUser);
 
   return (
     <Container
@@ -385,10 +381,11 @@ const Question = ({ navigation }) => {
         />
       </View>
       <QuestionModal
+        answersLength={answersArray.length}
         user={currentUser}
         question={weeklyQuestion[0]}
         fetchAnswers={fetchAnswers}
-        showToast
+        answersArray={answersArray}
         theme={theme}
         supabase={supabase}
         setAnswersVisible={setAnswersVisible}
