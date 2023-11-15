@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { useSupabase } from "../context/useSupabase";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Feather, Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import {
@@ -24,6 +24,7 @@ import globe from "../assets/globe.png";
 import Toast from "react-native-toast-message";
 import { useEffect } from "react";
 import { Modal } from "react-native";
+import { Keyboard } from "react-native";
 
 const Login = () => {
   const theme = useSelector((state) => state.user.theme);
@@ -201,32 +202,32 @@ const Login = () => {
               placeholder="Enter Email"
             />
             <View
-              style={{
-                width: "100%",
-                position: "relative",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      backgroundColor: "#212121",
+                      flexDirection: "row",
+                      padding: 15,
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+                  : {
+                      width: "100%",
+                      backgroundColor: "#caecfc",
+                      flexDirection: "row",
+                      padding: 15,
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+              }
             >
-              <TouchableOpacity
-                onPress={() => setPassVisible(!passVisible)}
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  padding: 5,
-                  zIndex: 99,
-                }}
-              >
-                <Ionicons
-                  name="eye-outline"
-                  size={20}
-                  style={{ marginBottom: 4, marginRight: 2 }}
-                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                />
-              </TouchableOpacity>
               <TextInput
                 cursorColor={theme == "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
@@ -238,25 +239,40 @@ const Login = () => {
                 style={
                   theme == "dark"
                     ? {
-                        backgroundColor: "#212121",
-                        padding: 15,
-                        color: "#d6d6d6",
-                        width: "100%",
+                        color: "white",
+                        width: "75%",
+
                         fontFamily: "Inter-Regular",
-                        marginBottom: 5,
-                        borderRadius: 10,
                       }
                     : {
-                        backgroundColor: "#caecfc",
-                        padding: 15,
+                        color: "#2f2d51",
+                        width: "75%",
                         fontFamily: "Inter-Regular",
-                        width: "100%",
-                        marginBottom: 5,
-                        borderRadius: 10,
                       }
                 }
                 placeholder="Enter Password"
               />
+              <TouchableOpacity
+                onPress={() => setPassVisible(!passVisible)}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {passVisible ? (
+                  <Ionicons
+                    name="eye-off-outline"
+                    size={20}
+                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                  />
+                ) : (
+                  <Ionicons
+                    name="eye-outline"
+                    size={20}
+                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={() => setForgotModal(true)}
@@ -311,9 +327,6 @@ const Login = () => {
                   </Text>
 
                   <ModalActionGroup>
-                    {/* <ModalAction color={"white"} onPress={{}}>
-                      <Text>Close</Text>
-                    </ModalAction> */}
                     <TouchableOpacity
                       onPress={resetAccount}
                       style={
@@ -363,6 +376,7 @@ const Login = () => {
                 login(email, password);
                 setEmail("");
                 setPassword("");
+                Keyboard.dismiss();
               }}
               style={
                 theme == "dark" ? styles.signInButtonDark : styles.signInButton
@@ -438,62 +452,76 @@ const Login = () => {
               placeholder="Enter Email"
             />
             <View
-              style={{
-                width: "100%",
-                position: "relative",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      backgroundColor: "#212121",
+                      flexDirection: "row",
+                      padding: 15,
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+                  : {
+                      width: "100%",
+                      backgroundColor: "#caecfc",
+                      flexDirection: "row",
+                      padding: 15,
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+              }
             >
-              <TouchableOpacity
-                onPress={() => setPassVisible(!passVisible)}
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  padding: 5,
-                  zIndex: 99,
-                }}
-              >
-                <Ionicons
-                  name="eye-outline"
-                  size={20}
-                  style={{ marginBottom: 4, marginRight: 2 }}
-                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                />
-              </TouchableOpacity>
               <TextInput
                 cursorColor={theme == "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
                 blurOnSubmit={true}
-                secureTextEntry={!passVisible}
+                secureTextEntry={passVisible ? false : true}
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
                 style={
                   theme == "dark"
                     ? {
-                        backgroundColor: "#212121",
-                        padding: 15,
-                        color: "#d6d6d6",
-                        width: "100%",
+                        color: "white",
+                        width: "75%",
                         fontFamily: "Inter-Regular",
-                        marginBottom: 5,
-                        borderRadius: 10,
                       }
                     : {
-                        backgroundColor: "#caecfc",
-                        padding: 15,
+                        color: "#2f2d51",
+                        width: "75%",
                         fontFamily: "Inter-Regular",
-                        width: "100%",
-                        marginBottom: 5,
-                        borderRadius: 10,
                       }
                 }
                 placeholder="Enter Password"
               />
+              <TouchableOpacity
+                onPress={() => setPassVisible(!passVisible)}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {passVisible ? (
+                  <Ionicons
+                    name="eye-off-outline"
+                    size={20}
+                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                  />
+                ) : (
+                  <Ionicons
+                    name="eye-outline"
+                    size={20}
+                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={SignUp}

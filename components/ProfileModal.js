@@ -198,9 +198,13 @@ const ProfileModal = ({
       .select("full_name")
       .neq("id", user.id);
 
-    return profiles.every(
-      (prof) => name.toLowerCase() !== prof.full_name.toLowerCase()
-    );
+    const isUnique = profiles.every((prof) => {
+      const profileName = prof.full_name || ""; // Handle null or undefined
+
+      return name.trim().toLowerCase() !== profileName.trim().toLowerCase();
+    });
+
+    return isUnique;
   };
 
   const updateProfile = async () => {
@@ -244,7 +248,7 @@ const ProfileModal = ({
       onRequestClose={handleCloseModal}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{ flex: 1, height: "100%" }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ModalContainer

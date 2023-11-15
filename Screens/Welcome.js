@@ -59,6 +59,10 @@ import NotiItem from "../components/NotiItem";
 import NewFeaturesModal from "../components/NewFeaturesModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DonationModal from "../components/DonationModal";
+import { client } from "../lib/client";
+import { nativeApplicationVersion } from "expo-application";
+import UpdateModal from "../components/UpdateModal";
+import { useSupabase } from "../context/useSupabase";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -142,8 +146,10 @@ export default function Welcome({ navigation }) {
   const [greeting, setGreeting] = useState("");
   const [featureVisible, setFeatureVisible] = useState(false);
   const [icon, setIcon] = useState(null);
+  const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
+  const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
 
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
@@ -151,16 +157,20 @@ export default function Welcome({ navigation }) {
     (state) => state.folder.quickFolderExists
   );
 
-  async function onFetchUpdateAsync() {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
-      }
-    } catch (error) {
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
-      console.log(`Error fetching latest update: ${error}`);
+  async function fetchUpdate() {
+    let { data: update, error } = await supabase
+      .from("update")
+      .select("isUpdateAvailable");
+
+    console.log(nativeApplicationVersion.toString());
+    console.log("fetching");
+
+    if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
+      console.log("update is available");
+      setIsUpdateAvailable(true);
+    } else {
+      console.log("update is not available");
+      setIsUpdateAvailable(false);
     }
   }
 
@@ -289,6 +299,7 @@ export default function Welcome({ navigation }) {
   //   const reminder = await AsyncStorage.getItem("ReminderOn");
   //   set(reminder);
   // };
+
   useEffect(() => {
     AsyncStorage.getItem("modalShown").then((value) => {
       if (value === null) {
@@ -404,8 +415,7 @@ export default function Welcome({ navigation }) {
         const body = response.notification.request.content.body;
         const res = response.notification.request.content.data;
       });
-
-    onFetchUpdateAsync();
+    fetchUpdate();
     return () => {
       Notifications.removeNotificationSubscription(
         notificationListener.current
@@ -511,6 +521,11 @@ export default function Welcome({ navigation }) {
         </Animated.View>
 
         <View style={{ position: "relative", padding: 10 }}>
+          <UpdateModal
+            theme={theme}
+            isUpdateAvailable={isUpdateAvailable}
+            setIsUpdateAvailable={setIsUpdateAvailable}
+          />
           <DonationModal
             donationModal={donationModal}
             setDonationModal={setDonationModal}

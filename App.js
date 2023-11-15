@@ -26,7 +26,7 @@ export default function App() {
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: "#93d8f8", height: 50 }}
+        style={{ marginTop: 10, borderLeftColor: "#93d8f8", height: 50 }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
           fontSize: 14,
@@ -42,6 +42,7 @@ export default function App() {
       <ErrorToast
         {...props}
         style={{
+          marginTop: 10,
           borderLeftColor: "#ff1414",
           height: 50,
           backgroundColor: "#ff9d9d",

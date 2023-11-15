@@ -5,7 +5,11 @@ import { ModalContainer } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native";
 import { useState } from "react";
 
-import { Transition, Transitioning } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  Transition,
+  Transitioning,
+} from "react-native-reanimated";
 
 import { useRef } from "react";
 
@@ -53,7 +57,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
             : { backgroundColor: "rgba(0, 0, 0, 0.9)" }
         }
       >
-        <View
+        <Animated.View
+          entering={FadeIn.duration(500)}
           style={
             theme == "dark"
               ? {
@@ -94,12 +99,13 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   }
             }
           >
-            What's new in v 8.0!
+            What's new!
           </Text>
           <Transitioning.View ref={ref} transition={transition}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <Image
+                <Animated.Image
+                  entering={FadeIn.duration(500)}
                   style={styles.img}
                   source={theme == "dark" ? community : community}
                 />
@@ -219,7 +225,11 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
             )}
             {page === 1 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <Image style={styles.img} source={quest2} />
+                <Animated.Image
+                  entering={FadeIn.duration(500)}
+                  style={styles.img}
+                  source={quest2}
+                />
                 <Text
                   style={
                     theme == "dark"
@@ -345,7 +355,11 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
             )}
             {page === 2 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <Image style={styles.img} source={notif} />
+                <Animated.Image
+                  entering={FadeIn.duration(500)}
+                  style={styles.img}
+                  source={notif}
+                />
                 <Text
                   style={
                     theme == "dark"
@@ -574,7 +588,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               </View>
             )}
           </Transitioning.View>
-        </View>
+        </Animated.View>
       </ModalContainer>
     </Modal>
   );

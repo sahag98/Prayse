@@ -3,7 +3,7 @@
     "name": "Prayse",
     "slug": "prayer-app",
     "scheme": "prayseapp",
-    "version": "8.1.0",
+    "version": "8.2.1",
     "orientation": "portrait",
     "owner": "sahag98",
     "icon": "./assets/prayer.png",
@@ -49,7 +49,7 @@
       "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "32",
+      "buildNumber": "35",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -63,7 +63,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 34
+      "versionCode": 36
     },
     "web": {
       "favicon": "./assets/favicon.png"

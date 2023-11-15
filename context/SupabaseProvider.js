@@ -93,6 +93,7 @@ export const SupabaseProvider = (props) => {
       email,
       password,
     });
+    if (error) showToast("error", "User already registered. Sign in.");
     if (error) throw error;
   };
 

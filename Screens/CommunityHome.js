@@ -18,9 +18,9 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { useRef } from "react";
 import Animated, {
-  useSharedValue,
   FadeIn,
   useAnimatedStyle,
+  useSharedValue,
   withSequence,
   withSpring,
 } from "react-native-reanimated";
@@ -73,18 +73,12 @@ const CommunityHome = () => {
       return velocity.setValue(currentScrollPosition);
     }
 
-    if (scrollTimeoutRef.current) {
-      console.log("hey");
-    }
-
     setExtended(currentScrollPosition <= 0);
   };
 
   useEffect(() => {
     if (!isIOS) {
-      velocity.addListener(({ value }) => {
-        setExtended(value <= 0);
-      });
+      setExtended(true);
     } else setExtended(extended);
   }, [velocity, extended, isIOS]);
 
@@ -315,31 +309,6 @@ const CommunityHome = () => {
               New Prayers! Pull down to refresh
             </Animated.Text>
           </Animated.View>
-          // <View
-
-          // >
-          //   <Text
-          //     style={
-          //       theme == "dark"
-          //         ? {
-          //             fontFamily: "Inter-Bold",
-          //             paddingVertical: 15,
-          //             color: "#A5C9FF",
-          //             textAlign: "center",
-          //             fontSize: 13,
-          //           }
-          //         : {
-          //             fontFamily: "Inter-Bold",
-          //             paddingVertical: 15,
-          //             color: "#2f2d51",
-          //             textAlign: "center",
-          //             fontSize: 13,
-          //           }
-          //     }
-          //   >
-          //     New Prayers! Pull down to refresh
-          //   </Text>
-          // </View>
         )}
 
         <ProfileModal

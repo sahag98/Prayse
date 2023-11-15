@@ -33,6 +33,7 @@ import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Keyboard } from "react-native";
+import { useSupabase } from "../context/useSupabase";
 
 const WelcomeModal = ({
   user,
@@ -42,7 +43,7 @@ const WelcomeModal = ({
   setIsShowingWelcome,
 }) => {
   const theme = useSelector((state) => state.user.theme);
-
+  const { logout } = useSupabase();
   const [name, setName] = useState("");
 
   const [isUnique, setIsUnique] = useState(true);
@@ -147,23 +148,29 @@ const WelcomeModal = ({
       .select("full_name")
       .neq("id", user.id);
 
-    return profiles.every(
-      (prof) => name.toLowerCase() !== prof.full_name.toLowerCase()
-    );
+    const isUnique = profiles.every((prof) => {
+      const profileName = prof.full_name || ""; // Handle null or undefined
+
+      return name.trim().toLowerCase() !== profileName.trim().toLowerCase();
+    });
+
+    return isUnique;
   };
 
   const handleNext = async () => {
+    console.log("going next");
     if (name.length == 0) {
       showToast("error", "Username field is required.");
       return;
     }
     const isUniqueName = await checkIfUnique();
-
     if (!isUniqueName) {
+      console.log("not unique");
       setIsUnique(false);
     }
 
     if (isUniqueName) {
+      console.log("is unique");
       const { data, error } = await supabase
         .from("profiles")
         .update({
@@ -479,20 +486,6 @@ const WelcomeModal = ({
                 in on one device per account.
               </Text>
             </View>
-            {/* <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#c2c2c2",
-                      fontFamily: "Inter-Regular",
-                      fontSize: 13,
-                    }
-                  : { fontFamily: "Inter-Regular", fontSize: 13 }
-              }
-            >
-              You can change your username and profile image again through the
-              profile settings page.
-            </Text> */}
             <TouchableOpacity
               onPress={handleNext}
               style={
@@ -523,6 +516,39 @@ const WelcomeModal = ({
                 }
               >
                 Get Right in!
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={logout}
+              style={
+                theme == "dark"
+                  ? {
+                      backgroundColor: "#212121",
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+                  : {
+                      borderWidth: 1,
+                      borderColor: "#2f2d51",
+                      width: "100%",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+              }
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontFamily: "Inter-Bold" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                }
+              >
+                Back to Sign in
               </Text>
             </TouchableOpacity>
             {/* <TouchableOpacity
