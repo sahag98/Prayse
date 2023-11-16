@@ -153,7 +153,11 @@ const PublicCommunity = () => {
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
         >
           <TouchableOpacity onPress={() => navigation.navigate("Community")}>
-            <AntDesign name="left" size={24} color="black" />
+            <AntDesign
+              name="left"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
           <HeaderTitle
             style={
@@ -174,7 +178,11 @@ const PublicCommunity = () => {
             <Text>Public</Text>
           </HeaderTitle>
           <Animated.View style={animatedStyle}>
-            <Entypo name="globe" size={24} color="#2f2d51" />
+            <Entypo
+              name="globe"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </Animated.View>
         </Animated.View>
         <View style={styles.iconContainer}>

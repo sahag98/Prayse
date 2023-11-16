@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle } from "../styles/appStyles";
@@ -26,6 +26,8 @@ import Animated, {
 } from "react-native-reanimated";
 import WelcomeModal from "../components/WelcomeModal";
 import cm2 from "../assets/cm2.png";
+import CreateGroupModal from "../components/CreateGroupModal";
+import { FlatList } from "react-native";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -54,10 +56,21 @@ const CommunityHome = () => {
   const [visible, setVisible] = useState(true);
   const [prayers, setPrayers] = useState([]);
   const [userPrayers, setUserPrayers] = useState([]);
+  const [userGroups, setUserGroups] = useState([]);
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
+  // function generateRandomPin() {
+  //   // Math.random() generates a random number between 0 (inclusive) and 1 (exclusive)
+  //   // Multiply by 900000 to get a number between 0 and 899999
+  //   // Add 100000 to ensure the number is at least 100000
+  //   var pin = Math.floor(Math.random() * 900000) + 100000;
 
+  //   return pin;
+  // }
+  // var randomPin = generateRandomPin();
+
+  // console.log("6 digit pin: ", randomPin);
   const rotation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -87,6 +100,7 @@ const CommunityHome = () => {
 
     rotation.value = withSequence(wavingAnimation);
     getUserPrayers();
+    getUserGroups();
     getPermission();
     getPrayers();
   }, [isFocused]);
@@ -101,6 +115,8 @@ const CommunityHome = () => {
     setPrayers(prayers);
   }
 
+  console.log("groups of user :", userGroups);
+
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
@@ -110,6 +126,15 @@ const CommunityHome = () => {
       .eq("user_id", currentUser?.id)
       .order("id", { ascending: false });
     setUserPrayers(prayers);
+  }
+
+  async function getUserGroups() {
+    let { data: groups, error } = await supabase
+      .from("members")
+      .select("*,groups(*)")
+      .eq("user_id", currentUser?.id)
+      .order("id", { ascending: false });
+    setUserGroups(groups);
   }
 
   async function sendToken(expoPushToken) {
@@ -160,6 +185,15 @@ const CommunityHome = () => {
     );
   }
 
+  const data = [
+    { key: "1", text: "Item 1" },
+    { key: "2", text: "Item 2" },
+    { key: "3", text: "Item 3" },
+    { key: "4", text: "Item 4" },
+    { key: "5", text: "Item 5" },
+    // Add more items as needed
+  ];
+  const ITEM_WIDTH = Dimensions.get("window").width / 2;
   console.log(currentUser);
 
   return (
@@ -169,7 +203,7 @@ const CommunityHome = () => {
           ? {
               backgroundColor: "#121212",
               justifyContent: "center",
-              alignItems: "center",
+              gap: 10,
               position: "relative",
             }
           : {
@@ -180,7 +214,12 @@ const CommunityHome = () => {
             }
       }
     >
-      <Image style={styles.img} source={cm2} />
+      <Image
+        style={
+          theme == "dark" ? [styles.img, { tintColor: "white" }] : styles.img
+        }
+        source={cm2}
+      />
       <Animated.View
         entering={FadeIn.duration(500)}
         style={{
@@ -214,81 +253,196 @@ const CommunityHome = () => {
       </Animated.View>
       <TouchableOpacity
         onPress={() => navigation.navigate("PublicCommunity")}
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 20,
-          borderRadius: 10,
-          justifyContent: "space-between",
-          backgroundColor: "#93d8f8",
-        }}
+        style={
+          theme == "dark"
+            ? {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                backgroundColor: "#a5c9ff",
+              }
+            : {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                backgroundColor: "#93d8f8",
+              }
+        }
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Text style={{ fontFamily: "Inter-Medium", fontSize: 15 }}>
+          <Text
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Medium", color: "#121212", fontSize: 15 }
+                : { fontFamily: "Inter-Medium", color: "#2f2d51", fontSize: 15 }
+            }
+          >
             Public Prayers
           </Text>
-          <Entypo name="globe" size={24} color="#2f2d51" />
+          <Entypo
+            name="globe"
+            size={24}
+            color={theme == "dark" ? "#121212" : "#2f2d51"}
+          />
         </View>
-        <AntDesign name="right" size={24} color="#2f2d51" />
+        <AntDesign
+          name="right"
+          size={24}
+          color={theme == "dark" ? "#121212" : "#2f2d51"}
+        />
       </TouchableOpacity>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
         <Text
-          style={{ fontFamily: "Inter-Bold", color: "#2f2d51", fontSize: 16 }}
+          style={
+            theme == "dark"
+              ? { fontFamily: "Inter-Bold", color: "white", fontSize: 16 }
+              : { fontFamily: "Inter-Bold", color: "#2f2d51", fontSize: 16 }
+          }
         >
           Prayer Groups
         </Text>
-        <MaterialIcons name="groups" size={30} color="#2f2d51" />
+        <MaterialIcons
+          name="groups"
+          size={30}
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
       </View>
+      {userGroups.length > 0 && (
+        <FlatList
+          pagingEnabled
+          snapToInterval={ITEM_WIDTH}
+          horizontal
+          data={userGroups}
+          keyExtractor={(e, i) => i.toString()}
+          renderItem={({ item }) => (
+            <View
+              style={[
+                styles.item,
+                { backgroundColor: item.groups.color, width: ITEM_WIDTH },
+              ]}
+            >
+              <Text>{item.groups.name}</Text>
+              <Text>{item.groups.description}</Text>
+            </View>
+          )}
+        />
+      )}
       <TouchableOpacity
-        onPress={() => navigation.navigate("PublicCommunity")}
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 20,
-          borderRadius: 10,
-          justifyContent: "space-between",
-          backgroundColor: "#2f2d51",
-        }}
+        onPress={() => setModalVisible(true)}
+        style={
+          theme == "dark"
+            ? {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                backgroundColor: "#a5c9ff",
+              }
+            : {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                backgroundColor: "#2f2d51",
+              }
+        }
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Text
-            style={{ fontFamily: "Inter-Medium", color: "white", fontSize: 15 }}
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Medium", color: "#121212", fontSize: 15 }
+                : { fontFamily: "Inter-Medium", color: "white", fontSize: 15 }
+            }
           >
             Create a Group
           </Text>
-          <AntDesign name="addusergroup" size={24} color="white" />
+          <AntDesign
+            name="addusergroup"
+            size={24}
+            color={theme == "dark" ? "#121212" : "white"}
+          />
         </View>
-        <AntDesign name="plus" size={24} color="white" />
+        <AntDesign
+          name="plus"
+          size={24}
+          color={theme == "dark" ? "#121212" : "white"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate("PublicCommunity")}
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 20,
-          borderRadius: 10,
-          justifyContent: "space-between",
-          borderColor: "#93d8f8",
-          borderWidth: 1,
-        }}
+        style={
+          theme == "dark"
+            ? {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                borderColor: "#a5c9ff",
+                borderWidth: 1,
+              }
+            : {
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+                justifyContent: "space-between",
+                borderColor: "#93d8f8",
+                borderWidth: 1,
+              }
+        }
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Text
-            style={{
-              fontFamily: "Inter-Medium",
-              fontSize: 15,
-              color: "#2f2d51",
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    fontFamily: "Inter-Medium",
+                    fontSize: 15,
+                    color: "#a5c9ff",
+                  }
+                : {
+                    fontFamily: "Inter-Medium",
+                    fontSize: 15,
+                    color: "#2f2d51",
+                  }
+            }
           >
             Join a Group
           </Text>
-          <MaterialIcons name="group-add" size={24} color="#2f2d51" />
+          <MaterialIcons
+            name="group-add"
+            size={24}
+            color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+          />
         </View>
-        <AntDesign name="plus" size={24} color="#2f2d51" />
+        <AntDesign
+          name="plus"
+          size={24}
+          color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+        />
       </TouchableOpacity>
+      <CreateGroupModal
+        getUserGroups={getUserGroups}
+        supabase={supabase}
+        theme={theme}
+        user={currentUser}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </Container>
   );
 };
@@ -296,11 +450,18 @@ const CommunityHome = () => {
 export default CommunityHome;
 
 const styles = StyleSheet.create({
+  item: {
+    backgroundColor: "#f0f0f0",
+    padding: 20,
+    margin: 5,
+    borderRadius: 10,
+  },
   img: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     alignSelf: "center",
-    marginBottom: 30,
+    marginVertical: 15,
+
     // borderWidth: 1,
     // borderColor: "#2f2d51",
     // borderRadius: 99,
