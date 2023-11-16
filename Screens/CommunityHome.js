@@ -1,18 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { Container, HeaderTitle } from "../styles/appStyles";
 import { PROJECT_ID } from "@env";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { useState } from "react";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity, Platform } from "react-native";
-import ProfileModal from "../components/ProfileModal";
-import { Ionicons } from "@expo/vector-icons";
-import { AnimatedFAB } from "react-native-paper";
-import CommunityPrayers from "../components/CommunityPrayers";
-import CommunityModal from "../components/ComunityModal";
+import {
+  Entypo,
+  AntDesign,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
@@ -25,7 +25,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import WelcomeModal from "../components/WelcomeModal";
-
+import cm2 from "../assets/cm2.png";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -143,7 +143,7 @@ const CommunityHome = () => {
         await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
       ).data;
     } else {
-      alert("Must use physical device for Push Notifications");
+      console.log("Must use physical device for Push Notifications");
     }
     sendToken(token);
   }
@@ -160,206 +160,135 @@ const CommunityHome = () => {
     );
   }
 
+  console.log(currentUser);
+
   return (
     <Container
       style={
         theme == "dark"
-          ? { backgroundColor: "#121212", position: "relative" }
-          : { backgroundColor: "#F2F7FF", position: "relative" }
+          ? {
+              backgroundColor: "#121212",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+            }
+          : {
+              backgroundColor: "#F2F7FF",
+              justifyContent: "center",
+              gap: 10,
+              position: "relative",
+            }
       }
     >
-      <HeaderView style={{ marginTop: 0 }}>
-        <Animated.View
-          entering={FadeIn.duration(500)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-        >
-          <HeaderTitle
-            style={
-              theme == "dark"
-                ? {
-                    fontFamily: "Inter-Bold",
-                    fontSize: 20,
-                    letterSpacing: 2,
-                    color: "white",
-                  }
-                : {
-                    fontFamily: "Inter-Bold",
-                    fontSize: 20,
-                    color: "#2F2D51",
-                  }
-            }
-          >
-            <Text>Welcome</Text>
-          </HeaderTitle>
-          <Animated.View style={animatedStyle}>
-            <MaterialCommunityIcons
-              name="hand-wave"
-              size={30}
-              color="#ffe03b"
-            />
-          </Animated.View>
-        </Animated.View>
-        <View style={styles.iconContainer}>
-          <Image
-            style={styles.profileImg}
-            source={{
-              uri: currentUser?.avatar_url
-                ? currentUser?.avatar_url
-                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={
-              theme == "dark" ? styles.featherIconDark : styles.featherIcon
-            }
-          >
-            <Ionicons name="settings" size={16} color="black" />
-          </TouchableOpacity>
-        </View>
-      </HeaderView>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Question")}
-        style={theme === "dark" ? styles.questionDark : styles.question}
+      <Image style={styles.img} source={cm2} />
+      <Animated.View
+        entering={FadeIn.duration(500)}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+
+          gap: 10,
+        }}
       >
-        <Text
+        <HeaderTitle
           style={
             theme == "dark"
-              ? { color: "white", fontFamily: "Inter-Medium" }
-              : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+              ? {
+                  fontFamily: "Inter-Bold",
+                  fontSize: 20,
+                  letterSpacing: 2,
+                  color: "white",
+                }
+              : {
+                  fontFamily: "Inter-Bold",
+                  fontSize: 20,
+                  color: "#2F2D51",
+                }
           }
         >
-          Question of the Week
-        </Text>
-        <AntDesign
-          name="right"
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
+          <Text>Welcome {currentUser.full_name}</Text>
+        </HeaderTitle>
+        <Animated.View style={animatedStyle}>
+          <MaterialCommunityIcons name="hand-wave" size={30} color="#ffe03b" />
+        </Animated.View>
+      </Animated.View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PublicCommunity")}
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 20,
+          borderRadius: 10,
+          justifyContent: "space-between",
+          backgroundColor: "#93d8f8",
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Text style={{ fontFamily: "Inter-Medium", fontSize: 15 }}>
+            Public Prayers
+          </Text>
+          <Entypo name="globe" size={24} color="#2f2d51" />
+        </View>
+        <AntDesign name="right" size={24} color="#2f2d51" />
       </TouchableOpacity>
-      <View style={{ flex: 1, position: "relative" }}>
-        {newPost && (
-          <Animated.View
-            entering={FadeIn.duration(300)}
-            style={
-              theme == "dark"
-                ? {
-                    position: "absolute",
-                    zIndex: 99,
-                    width: "65%",
-                    alignSelf: "center",
-                    marginVertical: 10,
-                    backgroundColor: "#121212",
-                    borderRadius: 50, // Set your desired border radius
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: theme == "dark" ? "#A5C9FF" : "#2f2d51",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }
-                : {
-                    position: "absolute",
-                    zIndex: 99,
-                    width: "70%",
-                    alignSelf: "center",
-                    marginVertical: 10,
-                    backgroundColor: "white",
-                    borderRadius: 50, // Set your desired border radius
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: "#2f2d51",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }
-            }
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <Text
+          style={{ fontFamily: "Inter-Bold", color: "#2f2d51", fontSize: 16 }}
+        >
+          Prayer Groups
+        </Text>
+        <MaterialIcons name="groups" size={30} color="#2f2d51" />
+      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PublicCommunity")}
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 20,
+          borderRadius: 10,
+          justifyContent: "space-between",
+          backgroundColor: "#2f2d51",
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Text
+            style={{ fontFamily: "Inter-Medium", color: "white", fontSize: 15 }}
           >
-            <Animated.Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Bold",
-                      paddingVertical: 15,
-                      paddingHorizontal: 5,
-                      color: "#A5C9FF",
-                      textAlign: "center",
-                      fontSize: 13,
-                    }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      paddingVertical: 15,
-                      paddingHorizontal: 5,
-                      color: "#2f2d51",
-                      textAlign: "center",
-                      fontSize: 13,
-                    }
-              }
-            >
-              New Prayers! Pull down to refresh
-            </Animated.Text>
-          </Animated.View>
-        )}
-
-        <ProfileModal
-          getUserPrayers={getUserPrayers}
-          userPrayers={userPrayers}
-          setPrayerModal={setPrayerModal}
-          getPrayers={getPrayers}
-          logout={logout}
-          session={session}
-          setCurrentUser={setCurrentUser}
-          supabase={supabase}
-          modalVisible={modalVisible}
-          user={currentUser}
-          setModalVisible={setModalVisible}
-        />
-        <CommunityModal
-          getUserPrayers={getUserPrayers}
-          getPrayers={getPrayers}
-          logout={logout}
-          supabase={supabase}
-          session={session}
-          modalVisible={prayerModal}
-          user={currentUser}
-          setModalVisible={setPrayerModal}
-        />
-        <CommunityPrayers
-          session={session}
-          getPrayers={getPrayers}
-          setNewPost={setNewPost}
-          visible={visible}
-          setVisible={setVisible}
-          prayers={prayers}
-          setPrayers={setPrayers}
-          onScroll={onScroll}
-          supabase={supabase}
-          currentUser={currentUser}
-        />
-      </View>
-      <View style={styles.actionButtons}>
-        <AnimatedFAB
-          icon={"plus"}
-          label={"Add prayer"}
-          extended={extended}
-          onPress={() => setPrayerModal(true)}
-          visible={true}
-          animateFrom={"right"}
-          iconMode={"dynamic"}
-          color={theme == "dark" ? "#212121" : "white"}
-          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
-        />
-      </View>
+            Create a Group
+          </Text>
+          <AntDesign name="addusergroup" size={24} color="white" />
+        </View>
+        <AntDesign name="plus" size={24} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PublicCommunity")}
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 20,
+          borderRadius: 10,
+          justifyContent: "space-between",
+          borderColor: "#93d8f8",
+          borderWidth: 1,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Text
+            style={{
+              fontFamily: "Inter-Medium",
+              fontSize: 15,
+              color: "#2f2d51",
+            }}
+          >
+            Join a Group
+          </Text>
+          <MaterialIcons name="group-add" size={24} color="#2f2d51" />
+        </View>
+        <AntDesign name="plus" size={24} color="#2f2d51" />
+      </TouchableOpacity>
     </Container>
   );
 };
@@ -367,6 +296,22 @@ const CommunityHome = () => {
 export default CommunityHome;
 
 const styles = StyleSheet.create({
+  img: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 30,
+    // borderWidth: 1,
+    // borderColor: "#2f2d51",
+    // borderRadius: 99,
+  },
+
+  imgContainer: {
+    marginBottom: 20,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   question: {
     flexDirection: "row",
     alignItems: "center",

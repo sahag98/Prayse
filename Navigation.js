@@ -26,6 +26,7 @@ import { useSupabase } from "./context/useSupabase";
 import CommunityHome from "./Screens/CommunityHome";
 import Login from "./Screens/Login";
 import Question from "./Screens/Question";
+import PublicCommunity from "./Screens/PublicCommunity";
 
 const Tab = createBottomTabNavigator();
 
@@ -193,7 +194,15 @@ const Navigation = () => {
             })}
             component={PrayerPage}
           />
-
+          <Tab.Screen
+            name="PublicCommunity"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={PublicCommunity}
+          />
           {isLoggedIn ? (
             <Tab.Screen
               name="Community"
