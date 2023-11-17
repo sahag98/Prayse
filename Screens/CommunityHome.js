@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { PROJECT_ID } from "@env";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import { TouchableOpacity, Platform } from "react-native";
 import {
   Entypo,
+  Ionicons,
   AntDesign,
   MaterialIcons,
   MaterialCommunityIcons,
@@ -29,6 +30,7 @@ import cm2 from "../assets/cm2.png";
 import CreateGroupModal from "../components/CreateGroupModal";
 import { FlatList } from "react-native";
 import JoinModal from "../components/JoinModal";
+import ProfileModal from "../components/ProfileModal";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -51,6 +53,7 @@ const CommunityHome = () => {
   } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
+  const [profileVisible, setProfileVisible] = useState(false);
   const [joinVisible, setJoinVisible] = useState(false);
   const [extended, setExtended] = useState(true);
   const [prayerModal, setPrayerModal] = useState(false);
@@ -60,6 +63,7 @@ const CommunityHome = () => {
   const [prayers, setPrayers] = useState([]);
   const [userPrayers, setUserPrayers] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
+  const [groups, setGroups] = useState([]);
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
@@ -103,6 +107,7 @@ const CommunityHome = () => {
 
     rotation.value = withSequence(wavingAnimation);
     getUserPrayers();
+    getGroupUsers();
     getUserGroups();
     getPermission();
     getPrayers();
@@ -132,10 +137,18 @@ const CommunityHome = () => {
   async function getUserGroups() {
     let { data: groups, error } = await supabase
       .from("members")
-      .select("*,groups(*)")
+      .select("*,groups(*), profiles(*)")
       .eq("user_id", currentUser?.id)
       .order("id", { ascending: false });
     setUserGroups(groups);
+  }
+
+  async function getGroupUsers() {
+    let { data: groups, error } = await supabase
+      .from("members")
+      .select("*,groups(*), profiles(*)")
+      .order("id", { ascending: false });
+    setGroups(groups);
   }
 
   async function sendToken(expoPushToken) {
@@ -196,8 +209,7 @@ const CommunityHome = () => {
     // Add more items as needed
   ];
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
-  console.log(currentUser);
-
+  console.log("groups: ", groups);
   return (
     <Container
       style={
@@ -216,6 +228,45 @@ const CommunityHome = () => {
             }
       }
     >
+      <HeaderView
+        style={{
+          position: "absolute",
+          top: 35,
+          right: 10,
+        }}
+      >
+        <ProfileModal
+          getUserPrayers={getUserPrayers}
+          userPrayers={userPrayers}
+          setPrayerModal={setPrayerModal}
+          getPrayers={getPrayers}
+          logout={logout}
+          session={session}
+          setCurrentUser={setCurrentUser}
+          supabase={supabase}
+          profileVisible={profileVisible}
+          user={currentUser}
+          setProfileVisible={setProfileVisible}
+        />
+        <View style={styles.iconContainer}>
+          <Image
+            style={styles.profileImg}
+            source={{
+              uri: currentUser?.avatar_url
+                ? currentUser?.avatar_url
+                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => setProfileVisible(true)}
+            style={
+              theme == "dark" ? styles.featherIconDark : styles.featherIcon
+            }
+          >
+            <Ionicons name="settings" size={16} color="black" />
+          </TouchableOpacity>
+        </View>
+      </HeaderView>
       <Image
         style={
           theme == "dark" ? [styles.img, { tintColor: "white" }] : styles.img
@@ -252,9 +303,6 @@ const CommunityHome = () => {
         <Animated.View style={animatedStyle}>
           <MaterialCommunityIcons name="hand-wave" size={30} color="#ffe03b" />
         </Animated.View>
-        <TouchableOpacity onPress={logout}>
-          <Text style={{ color: "white" }}>Logout</Text>
-        </TouchableOpacity>
       </Animated.View>
       <TouchableOpacity
         onPress={() => navigation.navigate("PublicCommunity")}
@@ -323,19 +371,85 @@ const CommunityHome = () => {
           pagingEnabled
           snapToInterval={ITEM_WIDTH}
           horizontal
+          showsHorizontalScrollIndicator={false}
           data={userGroups}
           keyExtractor={(e, i) => i.toString()}
-          renderItem={({ item }) => (
-            <View
-              style={[
-                styles.item,
-                { backgroundColor: item.groups.color, width: ITEM_WIDTH },
-              ]}
-            >
-              <Text>{item.groups.name}</Text>
-              <Text>{item.groups.description}</Text>
-            </View>
-          )}
+          renderItem={({ item }) => {
+            return (
+              <View
+                style={
+                  theme == "dark"
+                    ? {
+                        borderWidth: 1,
+                        padding: 10,
+                        marginRight: 15,
+                        borderRadius: 10,
+                        justifyContent: "space-between",
+                        borderColor: item.groups.color.toLowerCase(),
+                        backgroundColor: "#121212",
+                        width: ITEM_WIDTH,
+                      }
+                    : {
+                        borderWidth: 1,
+                        marginRight: 15,
+                        justifyContent: "space-between",
+                        padding: 10,
+                        borderRadius: 10,
+                        borderColor: item.groups.color.toLowerCase(),
+                        backgroundColor: "#f2f7ff",
+                        width: ITEM_WIDTH,
+                      }
+                }
+              >
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  {item.groups.name}
+                </Text>
+                <Text style={{ fontFamily: "Inter-Regular", color: "grey" }}>
+                  {item.groups.description}
+                </Text>
+                <View style={{ flexDirection: "row", paddingHorizontal: 10 }}>
+                  {groups.map((g, index) => {
+                    if (g.group_id === item.group_id) {
+                      const marginLeft = index > 0 ? -10 : 0; // Adjust the overlap as needed
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            position: "relative",
+                            marginLeft: marginLeft,
+                          }}
+                        >
+                          <Image
+                            style={styles.joinedUserImg}
+                            source={{
+                              uri: g.profiles?.avatar_url
+                                ? g.profiles?.avatar_url
+                                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                            }}
+                          />
+                          {/* <Text>{g.profiles.full_name}</Text> */}
+                        </View>
+                      );
+                    }
+                  })}
+                </View>
+              </View>
+            );
+          }}
         />
       )}
       <TouchableOpacity
@@ -442,6 +556,7 @@ const CommunityHome = () => {
       </TouchableOpacity>
       <CreateGroupModal
         getUserGroups={getUserGroups}
+        getGroupUsers={getGroupUsers}
         supabase={supabase}
         theme={theme}
         user={currentUser}
@@ -450,6 +565,7 @@ const CommunityHome = () => {
       />
       <JoinModal
         getUserGroups={getUserGroups}
+        getGroupUsers={getGroupUsers}
         supabase={supabase}
         theme={theme}
         user={currentUser}
@@ -463,12 +579,25 @@ const CommunityHome = () => {
 export default CommunityHome;
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: "#f0f0f0",
-    padding: 20,
-    margin: 5,
-    borderRadius: 10,
+  joinedUserImg: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
   },
+  // itemLight: {
+  //   backgroundColor: "#f2f7ff",
+  //   padding: 20,
+  //   margin: 5,
+  //   borderRadius: 10,
+  // },
+  // itemDark: {
+  //   borderWidth: 1,
+  //   borderColor: item.groups.color,
+  //   backgroundColor: "#212121",
+  //   padding: 20,
+  //   margin: 5,
+  //   borderRadius: 10,
+  // },
   img: {
     width: 150,
     height: 150,
@@ -497,6 +626,40 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 5,
     marginBottom: 15,
+  },
+  featherIconDark: {
+    position: "absolute",
+    backgroundColor: "#A5C9FF",
+    borderRadius: 50,
+    width: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 25,
+    bottom: 4,
+    right: 2,
+  },
+  featherIcon: {
+    position: "absolute",
+    backgroundColor: "#93d8f8",
+    borderRadius: 50,
+    width: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 25,
+    bottom: 4,
+    right: 2,
+  },
+  profileImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  iconContainer: {
+    position: "relative",
+    width: "100%",
+    backgroundColor: "red",
+    padding: 8,
+    alignSelf: "flex-end",
   },
   questionDark: {
     flexDirection: "row",

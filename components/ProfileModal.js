@@ -45,9 +45,9 @@ const ProfileModal = ({
   setPrayerModal,
   userPrayers,
   getUserPrayers,
-  modalVisible,
+  profileVisible,
+  setProfileVisible,
   supabase,
-  setModalVisible,
   user,
 }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -64,14 +64,14 @@ const ProfileModal = ({
   }, []);
 
   const handleCloseModal = () => {
-    setModalVisible(false);
+    setProfileVisible(false);
     setIsUnique(true);
     setIsEmpty(false);
     setName(user?.full_name);
   };
 
   const addPrayer = () => {
-    setModalVisible(false);
+    setProfileVisible(false);
     setPrayerModal(true);
   };
 
@@ -189,7 +189,7 @@ const ProfileModal = ({
     showToast("success", "Anonymous mode is set. ✔️");
     getProfile();
     getPrayers();
-    setModalVisible(false);
+    setProfileVisible(false);
   }
 
   const checkIfUnique = async () => {
@@ -232,7 +232,7 @@ const ProfileModal = ({
         .eq("id", user.id)
         .select();
       showToast("success", "Profile updated successfully. ✔️");
-      setModalVisible(false);
+      setProfileVisible(false);
     }
     getProfile();
     getPrayers();
@@ -244,7 +244,7 @@ const ProfileModal = ({
       animationType="fade"
       onShow={onModalShow}
       transparent={true}
-      visible={modalVisible}
+      visible={profileVisible}
       onRequestClose={handleCloseModal}
     >
       <KeyboardAvoidingView

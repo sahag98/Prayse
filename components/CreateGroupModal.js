@@ -27,6 +27,7 @@ import {
 const CreateGroupModal = ({
   modalVisible,
   getUserGroups,
+  getGroupUsers,
   supabase,
   setModalVisible,
   user,
@@ -96,10 +97,12 @@ const CreateGroupModal = ({
         const { data, error } = await supabase.from("members").insert({
           group_id: insertedGroupId,
           user_id: user.id,
+          is_admin: true,
         });
         // Do something with the inserted group ID
       }
       getUserGroups();
+      getGroupUsers();
       setModalVisible(false);
       setIsEnabled(false);
       setGroupName("");

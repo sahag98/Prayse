@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { Modal } from "react-native";
 
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
@@ -27,6 +27,7 @@ import {
 const JoinModal = ({
   modalVisible,
   getUserGroups,
+  getGroupUsers,
   supabase,
   setModalVisible,
   user,
@@ -122,6 +123,7 @@ const JoinModal = ({
       //   // Do something with the inserted group ID
       // }
       getUserGroups();
+      getGroupUsers();
       setModalVisible(false);
       setIsEnabled(false);
       setCode("");
@@ -258,15 +260,23 @@ const JoinModal = ({
               <Text
                 style={
                   theme == "dark"
-                    ? { fontFamily: "Inter-Medium", color: "#a5c9ff" }
-                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                    ? {
+                        fontFamily: "Inter-Bold",
+                        fontSize: 18,
+                        color: "#a5c9ff",
+                      }
+                    : {
+                        fontFamily: "Inter-Bold",
+                        fontSize: 18,
+                        color: "#2f2d51",
+                      }
                 }
               >
                 Join
               </Text>
-              <AntDesign
+              <Entypo
                 name="plus"
-                size={24}
+                size={30}
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
@@ -294,20 +304,22 @@ const JoinModal = ({
             </TouchableOpacity>
           </View> */}
           <View style={styles.inputField}>
-            {/* <Text
+            <Text
               style={
                 theme == "dark"
-                  ? { color: "white", fontSize: 16, fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontSize: 16, fontFamily: "Inter-Bold" }
+                  ? { color: "white", fontSize: 20, fontFamily: "Inter-Bold" }
+                  : { color: "#2f2d51", fontSize: 20, fontFamily: "Inter-Bold" }
               }
             >
-              Group Name
-            </Text> */}
+              Join A Prayer Group
+            </Text>
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
               autoFocus={modalVisible}
-              placeholder="Enter code"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              maxLength={6}
+              keyboardType="numeric"
+              placeholder="Enter 6 digit group code"
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#8986bc"}
               selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               value={code}
               onChangeText={(text) => setCode(text)}
@@ -328,27 +340,6 @@ const JoinModal = ({
               value={color}
               onChangeText={(text) => setColor(text)}
             /> */}
-            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        marginTop: 5,
-                        color: "#ff6262",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                    : {
-                        marginTop: 5,
-                        color: "#ff6262",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                }
-              >
-                Dismiss Keyboard
-              </Text>
-            </TouchableOpacity>
           </View>
         </ModalContainer>
       </Modal>
@@ -362,16 +353,28 @@ const styles = StyleSheet.create({
   nameDark: {
     padding: 10,
     color: "white",
-    fontFamily: "Inter-Bold",
-    width: "100%",
+    fontFamily: "Inter-Medium",
+    fontSize: 16,
+
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  name: {
+    padding: 10,
+    color: "#4c4882",
+    fontFamily: "Inter-Medium",
+    fontSize: 16,
     justifyContent: "center",
     alignSelf: "center",
   },
   inputField: {
-    marginTop: 50,
+    alignSelf: "center",
+    flex: 1,
+    marginBottom: 30,
+    gap: 5,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 10,
+
     width: "100%",
   },
   inputDark: {

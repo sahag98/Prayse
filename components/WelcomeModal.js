@@ -235,7 +235,7 @@ const WelcomeModal = ({
         await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
       ).data;
     } else {
-      alert("Must use physical device for Push Notifications");
+      console.log("Must use physical device for Push Notifications");
     }
     sendToken(token);
   }
