@@ -28,6 +28,8 @@ import WelcomeModal from "../components/WelcomeModal";
 import cm2 from "../assets/cm2.png";
 import CreateGroupModal from "../components/CreateGroupModal";
 import { FlatList } from "react-native";
+import JoinModal from "../components/JoinModal";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -49,6 +51,7 @@ const CommunityHome = () => {
   } = useSupabase();
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
+  const [joinVisible, setJoinVisible] = useState(false);
   const [extended, setExtended] = useState(true);
   const [prayerModal, setPrayerModal] = useState(false);
   const [isShowingWelcome, setIsShowingWelcome] = useState(false);
@@ -115,8 +118,6 @@ const CommunityHome = () => {
     setPrayers(prayers);
   }
 
-  console.log("groups of user :", userGroups);
-
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
@@ -177,6 +178,7 @@ const CommunityHome = () => {
     return (
       <WelcomeModal
         supabase={supabase}
+        getUserGroups={getUserGroups}
         setCurrentUser={setCurrentUser}
         isShowingWelcome={true}
         setIsShowingWelcome={setIsShowingWelcome}
@@ -250,6 +252,9 @@ const CommunityHome = () => {
         <Animated.View style={animatedStyle}>
           <MaterialCommunityIcons name="hand-wave" size={30} color="#ffe03b" />
         </Animated.View>
+        <TouchableOpacity onPress={logout}>
+          <Text style={{ color: "white" }}>Logout</Text>
+        </TouchableOpacity>
       </Animated.View>
       <TouchableOpacity
         onPress={() => navigation.navigate("PublicCommunity")}
@@ -380,7 +385,7 @@ const CommunityHome = () => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => navigation.navigate("PublicCommunity")}
+        onPress={() => setJoinVisible(true)}
         style={
           theme == "dark"
             ? {
@@ -442,6 +447,14 @@ const CommunityHome = () => {
         user={currentUser}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+      />
+      <JoinModal
+        getUserGroups={getUserGroups}
+        supabase={supabase}
+        theme={theme}
+        user={currentUser}
+        modalVisible={joinVisible}
+        setModalVisible={setJoinVisible}
       />
     </Container>
   );

@@ -37,6 +37,7 @@ import { useSupabase } from "../context/useSupabase";
 
 const WelcomeModal = ({
   user,
+  getUserGroups,
   isShowingWelcome,
   supabase,
   setCurrentUser,
@@ -211,6 +212,7 @@ const WelcomeModal = ({
   }
 
   async function getPermission() {
+    getUserGroups();
     let token;
     if (Device.isDevice) {
       const { status: existingStatus } =

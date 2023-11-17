@@ -106,6 +106,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const logout = async () => {
+    console.log("logging out");
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setLoggedIn(false);

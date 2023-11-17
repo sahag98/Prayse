@@ -24,7 +24,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
-const CreateGroupModal = ({
+const JoinModal = ({
   modalVisible,
   getUserGroups,
   supabase,
@@ -32,7 +32,7 @@ const CreateGroupModal = ({
   user,
   theme,
 }) => {
-  const [groupName, setGroupName] = useState("");
+  const [code, setCode] = useState("");
   const [color, setColor] = useState("");
   const [description, setDescription] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
@@ -40,7 +40,7 @@ const CreateGroupModal = ({
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setModalVisible(false);
-    setGroupName("");
+    setCode("");
   };
 
   const handleContentSizeChange = (event) => {
@@ -63,46 +63,68 @@ const CreateGroupModal = ({
     });
   };
 
-  const createGroup = async () => {
-    if (groupName.length <= 0) {
+  const joinGroup = async () => {
+    if (code.length <= 0) {
       showToast("error", "The group name field can't be empty.");
       setModalVisible(false);
       return;
     } else {
-      //prayers for production
-      //prayers_test for testing
-      const pin = Math.floor(Math.random() * 900000) + 100000;
-
-      const { data, error } = await supabase.from("groups").insert({
-        name: groupName,
-        description: description,
-        color: color,
-        code: pin,
-      });
-
-      // generateGroupMembers()
-      if (error) {
-        showToast("error", "Something went wrong. Try again.");
-      }
-
-      const { data: insertedData, error: fetchError } = await supabase
+      const { data: group, error: groupError } = await supabase
         .from("groups")
-        .select("id")
-        .eq("code", pin)
-        .single();
+        .select("code, id")
+        .eq("code", code);
+      console.log(group);
+      if (group.length == 0) {
+        alert("Group doesnt exist");
+        return;
+      } else if (group.length > 0) {
+        let { data: members, error } = await supabase
+          .from("members")
+          .select("*")
+          .eq("group_id", group[0].id)
+          .eq("user_id", user.id);
 
-      if (insertedData) {
-        const insertedGroupId = insertedData.id;
-        const { data, error } = await supabase.from("members").insert({
-          group_id: insertedGroupId,
-          user_id: user.id,
-        });
-        // Do something with the inserted group ID
+        if (members.length > 0) {
+          console.log("You have already joined this group.");
+        } else {
+          console.log(`Joining group${group[0].code}`);
+          const { data, error } = await supabase.from("members").insert({
+            group_id: group[0].id,
+            user_id: user.id,
+          });
+        }
       }
+
+      // const { data, error } = await supabase.from("groups").insert({
+      //   name: groupName,
+      //   description: description,
+      //   color: color,
+      //   code: pin,
+      // });
+
+      // // generateGroupMembers()
+      // if (error) {
+      //   showToast("error", "Something went wrong. Try again.");
+      // }
+
+      // const { data: insertedData, error: fetchError } = await supabase
+      //   .from("groups")
+      //   .select("id")
+      //   .eq("code", pin)
+      //   .single();
+
+      // if (insertedData) {
+      //   const insertedGroupId = insertedData.id;
+      //   const { data, error } = await supabase.from("members").insert({
+      //     group_id: insertedGroupId,
+      //     user_id: user.id,
+      //   });
+      //   // Do something with the inserted group ID
+      // }
       getUserGroups();
       setModalVisible(false);
       setIsEnabled(false);
-      setGroupName("");
+      setCode("");
       setDescription("");
       setColor("");
     }
@@ -231,7 +253,7 @@ const CreateGroupModal = ({
                 alignItems: "center",
                 gap: 5,
               }}
-              onPress={createGroup}
+              onPress={joinGroup}
             >
               <Text
                 style={
@@ -240,7 +262,7 @@ const CreateGroupModal = ({
                     : { fontFamily: "Inter-Medium", color: "#2f2d51" }
                 }
               >
-                Create
+                Join
               </Text>
               <AntDesign
                 name="plus"
@@ -284,13 +306,13 @@ const CreateGroupModal = ({
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
               autoFocus={modalVisible}
-              placeholder="Prayer group name"
+              placeholder="Enter code"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
               selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              value={groupName}
-              onChangeText={(text) => setGroupName(text)}
+              value={code}
+              onChangeText={(text) => setCode(text)}
             />
-            <TextInput
+            {/* <TextInput
               style={theme == "dark" ? styles.inputDark : styles.input}
               placeholder="Enter group description"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
@@ -305,7 +327,7 @@ const CreateGroupModal = ({
               selectionColor={theme == "dark" ? "white" : "#2f2d51"}
               value={color}
               onChangeText={(text) => setColor(text)}
-            />
+            /> */}
             <TouchableOpacity onPress={() => Keyboard.dismiss()}>
               <Text
                 style={
@@ -334,7 +356,7 @@ const CreateGroupModal = ({
   );
 };
 
-export default CreateGroupModal;
+export default JoinModal;
 
 const styles = StyleSheet.create({
   nameDark: {
