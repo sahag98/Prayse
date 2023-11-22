@@ -185,7 +185,7 @@ const PublicCommunity = () => {
             />
           </Animated.View>
         </Animated.View>
-        <View style={styles.iconContainer}>
+        {/* <View style={styles.iconContainer}>
           <Image
             style={styles.profileImg}
             source={{
@@ -202,7 +202,7 @@ const PublicCommunity = () => {
           >
             <Ionicons name="settings" size={16} color="black" />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </HeaderView>
       <TouchableOpacity
         onPress={() => navigation.navigate("Question")}
@@ -296,20 +296,6 @@ const PublicCommunity = () => {
             </Animated.Text>
           </Animated.View>
         )}
-
-        <ProfileModal
-          getUserPrayers={getUserPrayers}
-          userPrayers={userPrayers}
-          setPrayerModal={setPrayerModal}
-          getPrayers={getPrayers}
-          logout={logout}
-          session={session}
-          setCurrentUser={setCurrentUser}
-          supabase={supabase}
-          modalVisible={modalVisible}
-          user={currentUser}
-          setModalVisible={setModalVisible}
-        />
         <CommunityModal
           getUserPrayers={getUserPrayers}
           getPrayers={getPrayers}

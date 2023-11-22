@@ -19,6 +19,14 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
 import { Switch } from "react-native-paper";
+import Animated, {
+  Easing,
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -77,6 +85,7 @@ const JoinModal = ({
       console.log(group);
       if (group.length == 0) {
         alert("Group doesnt exist");
+        setCode("");
         return;
       } else if (group.length > 0) {
         let { data: members, error } = await supabase
@@ -248,98 +257,67 @@ const JoinModal = ({
                 color={theme == "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 5,
-              }}
-              onPress={joinGroup}
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        fontSize: 18,
-                        color: "#a5c9ff",
-                      }
-                    : {
-                        fontFamily: "Inter-Bold",
-                        fontSize: 18,
-                        color: "#2f2d51",
-                      }
-                }
-              >
-                Join
-              </Text>
-              <Entypo
-                name="plus"
-                size={30}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              />
-            </TouchableOpacity>
           </HeaderView>
-          {/* <View style={styles.iconContainer}>
-            <Image
-              style={styles.profileImg}
-              source={{
-                uri: image
-                  ? image
-                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-              }}
-            />
-            <TouchableOpacity
-              onPress={photoPermission}
-              style={
-                theme == "dark" ? styles.featherIconDark : styles.featherIcon
-              }
-            >
-              <AntDesign
-                name="plus"
-                size={20}
-                color={theme == "dark" ? "white" : "black"}
-              />
-            </TouchableOpacity>
-          </View> */}
           <View style={styles.inputField}>
             <Text
               style={
                 theme == "dark"
-                  ? { color: "white", fontSize: 20, fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontSize: 20, fontFamily: "Inter-Bold" }
+                  ? {
+                      color: "white",
+                      fontSize: 20,
+                      marginBottom: 5,
+                      fontFamily: "Inter-Bold",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 20,
+                      marginBottom: 5,
+                      fontFamily: "Inter-Bold",
+                    }
               }
             >
               Join A Prayer Group
             </Text>
-            <TextInput
-              style={theme == "dark" ? styles.nameDark : styles.name}
-              autoFocus={modalVisible}
-              maxLength={6}
-              keyboardType="numeric"
-              placeholder="Enter 6 digit group code"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#8986bc"}
-              selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              value={code}
-              onChangeText={(text) => setCode(text)}
-            />
-            {/* <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              placeholder="Enter group description"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={description}
-              onChangeText={(text) => setDescription(text)}
-            />
-            <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              placeholder="Enter color hex"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={color}
-              onChangeText={(text) => setColor(text)}
-            /> */}
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <TextInput
+                style={
+                  theme == "dark"
+                    ? styles.nameDark
+                    : code.length < 6
+                    ? [styles.name, { width: "100%" }]
+                    : styles.name
+                }
+                autoFocus={modalVisible}
+                maxLength={6}
+                keyboardType="numeric"
+                placeholder="Enter 6 digit group code"
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                value={code}
+                onChangeText={(text) => setCode(text)}
+              />
+              <TouchableOpacity onPress={joinGroup}>
+                {code.length == 6 && (
+                  <Animated.View
+                    entering={FadeIn.duration(500)}
+                    exiting={FadeOut.duration(500)}
+                  >
+                    <AntDesign
+                      name="rightcircle"
+                      size={40}
+                      color={code.length < 6 ? "#deebff" : "#2f2d51"}
+                    />
+                  </Animated.View>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         </ModalContainer>
       </Modal>
@@ -355,13 +333,15 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Inter-Medium",
     fontSize: 16,
-
     justifyContent: "center",
     alignSelf: "center",
   },
   name: {
-    padding: 10,
-    color: "#4c4882",
+    padding: 15,
+    backgroundColor: "#deebff",
+    color: "#2f2d51",
+    borderRadius: 10,
+    width: "85%",
     fontFamily: "Inter-Medium",
     fontSize: 16,
     justifyContent: "center",
@@ -370,7 +350,7 @@ const styles = StyleSheet.create({
   inputField: {
     alignSelf: "center",
     flex: 1,
-    marginBottom: 30,
+    marginBottom: 50,
     gap: 5,
     justifyContent: "center",
     alignItems: "center",

@@ -252,64 +252,39 @@ const CreateGroupModal = ({
               />
             </TouchableOpacity>
           </HeaderView>
-          {/* <View style={styles.iconContainer}>
-            <Image
-              style={styles.profileImg}
-              source={{
-                uri: image
-                  ? image
-                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-              }}
-            />
-            <TouchableOpacity
-              onPress={photoPermission}
-              style={
-                theme == "dark" ? styles.featherIconDark : styles.featherIcon
-              }
-            >
-              <AntDesign
-                name="plus"
-                size={20}
-                color={theme == "dark" ? "white" : "black"}
-              />
-            </TouchableOpacity>
-          </View> */}
+
           <View style={styles.inputField}>
-            {/* <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontSize: 16, fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontSize: 16, fontFamily: "Inter-Bold" }
-              }
-            >
-              Group Name
-            </Text> */}
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
-              autoFocus={modalVisible}
+              // autoFocus={modalVisible}
               placeholder="Prayer group name"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
               selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               value={groupName}
               onChangeText={(text) => setGroupName(text)}
             />
-            <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              placeholder="Enter group description"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={description}
-              onChangeText={(text) => setDescription(text)}
-            />
-            <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              placeholder="Enter color hex"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={color}
-              onChangeText={(text) => setColor(text)}
-            />
-            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
+            <View style={{ width: "100%", marginTop: 10, gap: 10 }}>
+              <TextInput
+                style={theme == "dark" ? styles.inputDark : styles.input}
+                placeholder="Enter group description"
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+                value={description}
+                onChangeText={(text) => setDescription(text)}
+              />
+              <TextInput
+                style={theme == "dark" ? styles.inputDark : styles.input}
+                placeholder="Enter group icon color:(optional)"
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+                value={color}
+                onChangeText={(text) => setColor(text)}
+              />
+            </View>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-end", marginTop: 5 }}
+              onPress={() => Keyboard.dismiss()}
+            >
               <Text
                 style={
                   theme == "dark"
@@ -341,12 +316,16 @@ export default CreateGroupModal;
 
 const styles = StyleSheet.create({
   nameDark: {
-    padding: 10,
+    backgroundColor: "#212121",
     color: "white",
-    fontFamily: "Inter-Bold",
-    width: "100%",
-    justifyContent: "center",
-    alignSelf: "center",
+    borderRadius: 10,
+    padding: 10,
+  },
+  name: {
+    color: "#2f2d51",
+    backgroundColor: "#deebff",
+    borderRadius: 10,
+    padding: 10,
   },
   inputField: {
     marginTop: 50,
@@ -368,7 +347,7 @@ const styles = StyleSheet.create({
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
     width: "100%",
-    borderBottomColor: "#2f2d51",
+    borderBottomColor: "#b7d3ff",
     borderBottomWidth: 1,
     paddingHorizontal: 2,
     paddingVertical: 5,

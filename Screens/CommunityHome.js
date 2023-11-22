@@ -31,6 +31,7 @@ import CreateGroupModal from "../components/CreateGroupModal";
 import { FlatList } from "react-native";
 import JoinModal from "../components/JoinModal";
 import ProfileModal from "../components/ProfileModal";
+import communityReady from "../hooks/communityReady";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -67,6 +68,7 @@ const CommunityHome = () => {
   const isIOS = Platform.OS === "ios";
   const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
+  const isReady = communityReady();
   // function generateRandomPin() {
   //   // Math.random() generates a random number between 0 (inclusive) and 1 (exclusive)
   //   // Multiply by 900000 to get a number between 0 and 899999
@@ -315,7 +317,7 @@ const CommunityHome = () => {
                 padding: 20,
                 borderRadius: 10,
                 justifyContent: "space-between",
-                backgroundColor: "#a5c9ff",
+                backgroundColor: "#212121",
               }
             : {
                 width: "100%",
@@ -332,7 +334,7 @@ const CommunityHome = () => {
           <Text
             style={
               theme == "dark"
-                ? { fontFamily: "Inter-Medium", color: "#121212", fontSize: 15 }
+                ? { fontFamily: "Inter-Medium", color: "#a5c9ff", fontSize: 15 }
                 : { fontFamily: "Inter-Medium", color: "#2f2d51", fontSize: 15 }
             }
           >
@@ -341,13 +343,13 @@ const CommunityHome = () => {
           <Entypo
             name="globe"
             size={24}
-            color={theme == "dark" ? "#121212" : "#2f2d51"}
+            color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
           />
         </View>
         <AntDesign
           name="right"
           size={24}
-          color={theme == "dark" ? "#121212" : "#2f2d51"}
+          color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
         />
       </TouchableOpacity>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -418,7 +420,13 @@ const CommunityHome = () => {
                 >
                   {item.groups.name}
                 </Text>
-                <Text style={{ fontFamily: "Inter-Regular", color: "grey" }}>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Regular",
+                    fontSize: 13,
+                    color: "grey",
+                  }}
+                >
                   {item.groups.description}
                 </Text>
                 <View style={{ flexDirection: "row", paddingHorizontal: 10 }}>
