@@ -289,12 +289,14 @@ const JoinModal = ({
               <TextInput
                 style={
                   theme == "dark"
-                    ? styles.nameDark
+                    ? code.length < 6
+                      ? [styles.nameDark, { width: "100%" }]
+                      : styles.nameDark
                     : code.length < 6
                     ? [styles.name, { width: "100%" }]
                     : styles.name
                 }
-                autoFocus={modalVisible}
+                // autoFocus={modalVisible}
                 maxLength={6}
                 keyboardType="numeric"
                 placeholder="Enter 6 digit group code"
@@ -312,11 +314,33 @@ const JoinModal = ({
                     <AntDesign
                       name="rightcircle"
                       size={40}
-                      color={code.length < 6 ? "#deebff" : "#2f2d51"}
+                      color={code.length < 6 ? "#a5c9ff" : "#a5c9ff"}
                     />
                   </Animated.View>
                 )}
               </TouchableOpacity>
+            </View>
+            <View style={{ marginTop: 5 }}>
+              <Text
+                style={{
+                  color: "#d2d2d2",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                }}
+              >
+                "For where two or three are gathered together in my name, there
+                am I in the midst of them."
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignSelf: "flex-end",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 13,
+                }}
+              >
+                - Matthew 18:20
+              </Text>
             </View>
           </View>
         </ModalContainer>
@@ -329,7 +353,10 @@ export default JoinModal;
 
 const styles = StyleSheet.create({
   nameDark: {
-    padding: 10,
+    backgroundColor: "#212121",
+    padding: 15,
+    width: "85%",
+    borderRadius: 10,
     color: "white",
     fontFamily: "Inter-Medium",
     fontSize: 16,

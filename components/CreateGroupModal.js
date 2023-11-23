@@ -256,7 +256,7 @@ const CreateGroupModal = ({
           <View style={styles.inputField}>
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
-              // autoFocus={modalVisible}
+              autoFocus={modalVisible}
               placeholder="Prayer group name"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
               selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
@@ -305,6 +305,28 @@ const CreateGroupModal = ({
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
+            <View style={{ marginTop: 10 }}>
+              <Text
+                style={{
+                  color: "#efefef",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                }}
+              >
+                "Iron sharpeneth iron; so a man sharpeneth the countenance of
+                his friend."
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignSelf: "flex-end",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 13,
+                }}
+              >
+                - Proverbs 27:17
+              </Text>
+            </View>
           </View>
         </ModalContainer>
       </Modal>
@@ -319,13 +341,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#212121",
     color: "white",
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
   },
   name: {
     color: "#2f2d51",
     backgroundColor: "#deebff",
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
   },
   inputField: {
     marginTop: 50,
