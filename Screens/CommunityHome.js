@@ -406,6 +406,7 @@ const CommunityHome = () => {
               data={userGroups}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
+                console.log(item.is_admin);
                 return (
                   <View
                     style={
@@ -432,23 +433,68 @@ const CommunityHome = () => {
                           }
                     }
                   >
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 16,
-                              color: "white",
-                            }
-                          : {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 16,
-                              color: "#2f2d51",
-                            }
-                      }
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
                     >
-                      {item.groups.name}
-                    </Text>
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontFamily: "Inter-Medium",
+                                fontSize: 16,
+                                color: "white",
+                              }
+                            : {
+                                fontFamily: "Inter-Medium",
+                                fontSize: 16,
+                                color: "#2f2d51",
+                              }
+                        }
+                      >
+                        {item.groups.name}
+                      </Text>
+                      {item.is_admin ? (
+                        <View
+                          style={{
+                            backgroundColor: "#ff4e4e",
+                            padding: 5,
+                            borderRadius: 10,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontFamily: "Inter-Regular",
+                              color: "white",
+                            }}
+                          >
+                            Admin
+                          </Text>
+                        </View>
+                      ) : (
+                        <View
+                          style={{
+                            backgroundColor: "#212121",
+                            padding: 5,
+                            borderRadius: 10,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontFamily: "Inter-Regular",
+                              color: "white",
+                            }}
+                          >
+                            Member
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                     <Text
                       style={{
                         fontFamily: "Inter-Regular",
@@ -459,32 +505,59 @@ const CommunityHome = () => {
                       {item.groups.description}
                     </Text>
                     <View
-                      style={{ flexDirection: "row", paddingHorizontal: 10 }}
+                      style={{
+                        flexDirection: "row",
+                        paddingHorizontal: 10,
+                        alignItems: "center",
+                      }}
                     >
-                      {groups.map((g, index) => {
-                        if (g.group_id === item.group_id) {
-                          const marginLeft = index > 0 ? -10 : 0; // Adjust the overlap as needed
-                          return (
-                            <View
-                              key={index}
-                              style={{
-                                position: "relative",
-                                marginLeft: marginLeft,
+                      {groups
+                        .filter((g) => g.group_id === item.group_id)
+                        .slice(0, 3) // Show only the first three joined users
+                        .map((g, index) => (
+                          <View
+                            key={index}
+                            style={{
+                              position: "relative",
+                              marginLeft: index > 0 ? -10 : 0,
+                            }}
+                          >
+                            <Image
+                              style={styles.joinedUserImg}
+                              source={{
+                                uri: g.profiles?.avatar_url
+                                  ? g.profiles?.avatar_url
+                                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
                               }}
+                            />
+                          </View>
+                        ))}
+                      <View>
+                        {groups.length > 3 &&
+                          groups.filter((g) => g.group_id === item.group_id)
+                            .length > 3 && (
+                            <Text
+                              style={
+                                theme == "dark"
+                                  ? {
+                                      marginLeft: 5,
+                                      fontFamily: "Inter-Regular",
+                                      color: "grey",
+                                    }
+                                  : {
+                                      marginLeft: 5,
+                                      fontFamily: "Inter-Regular",
+                                      color: "#2f2d51",
+                                    }
+                              }
                             >
-                              <Image
-                                style={styles.joinedUserImg}
-                                source={{
-                                  uri: g.profiles?.avatar_url
-                                    ? g.profiles?.avatar_url
-                                    : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-                                }}
-                              />
-                              {/* <Text>{g.profiles.full_name}</Text> */}
-                            </View>
-                          );
-                        }
-                      })}
+                              +
+                              {groups.filter(
+                                (g) => g.group_id === item.group_id
+                              ).length - 3}
+                            </Text>
+                          )}
+                      </View>
                     </View>
                   </View>
                 );
@@ -841,32 +914,60 @@ const CommunityHome = () => {
                         {item.groups.description}
                       </Text>
                       <View
-                        style={{ flexDirection: "row", paddingHorizontal: 10 }}
+                        style={{
+                          flexDirection: "row",
+                          paddingHorizontal: 10,
+                          alignItems: "center",
+                        }}
                       >
-                        {groups.map((g, index) => {
-                          if (g.group_id === item.group_id) {
-                            const marginLeft = index > 0 ? -10 : 0; // Adjust the overlap as needed
-                            return (
-                              <View
-                                key={index}
-                                style={{
-                                  position: "relative",
-                                  marginLeft: marginLeft,
+                        {groups
+                          .filter((g) => g.group_id === item.group_id)
+                          .slice(0, 3) // Show only the first three joined users
+                          .map((g, index) => (
+                            <View
+                              key={index}
+                              style={{
+                                position: "relative",
+                                marginLeft: index > 0 ? -10 : 0,
+                              }}
+                            >
+                              <Image
+                                style={styles.joinedUserImg}
+                                source={{
+                                  uri: g.profiles?.avatar_url
+                                    ? g.profiles?.avatar_url
+                                    : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
                                 }}
+                              />
+                              {/* <Text>{g.profiles.full_name}</Text> */}
+                            </View>
+                          ))}
+                        <View>
+                          {groups.length > 3 &&
+                            groups.filter((g) => g.group_id === item.group_id)
+                              .length > 3 && (
+                              <Text
+                                style={
+                                  theme == "dark"
+                                    ? {
+                                        marginLeft: 5,
+                                        color: "grey",
+                                        fontFamily: "Inter-Regular",
+                                      }
+                                    : {
+                                        marginLeft: 5,
+                                        color: "#2f2d51",
+                                        fontFamily: "Inter-Regular",
+                                      }
+                                }
                               >
-                                <Image
-                                  style={styles.joinedUserImg}
-                                  source={{
-                                    uri: g.profiles?.avatar_url
-                                      ? g.profiles?.avatar_url
-                                      : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-                                  }}
-                                />
-                                {/* <Text>{g.profiles.full_name}</Text> */}
-                              </View>
-                            );
-                          }
-                        })}
+                                +
+                                {groups.filter(
+                                  (g) => g.group_id === item.group_id
+                                ).length - 3}
+                              </Text>
+                            )}
+                        </View>
                       </View>
                     </View>
                     <AntDesign
