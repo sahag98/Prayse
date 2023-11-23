@@ -274,7 +274,7 @@ const CreateGroupModal = ({
               />
               <TextInput
                 style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter group icon color:(optional)"
+                placeholder="Enter icon border color: (optional)"
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 selectionColor={theme == "dark" ? "white" : "#2f2d51"}
                 value={color}
