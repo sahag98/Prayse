@@ -63,6 +63,7 @@ import { client } from "../lib/client";
 import { nativeApplicationVersion } from "expo-application";
 import UpdateModal from "../components/UpdateModal";
 import { useSupabase } from "../context/useSupabase";
+import { Dimensions } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -151,6 +152,10 @@ export default function Welcome({ navigation }) {
   const handlePress = () => setExpanded(!expanded);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
 
+  const reminders = useSelector((state) => state.reminder.reminders);
+
+  console.log(reminders);
+
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
@@ -167,7 +172,7 @@ export default function Welcome({ navigation }) {
 
     if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
       console.log("update is available");
-      setIsUpdateAvailable(true);
+      // setIsUpdateAvailable(true);
     } else {
       console.log("update is not available");
       setIsUpdateAvailable(false);
@@ -447,6 +452,8 @@ export default function Welcome({ navigation }) {
     },
   ];
 
+  const ITEM_WIDTH = Dimensions.get("window").width / 2;
+
   const [fontsLoaded] = useFonts({
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
@@ -565,7 +572,81 @@ export default function Welcome({ navigation }) {
         </View>
       </View>
       <View style={{ width: "100%" }}>
-        <Text
+        <View
+          style={{
+            backgroundColor: "#93d8f8",
+            gap: 10,
+            borderRadius: 10,
+            padding: 10,
+            marginBottom: 10,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
+              Prayer Reminders
+            </Text>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5,
+              }}
+              onPress={() => navigation.navigate("Test")}
+            >
+              <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
+                Add
+              </Text>
+              <Ionicons name="add-circle-outline" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            pagingEnabled
+            snapToInterval={ITEM_WIDTH}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={reminders}
+            keyExtractor={(e, i) => i.toString()}
+            renderItem={({ item }) => {
+              return (
+                <View
+                  style={
+                    theme == "dark"
+                      ? {
+                          borderWidth: 1,
+                          padding: 10,
+                          marginRight: 15,
+                          gap: 5,
+                          borderRadius: 10,
+                          justifyContent: "space-between",
+                          backgroundColor: "#121212",
+                          width: ITEM_WIDTH,
+                        }
+                      : {
+                          borderWidth: 1,
+                          marginRight: 15,
+                          gap: 5,
+                          justifyContent: "space-between",
+                          padding: 10,
+                          borderRadius: 10,
+                          backgroundColor: "#f2f7ff",
+                          width: ITEM_WIDTH,
+                        }
+                  }
+                >
+                  <Ionicons name="time-outline" size={24} color="black" />
+                  <Text>{item.message}</Text>
+                </View>
+              );
+            }}
+          />
+        </View>
+        {/* <Text
           style={
             theme == "dark"
               ? styles.welcomeDark
@@ -578,7 +659,7 @@ export default function Welcome({ navigation }) {
         </Text>
         <View style={styles.imgContainer}>
           <Image style={styles.img} source={prayer} />
-        </View>
+        </View> */}
         {notiVisible && (
           <Animated.View
             entering={FadeIn.duration(300)}
@@ -697,7 +778,7 @@ export default function Welcome({ navigation }) {
           }
         />
         <TouchableOpacity
-          onPress={() => navigation.navigate("Test")}
+          onPress={() => setFeatureVisible(true)}
           style={
             theme == "dark"
               ? styles.refreshDark

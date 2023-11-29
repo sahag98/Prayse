@@ -11,6 +11,9 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Notifications from "expo-notifications";
 import { Container } from "../styles/appStyles";
+import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewReminder } from "../redux/remindersReducer";
 // import * as Permissions from "expo-permissions";
 
 export default function Reminder({ navigation }) {
@@ -18,7 +21,8 @@ export default function Reminder({ navigation }) {
   const [newReminder, setNewReminder] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [reminderTime, setReminderTime] = useState(new Date());
-
+  const remindersRedux = useSelector((state) => state.reminder.reminders);
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   registerForPushNotifications();
   // }, []);
@@ -42,16 +46,19 @@ export default function Reminder({ navigation }) {
       },
       trigger: {
         date: reminder.time,
+        repeats: true,
       },
     });
   };
 
   const addReminder = () => {
     const newReminderObj = {
-      id: Date.now().toString(),
+      id: uuid.v4(),
       message: newReminder,
       time: reminderTime,
     };
+
+    dispatch(addNewReminder(newReminderObj));
 
     setReminders([...reminders, newReminderObj]);
     scheduleNotification(newReminderObj);
@@ -90,6 +97,7 @@ export default function Reminder({ navigation }) {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Create a Reminder:</Text>
         <TextInput
+          placeholderTextColor={"blue"}
           placeholder="Enter your reminder"
           value={newReminder}
           onChangeText={(text) => setNewReminder(text)}
@@ -106,7 +114,7 @@ export default function Reminder({ navigation }) {
       <Text>Reminders:</Text>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={reminders}
+          data={remindersRedux}
           style={{ height: 100 }}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (

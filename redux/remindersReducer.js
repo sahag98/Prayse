@@ -12,7 +12,8 @@ export const reminderSlice = createSlice({
     clearReminders: (state) => {
       state.reminders = [];
     },
-    addReminder: (state, action) => {
+    addNewReminder: (state, action) => {
+      // state.reminders = "hello";
       const Reminders = [action.payload, ...state.reminders];
       state.reminders = Reminders;
     },
@@ -32,7 +33,7 @@ export const reminderSlice = createSlice({
   },
 });
 
-export const { clearReminders, addReminder, deleteReminder, editReminder } =
+export const { clearReminders, addNewReminder, deleteReminder, editReminder } =
   reminderSlice.actions;
 
 export default reminderSlice.reducer;
