@@ -27,6 +27,7 @@ import CommunityHome from "./Screens/CommunityHome";
 import Login from "./Screens/Login";
 import Question from "./Screens/Question";
 import PublicCommunity from "./Screens/PublicCommunity";
+import Test from "./Screens/Test";
 
 const Tab = createBottomTabNavigator();
 
@@ -193,6 +194,14 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={PrayerPage}
+          />
+          <Tab.Screen
+            name="Test"
+            options={() => ({
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Test}
           />
           <Tab.Screen
             name="PublicCommunity"

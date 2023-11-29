@@ -697,7 +697,7 @@ export default function Welcome({ navigation }) {
           }
         />
         <TouchableOpacity
-          onPress={() => setFeatureVisible(true)}
+          onPress={() => navigation.navigate("Test")}
           style={
             theme == "dark"
               ? styles.refreshDark

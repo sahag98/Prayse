@@ -8,6 +8,7 @@ import prayerReducer from "./prayerReducer";
 import answeredReducer from "./answeredReducer";
 import favoritesReducer from "./favoritesReducer";
 import notiReducer from "./notiReducer";
+import remindersReducer from "./remindersReducer";
 
 const reducers = combineReducers({
   user: userReducer,
@@ -16,12 +17,21 @@ const reducers = combineReducers({
   answered: answeredReducer,
   favorites: favoritesReducer,
   noti: notiReducer,
+  reminder: remindersReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["user", "folder", "noti", "prayer", "answered", "favorites"],
+  whitelist: [
+    "user",
+    "folder",
+    "noti",
+    "prayer",
+    "answered",
+    "favorites",
+    "reminder",
+  ],
 };
 
 const persReducer = persistReducer(persistConfig, reducers);
