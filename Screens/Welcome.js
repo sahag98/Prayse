@@ -478,7 +478,7 @@ export default function Welcome({ navigation }) {
         theme == "dark"
           ? {
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-between",
               position: "relative",
               alignItems: "center",
               backgroundColor: "#121212",
@@ -487,14 +487,14 @@ export default function Welcome({ navigation }) {
           ? {
               display: "flex",
               position: "relative",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "white",
             }
           : {
               display: "flex",
               position: "relative",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "#F2F7FF",
             }
@@ -573,13 +573,23 @@ export default function Welcome({ navigation }) {
       </View>
       <View style={{ width: "100%" }}>
         <View
-          style={{
-            backgroundColor: "#93d8f8",
-            gap: 10,
-            borderRadius: 10,
-            padding: 10,
-            marginBottom: 10,
-          }}
+          style={
+            theme == "dark"
+              ? {
+                  backgroundColor: "#212121",
+                  gap: 10,
+                  borderRadius: 10,
+                  padding: 10,
+                  marginBottom: 10,
+                }
+              : {
+                  backgroundColor: "#93d8f8",
+                  gap: 10,
+                  borderRadius: 10,
+                  padding: 10,
+                  marginBottom: 10,
+                }
+          }
         >
           <View
             style={{
@@ -588,7 +598,17 @@ export default function Welcome({ navigation }) {
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
+            <Text
+              style={
+                theme == "dark"
+                  ? { fontFamily: "Inter-Medium", fontSize: 16, color: "white" }
+                  : {
+                      fontFamily: "Inter-Medium",
+                      fontSize: 16,
+                      color: "#2f2d51",
+                    }
+              }
+            >
               Prayer Reminders
             </Text>
             <TouchableOpacity
@@ -599,14 +619,34 @@ export default function Welcome({ navigation }) {
               }}
               onPress={() => navigation.navigate("Test")}
             >
-              <Text style={{ fontFamily: "Inter-Medium", color: "#2f2d51" }}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        fontSize: 16,
+                        color: "#A5C9FF",
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        fontSize: 16,
+                        color: "#2f2d51",
+                      }
+                }
+              >
                 Add
               </Text>
-              <Ionicons name="add-circle-outline" size={24} color="black" />
+              <Ionicons
+                name="add-circle-outline"
+                size={30}
+                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+              />
             </TouchableOpacity>
           </View>
           {reminders.length == 0 ? (
-            <Text>No reminders yet!</Text>
+            <Text style={{ color: "grey", fontFamily: "Inter-Regular" }}>
+              No reminders yet!
+            </Text>
           ) : (
             <FlatList
               pagingEnabled
@@ -616,6 +656,20 @@ export default function Welcome({ navigation }) {
               data={reminders}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
+                const timestamp = new Date(item.reminder.time);
+                const options = {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "2-digit",
+                  hour: "numeric",
+                  minute: "numeric",
+                };
+
+                const formattedDate = timestamp.toLocaleString(
+                  "en-US",
+                  options
+                );
+                console.log("time :", formattedDate);
                 return (
                   <View
                     style={
@@ -642,8 +696,51 @@ export default function Welcome({ navigation }) {
                           }
                     }
                   >
-                    <Ionicons name="time-outline" size={24} color="black" />
-                    <Text>{item.message}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Ionicons
+                        name="time-outline"
+                        size={24}
+                        color={theme == "dark" ? "white" : "#2f2d51"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: "Inter-Regular",
+                          color: "grey",
+                        }}
+                      >
+                        {formattedDate}
+                      </Text>
+                    </View>
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              fontFamily: "Inter-Medium",
+                              fontSize: 16,
+                              color: "white",
+                            }
+                          : {
+                              fontFamily: "Inter-Medium",
+                              fontSize: 16,
+                              color: "#2f2d51",
+                            }
+                      }
+                    >
+                      {item.reminder.message}
+                    </Text>
+
+                    <Text
+                      style={{ fontFamily: "Inter-Regular", color: "grey" }}
+                    >
+                      {item.reminder.note}
+                    </Text>
                   </View>
                 );
               }}

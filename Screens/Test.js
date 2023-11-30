@@ -73,7 +73,7 @@ export default function Reminder({ navigation }) {
   // };
 
   const scheduleNotification = async (reminder) => {
-    await Notifications.scheduleNotificationAsync({
+    const identifier = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Reminder",
         body: reminder.message,
@@ -82,6 +82,19 @@ export default function Reminder({ navigation }) {
         date: reminder.time,
       },
     });
+    dispatch(
+      addNewReminder({
+        reminder: reminder,
+        identifier: identifier,
+      })
+    );
+  };
+
+  console.log("reminders :", remindersRedux);
+  const dismissNotification = async (item) => {
+    console.log("dismiss :", item.identifier);
+    dispatch(deleteReminder(item.id));
+    await Notifications.cancelScheduledNotificationAsync(item.identifier);
   };
 
   const addReminder = () => {
@@ -98,6 +111,7 @@ export default function Reminder({ navigation }) {
     if (newReminder.length == 0) {
       return;
     }
+
     const newReminderObj = {
       id: uuid.v4(),
       message: newReminder,
@@ -105,14 +119,14 @@ export default function Reminder({ navigation }) {
       time: combinedDate,
     };
 
-    dispatch(addNewReminder(newReminderObj));
-
-    setReminders([...reminders, newReminderObj]);
     scheduleNotification(newReminderObj);
 
+    setReminders([...reminders, newReminderObj]);
+
     setNewReminder("");
-    setReminderDate(new Date());
-    setReminderTime(new Date());
+    setNewNote("");
+    setReminderDate("");
+    setReminderTime("");
     Keyboard.dismiss();
   };
 
@@ -177,9 +191,19 @@ export default function Reminder({ navigation }) {
       <HeaderView style={{ justifyContent: "space-between", width: "100%" }}>
         <View style={{ flexDirection: "row", gap: 5 }}>
           <TouchableOpacity onPress={clearAll}>
-            <AntDesign name="left" size={24} color="black" />
+            <AntDesign
+              name="left"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
-          <HeaderTitle style={{ color: "#2f2d51", fontFamily: "Inter-Bold" }}>
+          <HeaderTitle
+            style={
+              theme == "dark"
+                ? { color: "white", fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+            }
+          >
             Create Reminder
           </HeaderTitle>
         </View>
@@ -214,28 +238,50 @@ export default function Reminder({ navigation }) {
         }}
       >
         <View
-          style={{
-            backgroundColor: "#93d8f8",
-            width: "100%",
-            padding: 10,
-            borderRadius: 8,
-            gap: 10,
-          }}
+          style={
+            theme == "dark"
+              ? {
+                  backgroundColor: "#212121",
+                  width: "100%",
+                  padding: 10,
+                  borderRadius: 8,
+                  gap: 10,
+                }
+              : {
+                  backgroundColor: "#93d8f8",
+                  width: "100%",
+                  padding: 10,
+                  borderRadius: 8,
+                  gap: 10,
+                }
+          }
         >
           <TextInput
-            style={{ minHeight: 30 }}
-            placeholderTextColor={"#2f2d51"}
+            style={
+              theme == "dark"
+                ? { minHeight: 30, color: "white" }
+                : { minHeight: 30, color: "#2f2d51" }
+            }
+            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
             placeholder="Title"
             textAlignVertical="top"
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
           />
           <View
-            style={{ width: "100%", backgroundColor: "#2f2d51", height: 0.5 }}
+            style={
+              theme == "dark"
+                ? { width: "100%", backgroundColor: "grey", height: 0.5 }
+                : { width: "100%", backgroundColor: "#2f2d51", height: 0.5 }
+            }
           />
           <TextInput
-            placeholderTextColor={"#2f2d51"}
-            style={{ minHeight: 50 }}
+            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
+            style={
+              theme == "dark"
+                ? { minHeight: 50, color: "white" }
+                : { minHeight: 50, color: "#2f2d51" }
+            }
             placeholder="Notes"
             multiline={true}
             textAlignVertical="top"
@@ -246,14 +292,21 @@ export default function Reminder({ navigation }) {
         </View>
 
         <View
-          style={[
-            {
-              backgroundColor: "#93d8f8",
-              padding: 10,
-              gap: 5,
-              borderRadius: 8,
-            },
-          ]}
+          style={
+            theme == "dark"
+              ? {
+                  backgroundColor: "#212121",
+                  padding: 10,
+                  gap: 5,
+                  borderRadius: 8,
+                }
+              : {
+                  backgroundColor: "#93d8f8",
+                  padding: 10,
+                  gap: 5,
+                  borderRadius: 8,
+                }
+          }
         >
           <TouchableOpacity
             onPress={showDatePicker}
@@ -265,16 +318,40 @@ export default function Reminder({ navigation }) {
               padding: 5,
             }}
           >
-            <View>
-              <Text>Date</Text>
+            <View style={{ gap: 5 }}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? { fontFamily: "Inter-Medium", color: "white" }
+                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                }
+              >
+                Date
+              </Text>
               {reminderDate.toString().length > 0 && (
-                <Text>{reminderDate.toDateString()}</Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Regular", color: "grey" }
+                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                  }
+                >
+                  {reminderDate.toDateString()}
+                </Text>
               )}
             </View>
-            <AntDesign name="right" size={24} color="black" />
+            <AntDesign
+              name="right"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
           <View
-            style={{ width: "100%", backgroundColor: "#2f2d51", height: 0.5 }}
+            style={
+              theme == "dark"
+                ? { width: "100%", backgroundColor: "grey", height: 0.5 }
+                : { width: "100%", backgroundColor: "#2f2d51", height: 0.5 }
+            }
           />
           <TouchableOpacity
             onPress={showTimePicker}
@@ -286,10 +363,24 @@ export default function Reminder({ navigation }) {
               padding: 5,
             }}
           >
-            <View>
-              <Text>Time</Text>
+            <View style={{ gap: 5 }}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? { fontFamily: "Inter-Medium", color: "white" }
+                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                }
+              >
+                Time
+              </Text>
               {reminderTime.toString().length > 0 && (
-                <Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Regular", color: "grey" }
+                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                  }
+                >
                   {new Date(reminderTime).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -297,7 +388,11 @@ export default function Reminder({ navigation }) {
                 </Text>
               )}
             </View>
-            <AntDesign name="right" size={24} color="black" />
+            <AntDesign
+              name="right"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
         </View>
         <DateTimePickerModal
@@ -314,7 +409,7 @@ export default function Reminder({ navigation }) {
           onCancel={hideTimePicker}
         />
       </View>
-      {/* <Text>Reminders:</Text>
+      <Text>Reminders:</Text>
       <View style={{ flex: 1 }}>
         <FlatList
           data={remindersRedux}
@@ -322,17 +417,15 @@ export default function Reminder({ navigation }) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View>
-              <Text>{item.message}</Text>
-              <Text>{item.time.toString()}</Text>
-              <TouchableOpacity
-                onPress={() => dispatch(deleteReminder(item.id))}
-              >
+              <Text>{item.reminder.message}</Text>
+              {/* <Text>{item.time.toString()}</Text> */}
+              <TouchableOpacity onPress={() => dismissNotification(item)}>
                 <Text>Delete</Text>
               </TouchableOpacity>
             </View>
           )}
         />
-      </View> */}
+      </View>
     </Container>
   );
 }
