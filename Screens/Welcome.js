@@ -605,46 +605,50 @@ export default function Welcome({ navigation }) {
               <Ionicons name="add-circle-outline" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <FlatList
-            pagingEnabled
-            snapToInterval={ITEM_WIDTH}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={reminders}
-            keyExtractor={(e, i) => i.toString()}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={
-                    theme == "dark"
-                      ? {
-                          borderWidth: 1,
-                          padding: 10,
-                          marginRight: 15,
-                          gap: 5,
-                          borderRadius: 10,
-                          justifyContent: "space-between",
-                          backgroundColor: "#121212",
-                          width: ITEM_WIDTH,
-                        }
-                      : {
-                          borderWidth: 1,
-                          marginRight: 15,
-                          gap: 5,
-                          justifyContent: "space-between",
-                          padding: 10,
-                          borderRadius: 10,
-                          backgroundColor: "#f2f7ff",
-                          width: ITEM_WIDTH,
-                        }
-                  }
-                >
-                  <Ionicons name="time-outline" size={24} color="black" />
-                  <Text>{item.message}</Text>
-                </View>
-              );
-            }}
-          />
+          {reminders.length == 0 ? (
+            <Text>No reminders yet!</Text>
+          ) : (
+            <FlatList
+              pagingEnabled
+              snapToInterval={ITEM_WIDTH}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={reminders}
+              keyExtractor={(e, i) => i.toString()}
+              renderItem={({ item }) => {
+                return (
+                  <View
+                    style={
+                      theme == "dark"
+                        ? {
+                            borderWidth: 1,
+                            padding: 10,
+                            marginRight: 15,
+                            gap: 5,
+                            borderRadius: 10,
+                            justifyContent: "space-between",
+                            backgroundColor: "#121212",
+                            width: ITEM_WIDTH,
+                          }
+                        : {
+                            borderWidth: 1,
+                            marginRight: 15,
+                            gap: 5,
+                            justifyContent: "space-between",
+                            padding: 10,
+                            borderRadius: 10,
+                            backgroundColor: "#f2f7ff",
+                            width: ITEM_WIDTH,
+                          }
+                    }
+                  >
+                    <Ionicons name="time-outline" size={24} color="black" />
+                    <Text>{item.message}</Text>
+                  </View>
+                );
+              }}
+            />
+          )}
         </View>
         {/* <Text
           style={
