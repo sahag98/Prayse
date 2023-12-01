@@ -395,6 +395,11 @@ export default function Welcome({ navigation }) {
     }
   }, [isFocused]);
 
+  const dismissNotification = async (item) => {
+    dispatch(deleteReminder(item.id));
+    await Notifications.cancelScheduledNotificationAsync(item.identifier);
+  };
+
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => sendToken(token).then(console.log("token sent")))
@@ -478,7 +483,7 @@ export default function Welcome({ navigation }) {
         theme == "dark"
           ? {
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "",
               position: "relative",
               alignItems: "center",
               backgroundColor: "#121212",
@@ -494,7 +499,7 @@ export default function Welcome({ navigation }) {
           : {
               display: "flex",
               position: "relative",
-              justifyContent: "space-between",
+              justifyContent: "",
               alignItems: "center",
               backgroundColor: "#F2F7FF",
             }
@@ -577,17 +582,19 @@ export default function Welcome({ navigation }) {
             theme == "dark"
               ? {
                   backgroundColor: "#212121",
+                  marginVertical: 10,
                   gap: 10,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 10,
+                  marginBottom: 25,
                 }
               : {
                   backgroundColor: "#93d8f8",
                   gap: 10,
+                  marginVertical: 10,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 10,
+                  marginBottom: 25,
                 }
           }
         >
@@ -675,7 +682,6 @@ export default function Welcome({ navigation }) {
                     style={
                       theme == "dark"
                         ? {
-                            borderWidth: 1,
                             padding: 10,
                             marginRight: 15,
                             gap: 5,
@@ -685,7 +691,6 @@ export default function Welcome({ navigation }) {
                             width: ITEM_WIDTH,
                           }
                         : {
-                            borderWidth: 1,
                             marginRight: 15,
                             gap: 5,
                             justifyContent: "space-between",
@@ -700,7 +705,7 @@ export default function Welcome({ navigation }) {
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        gap: 5,
                       }}
                     >
                       <Ionicons
@@ -737,10 +742,22 @@ export default function Welcome({ navigation }) {
                     </Text>
 
                     <Text
-                      style={{ fontFamily: "Inter-Regular", color: "grey" }}
+                      style={{
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                        color: "grey",
+                      }}
                     >
                       {item.reminder.note}
                     </Text>
+                    <TouchableOpacity
+                      onPress={() => dismissNotification(item)}
+                      style={{ alignSelf: "flex-end" }}
+                    >
+                      <Text style={{ fontSize: 13, color: "#ff3b3b" }}>
+                        Delete
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 );
               }}
@@ -858,14 +875,16 @@ export default function Welcome({ navigation }) {
         featureVisible={featureVisible}
       />
       <View
-        style={notiVisible ? { width: "100%", zIndex: -10 } : { width: "100%" }}
+        style={
+          notiVisible
+            ? { width: "100%", zIndex: -10 }
+            : { width: "100%", gap: 2 }
+        }
       >
         <Text
           style={
             theme == "dark"
               ? { color: "white", fontFamily: "Inter-Medium", fontSize: 15 }
-              : theme == "BlackWhite"
-              ? { color: "black", fontFamily: "Inter-Medium", fontSize: 15 }
               : { color: "#2f2d51", fontFamily: "Inter-Medium", fontSize: 15 }
           }
         >
@@ -1605,8 +1624,8 @@ const styles = StyleSheet.create({
     marginTop: 25,
     width: 160,
     backgroundColor: "#2f2d51",
-    padding: 14,
-    borderRadius: 50,
+    padding: 16,
+    borderRadius: 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -1616,8 +1635,8 @@ const styles = StyleSheet.create({
     marginTop: 25,
     width: 160,
     backgroundColor: "#A5C9FF",
-    padding: 14,
-    borderRadius: 50,
+    padding: 16,
+    borderRadius: 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

@@ -8,6 +8,8 @@ import {
   Keyboard,
   Animated,
   TouchableOpacity,
+  StyleSheet,
+  Switch,
 } from "react-native";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -16,9 +18,6 @@ import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewReminder, deleteReminder } from "../redux/remindersReducer";
-import { useRef } from "react";
-import { StyleSheet } from "react-native";
-import { Easing } from "react-native";
 // import * as Permissions from "expo-permissions";
 
 export default function Reminder({ navigation }) {
@@ -31,31 +30,10 @@ export default function Reminder({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const remindersRedux = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();
-  const slideAnimation = useRef(new Animated.Value(0)).current;
-
-  const togglePickerVisibility = () => {
-    const toValue = slideAnimation._value === 0 ? 1 : 0;
-
-    Animated.timing(slideAnimation, {
-      toValue,
-      duration: 300,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true,
-    }).start(() => {
-      if (toValue === 0) {
-        // Add a delay before resetting opacity to 0 when closing
-        setTimeout(() => {
-          Animated.timing(slideAnimation, {
-            toValue: 0,
-            duration: 0,
-            useNativeDriver: true,
-          }).start();
-        }, 300);
-      }
-    });
-  };
 
   // useEffect(() => {
   //   registerForPushNotifications();
@@ -72,14 +50,18 @@ export default function Reminder({ navigation }) {
   //   console.log("Expo Push Token:", pushToken);
   // };
 
-  const scheduleNotification = async (reminder) => {
+  const scheduleNotification = async (reminder, hour, minute) => {
+    console.log("hour :", hour);
+    console.log("minute :", minute);
     const identifier = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Reminder",
         body: reminder.message,
       },
       trigger: {
-        date: reminder.time,
+        hour: hour,
+        minute: minute,
+        repeats: true,
       },
     });
     dispatch(
@@ -106,6 +88,9 @@ export default function Reminder({ navigation }) {
       reminderTime.getMinutes()
     );
 
+    console.log(reminderTime.getHours());
+    // console.log("time :", reminderTime);
+
     console.log("combined date :", combinedDate);
 
     if (newReminder.length == 0) {
@@ -119,7 +104,11 @@ export default function Reminder({ navigation }) {
       time: combinedDate,
     };
 
-    scheduleNotification(newReminderObj);
+    scheduleNotification(
+      newReminderObj,
+      reminderTime.getHours(),
+      reminderTime.getMinutes()
+    );
 
     setReminders([...reminders, newReminderObj]);
 
@@ -140,22 +129,18 @@ export default function Reminder({ navigation }) {
   };
   const showDatePicker = () => {
     setDatePickerVisibility(true);
-    togglePickerVisibility();
   };
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
-    togglePickerVisibility();
   };
 
   const showTimePicker = () => {
     setTimePickerVisibility(true);
-    togglePickerVisibility();
   };
 
   const hideTimePicker = () => {
     setTimePickerVisibility(false);
-    togglePickerVisibility();
   };
 
   const handleDateConfirm = (date) => {
@@ -395,6 +380,33 @@ export default function Reminder({ navigation }) {
             />
           </TouchableOpacity>
         </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#212121",
+            borderRadius: 13,
+            padding: 8,
+          }}
+        >
+          <Text
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Regular", color: "white" }
+                : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+            }
+          >
+            Repeat
+          </Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="date"
@@ -407,23 +419,6 @@ export default function Reminder({ navigation }) {
           mode="time"
           onConfirm={handleTimeConfirm}
           onCancel={hideTimePicker}
-        />
-      </View>
-      <Text>Reminders:</Text>
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={remindersRedux}
-          style={{ height: 100 }}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View>
-              <Text>{item.reminder.message}</Text>
-              {/* <Text>{item.time.toString()}</Text> */}
-              <TouchableOpacity onPress={() => dismissNotification(item)}>
-                <Text>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         />
       </View>
     </Container>
