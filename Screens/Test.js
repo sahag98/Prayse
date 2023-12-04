@@ -30,8 +30,8 @@ export default function Reminder({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [isRepeat, setIsRepeat] = useState(false);
+  const toggleSwitch = () => setIsRepeat((previousState) => !previousState);
   const remindersRedux = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();
 
@@ -50,18 +50,21 @@ export default function Reminder({ navigation }) {
   //   console.log("Expo Push Token:", pushToken);
   // };
 
-  const scheduleNotification = async (reminder, hour, minute) => {
-    console.log("hour :", hour);
-    console.log("minute :", minute);
+  const scheduleNotification = async (reminder, combinedDate) => {
+    console.log(combinedDate.getDay());
+    // console.log("minute :", minute);
+    console.log("Repeating ?", isRepeat);
     const identifier = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Reminder",
         body: reminder.message,
       },
       trigger: {
-        hour: hour,
-        minute: minute,
-        repeats: true,
+        weekday: combinedDate.getDay() + 1,
+        // day: combinedDate.getDay(),
+        hour: combinedDate.getHours(),
+        minute: combinedDate.getMinutes(),
+        repeats: isRepeat,
       },
     });
     dispatch(
@@ -88,10 +91,7 @@ export default function Reminder({ navigation }) {
       reminderTime.getMinutes()
     );
 
-    console.log(reminderTime.getHours());
     // console.log("time :", reminderTime);
-
-    console.log("combined date :", combinedDate);
 
     if (newReminder.length == 0) {
       return;
@@ -106,8 +106,9 @@ export default function Reminder({ navigation }) {
 
     scheduleNotification(
       newReminderObj,
-      reminderTime.getHours(),
-      reminderTime.getMinutes()
+      combinedDate
+      // reminderTime.getHours(),
+      // reminderTime.getMinutes()
     );
 
     setReminders([...reminders, newReminderObj]);
@@ -116,6 +117,7 @@ export default function Reminder({ navigation }) {
     setNewNote("");
     setReminderDate("");
     setReminderTime("");
+    setIsRepeat(false);
     Keyboard.dismiss();
   };
 
@@ -199,9 +201,17 @@ export default function Reminder({ navigation }) {
         >
           <Text
             style={
-              newReminder.length == 0
-                ? { fontSize: 18, fontFamily: "Inter-Bold", color: "grey" }
-                : { fontSize: 18, fontFamily: "Inter-Bold", color: "#2f2d51" }
+              newReminder.length === 0
+                ? {
+                    fontSize: 18,
+                    fontFamily: "Inter-Bold",
+                    color: theme == "dark" ? "grey" : "grey",
+                  }
+                : {
+                    fontSize: 18,
+                    fontFamily: "Inter-Bold",
+                    color: theme == "light" ? "#2f2d51" : "#A5C9FF",
+                  }
             }
           >
             Add
@@ -209,7 +219,15 @@ export default function Reminder({ navigation }) {
           <Entypo
             name="plus"
             size={30}
-            color={newReminder.length == 0 ? "grey" : "#2f2d51"}
+            color={
+              newReminder.length == 0
+                ? theme == "dark"
+                  ? "grey"
+                  : "grey"
+                : theme == "light"
+                ? "#2f2d51"
+                : "#A5C9FF"
+            }
           />
         </TouchableOpacity>
       </HeaderView>
@@ -380,31 +398,43 @@ export default function Reminder({ navigation }) {
             />
           </TouchableOpacity>
         </View>
+
         <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: "#212121",
-            borderRadius: 13,
-            padding: 8,
-          }}
+          style={
+            theme == "dark"
+              ? {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  backgroundColor: "#212121",
+                  borderRadius: 13,
+                  padding: 8,
+                }
+              : {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  backgroundColor: "#93d8f8",
+                  borderRadius: 13,
+                  padding: 8,
+                }
+          }
         >
           <Text
             style={
               theme == "dark"
-                ? { fontFamily: "Inter-Regular", color: "white" }
-                : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                ? { fontFamily: "Inter-Medium", color: "white" }
+                : { fontFamily: "Inter-Medium", color: "#2f2d51" }
             }
           >
             Repeat
           </Text>
           <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+            trackColor={{ false: "#767577", true: "#767577" }}
+            thumbColor={isRepeat ? "#4eff4e" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
-            value={isEnabled}
+            value={isRepeat}
           />
         </View>
         <DateTimePickerModal

@@ -64,6 +64,7 @@ import { nativeApplicationVersion } from "expo-application";
 import UpdateModal from "../components/UpdateModal";
 import { useSupabase } from "../context/useSupabase";
 import { Dimensions } from "react-native";
+import { deleteReminder } from "../redux/remindersReducer";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -877,7 +878,7 @@ export default function Welcome({ navigation }) {
       <View
         style={
           notiVisible
-            ? { width: "100%", zIndex: -10 }
+            ? { width: "100%", zIndex: -10, gap: 2 }
             : { width: "100%", gap: 2 }
         }
       >
