@@ -7,6 +7,7 @@ import {
   FlatList,
   Keyboard,
   Animated,
+  Image,
   TouchableOpacity,
   StyleSheet,
   Switch,
@@ -18,6 +19,8 @@ import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewReminder, deleteReminder } from "../redux/remindersReducer";
+import calendar from "../assets/calendar.png";
+import time from "../assets/time.png";
 // import * as Permissions from "expo-permissions";
 
 export default function Reminder({ navigation }) {
@@ -27,6 +30,7 @@ export default function Reminder({ navigation }) {
   const [newNote, setNewNote] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [repeatOption, setRepeatOption] = useState("");
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
@@ -51,35 +55,52 @@ export default function Reminder({ navigation }) {
   // };
 
   const scheduleNotification = async (reminder, combinedDate) => {
-    console.log(combinedDate.getDay());
     // console.log("minute :", minute);
     console.log("Repeating ?", isRepeat);
-    const identifier = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Reminder",
-        body: reminder.message,
-      },
-      trigger: {
-        weekday: combinedDate.getDay() + 1,
-        // day: combinedDate.getDay(),
-        hour: combinedDate.getHours(),
-        minute: combinedDate.getMinutes(),
-        repeats: isRepeat,
-      },
-    });
-    dispatch(
-      addNewReminder({
-        reminder: reminder,
-        identifier: identifier,
-      })
-    );
-  };
 
-  console.log("reminders :", remindersRedux);
-  const dismissNotification = async (item) => {
-    console.log("dismiss :", item.identifier);
-    dispatch(deleteReminder(item.id));
-    await Notifications.cancelScheduledNotificationAsync(item.identifier);
+    if (repeatOption == "daily") {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Reminder",
+          body: reminder.message,
+        },
+        trigger: {
+          // weekday: combinedDate.getDay() + 1,
+          // day: combinedDate.getDay(),
+          hour: combinedDate.getHours(),
+          minute: combinedDate.getMinutes(),
+          repeats: isRepeat,
+        },
+      });
+
+      dispatch(
+        addNewReminder({
+          reminder: reminder,
+          identifier: identifier,
+        })
+      );
+    } else {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Reminder",
+          body: reminder.message,
+        },
+        trigger: {
+          weekday: combinedDate.getDay() + 1,
+          // day: combinedDate.getDay(),
+          hour: combinedDate.getHours(),
+          minute: combinedDate.getMinutes(),
+          repeats: isRepeat,
+        },
+      });
+
+      dispatch(
+        addNewReminder({
+          reminder: reminder,
+          identifier: identifier,
+        })
+      );
+    }
   };
 
   const addReminder = () => {
@@ -130,6 +151,7 @@ export default function Reminder({ navigation }) {
     navigation.navigate("Home");
   };
   const showDatePicker = () => {
+    Keyboard.dismiss();
     setDatePickerVisibility(true);
   };
 
@@ -138,6 +160,13 @@ export default function Reminder({ navigation }) {
   };
 
   const showTimePicker = () => {
+    console.log("date :", reminderDate.length);
+    if (reminderDate.length == 0) {
+      console.log("no date selected");
+      let today = new Date();
+      setReminderDate(today);
+      console.log(today);
+    }
     setTimePickerVisibility(true);
   };
 
@@ -322,15 +351,27 @@ export default function Reminder({ navigation }) {
             }}
           >
             <View style={{ gap: 5 }}>
-              <Text
-                style={
-                  theme == "dark"
-                    ? { fontFamily: "Inter-Medium", color: "white" }
-                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                }
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                Date
-              </Text>
+                <Image
+                  style={
+                    theme == "dark"
+                      ? [styles.img, { tintColor: "#f1d592" }]
+                      : [styles.img, { tintColor: "#dda41c" }]
+                  }
+                  source={calendar}
+                />
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Medium", color: "white" }
+                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                  }
+                >
+                  Date
+                </Text>
+              </View>
               {reminderDate.toString().length > 0 && (
                 <Text
                   style={
@@ -367,15 +408,27 @@ export default function Reminder({ navigation }) {
             }}
           >
             <View style={{ gap: 5 }}>
-              <Text
-                style={
-                  theme == "dark"
-                    ? { fontFamily: "Inter-Medium", color: "white" }
-                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                }
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                Time
-              </Text>
+                <Image
+                  style={
+                    theme == "dark"
+                      ? [styles.img, { tintColor: "#A5C9FF" }]
+                      : [styles.img, { tintColor: "#438eff" }]
+                  }
+                  source={time}
+                />
+                <Text
+                  style={
+                    theme == "dark"
+                      ? { fontFamily: "Inter-Medium", color: "white" }
+                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                  }
+                >
+                  Time
+                </Text>
+              </View>
               {reminderTime.toString().length > 0 && (
                 <Text
                   style={
@@ -437,6 +490,98 @@ export default function Reminder({ navigation }) {
             value={isRepeat}
           />
         </View>
+        {isRepeat && (
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 20,
+              marginTop: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setRepeatOption("daily")}
+              style={{
+                gap: 10,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={
+                  theme == "dark"
+                    ? {
+                        width: 20,
+                        borderWidth: 2,
+                        borderColor: "white",
+                        height: 20,
+                        borderRadius: 100,
+                        backgroundColor:
+                          repeatOption === "daily" ? "#75ff75" : "#3e3e3e",
+                      }
+                    : {
+                        width: 20,
+                        borderWidth: 2,
+                        borderColor: "#2f2d51",
+                        height: 20,
+                        borderRadius: 100,
+                        backgroundColor:
+                          repeatOption === "daily" ? "#4eff4e" : "white",
+                      }
+                }
+              />
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontFamily: "Inter-Medium" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                }
+              >
+                Daily
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setRepeatOption("weekly")}
+              style={{
+                gap: 10,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={
+                  theme == "dark"
+                    ? {
+                        width: 20,
+                        borderWidth: 2,
+                        borderColor: "white",
+                        height: 20,
+                        borderRadius: 100,
+                        backgroundColor:
+                          repeatOption === "weekly" ? "#75ff75" : "#3e3e3e",
+                      }
+                    : {
+                        width: 20,
+                        borderWidth: 2,
+                        borderColor: "#2f2d51",
+                        height: 20,
+                        borderRadius: 100,
+                        backgroundColor:
+                          repeatOption === "weekly" ? "#4eff4e" : "white",
+                      }
+                }
+              />
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontFamily: "Inter-Medium" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                }
+              >
+                Weekly
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="date"
@@ -456,5 +601,8 @@ export default function Reminder({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  pickerContainer: {},
+  img: {
+    width: 25,
+    height: 25,
+  },
 });

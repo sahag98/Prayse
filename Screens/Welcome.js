@@ -65,6 +65,7 @@ import UpdateModal from "../components/UpdateModal";
 import { useSupabase } from "../context/useSupabase";
 import { Dimensions } from "react-native";
 import { deleteReminder } from "../redux/remindersReducer";
+import axios from "axios";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -263,6 +264,7 @@ export default function Welcome({ navigation }) {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (
@@ -1195,6 +1197,7 @@ export default function Welcome({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
+      {/* {image && <Image source={{ uri: image }} style={styles.image} />} */}
       <View
         style={{
           marginBottom: 15,
@@ -1472,6 +1475,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    marginBottom: 10,
   },
   section: {
     backgroundColor: "#a6c8ff",
