@@ -2,28 +2,26 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Button,
   TextInput,
-  FlatList,
   Keyboard,
-  Animated,
   Image,
   TouchableOpacity,
   StyleSheet,
   Switch,
 } from "react-native";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Feather, Entypo } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Notifications from "expo-notifications";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewReminder, deleteReminder } from "../redux/remindersReducer";
+import { addNewReminder } from "../redux/remindersReducer";
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
-// import * as Permissions from "expo-permissions";
+import { useIsFocused } from "@react-navigation/native";
 
-export default function Reminder({ navigation }) {
+export default function Reminder({ route, navigation }) {
+  const isFocus = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
@@ -35,9 +33,18 @@ export default function Reminder({ navigation }) {
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
   const [isRepeat, setIsRepeat] = useState(false);
-  const toggleSwitch = () => setIsRepeat((previousState) => !previousState);
-  const remindersRedux = useSelector((state) => state.reminder.reminders);
+  const toggleSwitch = () => {
+    setIsRepeat((previousState) => !previousState);
+    setRepeatOption("");
+  };
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (route.params != undefined) {
+      console.log("reminder: ", route.params.reminder);
+      setNewReminder(route.params.reminder);
+    }
+  }, [isFocus]);
 
   // useEffect(() => {
   //   registerForPushNotifications();
@@ -57,7 +64,7 @@ export default function Reminder({ navigation }) {
   const scheduleNotification = async (reminder, combinedDate) => {
     // console.log("minute :", minute);
     console.log("Repeating ?", isRepeat);
-
+    console.log(repeatOption);
     if (repeatOption == "daily") {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
@@ -77,6 +84,29 @@ export default function Reminder({ navigation }) {
         addNewReminder({
           reminder: reminder,
           identifier: identifier,
+          ocurrence: "Daily",
+        })
+      );
+    } else if (repeatOption == "weekly") {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Reminder",
+          body: reminder.message,
+        },
+        trigger: {
+          weekday: combinedDate.getDay() + 1,
+          // day: combinedDate.getDay(),
+          hour: combinedDate.getHours(),
+          minute: combinedDate.getMinutes(),
+          repeats: isRepeat,
+        },
+      });
+
+      dispatch(
+        addNewReminder({
+          reminder: reminder,
+          identifier: identifier,
+          ocurrence: "Weekly",
         })
       );
     } else {
@@ -98,6 +128,7 @@ export default function Reminder({ navigation }) {
         addNewReminder({
           reminder: reminder,
           identifier: identifier,
+          ocurrence: "None",
         })
       );
     }
@@ -138,6 +169,7 @@ export default function Reminder({ navigation }) {
     setNewNote("");
     setReminderDate("");
     setReminderTime("");
+    setRepeatOption("");
     setIsRepeat(false);
     Keyboard.dismiss();
   };
@@ -147,6 +179,8 @@ export default function Reminder({ navigation }) {
     setDatePickerVisibility(false);
     setTimePickerVisibility(false);
     setReminderDate("");
+    setNewNote("");
+    setRepeatOption("");
     setReminderTime("");
     navigation.navigate("Home");
   };
@@ -167,6 +201,7 @@ export default function Reminder({ navigation }) {
       setReminderDate(today);
       console.log(today);
     }
+    setReminderTime(Date.now());
     setTimePickerVisibility(true);
   };
 
@@ -176,6 +211,7 @@ export default function Reminder({ navigation }) {
 
   const handleDateConfirm = (date) => {
     hideDatePicker();
+
     setReminderDate(date);
   };
 
@@ -296,6 +332,8 @@ export default function Reminder({ navigation }) {
             }
             placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
             placeholder="Title"
+            multiline={true}
+            autoFocus={route?.params?.reminder.length > 0 ? true : false}
             textAlignVertical="top"
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
@@ -460,7 +498,7 @@ export default function Reminder({ navigation }) {
                   alignItems: "center",
                   justifyContent: "space-between",
                   backgroundColor: "#212121",
-                  borderRadius: 13,
+                  borderRadius: 8,
                   padding: 8,
                 }
               : {
@@ -468,7 +506,7 @@ export default function Reminder({ navigation }) {
                   alignItems: "center",
                   justifyContent: "space-between",
                   backgroundColor: "#93d8f8",
-                  borderRadius: 13,
+                  borderRadius: 8,
                   padding: 8,
                 }
           }
@@ -511,7 +549,7 @@ export default function Reminder({ navigation }) {
                   theme == "dark"
                     ? {
                         width: 20,
-                        borderWidth: 2,
+                        borderWidth: 3,
                         borderColor: "white",
                         height: 20,
                         borderRadius: 100,
@@ -520,7 +558,7 @@ export default function Reminder({ navigation }) {
                       }
                     : {
                         width: 20,
-                        borderWidth: 2,
+                        borderWidth: 3,
                         borderColor: "#2f2d51",
                         height: 20,
                         borderRadius: 100,
@@ -552,7 +590,7 @@ export default function Reminder({ navigation }) {
                   theme == "dark"
                     ? {
                         width: 20,
-                        borderWidth: 2,
+                        borderWidth: 3,
                         borderColor: "white",
                         height: 20,
                         borderRadius: 100,
@@ -561,7 +599,7 @@ export default function Reminder({ navigation }) {
                       }
                     : {
                         width: 20,
-                        borderWidth: 2,
+                        borderWidth: 3,
                         borderColor: "#2f2d51",
                         height: 20,
                         borderRadius: 100,
@@ -582,6 +620,35 @@ export default function Reminder({ navigation }) {
             </TouchableOpacity>
           </View>
         )}
+        <View style={{ marginTop: "auto", marginBottom: 30 }}>
+          <Text
+            onPress={() => navigation.navigate("Settings")}
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontSize: 13,
+                    textAlign: "center",
+                    fontFamily: "Inter-Regular",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 13,
+                    textAlign: "center",
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            To receive the reminders, make sure to enable notifications in both
+            your phone and Prayse settings{" "}
+            <Feather
+              name="external-link"
+              size={14}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+            .
+          </Text>
+        </View>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="date"

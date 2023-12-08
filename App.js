@@ -6,6 +6,7 @@ import { store } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Buffer } from "buffer";
 global.Buffer = Buffer;
+
 import { persistStore } from "redux-persist";
 import Navigation from "./Navigation";
 import "react-native-url-polyfill/auto";

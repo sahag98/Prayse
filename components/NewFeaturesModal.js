@@ -13,7 +13,7 @@ import Animated, {
 
 import { useRef } from "react";
 
-import community from "../assets/community.png";
+import remind from "../assets/remind.png";
 
 import quest2 from "../assets/quest2.png";
 
@@ -87,14 +87,15 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
                     color: "#A5C9FF",
-                    fontSize: 20,
+                    fontSize: 25,
+                    letterSpacing: 1,
                     marginBottom: 10,
                   }
                 : {
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
                     color: "#2f2d51",
-                    fontSize: 20,
+                    fontSize: 25,
                     marginBottom: 10,
                   }
             }
@@ -106,26 +107,26 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Animated.Image
                   entering={FadeIn.duration(500)}
-                  style={styles.img}
-                  source={theme == "dark" ? community : community}
+                  style={[styles.img, { tintColor: "#ffa500" }]}
+                  source={theme == "dark" ? remind : remind}
                 />
 
                 <Text
                   style={
                     theme == "dark"
                       ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 17,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 20,
                           color: "white",
                         }
                       : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 17,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 20,
                           color: "#2f2d51",
                         }
                   }
                 >
-                  Community 2.0
+                  Prayer Reminders
                 </Text>
                 <Text
                   style={
@@ -142,7 +143,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  A place to connect and pray for one another.
+                  Setup and customize daily or weekly prayer reminders.
                 </Text>
 
                 <View
@@ -150,10 +151,11 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                     flexDirection: "row",
                     alignItems: "center",
                     width: "100%",
+                    marginTop: 10,
                     justifyContent: "space-between",
                   }}
                 >
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={
                       theme == "dark"
                         ? {
@@ -185,12 +187,12 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                     >
                       Exit
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                     style={
                       theme == "dark"
                         ? {
-                            width: "45%",
+                            width: "100%",
                             backgroundColor: "#A5C9FF",
 
                             borderWidth: 1,
@@ -200,7 +202,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                             alignItems: "center",
                           }
                         : {
-                            width: "45%",
+                            width: "100%",
                             backgroundColor: "#2f2d51",
                             padding: 15,
                             borderRadius: 10,
@@ -208,7 +210,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                             alignItems: "center",
                           }
                     }
-                    onPress={onNextPage}
+                    onPress={StartOver}
                   >
                     <Text
                       style={
@@ -217,7 +219,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
                     >
-                      Next
+                      Got it
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -600,7 +602,7 @@ const styles = StyleSheet.create({
   img: {
     borderRadius: 10,
     marginVertical: 10,
-    width: "100%",
-    height: 300,
+    width: 250,
+    height: 250,
   },
 });

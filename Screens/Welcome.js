@@ -66,6 +66,7 @@ import { useSupabase } from "../context/useSupabase";
 import { Dimensions } from "react-native";
 import { deleteReminder } from "../redux/remindersReducer";
 import axios from "axios";
+import ReminderModal from "../components/ReminderModal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -252,7 +253,7 @@ export default function Welcome({ navigation }) {
   const [quickprayervalue, setQuickprayervalue] = useState("");
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
   const [notiVisible, setNotiVisible] = useState(false);
-
+  const [reminderVisible, setReminderVisible] = useState(false);
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -349,8 +350,8 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="sun"
-            size={26}
-            color={theme == "dark" ? "#d8d800" : "#ffff27"}
+            size={30}
+            color={theme == "dark" ? "#d8d800" : "#d8d800"}
           />
         );
       } else if (currentHour >= 12 && currentHour < 18) {
@@ -358,8 +359,8 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="sun"
-            size={26}
-            color={theme == "dark" ? "#d8d800" : "#c4c400"}
+            size={30}
+            color={theme == "dark" ? "#d8d800" : "#d8d800"}
           />
         );
       } else {
@@ -367,7 +368,7 @@ export default function Welcome({ navigation }) {
         setIcon(
           <Feather
             name="moon"
-            size={26}
+            size={30}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
           />
         );
@@ -399,7 +400,10 @@ export default function Welcome({ navigation }) {
   }, [isFocused]);
 
   const dismissNotification = async (item) => {
-    dispatch(deleteReminder(item.id));
+    // const all = await Notifications.getAllScheduledNotificationsAsync();
+    // console.log("all notis:", all);
+    // await Notifications.cancelAllScheduledNotificationsAsync();
+    dispatch(deleteReminder(item.reminder.id));
     await Notifications.cancelScheduledNotificationAsync(item.identifier);
   };
 
@@ -409,12 +413,21 @@ export default function Welcome({ navigation }) {
       .catch((err) => console.log(err));
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        let date = moment(notification.date);
+        let date = Date();
+        const formattedDate = date.toLocaleString("en-US", {
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
         console.log("notification recieved: ", notification.request.identifier);
         dispatch(
           addNoti({
             noti_id: uuid.v4(),
-            date: date.format("M/D/YYYY h:mm A"),
+            date: formattedDate,
             notification: notification.request.content.body,
             screen: notification.request.content.data.screen,
             identifier: notification.request.identifier,
@@ -579,25 +592,27 @@ export default function Welcome({ navigation }) {
           </Badge>
         </View>
       </View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", flex: 1 }}>
         <View
           style={
             theme == "dark"
               ? {
                   backgroundColor: "#212121",
-                  marginVertical: 10,
+                  flex: 1,
+                  marginVertical: 5,
                   gap: 10,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 25,
+                  marginBottom: 20,
                 }
               : {
                   backgroundColor: "#93d8f8",
                   gap: 10,
-                  marginVertical: 10,
+                  flex: 1,
+                  marginVertical: 5,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 25,
+                  marginBottom: 20,
                 }
           }
         >
@@ -611,10 +626,10 @@ export default function Welcome({ navigation }) {
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Medium", fontSize: 16, color: "white" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 17, color: "white" }
                   : {
-                      fontFamily: "Inter-Medium",
-                      fontSize: 16,
+                      fontFamily: "Inter-Bold",
+                      fontSize: 17,
                       color: "#2f2d51",
                     }
               }
@@ -654,9 +669,33 @@ export default function Welcome({ navigation }) {
             </TouchableOpacity>
           </View>
           {reminders.length == 0 ? (
-            <Text style={{ color: "grey", fontFamily: "Inter-Regular" }}>
-              No reminders yet!
-            </Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#d2d2d2",
+                        alignSelf: "center",
+                        fontSize: 15,
+                        fontFamily: "Inter-Medium",
+                      }
+                    : {
+                        color: "grey",
+                        alignSelf: "center",
+                        fontSize: 15,
+                        fontFamily: "Inter-Medium",
+                      }
+                }
+              >
+                No reminders yet!
+              </Text>
+            </View>
           ) : (
             <FlatList
               pagingEnabled
@@ -666,20 +705,54 @@ export default function Welcome({ navigation }) {
               data={reminders}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
+                const daysOfWeek = [
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                ];
+                console.log(item);
                 const timestamp = new Date(item.reminder.time);
-                const options = {
-                  month: "numeric",
-                  day: "numeric",
-                  year: "2-digit",
-                  hour: "numeric",
-                  minute: "numeric",
-                };
+                let timeOptions;
 
+                console.log(item.reminder.message + ", " + item.ocurrence);
+
+                let dayOfWeekName;
+
+                if (item.ocurrence === "Daily") {
+                  const options = {
+                    hour: "numeric",
+                    minute: "numeric",
+                  };
+                  timeOptions = options;
+                } else if (item.ocurrence === "Weekly") {
+                  const dayOfWeekNumber = timestamp.getDay();
+                  dayOfWeekName = daysOfWeek[dayOfWeekNumber];
+                  console.log("date: ", dayOfWeekName);
+                  const options = {
+                    hour: "numeric",
+                    minute: "numeric",
+                  };
+                  timeOptions = options;
+                } else if (item.ocurrence === "None") {
+                  console.log("none");
+                  let options = {
+                    month: "numeric",
+                    day: "numeric",
+                    year: "2-digit",
+                    hour: "numeric",
+                    minute: "numeric",
+                  };
+                  timeOptions = options;
+                }
                 const formattedDate = timestamp.toLocaleString(
                   "en-US",
-                  options
+                  timeOptions
                 );
-                console.log("time :", formattedDate);
+
                 return (
                   <View
                     style={
@@ -689,9 +762,10 @@ export default function Welcome({ navigation }) {
                             marginRight: 15,
                             gap: 5,
                             borderRadius: 10,
-                            justifyContent: "space-between",
+                            // justifyContent: "space-between",
                             backgroundColor: "#121212",
-                            width: ITEM_WIDTH,
+                            maxWidth: ITEM_WIDTH + 100,
+                            // width: ITEM_WIDTH,
                           }
                         : {
                             marginRight: 15,
@@ -700,7 +774,8 @@ export default function Welcome({ navigation }) {
                             padding: 10,
                             borderRadius: 10,
                             backgroundColor: "#f2f7ff",
-                            width: ITEM_WIDTH,
+                            maxWidth: ITEM_WIDTH + 100,
+                            // width: ITEM_WIDTH,
                           }
                     }
                   >
@@ -714,53 +789,158 @@ export default function Welcome({ navigation }) {
                       <Ionicons
                         name="time-outline"
                         size={24}
-                        color={theme == "dark" ? "white" : "#2f2d51"}
+                        color={theme == "dark" ? "#f1d592" : "#dda41c"}
                       />
-                      <Text
+                      {item.ocurrence === "Daily" && (
+                        <Text
+                          style={
+                            theme == "dark"
+                              ? {
+                                  fontSize: 14,
+                                  fontFamily: "Inter-Medium",
+                                  color: "#f1d592",
+                                }
+                              : {
+                                  fontSize: 14,
+                                  fontFamily: "Inter-Medium",
+                                  color: "#dda41c",
+                                }
+                          }
+                        >
+                          {item.ocurrence} at {formattedDate}
+                        </Text>
+                      )}
+                      {item.ocurrence === "Weekly" && (
+                        <Text
+                          style={
+                            theme == "dark"
+                              ? {
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  color: "#f1d592",
+                                }
+                              : {
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  color: "grey",
+                                }
+                          }
+                        >
+                          {item.ocurrence} on {dayOfWeekName}s at{" "}
+                          {formattedDate}
+                        </Text>
+                      )}
+                      {item.ocurrence === "None" && (
+                        <Text
+                          style={
+                            theme == "dark"
+                              ? {
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  color: "#f1d592",
+                                }
+                              : {
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  color: "grey",
+                                }
+                          }
+                        >
+                          {formattedDate}
+                        </Text>
+                      )}
+
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           fontFamily: "Inter-Regular",
                           color: "grey",
                         }}
                       >
-                        {formattedDate}
+                       
+                      </Text> */}
+                    </View>
+                    <View style={{ gap: 5 }}>
+                      <Text
+                        numberOfLines={1} // Set the maximum number of lines
+                        lineBreakMode="tail" // Truncate text at the end of the line
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontFamily: "Inter-Regular",
+                                fontSize: 15,
+                                color: "white",
+                              }
+                            : {
+                                fontFamily: "Inter-Regular",
+                                fontSize: 15,
+                                color: "#2f2d51",
+                              }
+                        }
+                      >
+                        {item.reminder.message}
+                      </Text>
+
+                      <Text
+                        numberOfLines={2} // Set the maximum number of lines
+                        lineBreakMode="tail"
+                        style={{
+                          fontFamily: "Inter-Regular",
+                          fontSize: 13,
+                          color: "grey",
+                        }}
+                      >
+                        {item.reminder.note}
                       </Text>
                     </View>
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 16,
-                              color: "white",
-                            }
-                          : {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 16,
-                              color: "#2f2d51",
-                            }
-                      }
-                    >
-                      {item.reminder.message}
-                    </Text>
-
-                    <Text
+                    <View
                       style={{
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                        color: "grey",
+                        flexDirection: "row",
+                        gap: 10,
+                        alignSelf: "flex-end",
+                        marginTop: "auto",
                       }}
                     >
-                      {item.reminder.note}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => dismissNotification(item)}
-                      style={{ alignSelf: "flex-end" }}
-                    >
-                      <Text style={{ fontSize: 13, color: "#ff3b3b" }}>
-                        Delete
-                      </Text>
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => setReminderVisible(true)}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Inter-Medium",
+                            fontSize: 13,
+                            color: "white",
+                          }}
+                        >
+                          View
+                        </Text>
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          width: 1,
+                          height: "100%",
+                          backgroundColor: "white",
+                        }}
+                      />
+                      <TouchableOpacity
+                        onPress={() => dismissNotification(item)}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Inter-Medium",
+                            fontSize: 13,
+                            color: "#ff3b3b",
+                          }}
+                        >
+                          Delete
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <ReminderModal
+                      reminderVisible={reminderVisible}
+                      setReminderVisible={setReminderVisible}
+                      theme={theme}
+                      reminder={item.reminder}
+                    />
                   </View>
                 );
               }}
@@ -795,17 +975,18 @@ export default function Welcome({ navigation }) {
                     borderRadius: 10,
                     overflow: "hidden",
                     top: -5,
-                    right: 5,
+                    right: 0,
                   }
                 : {
                     backgroundColor: "#93d8f8",
                     borderColor: "#2f2d51",
                     borderWidth: 1,
+                    zIndex: 99,
                     position: "absolute",
                     borderRadius: 10,
                     overflow: "hidden",
                     top: -5,
-                    right: 5,
+                    right: 0,
                   }
             }
           >
@@ -878,221 +1059,42 @@ export default function Welcome({ navigation }) {
         featureVisible={featureVisible}
       />
       <View
-        style={
-          notiVisible
-            ? { width: "100%", zIndex: -10, gap: 2 }
-            : { width: "100%", gap: 2 }
-        }
+        style={{
+          width: "100%",
+          marginTop: "auto",
+          marginBottom: 20,
+          zIndex: notiVisible ? -10 : 1,
+        }}
       >
-        <Text
+        <View
           style={
-            theme == "dark"
-              ? { color: "white", fontFamily: "Inter-Medium", fontSize: 15 }
-              : { color: "#2f2d51", fontFamily: "Inter-Medium", fontSize: 15 }
+            notiVisible ? { width: "100%", gap: 2 } : { width: "100%", gap: 2 }
           }
         >
-          Quick links
-        </Text>
-        <Divider
-          style={
-            theme == "BlackWhite"
-              ? { backgroundColor: "black", marginBottom: 10, marginTop: 5 }
-              : { marginBottom: 10, marginTop: 5 }
-          }
-        />
-        <TouchableOpacity
-          onPress={() => setFeatureVisible(true)}
-          style={
-            theme == "dark"
-              ? styles.refreshDark
-              : theme == "BlackWhite"
-              ? styles.refreshBlack
-              : styles.refresh
-          }
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Feather
-              name="info"
-              size={24}
-              color={
-                theme == "dark"
-                  ? "#f1d592"
-                  : theme == "BlackWhite"
-                  ? "black"
-                  : "#bb8b18"
-              }
-            />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#f1d592",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : theme == "BlackWhite"
-                  ? {
-                      color: "black",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#bb8b18",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
-              Check What's New!
-            </Text>
-          </View>
-          <AntDesign
-            name="right"
-            size={18}
-            color={
+          <Text
+            style={
               theme == "dark"
-                ? "#f1d592"
-                : theme == "BlackWhite"
-                ? "black"
-                : "#bb8b18"
+                ? { color: "white", fontFamily: "Inter-Bold", fontSize: 17 }
+                : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 17 }
+            }
+          >
+            Quick links
+          </Text>
+          <Divider
+            style={
+              theme == "BlackWhite"
+                ? { backgroundColor: "black", marginBottom: 10, marginTop: 5 }
+                : { marginBottom: 10, marginTop: 5 }
             }
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Gospel")}
-          style={
-            theme == "dark"
-              ? styles.refreshDark
-              : theme == "BlackWhite"
-              ? styles.refreshBlack
-              : styles.refresh
-          }
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialCommunityIcons
-              name="cross"
-              size={24}
-              color={theme == "BlackWhite" ? "black" : "#8cbaff"}
-            />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#A5C9FF",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : theme == "BlackWhite"
-                  ? {
-                      color: "black",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#738cb2",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
-              The Gospel of Jesus
-            </Text>
-          </View>
-          <AntDesign
-            name="right"
-            size={18}
-            color={
-              theme == "dark"
-                ? "#8cbaff"
-                : theme == "BlackWhite"
-                ? "black"
-                : "#738cb2"
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => Linking.openURL("https://www.buymeacoffee.com/prayse")}
-          style={
-            theme == "dark"
-              ? styles.refreshDark
-              : theme == "BlackWhite"
-              ? styles.refreshBlack
-              : styles.refresh
-          }
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <AntDesign
-              name="hearto"
-              size={24}
-              color={theme == "BlackWhite" ? "black" : "#DE3163"}
-            />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#e24774",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : theme == "BlackWhite"
-                  ? {
-                      color: "black",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#cb3f68",
-                      marginLeft: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
-              Support Prayse
-            </Text>
-          </View>
-          <AntDesign
-            name="right"
-            size={18}
-            color={
-              theme == "dark"
-                ? "#e24774"
-                : theme == "BlackWhite"
-                ? "black"
-                : "#cb3f68"
-            }
-          />
-        </TouchableOpacity>
-        {Platform.OS === "android" && (
           <TouchableOpacity
+            onPress={() => setFeatureVisible(true)}
             style={
               theme == "dark"
                 ? styles.refreshDark
                 : theme == "BlackWhite"
                 ? styles.refreshBlack
                 : styles.refresh
-            }
-            onPress={() =>
-              Linking.openURL(
-                "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
-              )
             }
           >
             <View
@@ -1102,39 +1104,39 @@ export default function Welcome({ navigation }) {
                 alignItems: "center",
               }}
             >
-              <Ionicons
-                name="logo-google-playstore"
+              <Feather
+                name="info"
                 size={24}
                 color={
                   theme == "dark"
-                    ? "#d6d6d6"
+                    ? "#f1d592"
                     : theme == "BlackWhite"
                     ? "black"
-                    : "#606060"
+                    : "#bb8b18"
                 }
               />
               <Text
                 style={
                   theme == "dark"
                     ? {
-                        color: "#f0f0f0",
-                        fontFamily: "Inter-Regular",
+                        color: "#f1d592",
                         marginLeft: 10,
+                        fontFamily: "Inter-Regular",
                       }
                     : theme == "BlackWhite"
                     ? {
                         color: "black",
-                        fontFamily: "Inter-Regular",
                         marginLeft: 10,
+                        fontFamily: "Inter-Regular",
                       }
                     : {
-                        color: "#606060",
-                        fontFamily: "Inter-Regular",
+                        color: "#bb8b18",
                         marginLeft: 10,
+                        fontFamily: "Inter-Regular",
                       }
                 }
               >
-                Check for Updates
+                What's New in v8.3!
               </Text>
             </View>
             <AntDesign
@@ -1142,21 +1144,81 @@ export default function Welcome({ navigation }) {
               size={18}
               color={
                 theme == "dark"
-                  ? "#d6d6d6"
+                  ? "#f1d592"
                   : theme == "BlackWhite"
                   ? "black"
-                  : "#606060"
+                  : "#bb8b18"
               }
             />
           </TouchableOpacity>
-        )}
-        {Platform.OS === "ios" && (
           <TouchableOpacity
-            style={theme == "dark" ? styles.refreshDark : styles.refresh}
+            onPress={() => navigation.navigate("Gospel")}
+            style={
+              theme == "dark"
+                ? styles.refreshDark
+                : theme == "BlackWhite"
+                ? styles.refreshBlack
+                : styles.refresh
+            }
+          >
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="cross"
+                size={24}
+                color={theme == "BlackWhite" ? "black" : "#8cbaff"}
+              />
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#A5C9FF",
+                        marginLeft: 10,
+                        fontFamily: "Inter-Regular",
+                      }
+                    : theme == "BlackWhite"
+                    ? {
+                        color: "black",
+                        marginLeft: 10,
+                        fontFamily: "Inter-Regular",
+                      }
+                    : {
+                        color: "#738cb2",
+                        marginLeft: 10,
+                        fontFamily: "Inter-Regular",
+                      }
+                }
+              >
+                The Gospel of Jesus
+              </Text>
+            </View>
+            <AntDesign
+              name="right"
+              size={18}
+              color={
+                theme == "dark"
+                  ? "#8cbaff"
+                  : theme == "BlackWhite"
+                  ? "black"
+                  : "#738cb2"
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() =>
-              Linking.openURL(
-                "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
-              )
+              Linking.openURL("https://www.buymeacoffee.com/prayse")
+            }
+            style={
+              theme == "dark"
+                ? styles.refreshDark
+                : theme == "BlackWhite"
+                ? styles.refreshBlack
+                : styles.refresh
             }
           >
             <View
@@ -1167,114 +1229,242 @@ export default function Welcome({ navigation }) {
               }}
             >
               <AntDesign
-                name="apple1"
+                name="hearto"
                 size={24}
-                color={theme == "dark" ? "#d6d6d6" : "#606060"}
+                color={theme == "BlackWhite" ? "black" : "#DE3163"}
               />
               <Text
                 style={
                   theme == "dark"
                     ? {
-                        color: "#f0f0f0",
-                        fontFamily: "Inter-Regular",
+                        color: "#e24774",
                         marginLeft: 10,
+                        fontFamily: "Inter-Regular",
+                      }
+                    : theme == "BlackWhite"
+                    ? {
+                        color: "black",
+                        marginLeft: 10,
+                        fontFamily: "Inter-Regular",
                       }
                     : {
-                        color: "#606060",
-                        fontFamily: "Inter-Regular",
+                        color: "#cb3f68",
                         marginLeft: 10,
+                        fontFamily: "Inter-Regular",
                       }
                 }
               >
-                Check for Updates
+                Support Prayse
               </Text>
             </View>
             <AntDesign
               name="right"
               size={18}
-              color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              color={
+                theme == "dark"
+                  ? "#e24774"
+                  : theme == "BlackWhite"
+                  ? "black"
+                  : "#cb3f68"
+              }
             />
           </TouchableOpacity>
-        )}
-      </View>
-      {/* {image && <Image source={{ uri: image }} style={styles.image} />} */}
-      <View
-        style={{
-          marginBottom: 15,
-          flexDirection: "row",
-          justifyContent: "space-around",
-          width: "100%",
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Folders")}
-          style={
-            theme == "dark"
-              ? [styles.buttonDark, { backgroundColor: "#212121" }]
-              : theme == "BlackWhite"
-              ? styles.buttonBlack
-              : styles.button
-          }
+          {Platform.OS === "android" && (
+            <TouchableOpacity
+              style={
+                theme == "dark"
+                  ? styles.refreshDark
+                  : theme == "BlackWhite"
+                  ? styles.refreshBlack
+                  : styles.refresh
+              }
+              onPress={() =>
+                Linking.openURL(
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+                )
+              }
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="logo-google-playstore"
+                  size={24}
+                  color={
+                    theme == "dark"
+                      ? "#d6d6d6"
+                      : theme == "BlackWhite"
+                      ? "black"
+                      : "#606060"
+                  }
+                />
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "#f0f0f0",
+                          fontFamily: "Inter-Regular",
+                          marginLeft: 10,
+                        }
+                      : theme == "BlackWhite"
+                      ? {
+                          color: "black",
+                          fontFamily: "Inter-Regular",
+                          marginLeft: 10,
+                        }
+                      : {
+                          color: "#606060",
+                          fontFamily: "Inter-Regular",
+                          marginLeft: 10,
+                        }
+                  }
+                >
+                  Check for Updates
+                </Text>
+              </View>
+              <AntDesign
+                name="right"
+                size={18}
+                color={
+                  theme == "dark"
+                    ? "#d6d6d6"
+                    : theme == "BlackWhite"
+                    ? "black"
+                    : "#606060"
+                }
+              />
+            </TouchableOpacity>
+          )}
+          {Platform.OS === "ios" && (
+            <TouchableOpacity
+              style={theme == "dark" ? styles.refreshDark : styles.refresh}
+              onPress={() =>
+                Linking.openURL(
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+                )
+              }
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <AntDesign
+                  name="apple1"
+                  size={24}
+                  color={theme == "dark" ? "#d6d6d6" : "#606060"}
+                />
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "#f0f0f0",
+                          fontFamily: "Inter-Regular",
+                          marginLeft: 10,
+                        }
+                      : {
+                          color: "#606060",
+                          fontFamily: "Inter-Regular",
+                          marginLeft: 10,
+                        }
+                  }
+                >
+                  Check for Updates
+                </Text>
+              </View>
+              <AntDesign
+                name="right"
+                size={18}
+                color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        {/* {image && <Image source={{ uri: image }} style={styles.image} />} */}
+        <View
+          style={{
+            marginBottom: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            width: "100%",
+          }}
         >
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Folders")}
             style={
               theme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold" }
+                ? [styles.buttonDark, { backgroundColor: "#212121" }]
                 : theme == "BlackWhite"
-                ? { color: "white", fontFamily: "Inter-Bold" }
-                : { color: "white", fontFamily: "Inter-Bold" }
+                ? styles.buttonBlack
+                : styles.button
             }
           >
-            Create Folder
-          </Text>
-          <AntDesign
-            style={{ marginLeft: 10 }}
-            name="right"
-            size={20}
-            color={theme == "dark" ? "white" : "white"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setQuickModal(true)}
-          style={
-            theme == "dark"
-              ? [styles.buttonDark]
-              : theme == "BlackWhite"
-              ? [
-                  styles.buttonDark,
-                  {
-                    backgroundColor: "white",
-                    borderColor: "black",
-                    borderWidth: 1,
-                  },
-                ]
-              : [styles.button, { backgroundColor: "#93D8F8" }]
-          }
-        >
-          <Text
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "white", fontFamily: "Inter-Bold" }
+                  : theme == "BlackWhite"
+                  ? { color: "white", fontFamily: "Inter-Bold" }
+                  : { color: "white", fontFamily: "Inter-Bold" }
+              }
+            >
+              Create Folder
+            </Text>
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="right"
+              size={20}
+              color={theme == "dark" ? "white" : "white"}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setQuickModal(true)}
             style={
               theme == "dark"
-                ? { color: "#121212", fontFamily: "Inter-Bold" }
+                ? [styles.buttonDark]
                 : theme == "BlackWhite"
-                ? { color: "black", fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                ? [
+                    styles.buttonDark,
+                    {
+                      backgroundColor: "white",
+                      borderColor: "black",
+                      borderWidth: 1,
+                    },
+                  ]
+                : [styles.button, { backgroundColor: "#93D8F8" }]
             }
           >
-            Quick Prayer
-          </Text>
-          <AntDesign
-            style={{ marginLeft: 10 }}
-            name="pluscircleo"
-            size={24}
-            color={
-              theme == "dark"
-                ? "#121212"
-                : theme == "BlackWhite"
-                ? "black"
-                : "#2f2d51"
-            }
-          />
-        </TouchableOpacity>
+            <Text
+              style={
+                theme == "dark"
+                  ? { color: "#121212", fontFamily: "Inter-Bold" }
+                  : theme == "BlackWhite"
+                  ? { color: "black", fontFamily: "Inter-Bold" }
+                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+              }
+            >
+              Quick Prayer
+            </Text>
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="pluscircleo"
+              size={24}
+              color={
+                theme == "dark"
+                  ? "#121212"
+                  : theme == "BlackWhite"
+                  ? "black"
+                  : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal
@@ -1591,17 +1781,17 @@ const styles = StyleSheet.create({
     color: "black",
   },
   greeting: {
-    fontSize: 19,
+    fontSize: 22,
     // marginVertical: 5,
-    fontFamily: "Inter-Medium",
+    fontFamily: "Inter-Bold",
     letterSpacing: 2,
     alignSelf: "center",
     color: "#2F2D51",
   },
   greetingDark: {
     // marginVertical: 5,
-    fontSize: 19,
-    fontFamily: "Inter-Medium",
+    fontSize: 22,
+    fontFamily: "Inter-Bold",
     alignSelf: "flex-start",
     letterSpacing: 2,
     color: "white",

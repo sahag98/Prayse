@@ -147,7 +147,7 @@ const PublicCommunity = () => {
           : { backgroundColor: "#F2F7FF", position: "relative" }
       }
     >
-      <HeaderView style={{ marginTop: 0 }}>
+      <HeaderView style={{ marginTop: 0, marginBottom: 20 }}>
         <Animated.View
           entering={FadeIn.duration(500)}
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
@@ -204,25 +204,7 @@ const PublicCommunity = () => {
           </TouchableOpacity>
         </View> */}
       </HeaderView>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Question")}
-        style={theme === "dark" ? styles.questionDark : styles.question}
-      >
-        <Text
-          style={
-            theme == "dark"
-              ? { color: "white", fontFamily: "Inter-Medium" }
-              : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-          }
-        >
-          Question of the Week
-        </Text>
-        <AntDesign
-          name="right"
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      </TouchableOpacity>
+
       <View style={{ flex: 1, position: "relative" }}>
         {newPost && (
           <Animated.View

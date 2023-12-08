@@ -28,13 +28,25 @@ import Login from "./Screens/Login";
 import Question from "./Screens/Question";
 import PublicCommunity from "./Screens/PublicCommunity";
 import Test from "./Screens/Test";
-
+import * as Linking from "expo-linking";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
   const insets = useSafeAreaInsets();
   const theme = useSelector((state) => state.user.theme);
   const { isLoggedIn } = useSupabase();
+
+  const prefix = Linking.createURL("/");
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        Home: "home",
+        Settings: "settings",
+      },
+    },
+  };
+
   const BusyIndicator = () => {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -78,7 +90,10 @@ const Navigation = () => {
     >
       <StatusBar style={theme == "dark" ? "light" : "dark"} />
 
-      <NavigationContainer theme={theme === "dark" ? DarkTheme : DefaultTheme}>
+      <NavigationContainer
+        linking={linking}
+        theme={theme === "dark" ? DarkTheme : DefaultTheme}
+      >
         <Tab.Navigator
           screenOptions={({ route }) => ({
             headerShown: false,

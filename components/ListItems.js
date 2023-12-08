@@ -14,12 +14,13 @@ import {
   TodoCategory,
 } from "../styles/appStyles";
 import { useFonts } from "expo-font";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 import { Motion } from "@legendapp/motion";
 import CategoryTabs from "./CategoryTabs";
 import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const ListItems = ({
   pickedPrayer,
@@ -29,7 +30,7 @@ const ListItems = ({
   folderId,
 }) => {
   const theme = useSelector((state) => state.user.theme);
-
+  const navigation = useNavigation();
   let [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
@@ -73,6 +74,13 @@ const ListItems = ({
   const renderItem = ({ item, index }) => {
     const RowText = TodoText;
     const categoryItem = item.category;
+
+    const addReminder = (item) => {
+      console.log(item);
+      navigation.navigate("Test", {
+        reminder: item,
+      });
+    };
     return (
       <>
         <Motion.View
@@ -133,14 +141,78 @@ const ListItems = ({
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  marginTop: 20,
+                  gap: 20,
+                  alignItems: "center",
                 }}
               >
+                <TouchableOpacity
+                  onPress={() => addReminder(item.prayer)}
+                  style={
+                    theme == "dark"
+                      ? {
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderColor: "#A5C9FF",
+                          borderWidth: 1,
+                          padding: 5,
+                          borderRadius: 5,
+                          gap: 5,
+                        }
+                      : {
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderColor: "#2f2d51",
+                          borderWidth: 1,
+                          padding: 5,
+                          borderRadius: 5,
+                          gap: 5,
+                        }
+                  }
+                >
+                  <AntDesign
+                    name="pluscircleo"
+                    size={15}
+                    color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                  />
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            color: "#A5C9FF",
+                            fontSize: 12,
+                            fontFamily: "Inter-Medium",
+                          }
+                        : {
+                            color: "#2f2d51",
+                            fontSize: 12,
+                            fontFamily: "Inter-Medium",
+                          }
+                    }
+                  >
+                    Reminder
+                  </Text>
+                </TouchableOpacity>
                 {categoryItem == "General" && (
                   <TodoCategory
                     style={
                       theme == "dark"
-                        ? { borderRadius: 20, backgroundColor: "#FFDAA5" }
-                        : { borderRadius: 20, backgroundColor: "#FFBF65" }
+                        ? {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FFDAA5",
+                          }
+                        : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FFBF55",
+                          }
                     }
                   >
                     <Text
@@ -167,11 +239,21 @@ const ListItems = ({
                     style={
                       theme == "dark"
                         ? {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#A5C9FF",
                             fontFamily: "Inter-SemiBold",
                             color: "black",
                           }
                         : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#6B7EFF",
                             fontFamily: "Inter-Regular",
                             color: "white",
@@ -202,11 +284,21 @@ const ListItems = ({
                     style={
                       theme == "dark"
                         ? {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#A5FFC9",
                             fontFamily: "Inter-SemiBold",
                             color: "black",
                           }
                         : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#65FFA2",
                             fontFamily: "Inter-Regular",
                             color: "white",
@@ -237,11 +329,21 @@ const ListItems = ({
                     style={
                       theme == "dark"
                         ? {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#FFB2B2",
                             fontFamily: "Inter-SemiBold",
                             color: "black",
                           }
                         : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#FF5858",
                             fontFamily: "Inter-Regular",
                             color: "white",
@@ -272,11 +374,21 @@ const ListItems = ({
                     style={
                       theme == "dark"
                         ? {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "white",
                             fontFamily: "Inter-SemiBold",
                             color: "black",
                           }
                         : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "white",
                             fontFamily: "Inter-Regular",
                             color: "white",
@@ -307,12 +419,22 @@ const ListItems = ({
                     style={
                       theme == "dark"
                         ? {
-                            borderRadius: 20,
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+
                             backgroundColor: "#8C8C8C",
                             fontFamily: "Inter-SemiBold",
                             color: "black",
                           }
                         : {
+                            flex: 1,
+                            height: 23,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
                             backgroundColor: "#2F2D51",
                             fontFamily: "Inter-Regular",
                             color: "white",

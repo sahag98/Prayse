@@ -10,6 +10,13 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
   const viewNotification = (screen) => {
+    if (!screen) {
+      console.log(item);
+      dismissNotification(item);
+      dispatch(deleteNoti(item.noti_id));
+      setNotiVisible(false);
+      return;
+    }
     if (screen == "Question" && !isLoggedIn) {
       console.log("not logged in");
       navigation.navigate(screen);
@@ -24,7 +31,8 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
     await Notifications.dismissNotificationAsync(item.identifier);
   };
 
-  console.log(item.notification + ": " + item.identifier);
+  console.log(item.date);
+
   return (
     <View
       style={{

@@ -18,8 +18,9 @@ export const reminderSlice = createSlice({
       state.reminders = Reminders;
     },
     deleteReminder: (state, action) => {
+      console.log("action :", action);
       state.reminders = state.reminders.filter(
-        (reminder) => reminder.id !== action.payload
+        (reminder) => reminder.reminder.id !== action.payload
       );
     },
     editReminder: (state, action) => {

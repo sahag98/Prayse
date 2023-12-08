@@ -69,7 +69,7 @@ const AddFolderModal = ({
               <AntDesign
                 style={{ marginTop: 10 }}
                 name="edit"
-                size={32}
+                size={30}
                 color={theme == "dark" ? "white" : "#2F2D51"}
               />
             </ModalIcon>
@@ -79,6 +79,7 @@ const AddFolderModal = ({
               placeholder="Enter folder name"
               placeholderTextColor={"white"}
               selectionColor={"white"}
+              textAlignVertical="center"
               // autoFocus={true}
               onChangeText={(text) => setFolderName(text)}
               value={folderName}
@@ -115,9 +116,9 @@ const styles = StyleSheet.create({
     color: "white",
     paddingVertical: 20,
     borderRadius: 10,
-    alignItems: "center",
-    alignSelf: "center",
-    textAlignVertical: "center",
+    // alignItems: "center",
+    // alignSelf: "center",
+    // textAlignVertical: "center",
     fontSize: 14,
     fontFamily: "Inter-Regular",
     backgroundColor: "#121212",
