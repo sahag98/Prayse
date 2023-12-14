@@ -23,6 +23,7 @@ import Animated, {
   useAnimatedStyle,
   FadeIn,
 } from "react-native-reanimated";
+import GroupInfoModal from "../components/GroupInfoModal";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -30,6 +31,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
   const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
+  const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
 
   const allGroups = route.params.allGroups;
@@ -155,7 +157,10 @@ const PrayerGroup = ({ route, navigation }) => {
                 color={theme == "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
-            <View style={{ paddingBottom: 5, gap: 5 }}>
+            <TouchableOpacity
+              onPress={() => setGroupInfoVisible(true)}
+              style={{ paddingBottom: 5, marginLeft: 10, gap: 5 }}
+            >
               <HeaderTitle
                 style={
                   theme == "dark"
@@ -188,8 +193,16 @@ const PrayerGroup = ({ route, navigation }) => {
                   </Text>
                 ))}
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
+          <GroupInfoModal
+            group={currGroup}
+            theme={theme}
+            allUsers={allGroups}
+            currentUser={currentUser}
+            groupInfoVisible={groupInfoVisible}
+            setGroupInfoVisible={setGroupInfoVisible}
+          />
           <TouchableOpacity
             onPress={() => copyToClipboard(currGroup.groups.code.toString())}
             style={
