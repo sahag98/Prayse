@@ -196,7 +196,6 @@ export const SupabaseProvider = (props) => {
               table: "messages",
             },
             (payload) => {
-              console.log("new message: ", payload);
               setIsNewMessage(true);
             }
           )

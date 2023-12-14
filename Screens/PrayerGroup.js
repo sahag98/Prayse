@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -11,64 +10,37 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import * as Clipboard from "expo-clipboard";
-import {
-  Container,
-  HeaderTitle,
-  HeaderView,
-  PrayerContainer,
-} from "../styles/appStyles";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { AntDesign, Feather, FontAwesome, Entypo } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
 import Moment from "moment";
 import { FlashList } from "@shopify/flash-list";
-import communityReady from "../hooks/communityReady";
-import { useCallback } from "react";
 import axios from "axios";
+import Animated, {
+  useSharedValue,
+  withSpring,
+  useAnimatedStyle,
+  FadeIn,
+} from "react-native-reanimated";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [messages, setMessages] = useState([]);
-  const [isOnline, setIsOnline] = useState(false);
-  const isReady = communityReady();
   const [newMessage, setNewMessage] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
   const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
   const currGroup = route.params.group;
-  const flatListRef = useRef(null);
+
   const allGroups = route.params.allGroups;
-  const {
-    currentUser,
-    setCurrentUser,
-    session,
-    newPost,
-    isNewMessage,
-    setIsNewMessage,
-    setNewPost,
-    logout,
-    supabase,
-  } = useSupabase();
-
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) {
-      // Code to execute when the screen is blurred (navigated away from)
-      console.log("Screen is focused");
-
-      // You can perform actions or set state based on screen blur
-    }
-
-    return () => {
-      console.log("screen is not focused");
-      // Cleanup or additional actions when the component unmounts
-    };
-  }, [isFocused]);
+  const { currentUser, isNewMessage, setIsNewMessage, supabase } =
+    useSupabase();
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
   };
+
+  const fadeIn = useSharedValue(0);
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -78,34 +50,34 @@ const PrayerGroup = ({ route, navigation }) => {
     }
   };
 
-  // async function sendGroupNotification() {
-  //   allGroups.map((g) => {
-  //     console.log(
-  //       "sending: ",
-  //       g.profiles.full_name + ", " + g.profiles.expoToken
-  //     );
-  //     const message = {
-  //       to: g.profiles.expoToken,
-  //       sound: "default",
-  //       title: "New Response 💭",
-  //       body: `${currentUser.full_name} has responded to: ${prayer.prayer}.`,
-  //       data: { screen: "PublicCommunity", prayerId: prayer.id },
-  //     };
+  async function sendGroupNotification() {
+    const notificationPromises = allGroups.map(async (g) => {
+      if (g.profiles.expoToken != currentUser.expoToken) {
+        const message = {
+          to: g.profiles.expoToken,
+          sound: "default",
+          title: `${currentUser.full_name} in ${currGroup.groups.name}`,
+          body: `${newMessage}`,
+          data: { screen: "PublicCommunity" },
+        };
 
-  //     await axios.post("https://exp.host/--/api/v2/push/send", message, {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Accept-encoding": "gzip, deflate",
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //   });
-  // }
+        return axios.post("https://exp.host/--/api/v2/push/send", message, {
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    });
 
-  useEffect(() => {
-    getGroupMessages();
-    setIsOnline(true);
-  }, []);
+    // Wait for all promises to resolve
+    await Promise.all(notificationPromises);
+  }
+
+  // useEffect(() => {
+  //   getGroupMessages();
+  // }, []);
 
   const sendMessage = async () => {
     if (newMessage.length == 0) {
@@ -117,31 +89,29 @@ const PrayerGroup = ({ route, navigation }) => {
       message: newMessage,
     });
     setNewMessage("");
+    // sendGroupNotification();
   };
 
   useEffect(() => {
     getGroupMessages();
   }, [isNewMessage]);
 
+  const fadeInStyle = useAnimatedStyle(() => {
+    return {
+      opacity: fadeIn.value,
+    };
+  });
+
   async function getGroupMessages() {
     let { data: groupMessages, error } = await supabase
       .from("messages")
       .select("*,groups(*), profiles(*)")
       .eq("group_id", currGroup.group_id)
-      .order("id", { ascending: true });
+      .order("id", { ascending: false });
     setMessages(groupMessages);
 
-    console.log("length: ", groupMessages.length);
-    flatListRef.current.scrollToIndex({
-      index: messages.length - 1,
-      animated: true,
-    });
     setIsNewMessage(false);
   }
-
-  const onScrollToIndexFailed = (info) => {
-    console.warn("onScrollToIndexFailed:", info);
-  };
 
   return (
     <KeyboardAvoidingView
@@ -169,7 +139,7 @@ const PrayerGroup = ({ route, navigation }) => {
         <HeaderView
           style={{
             justifyContent: "space-between",
-            borderBottomWidth: 1,
+            borderBottomWidth: 2,
             borderBottomColor: currGroup.groups.color.toLowerCase(),
             padding: 5,
             width: "100%",
@@ -195,9 +165,6 @@ const PrayerGroup = ({ route, navigation }) => {
               >
                 {currGroup.groups.name}
               </HeaderTitle>
-              <Text style={{ color: "white" }}>
-                {isFocused ? "on screen" : "off screen"}
-              </Text>
               <View style={{ flexDirection: "row" }}>
                 {allGroups.slice(0, 3).map((g, index) => (
                   <Text
@@ -269,55 +236,47 @@ const PrayerGroup = ({ route, navigation }) => {
             <Text style={{ color: "white" }}>No messages yet.</Text>
           ) : (
             <FlashList
-              ref={flatListRef}
               showsVerticalScrollIndicator={false}
-              estimatedItemSize={200}
+              estimatedItemSize={120}
+              inverted
               estimatedListSize={{ height: 800, width: 450 }}
               data={messages}
-              onLoad={() => {
-                flatListRef.current.scrollToIndex({
-                  index: messages.length - 1,
-                  animated: true,
-                });
-              }}
-              onLayout={() => {
-                flatListRef.current.scrollToIndex({
-                  index: messages.length - 1,
-                  animated: true,
-                });
-              }}
-              getItemLayout={(data, index) => ({
-                length: 200, // Specify the height of your items here (adjust as needed)
-                offset: 100 * index,
-                index,
-              })}
-              // onScrollToIndexFailed={onScrollToIndexFailed}
               keyExtractor={(e, i) => i.toString()}
-              // initialNumToRender={5}
-              initialScrollIndex={messages.length - 1}
+              initialNumToRender={30}
               renderItem={({ item }) => {
                 return (
-                  <View
+                  <Animated.View
+                    entering={FadeIn.duration(300)}
                     style={
                       theme == "dark"
-                        ? {
-                            alignSelf:
-                              item.profiles.id == currentUser.id
-                                ? "flex-end"
-                                : "flex-start",
-                            backgroundColor: "#353535",
-                            borderRadius: 10,
-                            marginBottom: 10,
-                            padding: 10,
-                            gap: 15,
-                            maxWidth: 200,
-                          }
+                        ? [
+                            fadeInStyle,
+                            {
+                              alignSelf:
+                                item.profiles.id == currentUser.id
+                                  ? "flex-end"
+                                  : "flex-start",
+                              backgroundColor:
+                                item.profiles.id == currentUser.id
+                                  ? "#353535"
+                                  : "#212121",
+                              borderRadius: 10,
+                              marginBottom: 10,
+                              padding: 10,
+                              gap: 15,
+                              minWidth: 100,
+                              maxWidth: 300,
+                            },
+                          ]
                         : {
                             alignSelf:
                               item.profiles.id == currentUser.id
                                 ? "flex-end"
                                 : "flex-start",
-                            backgroundColor: "#93d8f8",
+                            backgroundColor:
+                              item.profiles.id == currentUser.id
+                                ? "#abe1fa"
+                                : "#93d8f8",
                             borderRadius: 10,
                             marginBottom: 10,
                             padding: 10,
@@ -331,7 +290,7 @@ const PrayerGroup = ({ route, navigation }) => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          gap: 5,
+                          gap: 10,
                         }}
                       >
                         <Image
@@ -389,7 +348,7 @@ const PrayerGroup = ({ route, navigation }) => {
                     >
                       {Moment(item.created_at).fromNow()}
                     </Text>
-                  </View>
+                  </Animated.View>
                 );
               }}
             />
