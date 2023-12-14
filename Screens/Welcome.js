@@ -73,11 +73,10 @@ SplashScreen.preventAutoHideAsync();
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     const data = notification.request.content.data;
-
-    if (data && data.screen) {
-      // navigate to the screen specified in the data object
-      navigation.navigate(data.screen);
-    }
+    // if (data && data.screen) {
+    //   // navigate to the screen specified in the data object
+    //   navigation.navigate(data.screen);
+    // }
     return {
       shouldShowAlert: true,
       shouldPlaySound: false,
@@ -156,8 +155,6 @@ export default function Welcome({ navigation }) {
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
 
   const reminders = useSelector((state) => state.reminder.reminders);
-
-  console.log(reminders);
 
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
@@ -429,7 +426,8 @@ export default function Welcome({ navigation }) {
             noti_id: uuid.v4(),
             date: formattedDate,
             notification: notification.request.content.body,
-            screen: notification.request.content.data.screen,
+            screen: notification.request.content.data?.screen,
+            prayerId: notification.request.content.data?.prayerId,
             identifier: notification.request.identifier,
           })
         );
@@ -499,7 +497,6 @@ export default function Welcome({ navigation }) {
         theme == "dark"
           ? {
               display: "flex",
-              justifyContent: "",
               position: "relative",
               alignItems: "center",
               backgroundColor: "#121212",
@@ -508,14 +505,12 @@ export default function Welcome({ navigation }) {
           ? {
               display: "flex",
               position: "relative",
-              justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "white",
             }
           : {
               display: "flex",
               position: "relative",
-              justifyContent: "",
               alignItems: "center",
               backgroundColor: "#F2F7FF",
             }
@@ -606,8 +601,16 @@ export default function Welcome({ navigation }) {
                   marginBottom: 20,
                 }
               : {
-                  backgroundColor: "#93d8f8",
+                  backgroundColor: "#ffcd8b",
                   gap: 10,
+                  shadowColor: "#9f9f9f",
+                  shadowOffset: {
+                    width: 0,
+                    height: 6,
+                  },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5.62,
+                  elevation: 8,
                   flex: 1,
                   marginVertical: 5,
                   borderRadius: 10,
@@ -636,37 +639,67 @@ export default function Welcome({ navigation }) {
             >
               Prayer Reminders
             </Text>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-              }}
-              onPress={() => navigation.navigate("Test")}
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 16,
-                        color: "#A5C9FF",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 16,
-                        color: "#2f2d51",
-                      }
-                }
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+                onPress={() => navigation.navigate("Reminder")}
               >
-                Add
-              </Text>
-              <Ionicons
-                name="add-circle-outline"
-                size={30}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
-            </TouchableOpacity>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "#444444",
+                        }
+                  }
+                >
+                  View All
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+                onPress={() => navigation.navigate("Test")}
+              >
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "#A5C9FF",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 16,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Add
+                </Text>
+                <Ionicons
+                  name="add-circle-outline"
+                  size={30}
+                  color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           {reminders.length == 0 ? (
             <View
@@ -686,7 +719,7 @@ export default function Welcome({ navigation }) {
                         fontFamily: "Inter-Medium",
                       }
                     : {
-                        color: "grey",
+                        color: "#2f2d51",
                         alignSelf: "center",
                         fontSize: 15,
                         fontFamily: "Inter-Medium",
@@ -714,11 +747,9 @@ export default function Welcome({ navigation }) {
                   "Friday",
                   "Saturday",
                 ];
-                console.log(item);
+
                 const timestamp = new Date(item.reminder.time);
                 let timeOptions;
-
-                console.log(item.reminder.message + ", " + item.ocurrence);
 
                 let dayOfWeekName;
 
@@ -731,7 +762,7 @@ export default function Welcome({ navigation }) {
                 } else if (item.ocurrence === "Weekly") {
                   const dayOfWeekNumber = timestamp.getDay();
                   dayOfWeekName = daysOfWeek[dayOfWeekNumber];
-                  console.log("date: ", dayOfWeekName);
+
                   const options = {
                     hour: "numeric",
                     minute: "numeric",
@@ -762,10 +793,9 @@ export default function Welcome({ navigation }) {
                             marginRight: 15,
                             gap: 5,
                             borderRadius: 10,
-                            // justifyContent: "space-between",
+
                             backgroundColor: "#121212",
                             maxWidth: ITEM_WIDTH + 100,
-                            // width: ITEM_WIDTH,
                           }
                         : {
                             marginRight: 15,
@@ -775,7 +805,6 @@ export default function Welcome({ navigation }) {
                             borderRadius: 10,
                             backgroundColor: "#f2f7ff",
                             maxWidth: ITEM_WIDTH + 100,
-                            // width: ITEM_WIDTH,
                           }
                     }
                   >
@@ -849,21 +878,11 @@ export default function Welcome({ navigation }) {
                           {formattedDate}
                         </Text>
                       )}
-
-                      {/* <Text
-                        style={{
-                          fontSize: 12,
-                          fontFamily: "Inter-Regular",
-                          color: "grey",
-                        }}
-                      >
-                       
-                      </Text> */}
                     </View>
                     <View style={{ gap: 5 }}>
                       <Text
-                        numberOfLines={1} // Set the maximum number of lines
-                        lineBreakMode="tail" // Truncate text at the end of the line
+                        numberOfLines={1}
+                        lineBreakMode="tail"
                         style={
                           theme == "dark"
                             ? {
@@ -882,7 +901,7 @@ export default function Welcome({ navigation }) {
                       </Text>
 
                       <Text
-                        numberOfLines={2} // Set the maximum number of lines
+                        numberOfLines={2}
                         lineBreakMode="tail"
                         style={{
                           fontFamily: "Inter-Regular",
@@ -905,21 +924,37 @@ export default function Welcome({ navigation }) {
                         onPress={() => setReminderVisible(true)}
                       >
                         <Text
-                          style={{
-                            fontFamily: "Inter-Medium",
-                            fontSize: 13,
-                            color: "white",
-                          }}
+                          style={
+                            theme == "dark"
+                              ? {
+                                  fontFamily: "Inter-Medium",
+                                  fontSize: 13,
+                                  color: "white",
+                                }
+                              : {
+                                  fontFamily: "Inter-Medium",
+                                  fontSize: 13,
+                                  color: "#2f2d51",
+                                }
+                          }
                         >
                           View
                         </Text>
                       </TouchableOpacity>
                       <View
-                        style={{
-                          width: 1,
-                          height: "100%",
-                          backgroundColor: "white",
-                        }}
+                        style={
+                          theme == "dark"
+                            ? {
+                                width: 1.2,
+                                height: "100%",
+                                backgroundColor: "white",
+                              }
+                            : {
+                                width: 1.2,
+                                height: "100%",
+                                backgroundColor: "#2f2d51",
+                              }
+                        }
                       />
                       <TouchableOpacity
                         onPress={() => dismissNotification(item)}
@@ -947,20 +982,6 @@ export default function Welcome({ navigation }) {
             />
           )}
         </View>
-        {/* <Text
-          style={
-            theme == "dark"
-              ? styles.welcomeDark
-              : theme == "BlackWhite"
-              ? styles.welcomeBlack
-              : styles.welcome
-          }
-        >
-          Welcome to Prayse
-        </Text>
-        <View style={styles.imgContainer}>
-          <Image style={styles.img} source={prayer} />
-        </View> */}
         {notiVisible && (
           <Animated.View
             entering={FadeIn.duration(300)}
@@ -1645,8 +1666,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 10,
     borderRadius: 15,
-    borderColor: "#dddddd",
-    borderWidth: 0.4,
+    // borderColor: "#dddddd",
+    // borderWidth: 0.4,
+    shadowColor: "#bdbdbd",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 3,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -1823,6 +1852,14 @@ const styles = StyleSheet.create({
     marginTop: 25,
     width: 160,
     backgroundColor: "#2f2d51",
+    shadowColor: "#9f9f9f",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
     padding: 16,
     borderRadius: 10,
     display: "flex",
@@ -1831,7 +1868,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonDark: {
-    marginTop: 25,
+    marginTop: 20,
     width: 160,
     backgroundColor: "#A5C9FF",
     padding: 16,
@@ -1842,7 +1879,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonBlack: {
-    marginTop: 25,
+    marginTop: 20,
     width: 160,
     backgroundColor: "black",
     padding: 14,

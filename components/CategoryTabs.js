@@ -1,84 +1,119 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
+import React from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
 const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
   return (
     <>
-      {prayerList.length != 0 &&
+      {prayerList.length != 0 && (
         <View>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} contentContainerStyle={styles.tab}>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            contentContainerStyle={styles.tab}
+          >
             {selected.map((selected, idx) => (
               <TouchableOpacity
                 key={idx}
                 onPress={() => setStatus(selected)}
-                style={theme == 'dark' ? [styles.btnTabDark, status === selected && styles.btnActiveDark] : [styles.btnTab, status === selected && styles.btnActive]}
+                style={
+                  theme == "dark"
+                    ? [
+                        styles.btnTabDark,
+                        status === selected && styles.btnActiveDark,
+                      ]
+                    : [styles.btnTab, status === selected && styles.btnActive]
+                }
               >
                 <Text
-                  style={theme == 'dark' ? [styles.textTabDark, status === selected && styles.textTabActiveDark] : [styles.textTab, status === selected && styles.textTabActive]}>
+                  style={
+                    theme == "dark"
+                      ? [
+                          styles.textTabDark,
+                          status === selected && styles.textTabActiveDark,
+                        ]
+                      : [
+                          styles.textTab,
+                          status === selected && styles.textTabActive,
+                        ]
+                  }
+                >
                   {selected}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
-
-      }
+      )}
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   tab: {
     height: 40,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   btnTab: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 7,
+    shadowColor: "#bdbdbd",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.17,
+    shadowRadius: 3.05,
+    elevation: 4,
     width: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
 
   btnTabDark: {
-    backgroundColor: '#212121',
+    backgroundColor: "#212121",
     padding: 7,
     width: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
 
   textTab: {
-    color: 'black',
-    fontSize: 13
+    color: "black",
+    fontSize: 13,
   },
 
   textTabDark: {
-    color: 'white',
-    fontSize: 13
+    color: "white",
+    fontSize: 13,
   },
 
   textTabActive: {
-    color: 'white'
+    color: "white",
   },
 
   textTabActiveDark: {
-    color: 'black'
+    color: "black",
   },
 
   btnActive: {
-    backgroundColor: '#2F2D51'
+    backgroundColor: "#2F2D51",
   },
 
   btnActiveDark: {
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
-})
+});
 
 export default CategoryTabs;

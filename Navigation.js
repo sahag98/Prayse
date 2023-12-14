@@ -29,6 +29,8 @@ import Question from "./Screens/Question";
 import PublicCommunity from "./Screens/PublicCommunity";
 import Test from "./Screens/Test";
 import * as Linking from "expo-linking";
+import Reminder from "./Screens/Reminder";
+import PrayerGroup from "./Screens/PrayerGroup";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -158,6 +160,15 @@ const Navigation = () => {
             component={OldPrayerPage}
           />
           <Tab.Screen
+            name="Reminder"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Reminder}
+          />
+          <Tab.Screen
             name="Question"
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
@@ -225,27 +236,25 @@ const Navigation = () => {
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={PublicCommunity}
+            component={isLoggedIn ? PublicCommunity : Login}
           />
-          {isLoggedIn ? (
-            <Tab.Screen
-              name="Community"
-              options={() => ({
-                tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-                tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
-              })}
-              component={CommunityHome}
-            />
-          ) : (
-            <Tab.Screen
-              name="Community"
-              options={() => ({
-                tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-                tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
-              })}
-              component={Login}
-            />
-          )}
+          <Tab.Screen
+            name="PrayerGroup"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={isLoggedIn ? PrayerGroup : Login}
+          />
+          <Tab.Screen
+            name="Community"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+            })}
+            component={isLoggedIn ? CommunityHome : Login}
+          />
           <Tab.Screen
             name="More"
             options={() => ({

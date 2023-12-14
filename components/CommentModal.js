@@ -66,13 +66,15 @@ const CommentModal = ({
     });
   };
 
+  console.log("id: ", prayer.id);
+
   const sendNotification = async (expoToken) => {
     const message = {
       to: expoToken,
       sound: "default",
       title: "New Response 💭",
       body: `${user.full_name} has responded to: ${prayer.prayer}.`,
-      data: { screen: "Community" },
+      data: { screen: "PublicCommunity", prayerId: prayer.id },
     };
 
     await axios.post("https://exp.host/--/api/v2/push/send", message, {

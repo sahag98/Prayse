@@ -9,6 +9,7 @@ import * as Notifications from "expo-notifications";
 const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
+
   const viewNotification = (screen) => {
     if (!screen) {
       console.log(item);
@@ -21,6 +22,14 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
       console.log("not logged in");
       navigation.navigate(screen);
     }
+
+    // if (screen == "PublicCommunity") {
+    //   console.log("prayer id: ", item.prayerId);
+    //   navigation.navigate(screen, {
+    //     prayerId: item.prayerId,
+    //   });
+    // }
+
     setNotiVisible(false);
     dismissNotification(item);
     navigation.navigate(screen);
@@ -30,8 +39,6 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   const dismissNotification = async (item) => {
     await Notifications.dismissNotificationAsync(item.identifier);
   };
-
-  console.log(item.date);
 
   return (
     <View

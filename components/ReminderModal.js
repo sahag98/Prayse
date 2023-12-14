@@ -8,7 +8,6 @@ const ReminderModal = ({
   reminderVisible,
   setReminderVisible,
 }) => {
-  console.log(reminder.message);
   return (
     <Modal
       key={reminder.id}
@@ -29,22 +28,24 @@ const ReminderModal = ({
           style={
             theme == "dark"
               ? {
-                  borderRadius: 5,
+                  borderRadius: 10,
                   position: "relative",
+                  marginHorizontal: 10,
                   padding: 15,
-                  width: "100%",
+                  width: "80%",
                   justifyContent: "center",
                   gap: 10,
-                  alignItems: "center",
                   backgroundColor: "#212121",
                 }
               : {
-                  borderRadius: 5,
+                  borderRadius: 10,
                   position: "relative",
+                  marginHorizontal: 10,
                   padding: 15,
-                  width: "100%",
+                  width: "80%",
                   justifyContent: "center",
-                  alignItems: "center",
+
+                  gap: 10,
                   backgroundColor: "#93D8F8",
                 }
           }
@@ -53,68 +54,112 @@ const ReminderModal = ({
             onPress={() => setReminderVisible(false)}
             style={{ position: "absolute", top: 5, padding: 5, right: 5 }}
           >
-            <AntDesign name="close" size={24} color="white" />
+            <AntDesign
+              name="close"
+              size={28}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
           <Text
             style={
               theme == "dark"
                 ? {
-                    marginTop: 20,
+                    marginVertical: 20,
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
                     color: "white",
-                    fontSize: 18,
+                    fontSize: 20,
                     letterSpacing: 1,
                   }
                 : {
-                    marginTop: 20,
+                    marginVertical: 20,
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
                     color: "#2f2d51",
-                    fontSize: 18,
+                    fontSize: 20,
+                    letterSpacing: 1,
                   }
             }
           >
             Prayer Reminder
           </Text>
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    fontFamily: "Inter-Medium",
-                    color: "white",
-                    fontSize: 14,
-                    letterSpacing: 1,
-                  }
-                : {
-                    fontFamily: "Inter-Medium",
-                    color: "#2f2d51",
-                    fontSize: 14,
-                  }
-            }
-          >
-            {reminder.message}
-          </Text>
-          {reminder.note && (
+          <View>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      fontFamily: "Inter-Medium",
+                      color: "white",
+                      fontSize: 16,
+                    }
+                  : {
+                      fontFamily: "Inter-Medium",
+                      color: "#2f2d51",
+                      fontSize: 16,
+                    }
+              }
+            >
+              Title:
+            </Text>
             <Text
               style={
                 theme == "dark"
                   ? {
                       fontFamily: "Inter-Regular",
-                      color: "grey",
-                      fontSize: 13,
-                      letterSpacing: 1,
+                      color: "white",
+                      fontSize: 14,
                     }
                   : {
                       fontFamily: "Inter-Regular",
                       color: "#2f2d51",
-                      fontSize: 13,
+                      fontSize: 14,
                     }
               }
             >
-              {reminder.note}
+              {reminder.message}
             </Text>
-          )}
+          </View>
+          <View>
+            {reminder.note && (
+              <>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          color: "white",
+                          fontSize: 15,
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          color: "#2f2d51",
+                          fontSize: 15,
+                        }
+                  }
+                >
+                  Note:
+                </Text>
+
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Regular",
+                          color: "white",
+                          fontSize: 14,
+                        }
+                      : {
+                          fontFamily: "Inter-Regular",
+                          color: "#2f2d51",
+                          fontSize: 14,
+                        }
+                  }
+                >
+                  {reminder.note}
+                </Text>
+              </>
+            )}
+          </View>
         </View>
       </ModalContainer>
     </Modal>

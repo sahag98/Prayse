@@ -19,6 +19,7 @@ import { addNewReminder } from "../redux/remindersReducer";
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import { useIsFocused } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 export default function Reminder({ route, navigation }) {
   const isFocus = useIsFocused();
@@ -26,12 +27,15 @@ export default function Reminder({ route, navigation }) {
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
   const [newNote, setNewNote] = useState("");
+
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [repeatOption, setRepeatOption] = useState("");
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
+
   const [reminderTime, setReminderTime] = useState("");
+
   const [isRepeat, setIsRepeat] = useState(false);
   const toggleSwitch = () => {
     setIsRepeat((previousState) => !previousState);
@@ -61,22 +65,33 @@ export default function Reminder({ route, navigation }) {
   //   console.log("Expo Push Token:", pushToken);
   // };
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: "Reminder has been created.",
+      text2: "View",
+      visibilityTime: 3000,
+      position: "bottom",
+      onPress: () => navigation.navigate("Home"),
+    });
+  };
+
   const scheduleNotification = async (reminder, combinedDate) => {
-    // console.log("minute :", minute);
-    console.log("Repeating ?", isRepeat);
-    console.log(repeatOption);
-    if (repeatOption == "daily") {
+    const secondsUntilNotification = Math.floor(
+      (combinedDate.getTime() - Date.now()) / 1000
+    );
+
+    if (repeatOption == "daily" && isRepeat) {
+      console.log("daily reminder notification");
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
           body: reminder.message,
         },
         trigger: {
-          // weekday: combinedDate.getDay() + 1,
-          // day: combinedDate.getDay(),
           hour: combinedDate.getHours(),
           minute: combinedDate.getMinutes(),
-          repeats: isRepeat,
+          repeats: true,
         },
       });
 
@@ -95,7 +110,6 @@ export default function Reminder({ route, navigation }) {
         },
         trigger: {
           weekday: combinedDate.getDay() + 1,
-          // day: combinedDate.getDay(),
           hour: combinedDate.getHours(),
           minute: combinedDate.getMinutes(),
           repeats: isRepeat,
@@ -116,11 +130,7 @@ export default function Reminder({ route, navigation }) {
           body: reminder.message,
         },
         trigger: {
-          weekday: combinedDate.getDay() + 1,
-          // day: combinedDate.getDay(),
-          hour: combinedDate.getHours(),
-          minute: combinedDate.getMinutes(),
-          repeats: isRepeat,
+          seconds: secondsUntilNotification,
         },
       });
 
@@ -135,6 +145,12 @@ export default function Reminder({ route, navigation }) {
   };
 
   const addReminder = () => {
+    if (newReminder.length == 0) {
+      setTitleError("Title is required.");
+      return;
+    }
+
+    console.log("date: ", reminderDate.toString().length);
     const combinedDate = new Date(
       reminderDate.getFullYear(),
       reminderDate.getMonth(),
@@ -144,10 +160,6 @@ export default function Reminder({ route, navigation }) {
     );
 
     // console.log("time :", reminderTime);
-
-    if (newReminder.length == 0) {
-      return;
-    }
 
     const newReminderObj = {
       id: uuid.v4(),
@@ -164,7 +176,7 @@ export default function Reminder({ route, navigation }) {
     );
 
     setReminders([...reminders, newReminderObj]);
-
+    showToast();
     setNewReminder("");
     setNewNote("");
     setReminderDate("");
@@ -194,9 +206,9 @@ export default function Reminder({ route, navigation }) {
   };
 
   const showTimePicker = () => {
+    Keyboard.dismiss();
     console.log("date :", reminderDate.length);
     if (reminderDate.length == 0) {
-      console.log("no date selected");
       let today = new Date();
       setReminderDate(today);
       console.log(today);
@@ -266,11 +278,13 @@ export default function Reminder({ route, navigation }) {
         >
           <Text
             style={
-              newReminder.length === 0
+              newReminder.length === 0 ||
+              reminderDate.toString().length === 0 ||
+              reminderTime.toString().length === 0
                 ? {
                     fontSize: 18,
                     fontFamily: "Inter-Bold",
-                    color: theme == "dark" ? "grey" : "grey",
+                    color: theme == "dark" ? "#5c5c5c" : "grey",
                   }
                 : {
                     fontSize: 18,
@@ -285,9 +299,11 @@ export default function Reminder({ route, navigation }) {
             name="plus"
             size={30}
             color={
-              newReminder.length == 0
+              newReminder.length === 0 ||
+              reminderDate.toString().length === 0 ||
+              reminderTime.toString().length === 0
                 ? theme == "dark"
-                  ? "grey"
+                  ? "#5c5c5c"
                   : "grey"
                 : theme == "light"
                 ? "#2f2d51"
@@ -330,14 +346,16 @@ export default function Reminder({ route, navigation }) {
                 ? { minHeight: 30, color: "white" }
                 : { minHeight: 30, color: "#2f2d51" }
             }
-            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
             placeholder="Title"
+            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
             multiline={true}
             autoFocus={route?.params?.reminder.length > 0 ? true : false}
             textAlignVertical="top"
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
           />
+
           <View
             style={
               theme == "dark"
@@ -346,7 +364,7 @@ export default function Reminder({ route, navigation }) {
             }
           />
           <TextInput
-            placeholderTextColor={theme == "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
             style={
               theme == "dark"
                 ? { minHeight: 50, color: "white" }
@@ -620,7 +638,7 @@ export default function Reminder({ route, navigation }) {
             </TouchableOpacity>
           </View>
         )}
-        <View style={{ marginTop: "auto", marginBottom: 30 }}>
+        <View style={{ marginTop: 10 }}>
           <Text
             onPress={() => navigation.navigate("Settings")}
             style={
@@ -628,13 +646,31 @@ export default function Reminder({ route, navigation }) {
                 ? {
                     color: "white",
                     fontSize: 13,
-                    textAlign: "center",
+                    marginBottom: 10,
+                    fontFamily: "Inter-Medium",
+                  }
+                : {
+                    color: "#2f2d51",
+                    marginBottom: 10,
+                    fontSize: 13,
+                    fontFamily: "Inter-Medium",
+                  }
+            }
+          >
+            Required fields: Title, date and time.
+          </Text>
+          <Text
+            onPress={() => navigation.navigate("Settings")}
+            style={
+              theme == "dark"
+                ? {
+                    color: "#d2d2d2",
+                    fontSize: 13,
                     fontFamily: "Inter-Regular",
                   }
                 : {
                     color: "#2f2d51",
                     fontSize: 13,
-                    textAlign: "center",
                     fontFamily: "Inter-Regular",
                   }
             }
@@ -644,7 +680,7 @@ export default function Reminder({ route, navigation }) {
             <Feather
               name="external-link"
               size={14}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
             />
             .
           </Text>

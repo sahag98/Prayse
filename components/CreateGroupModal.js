@@ -239,15 +239,23 @@ const CreateGroupModal = ({
               <Text
                 style={
                   theme == "dark"
-                    ? { fontFamily: "Inter-Medium", color: "#a5c9ff" }
-                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                    ? {
+                        fontFamily: "Inter-Bold",
+                        fontSize: 18,
+                        color: "#a5c9ff",
+                      }
+                    : {
+                        fontFamily: "Inter-Bold",
+                        fontSize: 18,
+                        color: "#2f2d51",
+                      }
                 }
               >
                 Create
               </Text>
               <AntDesign
                 name="plus"
-                size={24}
+                size={28}
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
@@ -305,24 +313,41 @@ const CreateGroupModal = ({
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10, width: "100%" }}>
               <Text
-                style={{
-                  color: "#efefef",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#efefef",
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                      }
+                }
               >
                 "Iron sharpeneth iron; so a man sharpeneth the countenance of
                 his friend."
               </Text>
               <Text
-                style={{
-                  color: "white",
-                  alignSelf: "flex-end",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 13,
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "white",
+                        alignSelf: "flex-end",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 13,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        alignSelf: "flex-end",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 13,
+                      }
+                }
               >
                 - Proverbs 27:17
               </Text>

@@ -58,7 +58,7 @@ const CommentItem = ({
       sound: "default",
       title: "New Reply ✏️",
       body: `${user.full_name} has replied to: ${item.comment}.`,
-      data: { screen: "Community" },
+      data: { screen: "PublicCommunity" },
     };
 
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -154,13 +154,13 @@ const CommentItem = ({
               ? {
                   color: "#d6d6d6",
                   fontFamily: "Inter-Light",
-                  fontSize: 11,
+                  fontSize: 12,
                   marginTop: 2,
                 }
               : {
                   color: "#2f2d51",
                   fontFamily: "Inter-Light",
-                  fontSize: 11,
+                  fontSize: 12,
                   marginTop: 2,
                 }
           }
@@ -177,6 +177,7 @@ const CommentItem = ({
                 fontFamily: "Inter-Regular",
                 lineHeight: 20,
                 marginLeft: 5,
+                marginBottom: 10,
               }
             : {
                 fontSize: 14,
@@ -184,6 +185,7 @@ const CommentItem = ({
                 fontFamily: "Inter-Regular",
                 lineHeight: 20,
                 marginLeft: 5,
+                marginBottom: 10,
               }
         }
       >
@@ -392,12 +394,12 @@ const CommentItem = ({
               theme == "dark"
                 ? {
                     textAlign: "center",
-                    fontFamily: "Inter-Medium",
-                    color: "white",
+                    fontFamily: "Inter-Bold",
+                    color: "#A5C9FF",
                   }
                 : {
                     textAlign: "center",
-                    fontFamily: "Inter-Medium",
+                    fontFamily: "Inter-Bold",
                     color: "#2f2d51",
                   }
             }
@@ -412,7 +414,6 @@ const CommentItem = ({
             <>
               {replyArray.map((r) => (
                 <>
-                  {console.log(r.profiles)}
                   <View
                     key={r.id}
                     style={{
@@ -427,7 +428,7 @@ const CommentItem = ({
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 5,
+                        gap: 3,
                       }}
                     >
                       <Image
@@ -462,13 +463,13 @@ const CommentItem = ({
                           ? {
                               color: "#d6d6d6",
                               fontFamily: "Inter-Light",
-                              fontSize: 11,
+                              fontSize: 12,
                               marginTop: 2,
                             }
                           : {
                               color: "#2f2d51",
                               fontFamily: "Inter-Light",
-                              fontSize: 11,
+                              fontSize: 12,
                               marginTop: 2,
                             }
                       }
@@ -482,6 +483,7 @@ const CommentItem = ({
                         ? {
                             fontFamily: "Inter-Regular",
                             color: "white",
+                            marginTop: 5,
                             marginLeft: 5,
                           }
                         : { fontFamily: "Inter-Regular", marginLeft: 5 }
@@ -510,8 +512,8 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   commentContainer: {
-    paddingVertical: 10,
-
+    paddingVertical: 8,
+    gap: 10,
     justifyContent: "space-between",
     flexDirection: "column",
     marginBottom: 5,

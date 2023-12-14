@@ -13,7 +13,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const DonationModal = ({
@@ -56,13 +56,21 @@ const DonationModal = ({
         >
           <ModalIcon>
             <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
               <HeaderTitle
                 style={
                   theme == "dark"
-                    ? { fontFamily: "Inter-Bold", color: "white" }
-                    : { fontFamily: "Inter-Bold" }
+                    ? {
+                        fontFamily: "Inter-Bold",
+                        letterSpacing: 1,
+                        color: "white",
+                      }
+                    : {
+                        fontFamily: "Inter-Bold",
+                        color: "#2f2d51",
+                        letterSpacing: 1,
+                      }
                 }
               >
                 Support Prayse
@@ -70,7 +78,7 @@ const DonationModal = ({
               <AntDesign
                 name="heart"
                 size={24}
-                color={theme == "dark" ? "#ff6262" : "#2f2d51"}
+                color={theme == "dark" ? "#ff6262" : "#ff6262"}
               />
             </View>
           </ModalIcon>
@@ -80,20 +88,40 @@ const DonationModal = ({
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
-                    fontSize: 15,
+                    fontSize: 14,
+                    marginBottom: 10,
+                    lineHeight: 21,
                   }
                 : {
                     color: "#2f2d51",
-                    fontSize: 15,
+                    lineHeight: 21,
+                    fontSize: 14,
+                    marginBottom: 10,
                     fontFamily: "Inter-Regular",
                   }
             }
           >
-            Dear Prayse Community, Your support means the world to us. As we
-            strive to make Prayse better every day, we kindly ask for your help.
-            Consider making a donation to keep Prayse thriving and accessible
-            for all. Your contribution, big or small, makes a significant
-            impact. Thank you for being a part of the Prayse family.
+            Dear Prayse Community, as we strive to reiterate the importance of
+            prayer in today's world, we would like to give you the opportunity
+            to express your generosity.
+          </Text>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontFamily: "Inter-Regular",
+                    fontSize: 14,
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 14,
+                    lineHeight: 21,
+                    fontFamily: "Inter-Regular",
+                  }
+            }
+          >
+            Remember, you're giving through Prayse, not to Prayse.
           </Text>
           <View
             style={{
@@ -111,6 +139,7 @@ const DonationModal = ({
                   ? {
                       width: "48%",
                       borderWidth: 1,
+                      flexDirection: "row",
                       borderColor: "#121212",
                       backgroundColor: "#121212",
                       justifyContent: "center",
@@ -138,6 +167,7 @@ const DonationModal = ({
               >
                 Close
               </Text>
+              {/* <FontAwesome5 name="heart" size={20} color="white" /> */}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -147,21 +177,22 @@ const DonationModal = ({
                 theme == "dark"
                   ? {
                       width: "48%",
-                      borderWidth: 1,
-                      borderColor: "#ff6262",
+                      flexDirection: "row",
                       backgroundColor: "#ff6262",
                       justifyContent: "center",
                       alignItems: "center",
+                      gap: 10,
                       padding: 15,
                       borderRadius: 10,
                     }
                   : {
                       width: "48%",
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
+
+                      flexDirection: "row",
                       backgroundColor: "#2f2d51",
                       justifyContent: "center",
                       alignItems: "center",
+                      gap: 10,
                       padding: 15,
                       borderRadius: 10,
                     }
@@ -174,8 +205,9 @@ const DonationModal = ({
                     : { color: "white", fontFamily: "Inter-Bold" }
                 }
               >
-                Donate
+                Give
               </Text>
+              <FontAwesome5 name="heart" size={20} color="white" />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -184,22 +216,19 @@ const DonationModal = ({
               theme == "dark"
                 ? {
                     width: "100%",
-                    borderWidth: 1,
+
                     marginTop: 5,
-                    borderColor: "#212121",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 15,
+                    paddingTop: 15,
                     borderRadius: 10,
                   }
                 : {
                     width: "100%",
-                    borderWidth: 1,
-                    marginTop: 10,
-                    backgroundColor: "white",
+                    marginTop: 5,
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 15,
+                    paddingTop: 15,
                     borderRadius: 10,
                   }
             }
@@ -207,11 +236,19 @@ const DonationModal = ({
             <Text
               style={
                 theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Medium" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Medium" }
+                  ? {
+                      color: "#bebebe",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 13,
+                      fontFamily: "Inter-Medium",
+                    }
               }
             >
-              Dont Remind me again
+              Don't Remind me again
             </Text>
           </TouchableOpacity>
         </ModalView>

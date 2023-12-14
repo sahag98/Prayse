@@ -2,6 +2,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  Platform,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,6 +28,7 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import QuestionHelpModal from "../components/QuestionHelpModal";
 import MaskedView from "@react-native-masked-view/masked-view";
 import LinearGradient from "react-native-linear-gradient";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 const Question = ({ navigation }) => {
   const { currentUser, supabase, newAnswer, setNewAnswer } = useSupabase();
@@ -250,12 +252,12 @@ const Question = ({ navigation }) => {
                 theme == "dark"
                   ? {
                       color: "#ff6262",
-                      fontSize: 12,
+                      fontSize: 13,
                       fontFamily: "Inter-Medium",
                     }
                   : {
                       color: "#ff4e4e",
-                      fontSize: 12,
+                      fontSize: 13,
                       fontFamily: "Inter-Medium",
                     }
               }
@@ -266,30 +268,76 @@ const Question = ({ navigation }) => {
         </View>
       </View>
       {newAnswer && (
-        <MaskedView
-          style={{ height: 20, marginBottom: 10 }}
-          maskElement={
-            <Text
-              style={{
-                fontFamily: "Inter-Bold",
-
-                textAlign: "center",
-                fontSize: 13,
-              }}
-            >
-              New Answer! Press the reload icon to refresh.
-            </Text>
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          style={
+            theme == "dark"
+              ? {
+                  position: "absolute",
+                  zIndex: 99,
+                  width: "65%",
+                  alignSelf: "center",
+                  marginVertical: 10,
+                  backgroundColor: "#121212",
+                  borderRadius: 50, // Set your desired border radius
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: theme == "dark" ? "#A5C9FF" : "#2f2d51",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }
+              : {
+                  position: "absolute",
+                  zIndex: 99,
+                  width: "70%",
+                  alignSelf: "center",
+                  marginVertical: 10,
+                  backgroundColor: "white",
+                  borderRadius: 50, // Set your desired border radius
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: "#2f2d51",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }
           }
         >
-          <LinearGradient
-            colors={
-              theme == "dark" ? ["#A5C9FF", "#fabada"] : ["#2f2d51", "#fabada"]
+          <Animated.Text
+            style={
+              theme == "dark"
+                ? {
+                    fontFamily: "Inter-Bold",
+                    paddingVertical: 15,
+                    paddingHorizontal: 5,
+                    color: "#A5C9FF",
+                    textAlign: "center",
+                    fontSize: 13,
+                  }
+                : {
+                    fontFamily: "Inter-Bold",
+                    paddingVertical: 15,
+                    paddingHorizontal: 5,
+                    color: "#2f2d51",
+                    textAlign: "center",
+                    fontSize: 13,
+                  }
             }
-            start={{ x: 1, y: 1 }}
-            end={{ x: 0, y: 0.33 }}
-            style={{ flex: 1 }}
-          />
-        </MaskedView>
+          >
+            New Answers! Pull down to refresh
+          </Animated.Text>
+        </Animated.View>
       )}
       <View
         style={{
@@ -399,11 +447,12 @@ export default Question;
 
 const styles = StyleSheet.create({
   questionDark: {
+    marginTop: 10,
     borderRadius: 15,
     padding: 10,
-    borderBottomColor: "#3e3e3e",
-    borderBottomWidth: 2,
-    marginBottom: 10,
+    borderColor: "#3e3e3e",
+    borderWidth: 2,
+    marginBottom: 20,
   },
   actionButtons: {
     position: "absolute",
@@ -424,12 +473,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#2f2d51",
   },
   question: {
-    // backgroundColor: "#93d8f8",
+    marginTop: 10,
+    backgroundColor: "#ffcd8b",
     borderRadius: 15,
     padding: 10,
-    borderBottomColor: "#93d8f8",
-    borderBottomWidth: 2,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   inputField: {
     marginVertical: 10,

@@ -22,7 +22,7 @@ export const colors = {
 const statusBarHeight = Constants.statusBarHeight;
 
 export const Container = styled.View`
-  background-color: '${colors.primary}';
+  background-color: "${colors.primary}";
   padding: 15px;
   padding-bottom: 0px;
   flex: 1;
@@ -30,7 +30,7 @@ export const Container = styled.View`
 `;
 
 export const PrayerContainer = styled.View`
-  background-color: '${colors.primary}';
+  background-color: "${colors.primary}";
   padding: 0px;
   padding-bottom: 0px;
   flex: 1;
@@ -46,8 +46,8 @@ export const Container1 = styled.View`
 
 // Header
 export const HeaderView = styled.View`
-position:relative;
-  margin-top:10px;
+  position: relative;
+  margin-top: 10px;
   margin-bottom: 10px;
   flex-direction: row;
   justify-content: space-between;
@@ -55,16 +55,16 @@ position:relative;
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 19px;
+  font-size: 20px;
   color: ${colors.tertiary};
 `;
 export const HeaderButton = styled.TouchableOpacity`
-/* display: flex;
+  /* display: flex;
 flex-direction: row; */
-align-items:center;
+  align-items: center;
   font-weight: bold;
   color: ${colors.tertiary};
-  z-index:999;
+  z-index: 999;
 `;
 
 // List
@@ -92,12 +92,12 @@ export const ListView2 = styled.TouchableHighlight`
 `;
 
 export const ListView1 = styled.TouchableHighlight`
-  background-color:${colors.folderColor};
+  background-color: ${colors.folderColor};
   min-height: 75px;
-  width:100%;
+  width: 100%;
   padding: 10px;
   justify-content: space-around;
-  margin-top:10px;
+  margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 10px;
 `;
@@ -121,7 +121,7 @@ export const TodoText = styled.Text`
   width: 95%;
   font-size: 16px;
   letter-spacing: 1px;
-  padding-bottom:5px;
+  padding-bottom: 5px;
   color: ${colors.tertiary};
 `;
 
@@ -135,9 +135,9 @@ export const TodoDate = styled.Text`
 `;
 
 export const TodoCategory = styled.View`
-  background-color:#121212;
-  border-radius:20px;
-  padding:5px;
+  background-color: #121212;
+  border-radius: 20px;
+  padding: 5px;
   font-size: 9px;
   letter-spacing: 1px;
   color: ${colors.alternative};
@@ -159,8 +159,8 @@ export const ModalButton = styled.TouchableOpacity`
   border-radius: 50px;
   justify-content: center;
   align-items: center;
-  align-self: center;  
-    position: absolute;
+  align-self: center;
+  position: absolute;
   bottom: 13px;
 `;
 
@@ -171,10 +171,10 @@ export const ModalButton2 = styled.TouchableOpacity`
   border-radius: 50px;
   justify-content: center;
   align-items: center;
-  align-self: flex-end; 
+  align-self: flex-end;
   position: absolute;
   bottom: 13px;
-  right:5%;
+  right: 5%;
 `;
 
 export const ModalButton4 = styled.TouchableOpacity`
@@ -184,24 +184,23 @@ export const ModalButton4 = styled.TouchableOpacity`
   border-radius: 50px;
   justify-content: center;
   align-items: center;
-  align-self: flex-end; 
+  align-self: flex-end;
   position: absolute;
   bottom: 10px;
-  right:5%;
+  right: 5%;
 `;
 
-
 export const ModalButton3 = styled.TouchableOpacity`
- width: 70px;
+  width: 70px;
   height: 70px;
   background-color: ${colors.tertiary};
   border-radius: 50px;
   justify-content: center;
   align-items: center;
-  align-self: flex-end; 
+  align-self: flex-end;
   position: absolute;
   bottom: 13px;
-  left:5%;
+  left: 5%;
 `;
 
 export const ModalContainer = styled.View`
@@ -222,16 +221,13 @@ export const ModalView2 = styled.View`
   background-color: ${colors.secondary};
   border-radius: 20px;
   padding: 20px;
-
 `;
 
 export const ToolTipView = styled.View`
   background-color: ${colors.secondary};
   border-radius: 10px;
   padding: 15px;
-
 `;
-
 
 export const StyledInput = styled.TextInput`
   width: 300px;
@@ -274,7 +270,7 @@ export const ModalAction = styled.TouchableOpacity`
 `;
 
 export const ModalAction2 = styled.TouchableOpacity`
-  padding:20px;
+  padding: 20px;
   background-color: ${(props) => props.color};
   border-radius: 10px;
   justify-content: center;

@@ -145,7 +145,53 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   Setup and customize daily or weekly prayer reminders.
                 </Text>
+                <View style={{ width: "100%", gap: 5 }}>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontSize: 17,
+                            color: "white",
+                            fontFamily: "Inter-Medium",
+                          }
+                        : {
+                            fontSize: 17,
+                            color: "#2f2d51",
+                            fontFamily: "Inter-Medium",
+                          }
+                    }
+                  >
+                    Changes:
+                  </Text>
 
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "#dbdbdb", fontFamily: "Inter-Regular" }
+                        : { color: "#2f2d51", fontFamily: "Inter-Regular" }
+                    }
+                  >
+                    - Added notifications for each community prayer.
+                  </Text>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "#dbdbdb", fontFamily: "Inter-Regular" }
+                        : { color: "#2f2d51", fontFamily: "Inter-Regular" }
+                    }
+                  >
+                    - Community design and layout.
+                  </Text>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { color: "#dbdbdb", fontFamily: "Inter-Regular" }
+                        : { color: "#2f2d51", fontFamily: "Inter-Regular" }
+                    }
+                  >
+                    - Some design changes for light mode.
+                  </Text>
+                </View>
                 <View
                   style={{
                     flexDirection: "row",
@@ -601,8 +647,7 @@ export default NewFeaturesModal;
 const styles = StyleSheet.create({
   img: {
     borderRadius: 10,
-    marginVertical: 10,
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 200,
   },
 });

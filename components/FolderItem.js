@@ -69,7 +69,7 @@ const FolderItem = ({
             ? [styles.containerDark, styles.elevationDark]
             : theme == "BlackWhite"
             ? [styles.containerBlack, styles.elevationBlack]
-            : [styles.container, styles.elevation]
+            : styles.container
         }
       >
         <View
@@ -299,6 +299,14 @@ const styles = StyleSheet.create({
     height: 135,
     marginBottom: 15,
     borderRadius: 10,
+    shadowColor: "#bdbdbd",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 3,
   },
 
   containerDark: {

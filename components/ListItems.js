@@ -76,7 +76,6 @@ const ListItems = ({
     const categoryItem = item.category;
 
     const addReminder = (item) => {
-      console.log(item);
       navigation.navigate("Test", {
         reminder: item,
       });
@@ -95,7 +94,19 @@ const ListItems = ({
             style={
               theme == "dark"
                 ? [{ backgroundColor: "#212121", position: "relative" }]
-                : [{ backgroundColor: "#93D8F8" }]
+                : [
+                    {
+                      backgroundColor: "#93D8F8",
+                      shadowColor: "#bdbdbd",
+                      shadowOffset: {
+                        width: 0,
+                        height: 5,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 5.62,
+                      elevation: 7,
+                    },
+                  ]
             }
           >
             <>

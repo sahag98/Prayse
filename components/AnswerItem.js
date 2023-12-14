@@ -7,7 +7,7 @@ const AnswerItem = ({ item, theme }) => {
   return (
     <View style={styles.commentContainer}>
       <View style={styles.content}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
           <Image
             style={styles.profileImg}
             source={{
@@ -19,8 +19,8 @@ const AnswerItem = ({ item, theme }) => {
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontSize: 14, fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontSize: 14, fontFamily: "Inter-Bold" }
+                ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Bold" }
             }
           >
             {item.profiles.full_name}
@@ -33,13 +33,13 @@ const AnswerItem = ({ item, theme }) => {
               ? {
                   color: "#d6d6d6",
                   fontFamily: "Inter-Light",
-                  fontSize: 11,
+                  fontSize: 12,
                   marginTop: 2,
                 }
               : {
                   color: "#2f2d51",
                   fontFamily: "Inter-Light",
-                  fontSize: 11,
+                  fontSize: 12,
                   marginTop: 2,
                 }
           }
@@ -52,6 +52,7 @@ const AnswerItem = ({ item, theme }) => {
           theme == "dark"
             ? {
                 fontSize: 14,
+                marginLeft: 5,
                 color: "white",
                 fontFamily: "Inter-Regular",
                 lineHeight: 20,
@@ -80,8 +81,8 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   commentContainer: {
-    paddingVertical: 10,
-
+    paddingVertical: 5,
+    gap: 10,
     justifyContent: "space-between",
     flexDirection: "column",
     marginBottom: 5,

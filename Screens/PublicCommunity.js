@@ -26,7 +26,7 @@ import Animated, {
 } from "react-native-reanimated";
 import WelcomeModal from "../components/WelcomeModal";
 
-const PublicCommunity = () => {
+const PublicCommunity = ({ route }) => {
   const navigation = useNavigation();
   const {
     currentUser,

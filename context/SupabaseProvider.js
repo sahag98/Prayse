@@ -27,6 +27,7 @@ export const SupabaseProvider = (props) => {
   const [newAnswer, setNewAnswer] = useState(false);
   const [isNavigationReady, setNavigationReady] = useState(false);
   const [refreshLikes, setRefreshLikes] = useState(false);
+  const [isNewMessage, setIsNewMessage] = useState(false);
   const [refreshComments, setRefreshComments] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
@@ -114,8 +115,9 @@ export const SupabaseProvider = (props) => {
   };
 
   const checkIfUserIsLoggedIn = async () => {
+    console.log("checking user");
     const result = await supabase.auth.getSession();
-    setSession(result.data.session);
+    setSession(result.data.session ? result.data.session : null);
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
       let { data: profiles, error: profileError } = await supabase
@@ -191,6 +193,18 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
+              table: "messages",
+            },
+            (payload) => {
+              console.log("new message: ", payload);
+              setIsNewMessage(true);
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
               table: "likes",
             },
             (payload) => {
@@ -233,6 +247,8 @@ export const SupabaseProvider = (props) => {
         setNewPost,
         newAnswer,
         setNewAnswer,
+        isNewMessage,
+        setIsNewMessage,
         isLoggedIn,
         login,
         supabase,

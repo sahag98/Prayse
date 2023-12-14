@@ -46,9 +46,11 @@ const JoinModal = ({
   const [description, setDescription] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [joinError, setJoinError] = useState(false);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setModalVisible(false);
+    setJoinError(false);
     setCode("");
   };
 
@@ -82,9 +84,9 @@ const JoinModal = ({
         .from("groups")
         .select("code, id")
         .eq("code", code);
-      console.log(group);
+
       if (group.length == 0) {
-        alert("Group doesnt exist");
+        setJoinError(true);
         setCode("");
         return;
       } else if (group.length > 0) {
@@ -102,6 +104,7 @@ const JoinModal = ({
             group_id: group[0].id,
             user_id: user.id,
           });
+          setJoinError(false);
         }
       }
 
@@ -314,30 +317,60 @@ const JoinModal = ({
                     <AntDesign
                       name="rightcircle"
                       size={40}
-                      color={code.length < 6 ? "#a5c9ff" : "#a5c9ff"}
+                      color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
                     />
                   </Animated.View>
                 )}
               </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 5 }}>
+            {joinError && (
               <Text
                 style={{
-                  color: "#d2d2d2",
-                  fontFamily: "Inter-Regular",
+                  alignSelf: "flex-start",
+                  fontFamily: "Inter-Medium",
                   fontSize: 13,
+                  color: "#ff4e4e",
                 }}
+              >
+                Group doesn't exist try again.
+              </Text>
+            )}
+
+            <View style={{ marginTop: 5, width: "100%" }}>
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "#d2d2d2",
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                      }
+                }
               >
                 "For where two or three are gathered together in my name, there
                 am I in the midst of them."
               </Text>
               <Text
-                style={{
-                  color: "white",
-                  alignSelf: "flex-end",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 13,
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "white",
+                        alignSelf: "flex-end",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 13,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        alignSelf: "flex-end",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 13,
+                      }
+                }
               >
                 - Matthew 18:20
               </Text>

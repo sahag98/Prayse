@@ -183,7 +183,7 @@ const Login = () => {
                 theme == "dark"
                   ? {
                       backgroundColor: "#212121",
-                      color: "#d6d6d6",
+                      color: "white",
                       padding: 15,
                       width: "100%",
                       marginBottom: 10,

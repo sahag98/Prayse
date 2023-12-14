@@ -18,12 +18,21 @@ const SearchBar = ({ theme, search, setSearch }) => {
       style={{
         backgroundColor: "white",
         borderRadius: 10,
-        padding: 8,
+        padding: 10,
+        shadowColor: "#bdbdbd",
+
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 5.62,
+        elevation: 7,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginTop: 5,
-        marginBottom: 10,
+        marginTop: 10,
+        marginBottom: 15,
       }}
     >
       <View

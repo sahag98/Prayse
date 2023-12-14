@@ -79,13 +79,13 @@ const WelcomeModal = ({
     }
   };
 
-  // async function getProfile() {
-  //   const { data: profiles, error: profileError } = await supabase
-  //     .from("profiles")
-  //     .select()
-  //     .eq("id", user?.id);
-  //   setCurrentUser(profiles[0]);
-  // }
+  async function getProfile() {
+    const { data: profiles, error: profileError } = await supabase
+      .from("profiles")
+      .select()
+      .eq("id", user?.id);
+    setCurrentUser(profiles[0]);
+  }
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -139,7 +139,7 @@ const WelcomeModal = ({
         throw error;
       }
       getProfile();
-      getPrayers();
+      // getPrayers();
     }
   };
 
@@ -257,7 +257,7 @@ const WelcomeModal = ({
       showToast("success", "Profile created successfully. ✔️");
     }
     getProfile();
-    getPrayers();
+    // getPrayers();
     setModalVisible(false);
   };
 
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
     width: "100%",
     backgroundColor: "#212121",
-    padding: 10,
+    padding: 12,
     borderRadius: 10,
   },
   dismiss: {
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
     width: "100%",
     backgroundColor: "#caecfc",
-    padding: 10,
+    padding: 12,
     borderRadius: 10,
   },
   logoutDark: {

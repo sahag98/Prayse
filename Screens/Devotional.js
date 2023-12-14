@@ -102,12 +102,14 @@ const Devotional = () => {
                   ? {
                       fontFamily: "Inter-Bold",
                       marginTop: 20,
+                      letterSpacing: 1,
                       marginBottom: 5,
                       fontSize: 24,
                       color: "white",
                     }
                   : {
                       fontFamily: "Inter-Bold",
+                      letterSpacing: 1,
                       marginTop: 20,
                       fontSize: 24,
                       marginBottom: 5,
@@ -125,7 +127,13 @@ const Devotional = () => {
               {d.description}
             </Text>
             <View style={theme == "dark" ? styles.refreshDark : styles.refresh}>
-              <Text style={{ fontFamily: "Inter-Regular", color: "#7a7a7a" }}>
+              <Text
+                style={{
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                  color: "#7a7a7a",
+                }}
+              >
                 Pull page down to refresh
               </Text>
             </View>
@@ -133,18 +141,18 @@ const Devotional = () => {
               <TouchableOpacity
                 onPress={() =>
                   Linking.openURL(
-                    "https://www.instagram.com/triedbyfireministry/"
+                    "https://triedbyfire.substack.com?utm_source=navbar&utm_medium=web"
                   )
                 }
                 style={{
-                  marginTop: 5,
+                  marginVertical: 10,
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
               >
-                <View>
+                <View style={{ gap: 2 }}>
                   <Text
                     style={theme == "dark" ? styles.ownerDark : styles.owner}
                   >
@@ -156,12 +164,12 @@ const Devotional = () => {
                         ? {
                             color: "#d6d6d6",
                             fontSize: 13,
-                            fontFamily: "Inter-Light",
+                            fontFamily: "Inter-Regular",
                           }
                         : {
                             color: "#2f2d51",
                             fontSize: 13,
-                            fontFamily: "Inter-Light",
+                            fontFamily: "Inter-Regular",
                           }
                     }
                   >
@@ -174,15 +182,17 @@ const Devotional = () => {
                 style={
                   theme == "dark"
                     ? {
-                        marginTop: 10,
+                        marginTop: 5,
+                        marginBottom: 10,
                         borderLeftWidth: 2,
                         borderLeftColor: "#A5C9FF",
                         paddingHorizontal: 10,
                       }
                     : {
                         marginTop: 5,
+                        marginBottom: 10,
                         borderLeftWidth: 2,
-                        borderLeftColor: "#599bff",
+                        borderLeftColor: "#ffcd8b",
                         paddingHorizontal: 10,
                       }
                 }
@@ -192,12 +202,12 @@ const Devotional = () => {
                     theme == "dark"
                       ? {
                           color: "#d6d6d6",
-                          fontSize: 15,
+                          lineHeight: 22,
                           fontFamily: "Inter-Regular",
                         }
                       : {
                           color: "#2f2d51",
-                          fontSize: 15,
+                          lineHeight: 22,
                           fontFamily: "Inter-Regular",
                         }
                   }
@@ -206,7 +216,7 @@ const Devotional = () => {
                 </Text>
               </View>
             </View>
-            <Divider style={{ marginTop: 10, marginBottom: 5 }} />
+            {/* <Divider style={{ height: 1.1, marginVertical: 10 }} /> */}
             <Text style={theme == "dark" ? styles.dayDark : styles.day}>
               {d.day}
             </Text>
@@ -232,8 +242,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   img: {
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 40,
     borderRadius: 100,
   },
   refreshDark: {
@@ -272,25 +282,27 @@ const styles = StyleSheet.create({
   },
   dayDark: {
     color: "#d6d6d6",
+    letterSpacing: 1,
     fontSize: 20,
     fontFamily: "Inter-Bold",
   },
   day: {
     color: "#2F2D51",
+    letterSpacing: 1,
     fontSize: 20,
     fontFamily: "Inter-Bold",
   },
   contentDark: {
     color: "#d6d6d6",
     fontSize: 15,
-    lineHeight: 40,
+    lineHeight: 35,
     fontFamily: "Inter-Regular",
   },
   content: {
     color: "#2F2D51",
     fontSize: 15,
     fontFamily: "Inter-Regular",
-    lineHeight: 40,
+    lineHeight: 35,
   },
 });
 
