@@ -27,11 +27,20 @@ export default function App() {
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ marginTop: 10, borderLeftColor: "#93d8f8", height: 50 }}
+        style={{
+          marginTop: 10,
+          borderLeftColor: "#93d8f8",
+          height: 50,
+        }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
           fontSize: 14,
-          fontWeight: "400",
+          fontWeight: "500",
+        }}
+        text2Style={{
+          fontSize: 14,
+          textAlign: "right",
+          fontWeight: "500",
         }}
       />
     ),
