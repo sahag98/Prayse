@@ -5,9 +5,11 @@ import { AntDesign } from "@expo/vector-icons";
 const ReminderModal = ({
   theme,
   reminder,
+  note,
   reminderVisible,
   setReminderVisible,
 }) => {
+  console.log(reminder);
   return (
     <Modal
       key={reminder.id}
@@ -116,11 +118,11 @@ const ReminderModal = ({
                     }
               }
             >
-              {reminder.message}
+              {reminder}
             </Text>
           </View>
           <View>
-            {reminder.note && (
+            {note && (
               <>
                 <Text
                   style={
@@ -155,7 +157,7 @@ const ReminderModal = ({
                         }
                   }
                 >
-                  {reminder.note}
+                  {note}
                 </Text>
               </>
             )}

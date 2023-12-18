@@ -920,7 +920,7 @@ export default function Welcome({ navigation }) {
                         marginTop: "auto",
                       }}
                     >
-                      <TouchableOpacity
+                      {/* <TouchableOpacity
                         onPress={() => setReminderVisible(true)}
                       >
                         <Text
@@ -940,8 +940,8 @@ export default function Welcome({ navigation }) {
                         >
                           View
                         </Text>
-                      </TouchableOpacity>
-                      <View
+                      </TouchableOpacity> */}
+                      {/* <View
                         style={
                           theme == "dark"
                             ? {
@@ -955,7 +955,7 @@ export default function Welcome({ navigation }) {
                                 backgroundColor: "#2f2d51",
                               }
                         }
-                      />
+                      /> */}
                       <TouchableOpacity
                         onPress={() => dismissNotification(item)}
                       >
@@ -970,12 +970,13 @@ export default function Welcome({ navigation }) {
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    <ReminderModal
+                    {/* <ReminderModal
                       reminderVisible={reminderVisible}
                       setReminderVisible={setReminderVisible}
                       theme={theme}
-                      reminder={item.reminder}
-                    />
+                      reminder={item.reminder.message}
+                      note={item.reminder.note}
+                    /> */}
                   </View>
                 );
               }}

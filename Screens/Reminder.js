@@ -9,22 +9,15 @@ import React from "react";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useDispatch, useSelector } from "react-redux";
 import * as Notifications from "expo-notifications";
-import {
-  Ionicons,
-  AntDesign,
-  MaterialCommunityIcons,
-  Feather,
-} from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { deleteReminder } from "../redux/remindersReducer";
 
 const Reminder = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const reminders = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();
+
   const dismissNotification = async (item) => {
-    // const all = await Notifications.getAllScheduledNotificationsAsync();
-    // console.log("all notis:", all);
-    // await Notifications.cancelAllScheduledNotificationsAsync();
     dispatch(deleteReminder(item.reminder.id));
     await Notifications.cancelScheduledNotificationAsync(item.identifier);
   };
@@ -65,7 +58,7 @@ const Reminder = ({ navigation }) => {
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
           >
-            Reminders
+            Prayer Reminders
           </HeaderTitle>
         </View>
       </HeaderView>
@@ -257,34 +250,38 @@ const Reminder = ({ navigation }) => {
                        
                       </Text> */}
                 </View>
-                <View style={{ gap: 5 }}>
+                <View style={{ gap: 3 }}>
                   <Text
                     style={
                       theme == "dark"
                         ? {
                             fontFamily: "Inter-Regular",
-                            fontSize: 15,
+                            fontSize: 16,
                             color: "white",
+                            marginBottom: item.reminder.note ? 0 : 5,
                           }
                         : {
                             fontFamily: "Inter-Regular",
-                            fontSize: 15,
+                            fontSize: 16,
                             color: "#2f2d51",
+                            marginBottom: item.reminder.note ? 0 : 5,
                           }
                     }
                   >
                     {item.reminder.message}
                   </Text>
-
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Regular",
-                      fontSize: 13,
-                      color: "grey",
-                    }}
-                  >
-                    {item.reminder.note}
-                  </Text>
+                  {item.reminder.note && (
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Regular",
+                        fontSize: 13,
+                        color: "grey",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {item.reminder.note}
+                    </Text>
+                  )}
                 </View>
                 <View
                   style={{

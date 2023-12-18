@@ -304,7 +304,7 @@ const PublicCommunity = ({ route }) => {
       <View style={styles.actionButtons}>
         <AnimatedFAB
           icon={"plus"}
-          label={"Add prayer"}
+          label={"Post prayer"}
           extended={extended}
           onPress={() => setPrayerModal(true)}
           visible={true}

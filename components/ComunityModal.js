@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React from "react";
 import { Modal } from "react-native";
-
+import { PRAYSE_MESSAGE } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
@@ -58,6 +58,18 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
+    function truncateWords(str, numWords) {
+      let words = str.split(" ");
+      if (words.length > numWords) {
+        return words.slice(0, numWords).join(" ") + " ...";
+      } else {
+        return str;
+      }
+    }
+
+    let truncatedString = truncateWords(prayer, 4);
+
+    console.log(truncatedString);
     if (prayer.length <= 0) {
       showToast("error", "The prayer field can't be left empty.");
       setModalVisible(false);
@@ -70,7 +82,24 @@ const CommunityModal = ({
         user_id: user?.id,
         disable_response: isEnabled,
       });
-      showToast("success", "Prayer added successfully. 🙏🏼");
+      showToast("success", "Prayer posted successfully.🙏🏼");
+      const message = {
+        title: "Community 🌐",
+        message: `${user?.full_name} has posted a prayer: ${truncatedString} .Click here to pray for their request.`,
+        data: { screen: "Community", verseTitle: "" },
+      };
+
+      console.log(message.message);
+
+      fetch(PRAYSE_MESSAGE, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
@@ -108,8 +137,8 @@ const CommunityModal = ({
           <Text
             style={
               theme == "dark"
-                ? { color: "white", fontSize: 16, fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontSize: 16, fontFamily: "Inter-Bold" }
+                ? { color: "white", fontSize: 18, fontFamily: "Inter-Bold" }
+                : { color: "#2f2d51", fontSize: 18, fontFamily: "Inter-Bold" }
             }
           >
             Prayer
@@ -182,6 +211,7 @@ const CommunityModal = ({
         </View>
         <View
           style={{
+            marginTop: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             width: "100%",
@@ -222,11 +252,12 @@ const CommunityModal = ({
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={prayer.length == 0 ? true : false}
             onPress={addPrayer}
             style={
               theme == "dark"
                 ? {
-                    backgroundColor: "#A5C9FF",
+                    backgroundColor: prayer.length == 0 ? "#212121" : "#A5C9FF",
                     width: "45%",
                     padding: 15,
                     justifyContent: "center",
@@ -234,7 +265,8 @@ const CommunityModal = ({
                     borderRadius: 10,
                   }
                 : {
-                    backgroundColor: "#2f2d51",
+                    backgroundColor:
+                      prayer.length == 0 ? "lightgrey" : "#2f2d51",
                     width: "45%",
                     padding: 15,
                     justifyContent: "center",
@@ -246,11 +278,14 @@ const CommunityModal = ({
             <Text
               style={
                 theme == "dark"
-                  ? { color: "#121212", fontFamily: "Inter-Bold" }
+                  ? {
+                      color: prayer.length == 0 ? "grey" : "#121212",
+                      fontFamily: "Inter-Bold",
+                    }
                   : { color: "white", fontFamily: "Inter-Bold" }
               }
             >
-              Add
+              Post Prayer
             </Text>
           </TouchableOpacity>
         </View>
@@ -274,7 +309,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     paddingHorizontal: 2,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   input: {
     color: "#2f2d51",
@@ -283,7 +318,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#2f2d51",
     borderBottomWidth: 1,
     paddingHorizontal: 2,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   logoutDark: {
     alignSelf: "flex-end",
