@@ -1,8 +1,5 @@
 import {
-  Keyboard,
-  KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,22 +8,13 @@ import {
 import React from "react";
 import { Modal } from "react-native";
 
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
-import { useSelector } from "react-redux";
+import { HeaderView, ModalContainer } from "../styles/appStyles";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
-import { Switch } from "react-native-paper";
-import Animated, {
-  Easing,
-  FadeIn,
-  FadeOut,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -234,15 +222,15 @@ const JoinModal = ({
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
           }
         >
@@ -391,8 +379,8 @@ const styles = StyleSheet.create({
     width: "85%",
     borderRadius: 10,
     color: "white",
-    fontFamily: "Inter-Medium",
-    fontSize: 16,
+    fontFamily: "Inter-Regular",
+    fontSize: 15,
     justifyContent: "center",
     alignSelf: "center",
   },
@@ -402,8 +390,8 @@ const styles = StyleSheet.create({
     color: "#2f2d51",
     borderRadius: 10,
     width: "85%",
-    fontFamily: "Inter-Medium",
-    fontSize: 16,
+    fontFamily: "Inter-Regular",
+    fontSize: 15,
     justifyContent: "center",
     alignSelf: "center",
   },

@@ -30,13 +30,19 @@ const PrayerGroup = ({ route, navigation }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
+  const flatListRef = useRef(null);
   const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
 
   const allGroups = route.params.allGroups;
-  const { currentUser, isNewMessage, setIsNewMessage, supabase } =
-    useSupabase();
+  const {
+    currentUser,
+    isNewMessage,
+    setIsNewMessage,
+    refreshMembers,
+    supabase,
+  } = useSupabase();
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -49,6 +55,12 @@ const PrayerGroup = ({ route, navigation }) => {
       setInputHeight(60);
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
     }
   };
 
@@ -198,6 +210,7 @@ const PrayerGroup = ({ route, navigation }) => {
           <GroupInfoModal
             group={currGroup}
             theme={theme}
+            supabase={supabase}
             allUsers={allGroups}
             currentUser={currentUser}
             groupInfoVisible={groupInfoVisible}
@@ -246,11 +259,28 @@ const PrayerGroup = ({ route, navigation }) => {
           }}
         >
           {messages.length == 0 ? (
-            <Text style={{ color: "white" }}>No messages yet.</Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? { fontFamily: "Inter-Medium", color: "white" }
+                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                }
+              >
+                No messages yet.
+              </Text>
+            </View>
           ) : (
             <FlashList
               showsVerticalScrollIndicator={false}
               estimatedItemSize={120}
+              ref={flatListRef}
               inverted
               estimatedListSize={{ height: 800, width: 450 }}
               data={messages}

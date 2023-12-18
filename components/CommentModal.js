@@ -137,16 +137,16 @@ const CommentModal = ({
                     backgroundColor: "#121212",
                     justifyContent: "flex-start",
                     alignItems: "flex-start",
-                    paddingTop: insets.top,
-                    paddingBottom: insets.bottom,
+                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                   }
                 : {
                     position: "relative",
                     backgroundColor: "#F2F7FF",
                     justifyContent: "flex-start",
                     alignItems: "flex-start",
-                    paddingTop: insets.top,
-                    paddingBottom: insets.bottom,
+                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                   }
             }
           >

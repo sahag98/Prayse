@@ -38,14 +38,27 @@ const GroupInfoModal = ({
   currentUser,
   allUsers,
   theme,
+  supabase,
 }) => {
+  console.log("group: ", group.group_id);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
 
-  const removeUser = (userId) => {
-    console.log(userId);
+  const removeUser = async (userId) => {
+    console.log("removing: ", userId);
+    let { data: groupMessages, error } = await supabase
+      .from("messages")
+      .delete()
+      .eq("group_id", group.group_id)
+      .eq("user_id", userId);
+
+    let { data, MemberError } = await supabase
+      .from("members")
+      .delete()
+      .eq("group_id", group.group_id)
+      .eq("user_id", userId);
   };
 
   return (
@@ -66,15 +79,15 @@ const GroupInfoModal = ({
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
           }
         >
@@ -104,14 +117,25 @@ const GroupInfoModal = ({
             </HeaderTitle>
           </HeaderView>
           <Text
-            style={{
-              color: "#001f3f",
-              fontFamily: "Inter-Bold",
-              marginBottom: 5,
-              fontSize: 20,
-              textAlign: "center",
-              width: "100%",
-            }}
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontFamily: "Inter-Bold",
+                    marginBottom: 5,
+                    fontSize: 20,
+                    textAlign: "center",
+                    width: "100%",
+                  }
+                : {
+                    color: "#001f3f",
+                    fontFamily: "Inter-Bold",
+                    marginBottom: 5,
+                    fontSize: 20,
+                    textAlign: "center",
+                    width: "100%",
+                  }
+            }
           >
             {group.groups.name}
           </Text>
@@ -134,11 +158,19 @@ const GroupInfoModal = ({
               data={allUsers}
               ListHeaderComponent={
                 <Text
-                  style={{
-                    color: "#2f2d51",
-                    fontFamily: "Inter-Medium",
-                    fontSize: 18,
-                  }}
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 18,
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 18,
+                        }
+                  }
                 >
                   Group Members:
                 </Text>
@@ -150,15 +182,24 @@ const GroupInfoModal = ({
                 <View style={{ width: "100%", height: 1 }} />
               }
               renderItem={({ item }) => {
-                console.log(item.is_admin);
+                console.log(item.profiles.full_name, item.is_admin);
                 return (
                   <View
-                    style={{
-                      backgroundColor: "#93d8f8",
-                      borderRadius: 10,
-                      width: "100%",
-                      padding: 12,
-                    }}
+                    style={
+                      theme == "dark"
+                        ? {
+                            backgroundColor: "#212121",
+                            borderRadius: 10,
+                            width: "100%",
+                            padding: 12,
+                          }
+                        : {
+                            backgroundColor: "#93d8f8",
+                            borderRadius: 10,
+                            width: "100%",
+                            padding: 12,
+                          }
+                    }
                   >
                     <View
                       style={{
@@ -182,10 +223,19 @@ const GroupInfoModal = ({
                           }}
                         />
                         <Text
-                          style={{
-                            color: "#2f2d51",
-                            fontFamily: "Inter-Medium",
-                          }}
+                          style={
+                            theme == "dark"
+                              ? {
+                                  color: "white",
+                                  fontFamily: "Inter-Medium",
+                                  fontSize: 15,
+                                }
+                              : {
+                                  color: "#2f2d51",
+                                  fontFamily: "Inter-Medium",
+                                  fontSize: 15,
+                                }
+                          }
                         >
                           {currentUser.full_name == item.profiles.full_name
                             ? "You"
@@ -193,15 +243,25 @@ const GroupInfoModal = ({
                         </Text>
                       </View>
                       <View
-                        style={{
-                          marginLeft: "auto",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          padding: 5,
-                          borderRadius: 10,
-
-                          backgroundColor: "white",
-                        }}
+                        style={
+                          theme == "dark"
+                            ? {
+                                marginLeft: "auto",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                padding: 5,
+                                borderRadius: 10,
+                                backgroundColor: "#121212",
+                              }
+                            : {
+                                marginLeft: "auto",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                padding: 5,
+                                borderRadius: 10,
+                                backgroundColor: "white",
+                              }
+                        }
                       >
                         <Text
                           style={
@@ -222,14 +282,16 @@ const GroupInfoModal = ({
                         </Text>
                       </View>
                     </View>
-                    {currentUser.is_admin == true && (
-                      <TouchableOpacity
-                        onPress={() => removeUser(item.profiles.id)}
-                        style={{ alignSelf: "flex-end" }}
-                      >
-                        <Text style={{ color: "red" }}>Remove</Text>
-                      </TouchableOpacity>
-                    )}
+                    {group.user_id == currentUser.id &&
+                      group.is_admin == true &&
+                      currentUser.id != item.profiles.id && (
+                        <TouchableOpacity
+                          onPress={() => removeUser(item.profiles.id)}
+                          style={{ alignSelf: "flex-end" }}
+                        >
+                          <Text style={{ color: "red" }}>Remove</Text>
+                        </TouchableOpacity>
+                      )}
                   </View>
                 );
               }}

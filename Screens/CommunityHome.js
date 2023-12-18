@@ -59,8 +59,8 @@ const CommunityHome = () => {
     currentUser,
     setCurrentUser,
     session,
-    newPost,
-    setNewPost,
+    refreshMembers,
+    setRefreshMembers,
     logout,
     supabase,
   } = useSupabase();
@@ -131,6 +131,11 @@ const CommunityHome = () => {
     getPrayers();
   }, [isFocused]);
 
+  useEffect(() => {
+    getUserGroups();
+    getGroupUsers();
+  }, [refreshMembers]);
+
   async function getPrayers() {
     //prayers for production
     //prayers_test for testing
@@ -159,6 +164,7 @@ const CommunityHome = () => {
       .eq("user_id", currentUser?.id)
       .order("id", { ascending: false });
     setUserGroups(groups);
+    // setRefreshMembers(false);
   }
 
   async function getGroupUsers() {
@@ -167,6 +173,7 @@ const CommunityHome = () => {
       .select("*,groups(*), profiles(*)")
       .order("id", { ascending: false });
     setGroups(groups);
+    setRefreshMembers(false);
   }
 
   async function sendToken(expoPushToken) {
@@ -490,35 +497,35 @@ const CommunityHome = () => {
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
           </View>
-          {/* <View
-              style={{
-                justifyContent: "center",
+          <View
+            style={{
+              justifyContent: "center",
 
-                alignItems: "center",
-              }}
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      fontFamily: "Inter-Medium",
+                      fontSize: 15,
+                      marginTop: 20,
+                      color: "white",
+                    }
+                  : {
+                      fontFamily: "Inter-Medium",
+                      fontSize: 15,
+                      marginTop: 20,
+                      color: "#2f2d51",
+                    }
+              }
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                        marginTop: 20,
-                        color: "white",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                        marginTop: 20,
-                        color: "#2f2d51",
-                      }
-                }
-              >
-                Coming soon in the next update!
-              </Text>
-            </View> */}
+              Coming soon in the next update!
+            </Text>
+          </View>
           {/* </View> */}
-          {userGroups.length > 0 && (
+          {/* {userGroups.length > 0 && (
             <FlatList
               pagingEnabled
               snapToInterval={ITEM_WIDTH}
@@ -527,6 +534,7 @@ const CommunityHome = () => {
               data={userGroups}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
+                console.log(item.groups.color);
                 return (
                   <TouchableOpacity
                     onPress={() =>
@@ -606,19 +614,31 @@ const CommunityHome = () => {
                                 padding: 5,
                                 flexDirection: "row",
                                 alignItems: "center",
-                                backgroundColor: "#2f2d51",
+                                backgroundColor: "#93d8f8",
                                 borderRadius: 10,
                                 gap: 8,
                               }
                         }
                       >
-                        <Feather name="copy" size={15} color="white" />
+                        <Feather
+                          name="copy"
+                          size={15}
+                          color={theme == "dark" ? "white" : "#2f2d51"}
+                        />
                         <Text
-                          style={{
-                            color: "white",
-                            fontSize: 13,
-                            fontFamily: "Inter-Medium",
-                          }}
+                          style={
+                            theme == "dark"
+                              ? {
+                                  color: "white",
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Medium",
+                                }
+                              : {
+                                  color: "#2f2d51",
+                                  fontSize: 13,
+                                  fontFamily: "Inter-Medium",
+                                }
+                          }
                         >
                           {item.groups.code}
                         </Text>
@@ -692,8 +712,8 @@ const CommunityHome = () => {
                 );
               }}
             />
-          )}
-          {userGroups.length >= 3 && (
+          )} */}
+          {/* {userGroups.length >= 3 && (
             <TouchableOpacity
               onPress={() => setIsViewingGroups(true)}
               style={{
@@ -718,8 +738,8 @@ const CommunityHome = () => {
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
-          )}
-          <TouchableOpacity
+          )} */}
+          {/* <TouchableOpacity
             onPress={() => setModalVisible(true)}
             style={
               theme == "dark"
@@ -738,14 +758,6 @@ const CommunityHome = () => {
                     alignItems: "center",
                     padding: 15,
                     borderRadius: 10,
-                    shadowColor: "#bdbdbd",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.17,
-                    shadowRadius: 3.05,
-                    elevation: 4,
                     justifyContent: "space-between",
                     backgroundColor: "#2f2d51",
                   }
@@ -782,8 +794,8 @@ const CommunityHome = () => {
               size={24}
               color={theme == "dark" ? "#121212" : "white"}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             onPress={() => setJoinVisible(true)}
             style={
               theme == "dark"
@@ -805,7 +817,6 @@ const CommunityHome = () => {
                     borderRadius: 10,
                     justifyContent: "space-between",
                     borderColor: "#93d8f8",
-
                     borderWidth: 1,
                   }
             }
@@ -859,7 +870,7 @@ const CommunityHome = () => {
             user={currentUser}
             modalVisible={joinVisible}
             setModalVisible={setJoinVisible}
-          />
+          /> */}
         </Container>
       ) : (
         <Animated.View

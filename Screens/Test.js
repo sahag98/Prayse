@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Switch,
+  Platform,
 } from "react-native";
 import { AntDesign, Feather, Entypo } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -102,7 +103,7 @@ export default function Reminder({ route, navigation }) {
           ocurrence: "Daily",
         })
       );
-    } else if (repeatOption == "weekly") {
+    } else if (repeatOption == "weekly" && Platform.OS == "ios") {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
@@ -112,6 +113,30 @@ export default function Reminder({ route, navigation }) {
           weekday: combinedDate.getDay() + 1,
           hour: combinedDate.getHours(),
           minute: combinedDate.getMinutes(),
+          repeats: isRepeat,
+        },
+      });
+
+      dispatch(
+        addNewReminder({
+          reminder: reminder,
+          identifier: identifier,
+          ocurrence: "Weekly",
+        })
+      );
+    } else if (repeatOption == "weekly" && Platform.OS == "android") {
+      console.log("hey android");
+      const newDate = new Date(
+        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
+      );
+      const seconds = newDate.getTime() / 1000;
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Reminder",
+          body: reminder.message,
+        },
+        trigger: {
+          seconds: seconds,
           repeats: isRepeat,
         },
       });

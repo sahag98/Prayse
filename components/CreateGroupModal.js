@@ -77,7 +77,7 @@ const CreateGroupModal = ({
       const { data, error } = await supabase.from("groups").insert({
         name: groupName,
         description: description,
-        color: color,
+        color: color.length > 0 ? color : "grey",
         code: pin,
       });
 
@@ -101,6 +101,8 @@ const CreateGroupModal = ({
         });
         // Do something with the inserted group ID
       }
+
+      showToast("success", "Prayer group was created successfully.");
       getUserGroups();
       getGroupUsers();
       setModalVisible(false);
@@ -201,15 +203,16 @@ const CreateGroupModal = ({
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "center",
                   paddingTop: insets.top,
-                  paddingBottom: insets.bottom,
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
                 }
           }
         >
@@ -228,6 +231,7 @@ const CreateGroupModal = ({
               />
             </TouchableOpacity>
             <TouchableOpacity
+              disabled={groupName.length == 0 ? true : false}
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -242,12 +246,12 @@ const CreateGroupModal = ({
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 18,
-                        color: "#a5c9ff",
+                        color: groupName.length == 0 ? "grey" : "#a5c9ff",
                       }
                     : {
                         fontFamily: "Inter-Bold",
                         fontSize: 18,
-                        color: "#2f2d51",
+                        color: groupName.length == 0 ? "grey" : "#2f2d51",
                       }
                 }
               >
@@ -256,7 +260,15 @@ const CreateGroupModal = ({
               <AntDesign
                 name="plus"
                 size={28}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                color={
+                  theme == "dark"
+                    ? groupName.length == 0
+                      ? "grey"
+                      : "#a5c9ff"
+                    : groupName.length == 0
+                    ? "grey"
+                    : "#2f2d51"
+                }
               />
             </TouchableOpacity>
           </HeaderView>
@@ -274,7 +286,7 @@ const CreateGroupModal = ({
             <View style={{ width: "100%", marginTop: 10, gap: 10 }}>
               <TextInput
                 style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter group description"
+                placeholder="Enter group description: (optional)"
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 selectionColor={theme == "dark" ? "white" : "#2f2d51"}
                 value={description}
@@ -282,7 +294,7 @@ const CreateGroupModal = ({
               />
               <TextInput
                 style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter icon border color: (optional)"
+                placeholder="Enter group border color: (optional)"
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 selectionColor={theme == "dark" ? "white" : "#2f2d51"}
                 value={color}
