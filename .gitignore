@@ -11,7 +11,8 @@ web-build/
 .env
 prayer-app.jks
 google-services.json
-
+eas.json
+app.json
 credentials/
 
 # macOS

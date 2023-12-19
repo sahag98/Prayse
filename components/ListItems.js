@@ -78,6 +78,7 @@ const ListItems = ({
     const addReminder = (item) => {
       navigation.navigate("Test", {
         reminder: item,
+        type: "Add",
       });
     };
     return (

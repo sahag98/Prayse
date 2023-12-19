@@ -674,7 +674,11 @@ export default function Welcome({ navigation }) {
                   alignItems: "center",
                   gap: 5,
                 }}
-                onPress={() => navigation.navigate("Test")}
+                onPress={() =>
+                  navigation.navigate("Test", {
+                    type: "Add",
+                  })
+                }
               >
                 <Text
                   style={
@@ -920,8 +924,13 @@ export default function Welcome({ navigation }) {
                         marginTop: "auto",
                       }}
                     >
-                      {/* <TouchableOpacity
-                        onPress={() => setReminderVisible(true)}
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("Test", {
+                            type: "Edit",
+                            reminderToEdit: item,
+                          })
+                        }
                       >
                         <Text
                           style={
@@ -938,10 +947,10 @@ export default function Welcome({ navigation }) {
                                 }
                           }
                         >
-                          View
+                          Edit
                         </Text>
-                      </TouchableOpacity> */}
-                      {/* <View
+                      </TouchableOpacity>
+                      <View
                         style={
                           theme == "dark"
                             ? {
@@ -955,7 +964,7 @@ export default function Welcome({ navigation }) {
                                 backgroundColor: "#2f2d51",
                               }
                         }
-                      /> */}
+                      />
                       <TouchableOpacity
                         onPress={() => dismissNotification(item)}
                       >

@@ -16,7 +16,7 @@ import * as Notifications from "expo-notifications";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewReminder } from "../redux/remindersReducer";
+import { addNewReminder, editReminder } from "../redux/remindersReducer";
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import { useIsFocused } from "@react-navigation/native";
@@ -28,13 +28,11 @@ export default function Reminder({ route, navigation }) {
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
   const [newNote, setNewNote] = useState("");
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [repeatOption, setRepeatOption] = useState("");
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
-
   const [reminderTime, setReminderTime] = useState("");
 
   const [isRepeat, setIsRepeat] = useState(false);
@@ -45,26 +43,45 @@ export default function Reminder({ route, navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (route.params != undefined) {
-      console.log("reminder: ", route.params.reminder);
-      setNewReminder(route.params.reminder);
+    console.log(route.params);
+    if (route.params.reminder != undefined && route.params.type == "Add") {
+      // console.log(route.params);
+      console.log("reminder: ", route?.params?.reminder);
+      setNewReminder(route?.params?.reminder);
+    }
+
+    if (route.params.reminderToEdit != undefined) {
+      console.log("defined");
+      let reminderToEdit = route.params.reminderToEdit;
+      setNewReminder(reminderToEdit.reminder.message);
+      setNewNote(reminderToEdit.reminder?.note);
+      let originalTimestamp = reminderToEdit.reminder?.time;
+      const dateObject = new Date(originalTimestamp);
+
+      let date = new Date(
+        dateObject.getFullYear(),
+        dateObject.getMonth(),
+        dateObject.getDate()
+      );
+      console.log(date);
+      setReminderDate(date);
+      let time = new Date(0); // Initialize with the epoch
+      time.setHours(dateObject.getHours());
+      time.setMinutes(dateObject.getMinutes());
+      console.log("time: ", time);
+      setReminderTime(time);
+    }
+
+    if (
+      route.params.reminderToEdit == undefined &&
+      route.params.type != "Add"
+    ) {
+      setNewReminder("");
+      setNewNote("");
+      setReminderDate("");
+      setReminderTime("");
     }
   }, [isFocus]);
-
-  // useEffect(() => {
-  //   registerForPushNotifications();
-  // }, []);
-
-  // const registerForPushNotifications = async () => {
-  //   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  //   if (status !== "granted") {
-  //     console.error("Permission to receive notifications denied");
-  //     return;
-  //   }
-
-  //   const pushToken = await Notifications.getExpoPushTokenAsync();
-  //   console.log("Expo Push Token:", pushToken);
-  // };
 
   const showToast = (type, content) => {
     Toast.show({
@@ -77,7 +94,18 @@ export default function Reminder({ route, navigation }) {
     });
   };
 
-  const scheduleNotification = async (reminder, combinedDate) => {
+  const showEditToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: "Reminder has been edited.",
+      text2: "View",
+      visibilityTime: 3000,
+      position: "bottom",
+      onPress: () => navigation.navigate("Home"),
+    });
+  };
+
+  const scheduleNotification = async (reminder, combinedDate, type) => {
     const secondsUntilNotification = Math.floor(
       (combinedDate.getTime() - Date.now()) / 1000
     );
@@ -95,14 +123,23 @@ export default function Reminder({ route, navigation }) {
           repeats: true,
         },
       });
-
-      dispatch(
-        addNewReminder({
-          reminder: reminder,
-          identifier: identifier,
-          ocurrence: "Daily",
-        })
-      );
+      if (type == "edit") {
+        dispatch(
+          editReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      }
     } else if (repeatOption == "weekly" && Platform.OS == "ios") {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
@@ -117,13 +154,23 @@ export default function Reminder({ route, navigation }) {
         },
       });
 
-      dispatch(
-        addNewReminder({
-          reminder: reminder,
-          identifier: identifier,
-          ocurrence: "Weekly",
-        })
-      );
+      if (type == "edit") {
+        dispatch(
+          editReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      }
     } else if (repeatOption == "weekly" && Platform.OS == "android") {
       console.log("hey android");
       const newDate = new Date(
@@ -141,13 +188,23 @@ export default function Reminder({ route, navigation }) {
         },
       });
 
-      dispatch(
-        addNewReminder({
-          reminder: reminder,
-          identifier: identifier,
-          ocurrence: "Weekly",
-        })
-      );
+      if (type == "edit") {
+        dispatch(
+          editReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      }
     } else {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
@@ -159,14 +216,63 @@ export default function Reminder({ route, navigation }) {
         },
       });
 
-      dispatch(
-        addNewReminder({
-          reminder: reminder,
-          identifier: identifier,
-          ocurrence: "None",
-        })
-      );
+      if (type == "edit") {
+        dispatch(
+          editReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: reminder,
+            identifier: identifier,
+            ocurrence: "Daily",
+          })
+        );
+      }
     }
+  };
+
+  const handleEditReminder = async () => {
+    const combinedDate = new Date(
+      reminderDate.getFullYear(),
+      reminderDate.getMonth(),
+      reminderDate.getDate(),
+      reminderTime.getHours(),
+      reminderTime.getMinutes()
+    );
+
+    const newReminderObj = {
+      id: uuid.v4(),
+      message: newReminder,
+      note: newNote,
+      time: combinedDate,
+    };
+
+    console.log(route.params.reminderToEdit.identifier);
+
+    await Notifications.cancelScheduledNotificationAsync(
+      route.params.reminderToEdit.identifier
+    );
+    scheduleNotification(
+      newReminderObj,
+      combinedDate,
+      "edit"
+      // reminderTime.getHours(),
+      // reminderTime.getMinutes()
+    );
+
+    showEditToast();
+    setNewReminder("");
+    setNewNote("");
+    setReminderDate("");
+    setReminderTime("");
+    setRepeatOption("");
+    setIsRepeat(false);
+    Keyboard.dismiss();
   };
 
   const addReminder = () => {
@@ -195,7 +301,8 @@ export default function Reminder({ route, navigation }) {
 
     scheduleNotification(
       newReminderObj,
-      combinedDate
+      combinedDate,
+      "add"
       // reminderTime.getHours(),
       // reminderTime.getMinutes()
     );
@@ -293,11 +400,13 @@ export default function Reminder({ route, navigation }) {
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
           >
-            Create Reminder
+            {route.params.type} Reminder
           </HeaderTitle>
         </View>
         <TouchableOpacity
-          onPress={addReminder}
+          onPress={
+            route.params.type == "Add" ? addReminder : handleEditReminder
+          }
           disabled={newReminder.length == 0 ? true : false}
           style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
         >
@@ -318,23 +427,41 @@ export default function Reminder({ route, navigation }) {
                   }
             }
           >
-            Add
+            {route.params.type}
           </Text>
-          <Entypo
-            name="plus"
-            size={30}
-            color={
-              newReminder.length === 0 ||
-              reminderDate.toString().length === 0 ||
-              reminderTime.toString().length === 0
-                ? theme == "dark"
-                  ? "#5c5c5c"
-                  : "grey"
-                : theme == "light"
-                ? "#2f2d51"
-                : "#A5C9FF"
-            }
-          />
+          {route.params.type == "Edit" ? (
+            <Feather
+              name="edit-2"
+              size={23}
+              color={
+                newReminder.length === 0 ||
+                reminderDate.toString().length === 0 ||
+                reminderTime.toString().length === 0
+                  ? theme == "dark"
+                    ? "#5c5c5c"
+                    : "grey"
+                  : theme == "light"
+                  ? "#2f2d51"
+                  : "#A5C9FF"
+              }
+            />
+          ) : (
+            <Entypo
+              name="plus"
+              size={30}
+              color={
+                newReminder.length === 0 ||
+                reminderDate.toString().length === 0 ||
+                reminderTime.toString().length === 0
+                  ? theme == "dark"
+                    ? "#5c5c5c"
+                    : "grey"
+                  : theme == "light"
+                  ? "#2f2d51"
+                  : "#A5C9FF"
+              }
+            />
+          )}
         </TouchableOpacity>
       </HeaderView>
       <View
@@ -375,7 +502,7 @@ export default function Reminder({ route, navigation }) {
             placeholder="Title"
             selectionColor={theme == "dark" ? "white" : "#2f2d51"}
             multiline={true}
-            autoFocus={route?.params?.reminder.length > 0 ? true : false}
+            autoFocus
             textAlignVertical="top"
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
