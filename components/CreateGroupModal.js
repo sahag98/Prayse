@@ -77,7 +77,7 @@ const CreateGroupModal = ({
       const { data, error } = await supabase.from("groups").insert({
         name: groupName,
         description: description,
-        color: color.length > 0 ? color : "grey",
+        color: "grey",
         code: pin,
       });
 
@@ -292,14 +292,14 @@ const CreateGroupModal = ({
                 value={description}
                 onChangeText={(text) => setDescription(text)}
               />
-              <TextInput
+              {/* <TextInput
                 style={theme == "dark" ? styles.inputDark : styles.input}
                 placeholder="Enter group border color: (optional)"
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 selectionColor={theme == "dark" ? "white" : "#2f2d51"}
                 value={color}
                 onChangeText={(text) => setColor(text)}
-              />
+              /> */}
             </View>
             <TouchableOpacity
               style={{ alignSelf: "flex-end", marginTop: 5 }}

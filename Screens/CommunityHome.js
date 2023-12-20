@@ -132,6 +132,7 @@ const CommunityHome = () => {
   }, [isFocused]);
 
   useEffect(() => {
+    console.log("refreshing members");
     getUserGroups();
     getGroupUsers();
   }, [refreshMembers]);
@@ -497,7 +498,7 @@ const CommunityHome = () => {
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
           </View>
-          <View
+          {/* <View
             style={{
               justifyContent: "center",
 
@@ -523,9 +524,9 @@ const CommunityHome = () => {
             >
               Coming soon in the next update!
             </Text>
-          </View>
-          {/* </View> */}
-          {/* {userGroups.length > 0 && (
+          </View> */}
+
+          {userGroups.length > 0 && (
             <FlatList
               pagingEnabled
               snapToInterval={ITEM_WIDTH}
@@ -534,7 +535,6 @@ const CommunityHome = () => {
               data={userGroups}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
-                console.log(item.groups.color);
                 return (
                   <TouchableOpacity
                     onPress={() =>
@@ -712,8 +712,8 @@ const CommunityHome = () => {
                 );
               }}
             />
-          )} */}
-          {/* {userGroups.length >= 3 && (
+          )}
+          {userGroups.length >= 3 && (
             <TouchableOpacity
               onPress={() => setIsViewingGroups(true)}
               style={{
@@ -738,8 +738,8 @@ const CommunityHome = () => {
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
-          )} */}
-          {/* <TouchableOpacity
+          )}
+          <TouchableOpacity
             onPress={() => setModalVisible(true)}
             style={
               theme == "dark"
@@ -794,8 +794,8 @@ const CommunityHome = () => {
               size={24}
               color={theme == "dark" ? "#121212" : "white"}
             />
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => setJoinVisible(true)}
             style={
               theme == "dark"
@@ -870,7 +870,7 @@ const CommunityHome = () => {
             user={currentUser}
             modalVisible={joinVisible}
             setModalVisible={setJoinVisible}
-          /> */}
+          />
         </Container>
       ) : (
         <Animated.View
@@ -929,22 +929,18 @@ const CommunityHome = () => {
                 ? {
                     backgroundColor: "#212121",
                     borderRadius: 10,
-                    padding: 8,
+                    padding: Platform.OS == "ios" ? 8 : 3,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    marginTop: 5,
-                    marginBottom: 10,
                   }
                 : {
                     backgroundColor: "white",
                     borderRadius: 10,
-                    padding: 8,
+                    padding: Platform.OS == "ios" ? 8 : 3,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    marginTop: 5,
-                    marginBottom: 10,
                   }
             }
           >
@@ -958,7 +954,7 @@ const CommunityHome = () => {
             >
               <EvilIcons
                 name="search"
-                size={24}
+                size={28}
                 color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
               />
               <TextInput
@@ -993,9 +989,26 @@ const CommunityHome = () => {
               showsVerticalScrollIndicator={false}
               data={list}
               keyExtractor={(e, i) => i.toString()}
+              ItemSeparatorComponent={
+                <View
+                  style={{
+                    width: "100%",
+                    height: 1,
+                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                  }}
+                />
+              }
               renderItem={({ item }) => {
                 return (
-                  <View
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("PrayerGroup", {
+                        group: item,
+                        allGroups: groups.filter(
+                          (g) => g.group_id === item.group_id
+                        ),
+                      })
+                    }
                     style={
                       theme == "dark"
                         ? {
@@ -1004,8 +1017,7 @@ const CommunityHome = () => {
                             justifyContent: "space-between",
                             backgroundColor: "#121212",
                             width: "100%",
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "white",
+
                             alignItems: "center",
                           }
                         : {
@@ -1013,8 +1025,7 @@ const CommunityHome = () => {
                             justifyContent: "space-between",
                             backgroundColor: "#f2f7ff",
                             width: "100%",
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "#2f2d51",
+
                             alignItems: "center",
                           }
                     }
@@ -1025,13 +1036,13 @@ const CommunityHome = () => {
                           ? {
                               paddingVertical: 10,
                               justifyContent: "space-between",
-                              gap: 5,
+                              gap: item.groups.description ? 5 : 10,
                               borderBottomColor: "#2f2d51",
                             }
                           : {
                               justifyContent: "space-between",
                               paddingVertical: 10,
-                              gap: 5,
+                              gap: item.groups.description ? 5 : 10,
                               borderBottomColor: "#2f2d51",
                             }
                       }
@@ -1053,15 +1064,18 @@ const CommunityHome = () => {
                       >
                         {item.groups.name}
                       </Text>
-                      <Text
-                        style={{
-                          fontFamily: "Inter-Regular",
-                          fontSize: 13,
-                          color: "grey",
-                        }}
-                      >
-                        {item.groups.description}
-                      </Text>
+                      {item.groups.description && (
+                        <Text
+                          style={{
+                            fontFamily: "Inter-Regular",
+                            fontSize: 13,
+                            color: "grey",
+                          }}
+                        >
+                          {item.groups.description}
+                        </Text>
+                      )}
+
                       <View
                         style={{
                           flexDirection: "row",
@@ -1071,7 +1085,7 @@ const CommunityHome = () => {
                       >
                         {groups
                           .filter((g) => g.group_id === item.group_id)
-                          .slice(0, 3) // Show only the first three joined users
+                          .slice(0, 6) // Show only the first three joined users
                           .map((g, index) => (
                             <View
                               key={index}
@@ -1092,9 +1106,9 @@ const CommunityHome = () => {
                             </View>
                           ))}
                         <View>
-                          {groups.length > 3 &&
+                          {groups.length > 6 &&
                             groups.filter((g) => g.group_id === item.group_id)
-                              .length > 3 && (
+                              .length > 6 && (
                               <Text
                                 style={
                                   theme == "dark"
@@ -1113,7 +1127,7 @@ const CommunityHome = () => {
                                 +
                                 {groups.filter(
                                   (g) => g.group_id === item.group_id
-                                ).length - 3}
+                                ).length - 6}
                               </Text>
                             )}
                         </View>
@@ -1122,13 +1136,9 @@ const CommunityHome = () => {
                     <AntDesign
                       name="right"
                       size={24}
-                      color={
-                        item.groups.color
-                          ? item.groups.color.toLowerCase()
-                          : "black"
-                      }
+                      color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
                     />
-                  </View>
+                  </TouchableOpacity>
                 );
               }}
             />

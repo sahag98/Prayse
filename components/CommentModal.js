@@ -66,8 +66,6 @@ const CommentModal = ({
     });
   };
 
-  console.log("id: ", prayer.id);
-
   const sendNotification = async (expoToken) => {
     const message = {
       to: expoToken,

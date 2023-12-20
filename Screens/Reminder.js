@@ -288,9 +288,51 @@ const Reminder = ({ navigation }) => {
                     flexDirection: "row",
                     gap: 10,
                     alignSelf: "flex-end",
+                    alignItems: "center",
                     marginTop: "auto",
                   }}
                 >
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("Test", {
+                        type: "Edit",
+                        reminderToEdit: item,
+                      })
+                    }
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              fontFamily: "Inter-Medium",
+                              fontSize: 15,
+                              color: "white",
+                            }
+                          : {
+                              fontFamily: "Inter-Medium",
+                              fontSize: 15,
+                              color: "#2f2d51",
+                            }
+                      }
+                    >
+                      Edit
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: 1.2,
+                            height: "100%",
+                            backgroundColor: "white",
+                          }
+                        : {
+                            width: 1.2,
+                            height: "100%",
+                            backgroundColor: "#2f2d51",
+                          }
+                    }
+                  />
                   <TouchableOpacity onPress={() => dismissNotification(item)}>
                     <Text
                       style={{

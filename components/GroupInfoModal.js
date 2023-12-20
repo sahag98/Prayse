@@ -5,14 +5,15 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+
+import { AntDesign, Feather } from "@expo/vector-icons";
+
 import uuid from "react-native-uuid";
 import {
   HeaderTitle,
@@ -30,6 +31,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import EditGroupModal from "./EditGroupModal";
 
 const GroupInfoModal = ({
   groupInfoVisible,
@@ -41,6 +43,8 @@ const GroupInfoModal = ({
   supabase,
 }) => {
   console.log("group: ", group.group_id);
+  const [groupName, setGroupName] = useState(group.groups.name);
+  const [openEdit, setOpenEdit] = useState(false);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
@@ -116,29 +120,80 @@ const GroupInfoModal = ({
               Group Settings
             </HeaderTitle>
           </HeaderView>
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    color: "white",
-                    fontFamily: "Inter-Bold",
-                    marginBottom: 5,
-                    fontSize: 20,
-                    textAlign: "center",
-                    width: "100%",
+          {group.user_id == currentUser.id && group.is_admin == true ? (
+            <>
+              <TouchableOpacity
+                onPress={() => setOpenEdit(true)}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  width: "100%",
+                  gap: 5,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Bold",
+                          marginBottom: 5,
+                          fontSize: 20,
+                          textAlign: "center",
+                        }
+                      : {
+                          color: "#001f3f",
+                          fontFamily: "Inter-Bold",
+                          marginBottom: 5,
+                          fontSize: 20,
+                          textAlign: "center",
+                        }
                   }
-                : {
-                    color: "#001f3f",
-                    fontFamily: "Inter-Bold",
-                    marginBottom: 5,
-                    fontSize: 20,
-                    textAlign: "center",
-                    width: "100%",
-                  }
-            }
-          >
-            {group.groups.name}
-          </Text>
+                >
+                  {group.groups.name}
+                </Text>
+                <Feather
+                  style={{ marginBottom: 5 }}
+                  name="edit-2"
+                  size={22}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+              <EditGroupModal
+                theme={theme}
+                groupName={groupName}
+                setGroupName={setGroupName}
+                openEdit={openEdit}
+                setOpenEdit={setOpenEdit}
+              />
+            </>
+          ) : (
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      fontFamily: "Inter-Bold",
+                      marginBottom: 5,
+                      fontSize: 20,
+                      textAlign: "center",
+                      width: "100%",
+                    }
+                  : {
+                      color: "#001f3f",
+                      fontFamily: "Inter-Bold",
+                      marginBottom: 5,
+                      fontSize: 20,
+                      textAlign: "center",
+                      width: "100%",
+                    }
+              }
+            >
+              {group.groups.name}
+            </Text>
+          )}
+
           {group.groups.description && (
             <Text
               style={{

@@ -47,11 +47,26 @@ export default function Reminder({ route, navigation }) {
     if (route.params.reminder != undefined && route.params.type == "Add") {
       // console.log(route.params);
       console.log("reminder: ", route?.params?.reminder);
+      setReminderDate("");
+      setRepeatOption("");
+      setIsRepeat(false);
+      setReminderTime("");
       setNewReminder(route?.params?.reminder);
     }
 
-    if (route.params.reminderToEdit != undefined) {
-      console.log("defined");
+    if (route.params.reminder == undefined && route.params.type == "Add") {
+      setNewReminder("");
+      setNewNote("");
+      setReminderDate("");
+      setRepeatOption("");
+      setIsRepeat(false);
+      setReminderTime("");
+    }
+
+    if (
+      route.params.reminderToEdit != undefined &&
+      route.params.type != "Add"
+    ) {
       let reminderToEdit = route.params.reminderToEdit;
       setNewReminder(reminderToEdit.reminder.message);
       setNewNote(reminderToEdit.reminder?.note);
@@ -63,13 +78,18 @@ export default function Reminder({ route, navigation }) {
         dateObject.getMonth(),
         dateObject.getDate()
       );
-      console.log(date);
+
       setReminderDate(date);
       let time = new Date(0); // Initialize with the epoch
       time.setHours(dateObject.getHours());
       time.setMinutes(dateObject.getMinutes());
       console.log("time: ", time);
       setReminderTime(time);
+      if (reminderToEdit.ocurrence) {
+        console.log(reminderToEdit.ocurrence);
+        setIsRepeat(true);
+        setRepeatOption(reminderToEdit.ocurrence.toLowerCase());
+      }
     }
 
     if (
@@ -96,7 +116,7 @@ export default function Reminder({ route, navigation }) {
 
   const showEditToast = (type, content) => {
     Toast.show({
-      type,
+      type: "edit",
       text1: "Reminder has been edited.",
       text2: "View",
       visibilityTime: 3000,
@@ -159,7 +179,7 @@ export default function Reminder({ route, navigation }) {
           editReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "Weekly",
           })
         );
       } else {
@@ -167,7 +187,7 @@ export default function Reminder({ route, navigation }) {
           addNewReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "Weekly",
           })
         );
       }
@@ -193,7 +213,7 @@ export default function Reminder({ route, navigation }) {
           editReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "None",
           })
         );
       } else {
@@ -201,7 +221,7 @@ export default function Reminder({ route, navigation }) {
           addNewReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "None",
           })
         );
       }
@@ -273,6 +293,7 @@ export default function Reminder({ route, navigation }) {
     setRepeatOption("");
     setIsRepeat(false);
     Keyboard.dismiss();
+    navigation.goBack();
   };
 
   const addReminder = () => {
@@ -315,6 +336,7 @@ export default function Reminder({ route, navigation }) {
     setReminderTime("");
     setRepeatOption("");
     setIsRepeat(false);
+    navigation.goBack();
     Keyboard.dismiss();
   };
 
@@ -326,7 +348,7 @@ export default function Reminder({ route, navigation }) {
     setNewNote("");
     setRepeatOption("");
     setReminderTime("");
-    navigation.navigate("Home");
+    navigation.goBack();
   };
   const showDatePicker = () => {
     Keyboard.dismiss();
@@ -498,12 +520,9 @@ export default function Reminder({ route, navigation }) {
                 ? { minHeight: 30, color: "white" }
                 : { minHeight: 30, color: "#2f2d51" }
             }
-            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
-            placeholder="Title"
+            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#808080"}
+            placeholder="Prayer Title"
             selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-            multiline={true}
-            autoFocus
-            textAlignVertical="top"
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
           />
@@ -516,13 +535,13 @@ export default function Reminder({ route, navigation }) {
             }
           />
           <TextInput
-            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#808080"}
             style={
               theme == "dark"
                 ? { minHeight: 50, color: "white" }
                 : { minHeight: 50, color: "#2f2d51" }
             }
-            placeholder="Notes"
+            placeholder="Prayer Notes"
             multiline={true}
             textAlignVertical="top"
             numberOfLines={3}
@@ -681,15 +700,22 @@ export default function Reminder({ route, navigation }) {
                 }
           }
         >
-          <Text
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Medium", color: "white" }
-                : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-            }
-          >
-            Repeat
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Feather
+              name="repeat"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? { fontFamily: "Inter-Medium", color: "white" }
+                  : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+              }
+            >
+              Repeat
+            </Text>
+          </View>
           <Switch
             trackColor={{ false: "#767577", true: "#767577" }}
             thumbColor={isRepeat ? "#4eff4e" : "#f4f3f4"}
@@ -724,7 +750,7 @@ export default function Reminder({ route, navigation }) {
                         height: 20,
                         borderRadius: 100,
                         backgroundColor:
-                          repeatOption === "daily" ? "#75ff75" : "#3e3e3e",
+                          repeatOption === "daily" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
                         width: 20,
@@ -733,7 +759,7 @@ export default function Reminder({ route, navigation }) {
                         height: 20,
                         borderRadius: 100,
                         backgroundColor:
-                          repeatOption === "daily" ? "#4eff4e" : "white",
+                          repeatOption === "daily" ? "#00cc00" : "white",
                       }
                 }
               />
@@ -765,7 +791,7 @@ export default function Reminder({ route, navigation }) {
                         height: 20,
                         borderRadius: 100,
                         backgroundColor:
-                          repeatOption === "weekly" ? "#75ff75" : "#3e3e3e",
+                          repeatOption === "weekly" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
                         width: 20,
@@ -774,7 +800,7 @@ export default function Reminder({ route, navigation }) {
                         height: 20,
                         borderRadius: 100,
                         backgroundColor:
-                          repeatOption === "weekly" ? "#4eff4e" : "white",
+                          repeatOption === "weekly" ? "#00cc00" : "white",
                       }
                 }
               />
@@ -790,21 +816,21 @@ export default function Reminder({ route, navigation }) {
             </TouchableOpacity>
           </View>
         )}
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 5, flex: 1 }}>
           <Text
             onPress={() => navigation.navigate("Settings")}
             style={
               theme == "dark"
                 ? {
-                    color: "white",
-                    fontSize: 13,
-                    marginBottom: 10,
+                    color: "#ff3b3b",
+
+                    marginBottom: 5,
                     fontFamily: "Inter-Medium",
                   }
                 : {
-                    color: "#2f2d51",
-                    marginBottom: 10,
-                    fontSize: 13,
+                    color: "#ff3b3b",
+                    marginBottom: 5,
+
                     fontFamily: "Inter-Medium",
                   }
             }
@@ -836,6 +862,41 @@ export default function Reminder({ route, navigation }) {
             />
             .
           </Text>
+
+          <View style={{ marginTop: "auto", marginBottom: 20, width: "100%" }}>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#d2d2d2",
+                      fontFamily: "Inter-Regular",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontFamily: "Inter-Regular",
+                    }
+              }
+            >
+              "Continue in prayer, and watch in the same with thanksgiving."
+            </Text>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      alignSelf: "flex-end",
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      alignSelf: "flex-end",
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              - Colossians 4:2
+            </Text>
+          </View>
         </View>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}

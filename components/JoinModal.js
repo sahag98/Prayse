@@ -30,9 +30,6 @@ const JoinModal = ({
   theme,
 }) => {
   const [code, setCode] = useState("");
-  const [color, setColor] = useState("");
-  const [description, setDescription] = useState("");
-  const [inputHeight, setInputHeight] = useState(60);
   const [isEnabled, setIsEnabled] = useState(false);
   const [joinError, setJoinError] = useState(false);
   const insets = useSafeAreaInsets();
@@ -40,18 +37,6 @@ const JoinModal = ({
     setModalVisible(false);
     setJoinError(false);
     setCode("");
-  };
-
-  const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 60) {
-      setInputHeight(60);
-    } else {
-      setInputHeight(event.nativeEvent.contentSize.height);
-    }
-  };
-
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
   };
 
   const showToast = (type, content) => {
@@ -75,6 +60,7 @@ const JoinModal = ({
 
       if (group.length == 0) {
         setJoinError(true);
+
         setCode("");
         return;
       } else if (group.length > 0) {
@@ -132,81 +118,6 @@ const JoinModal = ({
     }
   };
 
-  const photoPermission = async () => {
-    if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        showToast(
-          "error",
-          "We need camera roll permissions to make this work!"
-        );
-      } else {
-        pickImage();
-      }
-    }
-  };
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
-      );
-
-      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
-
-      const filePath = `${fileName}`;
-      const formData = new FormData();
-      formData.append("files", {
-        uri: result.assets[0].uri,
-        name: fileName,
-        type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
-      });
-
-      let { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, formData);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: imageData, error: getUrlError } = await supabase.storage
-        .from("avatars")
-        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
-
-      if (getUrlError) {
-        throw getUrlError;
-      }
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          avatar_url: imageData.signedUrl,
-        })
-        .eq("id", user.id);
-
-      if (error) {
-        throw error;
-      }
-      getProfile();
-      getPrayers();
-    }
-  };
-
-  // const generateGroupMembers=async ()=>{
-  //   const { data, error } = await supabase.from("groups").select()
-  // }
-
   return (
     <SafeAreaProvider>
       <Modal
@@ -257,12 +168,14 @@ const JoinModal = ({
                       color: "white",
                       fontSize: 20,
                       marginBottom: 5,
+                      letterSpacing: 1,
                       fontFamily: "Inter-Bold",
                     }
                   : {
                       color: "#2f2d51",
                       fontSize: 20,
                       marginBottom: 5,
+                      letterSpacing: 1,
                       fontFamily: "Inter-Bold",
                     }
               }

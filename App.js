@@ -44,6 +44,26 @@ export default function App() {
         }}
       />
     ),
+    edit: (props) => (
+      <BaseToast
+        {...props}
+        style={{
+          marginTop: 10,
+          borderLeftColor: "orange",
+          height: 50,
+        }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 14,
+          fontWeight: "500",
+        }}
+        text2Style={{
+          fontSize: 14,
+          textAlign: "right",
+          fontWeight: "500",
+        }}
+      />
+    ),
     /*
       Overwrite 'error' type,
       by modifying the existing `ErrorToast` component
