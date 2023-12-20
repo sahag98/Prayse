@@ -110,11 +110,9 @@ const JoinModal = ({
       // }
       getUserGroups();
       getGroupUsers();
+      setCode("");
       setModalVisible(false);
       setIsEnabled(false);
-      setCode("");
-      setDescription("");
-      setColor("");
     }
   };
 

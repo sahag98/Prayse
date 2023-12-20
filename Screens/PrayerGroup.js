@@ -34,8 +34,8 @@ const PrayerGroup = ({ route, navigation }) => {
   const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
-
   const allGroups = route.params.allGroups;
+
   const {
     currentUser,
     isNewMessage,
@@ -107,6 +107,7 @@ const PrayerGroup = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+    console.log("checking messages");
     getGroupMessages();
   }, [isNewMessage]);
 
@@ -171,7 +172,7 @@ const PrayerGroup = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setGroupInfoVisible(true)}
-              style={{ paddingBottom: 5, marginLeft: 10, gap: 5 }}
+              style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
             >
               <HeaderTitle
                 style={
@@ -182,40 +183,30 @@ const PrayerGroup = ({ route, navigation }) => {
               >
                 {currGroup.groups.name}
               </HeaderTitle>
-              <View style={{ flexDirection: "row" }}>
-                {allGroups.slice(0, 3).map((g, index) => (
-                  <Text
-                    key={index}
-                    style={
-                      theme == "dark"
-                        ? {
-                            color: "#b4b4b4",
-                            fontFamily: "Inter-Regular",
-                            fontSize: 13,
-                          }
-                        : {
-                            color: "#2f2d51",
-                            fontFamily: "Inter-Regular",
-                            fontSize: 13,
-                          }
-                    }
-                  >
-                    {g.profiles.full_name}
-                    {index < allGroups.length - 1 && <Text>, </Text>}
-                  </Text>
-                ))}
-              </View>
+              <Text
+                style={{
+                  color: "#bebebe",
+                  fontSize: 13,
+                  textDecorationLine: "underline",
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                Click here for group info
+              </Text>
             </TouchableOpacity>
           </View>
-          <GroupInfoModal
-            group={currGroup}
-            theme={theme}
-            supabase={supabase}
-            allUsers={allGroups}
-            currentUser={currentUser}
-            groupInfoVisible={groupInfoVisible}
-            setGroupInfoVisible={setGroupInfoVisible}
-          />
+          {groupInfoVisible && (
+            <GroupInfoModal
+              group={currGroup}
+              theme={theme}
+              supabase={supabase}
+              allUsers={allGroups}
+              currentUser={currentUser}
+              groupInfoVisible={groupInfoVisible}
+              setGroupInfoVisible={setGroupInfoVisible}
+            />
+          )}
+
           <TouchableOpacity
             onPress={() => copyToClipboard(currGroup.groups.code.toString())}
             style={

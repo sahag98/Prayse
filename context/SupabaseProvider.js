@@ -29,6 +29,9 @@ export const SupabaseProvider = (props) => {
   const [refreshLikes, setRefreshLikes] = useState(false);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [refreshMembers, setRefreshMembers] = useState(false);
+  const [newGroupMsgNum, setNewGroupMsgNum] = useState(0);
+  const [newMsgGroupId, setNewMsgGroupId] = useState(0);
+  const [userofSentMessage, setUserofSentMessage] = useState("");
   const [refreshComments, setRefreshComments] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
@@ -138,7 +141,6 @@ export const SupabaseProvider = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
-      console.log("profiles: ", profiles[0]);
       // Check if user is logged in before setting up subscriptions
       if (profiles[0] && profiles.length > 0) {
         //prayers for production
@@ -198,6 +200,10 @@ export const SupabaseProvider = (props) => {
             },
             (payload) => {
               setIsNewMessage(true);
+              setNewGroupMsgNum((prevState) => prevState + 1);
+              setNewMsgGroupId(payload.new.group_id);
+              console.log("payload: ", payload);
+              setUserofSentMessage(payload.new.user_id);
             }
           )
           .on(
@@ -269,10 +275,16 @@ export const SupabaseProvider = (props) => {
         refreshMembers,
         setRefreshMembers,
         isLoggedIn,
+        newGroupMsgNum,
+        setNewGroupMsgNum,
         login,
+        userofSentMessage,
+        setUserofSentMessage,
         supabase,
         session,
         currentUser,
+        newMsgGroupId,
+        setNewMsgGroupId,
         setCurrentUser,
         register,
         setLoggedIn,

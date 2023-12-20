@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { PROJECT_ID } from "@env";
@@ -59,6 +59,10 @@ const CommunityHome = () => {
     currentUser,
     setCurrentUser,
     session,
+    newGroupMsgNum,
+    userofSentMessage,
+
+    newMsgGroupId,
     refreshMembers,
     setRefreshMembers,
     logout,
@@ -82,20 +86,8 @@ const CommunityHome = () => {
   const { current: velocity } = useRef(new Animated.Value(0));
   const [searchName, setSearchName] = useState("");
   const [isViewingGroups, setIsViewingGroups] = useState(false);
-
-  const scrollTimeoutRef = useRef(null);
   const isReady = communityReady();
-  // function generateRandomPin() {
-  //   // Math.random() generates a random number between 0 (inclusive) and 1 (exclusive)
-  //   // Multiply by 900000 to get a number between 0 and 899999
-  //   // Add 100000 to ensure the number is at least 100000
-  //   var pin = Math.floor(Math.random() * 900000) + 100000;
 
-  //   return pin;
-  // }
-  // var randomPin = generateRandomPin();
-
-  // console.log("6 digit pin: ", randomPin);
   const rotation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -165,14 +157,13 @@ const CommunityHome = () => {
       .eq("user_id", currentUser?.id)
       .order("id", { ascending: false });
     setUserGroups(groups);
-    // setRefreshMembers(false);
   }
 
   async function getGroupUsers() {
     let { data: groups, error } = await supabase
       .from("members")
       .select("*,groups(*), profiles(*)")
-      .order("id", { ascending: false });
+      .order("id", { ascending: true });
     setGroups(groups);
     setRefreshMembers(false);
   }
@@ -184,6 +175,15 @@ const CommunityHome = () => {
       .eq("id", currentUser?.id)
       .select();
   }
+  // async function getGroupMessages(currGroup) {
+  //   let { data: groupMessages, error } = await supabase
+  //     .from("messages")
+  //     .select("*,groups(*), profiles(*)")
+  //     .eq("group_id", currGroup.group_id)
+  //     .order("id", { ascending: false });
+  //   setNewMessages(groupMessages);
+
+  // }
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -194,7 +194,6 @@ const CommunityHome = () => {
     if (Device.isDevice) {
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
-      console.log(existingStatus);
 
       let finalStatus = existingStatus;
 
@@ -207,7 +206,7 @@ const CommunityHome = () => {
         console.log("not granted");
         return;
       }
-      console.log("permission granted");
+
       token = (
         await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
       ).data;
@@ -478,11 +477,23 @@ const CommunityHome = () => {
               color={theme == "dark" ? "#f1d592" : "#2f2d51"}
             />
           </TouchableOpacity>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white", fontSize: 18 }
+                  ? {
+                      fontFamily: "Inter-Bold",
+
+                      color: "white",
+                      fontSize: 18,
+                    }
                   : {
                       fontFamily: "Inter-Bold",
                       color: "#2f2d51",

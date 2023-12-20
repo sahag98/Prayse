@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-native";
 
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 
 import uuid from "react-native-uuid";
 import {
@@ -32,6 +32,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import EditGroupModal from "./EditGroupModal";
+import { useNavigation } from "@react-navigation/native";
 
 const GroupInfoModal = ({
   groupInfoVisible,
@@ -42,16 +43,18 @@ const GroupInfoModal = ({
   theme,
   supabase,
 }) => {
-  console.log("group: ", group.group_id);
+  const navigation = useNavigation();
   const [groupName, setGroupName] = useState(group.groups.name);
   const [openEdit, setOpenEdit] = useState(false);
   const insets = useSafeAreaInsets();
+
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
 
   const removeUser = async (userId) => {
     console.log("removing: ", userId);
+
     let { data: groupMessages, error } = await supabase
       .from("messages")
       .delete()
@@ -63,6 +66,17 @@ const GroupInfoModal = ({
       .delete()
       .eq("group_id", group.group_id)
       .eq("user_id", userId);
+  };
+
+  const leaveGroup = async () => {
+    let { data, MemberError } = await supabase
+      .from("members")
+      .delete()
+      .eq("group_id", group.group_id)
+      .eq("user_id", currentUser.id);
+    console.log("here");
+    navigation.navigate("Community");
+    setGroupInfoVisible(false);
   };
 
   return (
@@ -84,14 +98,14 @@ const GroupInfoModal = ({
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingBottom: insets.bottom,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingBottom: insets.bottom,
                 }
           }
         >
@@ -129,6 +143,7 @@ const GroupInfoModal = ({
                   justifyContent: "center",
                   width: "100%",
                   gap: 5,
+                  marginBottom: 10,
                   alignItems: "center",
                 }}
               >
@@ -138,15 +153,15 @@ const GroupInfoModal = ({
                       ? {
                           color: "white",
                           fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 20,
+                          marginBottom: 10,
+                          fontSize: 22,
                           textAlign: "center",
                         }
                       : {
                           color: "#001f3f",
                           fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 20,
+                          marginBottom: 10,
+                          fontSize: 22,
                           textAlign: "center",
                         }
                   }
@@ -154,7 +169,7 @@ const GroupInfoModal = ({
                   {group.groups.name}
                 </Text>
                 <Feather
-                  style={{ marginBottom: 5 }}
+                  style={{ marginBottom: 10 }}
                   name="edit-2"
                   size={22}
                   color={theme == "dark" ? "white" : "#2f2d51"}
@@ -162,6 +177,8 @@ const GroupInfoModal = ({
               </TouchableOpacity>
               <EditGroupModal
                 theme={theme}
+                group={group}
+                supabase={supabase}
                 groupName={groupName}
                 setGroupName={setGroupName}
                 openEdit={openEdit}
@@ -175,7 +192,7 @@ const GroupInfoModal = ({
                   ? {
                       color: "white",
                       fontFamily: "Inter-Bold",
-                      marginBottom: 5,
+                      marginBottom: 15,
                       fontSize: 20,
                       textAlign: "center",
                       width: "100%",
@@ -183,7 +200,7 @@ const GroupInfoModal = ({
                   : {
                       color: "#001f3f",
                       fontFamily: "Inter-Bold",
-                      marginBottom: 5,
+                      marginBottom: 10,
                       fontSize: 20,
                       textAlign: "center",
                       width: "100%",
@@ -234,10 +251,9 @@ const GroupInfoModal = ({
               keyExtractor={(e, i) => i.toString()}
               initialNumToRender={30}
               ItemSeparatorComponent={
-                <View style={{ width: "100%", height: 1 }} />
+                <View style={{ width: "100%", height: 3 }} />
               }
               renderItem={({ item }) => {
-                console.log(item.profiles.full_name, item.is_admin);
                 return (
                   <View
                     style={
@@ -320,14 +336,18 @@ const GroupInfoModal = ({
                       >
                         <Text
                           style={
-                            item.is_admin == true
+                            theme == "dark"
                               ? {
-                                  color: "red",
+                                  color:
+                                    item.is_admin == true ? "#ff3b3b" : "white",
                                   fontSize: 12,
                                   fontFamily: "Inter-Medium",
                                 }
                               : {
-                                  color: "#2f2d51",
+                                  color:
+                                    item.is_admin == true
+                                      ? "#ff3b3b"
+                                      : "#2f2d51",
                                   fontSize: 12,
                                   fontFamily: "Inter-Medium",
                                 }
@@ -351,6 +371,24 @@ const GroupInfoModal = ({
                 );
               }}
             />
+            <TouchableOpacity
+              onPress={leaveGroup}
+              style={{
+                backgroundColor: "#212121",
+                flexDirection: "row",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 8,
+                marginBottom: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Ionicons name="exit-outline" size={36} color="white" />
+              <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+                Leave group
+              </Text>
+            </TouchableOpacity>
           </View>
         </ModalContainer>
       </KeyboardAvoidingView>

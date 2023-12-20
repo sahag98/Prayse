@@ -20,18 +20,31 @@ import {
 
 const EditGroupModal = ({
   theme,
+  supabase,
   openEdit,
+  group,
   groupName,
   setGroupName,
   setOpenEdit,
 }) => {
   const editGroup = async () => {
-    console.log("edit");
+    console.log("new name: ", groupName);
+    console.log("id: ", group.group_id);
+    const { data, error } = await supabase
+      .from("groups")
+      .update({ name: groupName })
+      .eq("id", group.group_id)
+      .select();
+    console.log(data);
+    if (error) {
+      console.log(error);
+    }
   };
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
+
   return (
     <Modal
       animationType="fade"
@@ -39,7 +52,6 @@ const EditGroupModal = ({
       visible={openEdit}
       onRequestClose={handleCloseEdit}
       statusBarTranslucent={true}
-      // onShow={() => inputRef.current?.focus()}
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -96,7 +108,7 @@ const EditGroupModal = ({
               </ModalAction>
               <ModalAction
                 color={theme == "dark" ? "#121212" : "#2F2D51"}
-                onPress={() => editGroup(item.id)}
+                onPress={editGroup}
               >
                 <AntDesign name="check" size={28} color={"white"} />
               </ModalAction>
