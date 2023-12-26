@@ -78,6 +78,7 @@ const JoinModal = ({
             group_id: group[0].id,
             user_id: user.id,
           });
+          showToast("success", "Prayer group joined successfully.");
           setJoinError(false);
         }
       }

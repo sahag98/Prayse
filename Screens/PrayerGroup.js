@@ -35,6 +35,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
   const allGroups = route.params.allGroups;
+  const [latestMessageId, setLatestMessageId] = useState(null);
 
   const {
     currentUser,
@@ -89,20 +90,37 @@ const PrayerGroup = ({ route, navigation }) => {
     await Promise.all(notificationPromises);
   }
 
-  // useEffect(() => {
-  //   getGroupMessages();
-  // }, []);
+  useEffect(() => {
+    console.log("this function runs soon as page loads");
+    getGroupMessages();
+  }, []);
 
   const sendMessage = async () => {
     if (newMessage.length == 0) {
       return;
     }
+
+    const optimisticMessage = {
+      group_id: currGroup.group_id,
+      user_id: currentUser.id,
+      // avatar_url: currentUser.avatar_url,
+      message: newMessage,
+    };
+
+    setMessages([optimisticMessage, ...messages]);
+
     const { data, error } = await supabase.from("messages").insert({
       group_id: currGroup.group_id,
       user_id: currentUser.id,
       message: newMessage,
     });
-    setNewMessage("");
+
+    if (error) {
+      throw new Error(error);
+    } else {
+      setNewMessage("");
+    }
+
     // sendGroupNotification();
   };
 
@@ -118,6 +136,7 @@ const PrayerGroup = ({ route, navigation }) => {
   });
 
   async function getGroupMessages() {
+    console.log("fetching group messages...");
     let { data: groupMessages, error } = await supabase
       .from("messages")
       .select("*,groups(*), profiles(*)")
@@ -154,7 +173,7 @@ const PrayerGroup = ({ route, navigation }) => {
         <HeaderView
           style={{
             justifyContent: "space-between",
-            borderBottomWidth: 2,
+            borderBottomWidth: 1,
             borderBottomColor: currGroup.groups.color.toLowerCase(),
             padding: 5,
             width: "100%",
@@ -185,7 +204,7 @@ const PrayerGroup = ({ route, navigation }) => {
               </HeaderTitle>
               <Text
                 style={{
-                  color: "#bebebe",
+                  color: theme == "dark" ? "#bebebe" : "#9a9a9a",
                   fontSize: 13,
                   textDecorationLine: "underline",
                   fontFamily: "Inter-Medium",
@@ -287,11 +306,11 @@ const PrayerGroup = ({ route, navigation }) => {
                             fadeInStyle,
                             {
                               alignSelf:
-                                item.profiles.id == currentUser.id
+                                item.user_id == currentUser.id
                                   ? "flex-end"
                                   : "flex-start",
                               backgroundColor:
-                                item.profiles.id == currentUser.id
+                                item.user_id == currentUser.id
                                   ? "#353535"
                                   : "#212121",
                               borderRadius: 10,
@@ -304,11 +323,11 @@ const PrayerGroup = ({ route, navigation }) => {
                           ]
                         : {
                             alignSelf:
-                              item.profiles.id == currentUser.id
+                              item.user_id == currentUser.id
                                 ? "flex-end"
                                 : "flex-start",
                             backgroundColor:
-                              item.profiles.id == currentUser.id
+                              item.user_id == currentUser.id
                                 ? "#abe1fa"
                                 : "#93d8f8",
                             borderRadius: 10,
@@ -319,7 +338,7 @@ const PrayerGroup = ({ route, navigation }) => {
                           }
                     }
                   >
-                    {item.profiles.id != currentUser.id && (
+                    {item.user_id != currentUser.id && (
                       <View
                         style={{
                           flexDirection: "row",

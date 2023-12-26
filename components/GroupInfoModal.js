@@ -12,7 +12,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-native";
 
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 import uuid from "react-native-uuid";
 import {
@@ -34,6 +39,8 @@ import {
 import EditGroupModal from "./EditGroupModal";
 import { useNavigation } from "@react-navigation/native";
 
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 const GroupInfoModal = ({
   groupInfoVisible,
   group,
@@ -47,6 +54,7 @@ const GroupInfoModal = ({
   const [groupName, setGroupName] = useState(group.groups.name);
   const [openEdit, setOpenEdit] = useState(false);
   const insets = useSafeAreaInsets();
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
@@ -75,6 +83,25 @@ const GroupInfoModal = ({
       .eq("group_id", group.group_id)
       .eq("user_id", currentUser.id);
     console.log("here");
+    navigation.navigate("Community");
+    setGroupInfoVisible(false);
+  };
+
+  const handleDeleteConfirmation = () => {
+    setShowConfirmation(true);
+  };
+
+  const deleteGroup = async () => {
+    let { data, error } = await supabase
+      .from("groups")
+      .delete()
+      .eq("id", group.group_id)
+      .eq("admin_id", currentUser.id);
+    console.log("deleting whole group");
+
+    if (error) {
+      console.log(error);
+    }
     navigation.navigate("Community");
     setGroupInfoVisible(false);
   };
@@ -364,7 +391,7 @@ const GroupInfoModal = ({
                           onPress={() => removeUser(item.profiles.id)}
                           style={{ alignSelf: "flex-end" }}
                         >
-                          <Text style={{ color: "red" }}>Remove</Text>
+                          <Text style={{ color: "#ff2727" }}>Remove</Text>
                         </TouchableOpacity>
                       )}
                   </View>
@@ -374,7 +401,7 @@ const GroupInfoModal = ({
             <TouchableOpacity
               onPress={leaveGroup}
               style={{
-                backgroundColor: "#212121",
+                backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
                 flexDirection: "row",
                 gap: 10,
                 justifyContent: "center",
@@ -389,8 +416,100 @@ const GroupInfoModal = ({
                 Leave group
               </Text>
             </TouchableOpacity>
+            {group.groups.admin_id == currentUser.id && (
+              <TouchableOpacity
+                onPress={handleDeleteConfirmation}
+                style={{
+                  backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                  flexDirection: "row",
+                  gap: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 8,
+                  marginBottom: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="delete-outline"
+                  size={36}
+                  color="#ff2727"
+                />
+                <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
+                  Delete group
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </ModalContainer>
+        {showConfirmation && (
+          <Animated.View
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(500)}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 18,
+                }}
+              >
+                Are you sure you want to delete this group?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  marginTop: 20,
+                }}
+              >
+                <TouchableOpacity onPress={() => setShowConfirmation(false)}>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: "red",
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteGroup}>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    }}
+                  >
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Animated.View>
+        )}
       </KeyboardAvoidingView>
     </Modal>
   );

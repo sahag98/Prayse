@@ -78,6 +78,7 @@ const CreateGroupModal = ({
         name: groupName,
         description: description,
         color: "grey",
+        admin_id: user.id,
         code: pin,
       });
 
