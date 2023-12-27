@@ -269,24 +269,34 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
       <View
         style={{
           flexDirection: "row",
-          alignItems: "flex-end",
-          justifyContent: "flex-end",
           gap: 10,
         }}
       >
         <TouchableOpacity
           onPress={() => toggleLike(item.id, item.profiles?.expoToken)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+          style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
         >
           {isNewItem && loadingLikes ? (
             <>
               <Text
                 style={
                   isLikedByMe
-                    ? { color: "#ff4e4e" }
+                    ? {
+                        color: "#ff4e4e",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
                     : theme == "dark"
-                    ? { color: "white" }
-                    : { color: "#2f2d51" }
+                    ? {
+                        color: "white",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
                 }
               >
                 {likes.length}
@@ -294,10 +304,10 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
               <Image
                 style={
                   isLikedByMe
-                    ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                    ? { width: 28, height: 28, tintColor: "#ff4e4e" }
                     : theme == "dark"
-                    ? { width: 25, height: 25, tintColor: "white" }
-                    : { width: 25, height: 25, tintColor: "#2f2d51" }
+                    ? { width: 28, height: 28, tintColor: "white" }
+                    : { width: 28, height: 28, tintColor: "#2f2d51" }
                 }
                 source={{
                   uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -309,10 +319,22 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
               <Text
                 style={
                   isLikedByMe
-                    ? { color: "#ff4e4e" }
+                    ? {
+                        color: "#ff4e4e",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
                     : theme == "dark"
-                    ? { color: "white" }
-                    : { color: "#2f2d51" }
+                    ? {
+                        color: "white",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
+                    : {
+                        color: "#2f2d51",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 15,
+                      }
                 }
               >
                 {likes.length}
@@ -321,10 +343,10 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                 <Image
                   style={
                     isLikedByMe
-                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                      ? { width: 28, height: 28, tintColor: "#ff4e4e" }
                       : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "white" }
-                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                      ? { width: 28, height: 28, tintColor: "white" }
+                      : { width: 28, height: 28, tintColor: "#2f2d51" }
                   }
                   source={{
                     uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -338,18 +360,18 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
         {item.disable_response ? (
           <TouchableOpacity
             disabled={item.disable_response}
-            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            style={{ flexDirection: "row", alignItems: "center", gap: 7 }}
           >
             {isNewItem && loadingLikes ? (
               <FontAwesome
                 name="comment-o"
-                size={25}
+                size={28}
                 color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
               />
             ) : (
               <FontAwesome
                 name="comment-o"
-                size={25}
+                size={28}
                 color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
               />
             )}
@@ -357,22 +379,30 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
         ) : (
           <TouchableOpacity
             onPress={() => setCommentVisible(true)}
-            style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            style={{ flexDirection: "row", alignItems: "center", gap: 7 }}
           >
             {isNewItem && loadingLikes ? (
               <>
                 <Text
                   style={
                     theme == "dark"
-                      ? { color: "#d6d6d6" }
-                      : { color: "#2f2d51" }
+                      ? {
+                          fontSize: 15,
+                          fontFamily: "Inter-Medium",
+                          color: "#d6d6d6",
+                        }
+                      : {
+                          fontSize: 15,
+                          fontFamily: "Inter-Medium",
+                          color: "#2f2d51",
+                        }
                   }
                 >
                   {commentsArray.length}
                 </Text>
                 <FontAwesome
                   name="comment-o"
-                  size={25}
+                  size={28}
                   color={theme == "dark" ? "#d6d6d6" : "#c6c6df"}
                 />
               </>
@@ -381,8 +411,16 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                 <Text
                   style={
                     theme == "dark"
-                      ? { color: "#d6d6d6" }
-                      : { color: "#2f2d51" }
+                      ? {
+                          fontSize: 15,
+                          fontFamily: "Inter-Medium",
+                          color: "#d6d6d6",
+                        }
+                      : {
+                          fontSize: 15,
+                          fontFamily: "Inter-Medium",
+                          color: "#2f2d51",
+                        }
                   }
                 >
                   {commentsArray.length}
@@ -390,7 +428,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
 
                 <FontAwesome
                   name="comment-o"
-                  size={25}
+                  size={28}
                   color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
                 />
               </>
@@ -406,9 +444,8 @@ export default PrayerItem;
 
 const styles = StyleSheet.create({
   prayerContainer: {
-    backgroundColor: "white",
-    borderColor: "#2f2d51",
-    borderWidth: 0.5,
+    backgroundColor: "#dee4e7",
+
     borderRadius: 10,
     justifyContent: "space-between",
     padding: 10,

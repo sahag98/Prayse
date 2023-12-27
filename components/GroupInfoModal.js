@@ -10,13 +10,16 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Modal } from "react-native";
+import { Modal, Animated } from "react-native";
 
 import {
   AntDesign,
   Feather,
   Ionicons,
   MaterialCommunityIcons,
+  Entypo,
+  Octicons,
+  MaterialIcons,
 } from "@expo/vector-icons";
 
 import uuid from "react-native-uuid";
@@ -39,7 +42,189 @@ import {
 import EditGroupModal from "./EditGroupModal";
 import { useNavigation } from "@react-navigation/native";
 
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+// import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
+const GroupInfoMenu = ({
+  theme,
+  group,
+  currentUser,
+  handleRemoveConfirmation,
+  userToEdit,
+  setShowMenu,
+  setUserToEdit,
+  onAnimationComplete,
+}) => {
+  const [slideAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => onAnimationComplete());
+  }, [onAnimationComplete, slideAnim]);
+  return (
+    <Animated.View
+      style={[
+        styles.menuContainer,
+        {
+          transform: [
+            {
+              translateY: slideAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [400, 0],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
+      <View
+        style={
+          theme === "dark"
+            ? { ...styles.menuContent, backgroundColor: "#212121" }
+            : { ...styles.menuContent, backgroundColor: "#93d8f8" }
+        }
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 15,
+            }}
+          >
+            <Image
+              style={{ width: 50, height: 50, borderRadius: 50 }}
+              source={{
+                uri:
+                  userToEdit.avatar_url ||
+                  "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+              }}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      fontFamily: "Inter-Medium",
+                      fontSize: 15,
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontFamily: "Inter-Medium",
+                      fontSize: 15,
+                    }
+              }
+            >
+              {userToEdit.full_name}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 200,
+              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+              padding: 10,
+            }}
+            onPress={() => setShowMenu(false)}
+          >
+            <AntDesign
+              name="close"
+              size={24}
+              color={theme == "dark" ? "white" : "white"}
+            />
+          </TouchableOpacity>
+        </View>
+        {group.user_id == currentUser.id &&
+          group.is_admin == true &&
+          currentUser.id != userToEdit.id && (
+            <View
+              style={{
+                backgroundColor: "#121212",
+                width: "100%",
+                marginTop: 20,
+                marginBottom: 20,
+                borderRadius: 10,
+                flex: 1,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 18,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onPress={() =>
+                  handleRemoveConfirmation(userToEdit.id, userToEdit.full_name)
+                }
+              >
+                <Text
+                  style={
+                    theme === "dark"
+                      ? { ...styles.menuItem, color: "#a5c9ff" }
+                      : styles.menuItem
+                  }
+                >
+                  Make Admin
+                </Text>
+                <Octicons name="shield-check" size={24} color="#a5c9ff" />
+              </TouchableOpacity>
+              <View
+                style={{
+                  width: "100%",
+                  paddingHorizontal: 15,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+
+                    height: 1,
+                    backgroundColor: "#2e2e2e",
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                style={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 18,
+
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onPress={() => handleRemoveConfirmation(userToEdit)}
+              >
+                <Text
+                  style={
+                    theme === "dark"
+                      ? { ...styles.menuItem, color: "#ff2727" }
+                      : { ...styles.menuItem, color: "#2f2d51" }
+                  }
+                >
+                  Remove User
+                </Text>
+                <MaterialIcons
+                  name="remove-circle-outline"
+                  size={24}
+                  color="#ff2727"
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+      </View>
+    </Animated.View>
+  );
+};
 
 const GroupInfoModal = ({
   groupInfoVisible,
@@ -55,25 +240,41 @@ const GroupInfoModal = ({
   const [openEdit, setOpenEdit] = useState(false);
   const insets = useSafeAreaInsets();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showLeaveConfirmation, setShowLeaveConfirmation] = useState(false);
+  const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
 
-  const removeUser = async (userId) => {
-    console.log("removing: ", userId);
+  const removeUser = async (user) => {
+    console.log("removing: ", user);
 
     let { data: groupMessages, error } = await supabase
       .from("messages")
       .delete()
       .eq("group_id", group.group_id)
-      .eq("user_id", userId);
+      .eq("user_id", user.id);
 
     let { data, MemberError } = await supabase
       .from("members")
       .delete()
       .eq("group_id", group.group_id)
-      .eq("user_id", userId);
+      .eq("user_id", user.id);
+
+    setShowMenu(false);
+    setUserToEdit(null);
+    setGroupInfoVisible(false);
+  };
+
+  const handleLeaveConfirmation = () => {
+    setShowLeaveConfirmation(true);
+  };
+
+  const handleRemoveConfirmation = (user) => {
+    setShowRemoveConfirmation(true);
   };
 
   const leaveGroup = async () => {
@@ -89,6 +290,23 @@ const GroupInfoModal = ({
 
   const handleDeleteConfirmation = () => {
     setShowConfirmation(true);
+  };
+
+  const handleCloseRemove = () => {
+    setShowRemoveConfirmation(false);
+    setShowMenu(false);
+  };
+
+  handleEditUser = (user) => {
+    console.log("user to edit: ", user);
+    setUserToEdit(user);
+    setShowMenu(true);
+  };
+  const handleAnimationComplete = () => {
+    if (!showMenu) {
+      // Reset state after menu is hidden
+      setUserToEdit(null);
+    }
   };
 
   const deleteGroup = async () => {
@@ -302,7 +520,8 @@ const GroupInfoModal = ({
                     <View
                       style={{
                         flexDirection: "row",
-                        alignItems: "flex-start",
+                        alignItems: "center",
+                        justifyContent: "space-between",
                       }}
                     >
                       <View
@@ -340,7 +559,13 @@ const GroupInfoModal = ({
                             : item.profiles.full_name}
                         </Text>
                       </View>
-                      <View
+                      <Entypo
+                        onPress={() => handleEditUser(item.profiles)}
+                        name="chevron-right"
+                        size={24}
+                        color={theme == "dark" ? "white" : "#2f2d51"}
+                      />
+                      {/* <View
                         style={
                           theme == "dark"
                             ? {
@@ -382,24 +607,64 @@ const GroupInfoModal = ({
                         >
                           {item.is_admin == true ? "Admin" : "Member"}
                         </Text>
-                      </View>
+                      </View> */}
                     </View>
-                    {group.user_id == currentUser.id &&
+                    {/* {group.user_id == currentUser.id &&
                       group.is_admin == true &&
                       currentUser.id != item.profiles.id && (
-                        <TouchableOpacity
-                          onPress={() => removeUser(item.profiles.id)}
-                          style={{ alignSelf: "flex-end" }}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 15,
+                            marginTop: 10,
+                            alignSelf: "flex-end",
+                          }}
                         >
-                          <Text style={{ color: "#ff2727" }}>Remove</Text>
-                        </TouchableOpacity>
-                      )}
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleRemoveConfirmation(
+                                item.profiles.id,
+                                item.profiles.full_name
+                              )
+                            }
+                            style={{ alignSelf: "flex-end" }}
+                          >
+                            <Text
+                              style={{
+                                color: "#a5c9ff",
+                                fontFamily: "Inter-Bold",
+                              }}
+                            >
+                              Make Admin
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleRemoveConfirmation(
+                                item.profiles.id,
+                                item.profiles.full_name
+                              )
+                            }
+                            style={{ alignSelf: "flex-end" }}
+                          >
+                            <Text
+                              style={{
+                                color: "#ff2727",
+                                fontFamily: "Inter-Bold",
+                              }}
+                            >
+                              Remove
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )} */}
                   </View>
                 );
               }}
             />
             <TouchableOpacity
-              onPress={leaveGroup}
+              onPress={handleLeaveConfirmation}
               style={{
                 backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
                 flexDirection: "row",
@@ -442,10 +707,161 @@ const GroupInfoModal = ({
             )}
           </View>
         </ModalContainer>
+        {showMenu && (
+          <GroupInfoMenu
+            theme={theme}
+            handleRemoveConfirmation={handleRemoveConfirmation}
+            userToEdit={userToEdit}
+            group={group}
+            onAnimationComplete={handleAnimationComplete}
+            setShowMenu={setShowMenu}
+            setUserToEdit={setUserToEdit}
+            currentUser={currentUser}
+          />
+        )}
+        {showRemoveConfirmation && (
+          <View
+            // entering={FadeIn.duration(500)}
+            // exiting={FadeOut.duration(500)}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 15,
+                }}
+              >
+                Are you sure you want to remove {userToEdit.full_name} from this
+                group ?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  marginTop: 20,
+                }}
+              >
+                <TouchableOpacity onPress={handleCloseRemove}>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: "red",
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => removeUser(userToEdit)}>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    }}
+                  >
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+        {showLeaveConfirmation && (
+          <View
+            // entering={FadeIn.duration(500)}
+            // exiting={FadeOut.duration(500)}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 18,
+                }}
+              >
+                Are you sure you want to leave this group?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  marginTop: 20,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setShowLeaveConfirmation(false)}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: "red",
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={leaveGroup}>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 16,
+                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    }}
+                  >
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
         {showConfirmation && (
-          <Animated.View
-            entering={FadeIn.duration(500)}
-            exiting={FadeOut.duration(500)}
+          <View
+            // entering={FadeIn.duration(500)}
+            // exiting={FadeOut.duration(500)}
             style={{
               flex: 1,
               justifyContent: "center",
@@ -508,7 +924,7 @@ const GroupInfoModal = ({
                 </TouchableOpacity>
               </View>
             </View>
-          </Animated.View>
+          </View>
         )}
       </KeyboardAvoidingView>
     </Modal>
@@ -552,6 +968,30 @@ const styles = StyleSheet.create({
     gap: 5,
     justifyContent: "center",
     alignItems: "center",
+  },
+  menuContainer: {
+    position: "absolute",
+
+    height: "auto",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  menuContent: {
+    width: "100%",
+    height: "100%",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  menuItem: {
+    fontSize: 16,
+
+    fontFamily: "Inter-Regular",
   },
   logout: {
     alignSelf: "flex-end",
