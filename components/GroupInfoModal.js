@@ -155,7 +155,7 @@ const GroupInfoMenu = ({
                 flex: 1,
               }}
             >
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   paddingHorizontal: 15,
                   paddingVertical: 18,
@@ -177,21 +177,21 @@ const GroupInfoMenu = ({
                   Make Admin
                 </Text>
                 <Octicons name="shield-check" size={24} color="#a5c9ff" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <View
                 style={{
                   width: "100%",
                   paddingHorizontal: 15,
                 }}
               >
-                <View
+                {/* <View
                   style={{
                     width: "100%",
 
                     height: 1,
                     backgroundColor: "#2e2e2e",
                   }}
-                />
+                /> */}
               </View>
               <TouchableOpacity
                 style={{
@@ -265,8 +265,8 @@ const GroupInfoModal = ({
       .eq("user_id", user.id);
 
     setShowMenu(false);
-    setUserToEdit(null);
     setGroupInfoVisible(false);
+    setUserToEdit(null);
   };
 
   const handleLeaveConfirmation = () => {
@@ -663,27 +663,9 @@ const GroupInfoModal = ({
                 );
               }}
             />
-            <TouchableOpacity
-              onPress={handleLeaveConfirmation}
-              style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
-                flexDirection: "row",
-                gap: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 8,
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Ionicons name="exit-outline" size={36} color="white" />
-              <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
-                Leave group
-              </Text>
-            </TouchableOpacity>
-            {group.groups.admin_id == currentUser.id && (
+            {group.groups.admin_id != currentUser.id && (
               <TouchableOpacity
-                onPress={handleDeleteConfirmation}
+                onPress={handleLeaveConfirmation}
                 style={{
                   backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
                   flexDirection: "row",
@@ -695,15 +677,59 @@ const GroupInfoModal = ({
                   borderRadius: 10,
                 }}
               >
-                <MaterialCommunityIcons
-                  name="delete-outline"
-                  size={36}
-                  color="#ff2727"
-                />
-                <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
-                  Delete group
+                <Ionicons name="exit-outline" size={36} color="white" />
+                <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+                  Leave group
                 </Text>
               </TouchableOpacity>
+            )}
+            {group.groups.admin_id == currentUser.id && (
+              <>
+                {/* <TouchableOpacity
+                  onPress={handleDeleteConfirmation}
+                  style={{
+                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 8,
+                    marginBottom: 10,
+                    borderRadius: 10,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="delete-outline"
+                    size={36}
+                    color="white"
+                  />
+                  <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+                    Announce Prayer Group Meeting
+                  </Text>
+                </TouchableOpacity> */}
+                <TouchableOpacity
+                  onPress={handleDeleteConfirmation}
+                  style={{
+                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 8,
+                    marginBottom: 10,
+                    borderRadius: 10,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="delete-outline"
+                    size={36}
+                    color="#ff2727"
+                  />
+                  <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
+                    Delete group
+                  </Text>
+                </TouchableOpacity>
+              </>
             )}
           </View>
         </ModalContainer>
@@ -890,7 +916,8 @@ const GroupInfoModal = ({
                   fontSize: 18,
                 }}
               >
-                Are you sure you want to delete this group?
+                Are you sure you want to delete this group? This action will
+                also remove all members.
               </Text>
               <View
                 style={{

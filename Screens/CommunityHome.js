@@ -28,12 +28,15 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { useRef } from "react";
 import Animated, {
+  Easing,
   FadeIn,
   FadeInUp,
   useAnimatedStyle,
   useSharedValue,
+  withRepeat,
   withSequence,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import WelcomeModal from "../components/WelcomeModal";
 import cm2 from "../assets/cm2.png";
@@ -52,9 +55,12 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+const duration = 2000;
+const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
-const CommunityHome = () => {
+const CommunityHome = ({ route }) => {
   const navigation = useNavigation();
+
   const {
     currentUser,
     setCurrentUser,
@@ -68,6 +74,7 @@ const CommunityHome = () => {
     logout,
     supabase,
   } = useSupabase();
+
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
@@ -87,8 +94,22 @@ const CommunityHome = () => {
   const [searchName, setSearchName] = useState("");
   const [isViewingGroups, setIsViewingGroups] = useState(false);
   const isReady = communityReady();
+  const sv = useSharedValue(0);
 
+  useEffect(() => {
+    sv.value = withRepeat(
+      withTiming(1, {
+        duration: 2000,
+        easing: Easing.bounce,
+      }),
+      -1
+    );
+  }, []);
   const rotation = useSharedValue(0);
+
+  const pulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: sv.value * 1.2 }],
+  }));
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -607,6 +628,7 @@ const CommunityHome = () => {
                       >
                         {item.groups.name}
                       </Text>
+
                       <TouchableOpacity
                         onPress={() =>
                           copyToClipboard(item.groups.code.toString())
@@ -668,6 +690,8 @@ const CommunityHome = () => {
                       style={{
                         flexDirection: "row",
                         paddingHorizontal: 10,
+
+                        width: "100%",
                         alignItems: "center",
                       }}
                     >
@@ -718,6 +742,26 @@ const CommunityHome = () => {
                             </Text>
                           )}
                       </View>
+
+                      {route.params?.group &&
+                        route.params?.group == item.groups.name && (
+                          <Animated.View style={[styles.box, pulseStyle]}>
+                            <Ionicons
+                              style={{ marginLeft: 10 }}
+                              name="megaphone-outline"
+                              size={24}
+                              color="red"
+                            />
+                          </Animated.View>
+                        )}
+                      {/* <Animated.View style={[styles.box, pulseStyle]}>
+                        <Ionicons
+                          style={{ marginLeft: 10 }}
+                          name="megaphone-outline"
+                          size={24}
+                          color="red"
+                        />
+                      </Animated.View> */}
                     </View>
                   </TouchableOpacity>
                 );
@@ -1184,6 +1228,14 @@ const styles = StyleSheet.create({
     height: 150,
     alignSelf: "center",
     marginVertical: 15,
+  },
+  box: {
+    height: 40,
+    width: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "#b58df1",
+    borderRadius: 20,
   },
 
   imgContainer: {

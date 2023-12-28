@@ -294,6 +294,10 @@ export default function Welcome({ navigation }) {
             verse: body,
             title: data.verseTitle,
           });
+        } else if (data.screen == "Community" && data.group) {
+          navigation.navigate(data.screen, {
+            group: data.group,
+          });
         } else {
           navigation.navigate(data.screen);
         }
