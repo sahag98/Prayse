@@ -33,6 +33,7 @@ export const SupabaseProvider = (props) => {
   const [newMsgGroupId, setNewMsgGroupId] = useState(0);
   const [userofSentMessage, setUserofSentMessage] = useState("");
   const [refreshComments, setRefreshComments] = useState(false);
+  const [refreshGroup, setRefreshGroup] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
       storage: ExpoSecureStoreAdapter,
@@ -196,6 +197,20 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
+              table: "groups",
+            },
+            (payload) => {
+              if (payload.eventType === "DELETE") {
+                console.log(payload);
+                setRefreshGroup(true);
+              }
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
               table: "messages",
             },
             (payload) => {
@@ -271,6 +286,8 @@ export const SupabaseProvider = (props) => {
         newAnswer,
         setNewAnswer,
         isNewMessage,
+        setRefreshGroup,
+        refreshGroup,
         setIsNewMessage,
         refreshMembers,
         setRefreshMembers,

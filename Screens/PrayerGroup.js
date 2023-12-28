@@ -1,6 +1,6 @@
 import {
-  FlatList,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   StyleSheet,
   Text,
@@ -12,18 +12,22 @@ import React, { useEffect, useState, useRef } from "react";
 import * as Clipboard from "expo-clipboard";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
-import { AntDesign, Feather, FontAwesome, Entypo } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome,
+  Entypo,
+  Ionicons,
+} from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
 import Moment from "moment";
 import { FlashList } from "@shopify/flash-list";
 import axios from "axios";
-import Animated, {
-  useSharedValue,
-  withSpring,
-  useAnimatedStyle,
-  FadeIn,
-} from "react-native-reanimated";
+
 import GroupInfoModal from "../components/GroupInfoModal";
+import RemovedGroupModal from "../components/RemovedGroupModal";
+import { useIsFocused } from "@react-navigation/native";
+import AnnounceMeeting from "../components/AnnounceMeeting";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -31,25 +35,23 @@ const PrayerGroup = ({ route, navigation }) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
   const flatListRef = useRef(null);
-  const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
   const allGroups = route.params.allGroups;
-  const [latestMessageId, setLatestMessageId] = useState(null);
-
+  const [isGroupRemoved, setIsGroupRemoved] = useState(false);
+  const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
   const {
     currentUser,
     isNewMessage,
     setIsNewMessage,
-    refreshMembers,
+    setRefreshGroup,
+    refreshGroup,
     supabase,
   } = useSupabase();
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
   };
-
-  const fadeIn = useSharedValue(0);
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -64,6 +66,10 @@ const PrayerGroup = ({ route, navigation }) => {
       flatListRef.current.scrollToEnd({ animated: true });
     }
   };
+
+  const announceMeeting = () => {};
+
+  const isFocused = useIsFocused();
 
   async function sendGroupNotification() {
     const notificationPromises = allGroups.map(async (g) => {
@@ -95,11 +101,41 @@ const PrayerGroup = ({ route, navigation }) => {
     getGroupMessages();
   }, []);
 
+  // useEffect(() => {
+  //   async function checkGroup() {
+  //     const groups = await getSingleGroup();
+  //     if (groups.length == 0) {
+  //       console.log("this group has been removed");
+  //       setNewMessage("");
+  //       Keyboard.dismiss();
+  //       setIsGroupRemoved(true);
+  //       return;
+  //     }
+  //   }
+  //   checkGroup();
+  // }, [refreshGroup]);
+
+  async function getSingleGroup() {
+    let { data: groups, error } = await supabase
+      .from("groups")
+      .select("*")
+      .eq("id", currGroup?.group_id);
+    return groups;
+  }
+
   const sendMessage = async () => {
     if (newMessage.length == 0) {
       return;
     }
 
+    const groups = await getSingleGroup();
+    if (groups.length == 0) {
+      console.log("this group has been removed");
+      setNewMessage("");
+      Keyboard.dismiss();
+      setIsGroupRemoved(true);
+      return;
+    }
     const optimisticMessage = {
       group_id: currGroup.group_id,
       user_id: currentUser.id,
@@ -129,11 +165,33 @@ const PrayerGroup = ({ route, navigation }) => {
     getGroupMessages();
   }, [isNewMessage]);
 
-  const fadeInStyle = useAnimatedStyle(() => {
-    return {
-      opacity: fadeIn.value,
-    };
-  });
+  const isSameDate = (date1, date2) => {
+    return (
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear()
+    );
+  };
+
+  const openGroupInfo = async () => {
+    const groups = await getSingleGroup();
+    if (groups.length == 0) {
+      console.log("this group has been removed");
+      setIsGroupRemoved(true);
+      return;
+    }
+    setGroupInfoVisible(true);
+  };
+
+  const copyCode = async () => {
+    const groups = await getSingleGroup();
+    if (groups.length == 0) {
+      console.log("this group has been removed");
+      setIsGroupRemoved(true);
+      return;
+    }
+    copyToClipboard(currGroup.groups.code.toString());
+  };
 
   async function getGroupMessages() {
     console.log("fetching group messages...");
@@ -190,7 +248,7 @@ const PrayerGroup = ({ route, navigation }) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setGroupInfoVisible(true)}
+              onPress={openGroupInfo}
               style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
             >
               <HeaderTitle
@@ -225,9 +283,31 @@ const PrayerGroup = ({ route, navigation }) => {
               setGroupInfoVisible={setGroupInfoVisible}
             />
           )}
-
+          {isGroupRemoved && (
+            <RemovedGroupModal
+              isGroupRemoved={isGroupRemoved}
+              setRefreshGroup={setRefreshGroup}
+              setIsGroupRemoved={setIsGroupRemoved}
+              theme={theme}
+            />
+          )}
           <TouchableOpacity
-            onPress={() => copyToClipboard(currGroup.groups.code.toString())}
+            onPress={() => setIsAnnouncingMeeting(true)}
+            style={{ borderRadius: 50, padding: 5 }}
+          >
+            <Ionicons name="megaphone-outline" size={24} color="#2f2d51" />
+          </TouchableOpacity>
+          {isAnnouncingMeeting && (
+            <AnnounceMeeting
+              currGroup={currGroup}
+              theme={theme}
+              isAnnouncingMeeting={isAnnouncingMeeting}
+              messages={messages}
+              setIsAnnouncingMeeting={setIsAnnouncingMeeting}
+            />
+          )}
+          <TouchableOpacity
+            onPress={copyCode}
             style={
               theme == "dark"
                 ? {
@@ -296,112 +376,134 @@ const PrayerGroup = ({ route, navigation }) => {
               data={messages}
               keyExtractor={(e, i) => i.toString()}
               initialNumToRender={30}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
+                const currentDate = new Date(item.created_at);
+                const nextItem =
+                  index < messages.length - 1 ? messages[index + 1] : null;
+                const nextDate = nextItem
+                  ? new Date(nextItem.created_at)
+                  : null;
+
+                const isLastMessageForDay =
+                  !nextDate || !isSameDate(currentDate, nextDate);
+                const isLastMessageInList = index === messages.length - 1;
                 return (
-                  <Animated.View
-                    entering={FadeIn.duration(300)}
-                    style={
-                      theme == "dark"
-                        ? [
-                            fadeInStyle,
-                            {
+                  <View>
+                    {isLastMessageForDay && isLastMessageInList && (
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          color: theme == "dark" ? "white" : "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          marginVertical: 10,
+                        }}
+                      >
+                        {Moment(item.created_at).format("MMMM D, YYYY")}
+                      </Text>
+                    )}
+                    <View
+                      style={
+                        theme == "dark"
+                          ? [
+                              {
+                                alignSelf:
+                                  item.user_id == currentUser.id
+                                    ? "flex-end"
+                                    : "flex-start",
+                                backgroundColor:
+                                  item.user_id == currentUser.id
+                                    ? "#353535"
+                                    : "#212121",
+                                borderRadius: 10,
+                                marginBottom: 10,
+                                padding: 10,
+                                gap: 15,
+                                minWidth: 100,
+                                maxWidth: 300,
+                              },
+                            ]
+                          : {
                               alignSelf:
                                 item.user_id == currentUser.id
                                   ? "flex-end"
                                   : "flex-start",
                               backgroundColor:
                                 item.user_id == currentUser.id
-                                  ? "#353535"
-                                  : "#212121",
+                                  ? "#abe1fa"
+                                  : "#93d8f8",
                               borderRadius: 10,
                               marginBottom: 10,
                               padding: 10,
                               gap: 15,
-                              minWidth: 100,
-                              maxWidth: 300,
-                            },
-                          ]
-                        : {
-                            alignSelf:
-                              item.user_id == currentUser.id
-                                ? "flex-end"
-                                : "flex-start",
-                            backgroundColor:
-                              item.user_id == currentUser.id
-                                ? "#abe1fa"
-                                : "#93d8f8",
-                            borderRadius: 10,
-                            marginBottom: 10,
-                            padding: 10,
-                            gap: 15,
-                            maxWidth: 200,
-                          }
-                    }
-                  >
-                    {item.user_id != currentUser.id && (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 10,
-                        }}
-                      >
-                        <Image
-                          style={
-                            theme == "dark"
-                              ? styles.profileImgDark
-                              : styles.profileImg
-                          }
-                          source={{
-                            uri: item.profiles?.avatar_url
-                              ? item.profiles?.avatar_url
-                              : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                              maxWidth: 200,
+                            }
+                      }
+                    >
+                      {item.user_id != currentUser.id && (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 10,
                           }}
-                        />
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? { color: "white", fontFamily: "Inter-Medium" }
-                              : {
-                                  color: "#2f2d51",
-                                  fontFamily: "Inter-Medium",
-                                }
-                          }
                         >
-                          {item.profiles.full_name}
-                        </Text>
-                      </View>
-                    )}
+                          <Image
+                            style={
+                              theme == "dark"
+                                ? styles.profileImgDark
+                                : styles.profileImg
+                            }
+                            source={{
+                              uri: item.profiles?.avatar_url
+                                ? item.profiles?.avatar_url
+                                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                            }}
+                          />
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? { color: "white", fontFamily: "Inter-Medium" }
+                                : {
+                                    color: "#2f2d51",
+                                    fontFamily: "Inter-Medium",
+                                  }
+                            }
+                          >
+                            {item.profiles.full_name}
+                          </Text>
+                        </View>
+                      )}
 
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? { color: "white", fontFamily: "Inter-Regular" }
-                          : { color: "#2f2d51", fontFamily: "Inter-Regular" }
-                      }
-                    >
-                      {item.message}
-                    </Text>
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              color: "#d6d6d6",
-                              alignSelf: "flex-end",
-                              fontFamily: "Inter-Light",
-                              fontSize: 12,
-                            }
-                          : {
-                              color: "#2f2d51",
-                              alignSelf: "flex-end",
-                              fontFamily: "Inter-Light",
-                              fontSize: 12,
-                            }
-                      }
-                    >
-                      {Moment(item.created_at).fromNow()}
-                    </Text>
-                  </Animated.View>
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? { color: "white", fontFamily: "Inter-Regular" }
+                            : { color: "#2f2d51", fontFamily: "Inter-Regular" }
+                        }
+                      >
+                        {item.message}
+                      </Text>
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                color: "#d6d6d6",
+                                alignSelf: "flex-end",
+                                fontFamily: "Inter-Light",
+                                fontSize: 12,
+                              }
+                            : {
+                                color: "#2f2d51",
+                                alignSelf: "flex-end",
+                                fontFamily: "Inter-Light",
+                                fontSize: 12,
+                              }
+                        }
+                      >
+                        {Moment(item.created_at).fromNow()}
+                      </Text>
+                    </View>
+                  </View>
                 );
               }}
             />
