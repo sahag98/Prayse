@@ -243,6 +243,7 @@ export default function Welcome({ navigation }) {
   const [quickModal, setQuickModal] = useState(false);
   const notificationListener = useRef();
   const [isReminderOff, setIsReminderOff] = useState(false);
+  const [isFirst, setIsFirst] = useState(false);
   const responseListener = useRef();
   const isFocused = useIsFocused();
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
@@ -375,6 +376,24 @@ export default function Welcome({ navigation }) {
         );
       }
     }
+
+    const storedData = async () => {
+      // await AsyncStorage.removeItem("isFirstTime");
+      try {
+        const isFirstTime = await AsyncStorage.getItem("isFirstTime");
+        console.log("first time: ", isFirstTime);
+        if (isFirstTime == null) {
+          console.log("it is the first time");
+          setIsFirst(true);
+          await AsyncStorage.setItem("isFirstTime", "true");
+        } else if (isFirstTime != null) {
+          setIsFirst(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    storedData();
   }, [isFocused]);
 
   useEffect(() => {
@@ -424,17 +443,22 @@ export default function Welcome({ navigation }) {
           minute: "numeric",
           hour12: true,
         });
+
+        console.log(notification.request.content.data);
         console.log("notification recieved: ", notification.request.identifier);
-        dispatch(
-          addNoti({
-            noti_id: uuid.v4(),
-            date: formattedDate,
-            notification: notification.request.content.body,
-            screen: notification.request.content.data?.screen,
-            prayerId: notification.request.content.data?.prayerId,
-            identifier: notification.request.identifier,
-          })
-        );
+        if (!notification.request.content.data.group) {
+          dispatch(
+            addNoti({
+              noti_id: uuid.v4(),
+              date: formattedDate,
+              notification: notification.request.content.body,
+              screen: notification.request.content.data?.screen,
+              prayerId: notification.request.content.data?.prayerId,
+              identifier: notification.request.identifier,
+            })
+          );
+        }
+
         setNotification(notification);
       });
 
@@ -492,6 +516,10 @@ export default function Welcome({ navigation }) {
 
   if (!fontsLoaded) {
     return <BusyIndicator />;
+  }
+
+  if (isFirst == true) {
+    navigation.navigate("Onboarding");
   }
 
   return (
@@ -1171,7 +1199,7 @@ export default function Welcome({ navigation }) {
                       }
                 }
               >
-                What's New in v8.3!
+                What's New in v9!
               </Text>
             </View>
             <AntDesign

@@ -234,6 +234,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                   marginTop: 5,
                   marginLeft: 5,
                   paddingVertical: 5,
+                  fontSize: 14,
                   paddingHorizontal: 5,
                   lineHeight: 20,
                   width: "100%",
@@ -414,7 +415,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                       ? {
                           fontSize: 15,
                           fontFamily: "Inter-Medium",
-                          color: "#d6d6d6",
+                          color: "white",
                         }
                       : {
                           fontSize: 15,

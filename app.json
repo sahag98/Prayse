@@ -3,7 +3,7 @@
     "name": "Prayse",
     "slug": "prayer-app",
     "scheme": "prayseapp",
-    "version": "8.3",
+    "version": "9.0.0",
     "orientation": "portrait",
     "owner": "sahag98",
     "icon": "./assets/prayer.png",

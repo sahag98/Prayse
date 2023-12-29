@@ -8,7 +8,7 @@ const Skeleton = () => {
   return (
     <SkeletonLoader
       duration={800}
-      highlightColor={theme == "dark" ? "#212121" : "white"}
+      highlightColor={theme == "dark" ? "#212121" : "#dee4e7"}
       boneColor={theme == "dark" ? "#121212" : "#F2F7FF"}
       style={{ flex: 1 }}
     >

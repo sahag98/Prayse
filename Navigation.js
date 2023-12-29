@@ -31,6 +31,7 @@ import Test from "./Screens/Test";
 import * as Linking from "expo-linking";
 import Reminder from "./Screens/Reminder";
 import PrayerGroup from "./Screens/PrayerGroup";
+import OnboardingScreen from "./Screens/Onboarding";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -158,6 +159,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={OldPrayerPage}
+          />
+          <Tab.Screen
+            name="Onboarding"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={OnboardingScreen}
           />
           <Tab.Screen
             name="Reminder"

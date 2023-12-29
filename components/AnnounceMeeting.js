@@ -6,7 +6,10 @@ import axios from "axios";
 const AnnounceMeeting = ({
   theme,
   currGroup,
+  hasAnnounced,
+  setHasAnnounced,
   messages,
+  supabase,
   isAnnouncingMeeting,
   setIsAnnouncingMeeting,
 }) => {
@@ -17,17 +20,22 @@ const AnnounceMeeting = ({
   };
 
   const sendAnnounceMent = async () => {
-    messages.map(async (m) => {
+    let { data: members, error } = await supabase
+      .from("members")
+      .select("*, profiles(id, expoToken)")
+      .eq("group_id", currGroup.groups?.id)
+      .order("id", { ascending: false });
+    console.log("members of group: ", members);
+    members.map(async (m) => {
       console.log(m.profiles.expoToken);
 
       const message = {
         to: m.profiles.expoToken,
         sound: "default",
-        title: "Prayer Meeting 🙏",
-        body: `Join ${currGroup.groups.name}'s prayer meeting!`,
+        title: `${currGroup.groups.name} 📢`,
+        body: `Join prayer meeting 🙏`,
         data: { screen: "Community", group: currGroup.groups.name },
       };
-
       await axios.post("https://exp.host/--/api/v2/push/send", message, {
         headers: {
           Accept: "application/json",
@@ -36,6 +44,7 @@ const AnnounceMeeting = ({
         },
       });
     });
+    setHasAnnounced(true);
     setIsAnnouncingMeeting(false);
   };
 
@@ -72,12 +81,23 @@ const AnnounceMeeting = ({
           >
             Do you want to announce a prayer meeting?
           </Text>
+          <Text
+            style={{
+              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              marginTop: 10,
+              fontFamily: "Inter-Medium",
+              fontSize: 14,
+              textAlign: "center",
+            }}
+          >
+            You can only once a meeting once every 10 minutes.
+          </Text>
           <TouchableOpacity
             onPress={sendAnnounceMent}
             style={{
               width: "100%",
               marginTop: 20,
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+              backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
               justifyContent: "center",
               alignItems: "center",
               padding: 15,
@@ -86,7 +106,7 @@ const AnnounceMeeting = ({
           >
             <Text
               style={{
-                color: theme == "dark" ? "white" : "white",
+                color: theme == "dark" ? "#121212" : "white",
                 fontFamily: "Inter-Bold",
               }}
             >

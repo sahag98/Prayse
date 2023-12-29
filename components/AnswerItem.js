@@ -5,7 +5,12 @@ import Moment from "moment";
 
 const AnswerItem = ({ item, theme }) => {
   return (
-    <View style={styles.commentContainer}>
+    <View
+      style={[
+        styles.commentContainer,
+        { borderColor: theme == "dark" ? "#3e3e3e" : "#ffcd8b" },
+      ]}
+    >
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
           <Image
@@ -81,7 +86,9 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   commentContainer: {
-    paddingVertical: 5,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 10,
     gap: 10,
     justifyContent: "space-between",
     flexDirection: "column",

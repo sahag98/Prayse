@@ -450,8 +450,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 15,
     padding: 10,
-    borderColor: "#3e3e3e",
-    borderWidth: 2,
+    borderColor: "white",
+    borderWidth: 1,
     marginBottom: 20,
   },
   actionButtons: {

@@ -83,6 +83,10 @@ const PublicCommunity = ({ route }) => {
     getPrayers();
   }, [isFocused]);
 
+  //   useEffect(()=>{
+  //  getPrayers()
+  //   },[newPost])
+
   async function getPrayers() {
     //prayers for production
     //prayers_test for testing

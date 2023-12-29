@@ -47,6 +47,7 @@ import ProfileModal from "../components/ProfileModal";
 import communityReady from "../hooks/communityReady";
 import * as Clipboard from "expo-clipboard";
 import Constants from "expo-constants";
+import * as Network from "expo-network";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -95,7 +96,7 @@ const CommunityHome = ({ route }) => {
   const [isViewingGroups, setIsViewingGroups] = useState(false);
   const isReady = communityReady();
   const sv = useSharedValue(0);
-
+  const [hasConnection, setHasConnection] = useState(true);
   useEffect(() => {
     sv.value = withRepeat(
       withTiming(1, {
@@ -134,6 +135,14 @@ const CommunityHome = ({ route }) => {
   }, [velocity, extended, isIOS]);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      const connected = await Network.getNetworkStateAsync();
+      console.log("connection: ", connected.isConnected);
+      if (!connected.isConnected) {
+        setHasConnection(false);
+      }
+    };
+    checkConnection();
     const wavingAnimation = withSpring(15, { damping: 2, stiffness: 80 });
 
     rotation.value = withSequence(wavingAnimation);
@@ -251,6 +260,30 @@ const CommunityHome = ({ route }) => {
         setIsShowingWelcome={setIsShowingWelcome}
         user={currentUser}
       />
+    );
+  }
+
+  if (!hasConnection) {
+    return (
+      <View
+        style={{
+          backgroundColor: theme == "dark" ? "#21212" : "#f2f7ff",
+          flex: 1,
+          justifyContent: "center",
+          gap: 5,
+          alignItems: "center",
+        }}
+      >
+        <MaterialIcons name="network-check" size={50} color="black" />
+        <Text
+          style={{
+            color: theme == "dark" ? "white" : "#2f2d51",
+            fontFamily: "Inter-Medium",
+          }}
+        >
+          No network connection. Try again...
+        </Text>
+      </View>
     );
   }
 
@@ -749,19 +782,11 @@ const CommunityHome = ({ route }) => {
                             <Ionicons
                               style={{ marginLeft: 10 }}
                               name="megaphone-outline"
-                              size={24}
+                              size={20}
                               color="red"
                             />
                           </Animated.View>
                         )}
-                      {/* <Animated.View style={[styles.box, pulseStyle]}>
-                        <Ionicons
-                          style={{ marginLeft: 10 }}
-                          name="megaphone-outline"
-                          size={24}
-                          color="red"
-                        />
-                      </Animated.View> */}
                     </View>
                   </TouchableOpacity>
                 );

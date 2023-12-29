@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -39,7 +40,10 @@ const PrayerGroup = ({ route, navigation }) => {
   const currGroup = route.params.group;
   const allGroups = route.params.allGroups;
   const [isGroupRemoved, setIsGroupRemoved] = useState(false);
+  const [countdown, setCountdown] = useState(300);
+  const [hasAnnounced, setHasAnnounced] = useState(false);
   const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
+  const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const {
     currentUser,
     isNewMessage,
@@ -52,6 +56,27 @@ const PrayerGroup = ({ route, navigation }) => {
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
   };
+
+  useEffect(() => {
+    let interval;
+
+    if (hasAnnounced) {
+      interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [hasAnnounced]);
+
+  useEffect(() => {
+    if (countdown === 0) {
+      setHasAnnounced(null);
+      setCountdown(600);
+    }
+  }, [countdown]);
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -66,8 +91,6 @@ const PrayerGroup = ({ route, navigation }) => {
       flatListRef.current.scrollToEnd({ animated: true });
     }
   };
-
-  const announceMeeting = () => {};
 
   const isFocused = useIsFocused();
 
@@ -97,23 +120,66 @@ const PrayerGroup = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    console.log("this function runs soon as page loads");
+    async function getGroupMessages() {
+      try {
+        setAreMessagesLoading(true);
+        let { data: groupMessages, error } = await supabase
+          .from("messages")
+          .select("*,groups(*), profiles(*)")
+          .eq("group_id", currGroup.group_id)
+          .order("id", { ascending: false });
+        setMessages(groupMessages);
+      } catch (error) {
+        console.log(error);
+      }
+
+      setAreMessagesLoading(false);
+      setIsNewMessage(false);
+    }
     getGroupMessages();
   }, []);
 
-  // useEffect(() => {
-  //   async function checkGroup() {
-  //     const groups = await getSingleGroup();
-  //     if (groups.length == 0) {
-  //       console.log("this group has been removed");
-  //       setNewMessage("");
-  //       Keyboard.dismiss();
-  //       setIsGroupRemoved(true);
-  //       return;
-  //     }
-  //   }
-  //   checkGroup();
-  // }, [refreshGroup]);
+  useEffect(() => {
+    async function getGroupMessages() {
+      try {
+        // setAreMessagesLoading(true);
+        let { data: groupMessages, error } = await supabase
+          .from("messages")
+          .select("*,groups(*), profiles(*)")
+          .eq("group_id", currGroup.group_id)
+          .order("id", { ascending: false });
+
+        setMessages(groupMessages);
+      } catch (error) {
+        console.log(error);
+      }
+
+      // setAreMessagesLoading(false);
+      setIsNewMessage(false);
+    }
+    getGroupMessages();
+  }, [isFocused]);
+
+  useEffect(() => {
+    async function getGroupMessages() {
+      try {
+        setAreMessagesLoading(true);
+        let { data: groupMessages, error } = await supabase
+          .from("messages")
+          .select("*,groups(*), profiles(*)")
+          .eq("group_id", currGroup.group_id)
+          .order("id", { ascending: false });
+
+        setMessages(groupMessages);
+      } catch (error) {
+        console.log(error);
+      }
+
+      setAreMessagesLoading(false);
+      setIsNewMessage(false);
+    }
+    getGroupMessages();
+  }, [currGroup.group_id]);
 
   async function getSingleGroup() {
     let { data: groups, error } = await supabase
@@ -161,7 +227,23 @@ const PrayerGroup = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log("checking messages");
+    async function getGroupMessages() {
+      try {
+        // setAreMessagesLoading(true);
+        let { data: groupMessages, error } = await supabase
+          .from("messages")
+          .select("*,groups(*), profiles(*)")
+          .eq("group_id", currGroup.group_id)
+          .order("id", { ascending: false });
+
+        setMessages(groupMessages);
+      } catch (error) {
+        console.log(error);
+      }
+
+      // setAreMessagesLoading(false);
+      setIsNewMessage(false);
+    }
     getGroupMessages();
   }, [isNewMessage]);
 
@@ -183,6 +265,12 @@ const PrayerGroup = ({ route, navigation }) => {
     setGroupInfoVisible(true);
   };
 
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   const copyCode = async () => {
     const groups = await getSingleGroup();
     if (groups.length == 0) {
@@ -192,18 +280,6 @@ const PrayerGroup = ({ route, navigation }) => {
     }
     copyToClipboard(currGroup.groups.code.toString());
   };
-
-  async function getGroupMessages() {
-    console.log("fetching group messages...");
-    let { data: groupMessages, error } = await supabase
-      .from("messages")
-      .select("*,groups(*), profiles(*)")
-      .eq("group_id", currGroup.group_id)
-      .order("id", { ascending: false });
-    setMessages(groupMessages);
-
-    setIsNewMessage(false);
-  }
 
   return (
     <KeyboardAvoidingView
@@ -292,15 +368,43 @@ const PrayerGroup = ({ route, navigation }) => {
             />
           )}
           <TouchableOpacity
+            disabled={hasAnnounced}
             onPress={() => setIsAnnouncingMeeting(true)}
-            style={{ borderRadius: 50, padding: 5 }}
+            style={{
+              borderRadius: 50,
+              // width: 45,
+              // height: 45,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 8,
+              backgroundColor: theme == "dark" ? "#212121" : "#abe1fa",
+            }}
           >
-            <Ionicons name="megaphone-outline" size={24} color="#2f2d51" />
+            {hasAnnounced ? (
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Regular",
+                }}
+              >
+                {formatTime(countdown)}
+              </Text>
+            ) : (
+              <Ionicons
+                name="megaphone-outline"
+                size={26}
+                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+              />
+            )}
           </TouchableOpacity>
+
           {isAnnouncingMeeting && (
             <AnnounceMeeting
+              hasAnnounced={hasAnnounced}
+              setHasAnnounced={setHasAnnounced}
               currGroup={currGroup}
               theme={theme}
+              supabase={supabase}
               isAnnouncingMeeting={isAnnouncingMeeting}
               messages={messages}
               setIsAnnouncingMeeting={setIsAnnouncingMeeting}
@@ -348,7 +452,7 @@ const PrayerGroup = ({ route, navigation }) => {
             position: "relative",
           }}
         >
-          {messages.length == 0 ? (
+          {areMessagesLoading ? (
             <View
               style={{
                 flex: 1,
@@ -356,157 +460,184 @@ const PrayerGroup = ({ route, navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? { fontFamily: "Inter-Medium", color: "white" }
-                    : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                }
-              >
-                No messages yet.
-              </Text>
+              <ActivityIndicator
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
             </View>
           ) : (
-            <FlashList
-              showsVerticalScrollIndicator={false}
-              estimatedItemSize={120}
-              ref={flatListRef}
-              inverted
-              estimatedListSize={{ height: 800, width: 450 }}
-              data={messages}
-              keyExtractor={(e, i) => i.toString()}
-              initialNumToRender={30}
-              renderItem={({ item, index }) => {
-                const currentDate = new Date(item.created_at);
-                const nextItem =
-                  index < messages.length - 1 ? messages[index + 1] : null;
-                const nextDate = nextItem
-                  ? new Date(nextItem.created_at)
-                  : null;
+            <>
+              {messages.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Medium", color: "white" }
+                        : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                    }
+                  >
+                    No messages yet.
+                  </Text>
+                </View>
+              ) : (
+                <FlashList
+                  showsVerticalScrollIndicator={false}
+                  estimatedItemSize={120}
+                  ref={flatListRef}
+                  inverted
+                  estimatedListSize={{ height: 800, width: 450 }}
+                  data={messages}
+                  keyExtractor={(e, i) => i.toString()}
+                  initialNumToRender={30}
+                  renderItem={({ item, index }) => {
+                    const currentDate = new Date(item.created_at);
+                    const nextItem =
+                      index < messages.length - 1 ? messages[index + 1] : null;
+                    const nextDate = nextItem
+                      ? new Date(nextItem.created_at)
+                      : null;
 
-                const isLastMessageForDay =
-                  !nextDate || !isSameDate(currentDate, nextDate);
-                const isLastMessageInList = index === messages.length - 1;
-                return (
-                  <View>
-                    {isLastMessageForDay && isLastMessageInList && (
-                      <Text
-                        style={{
-                          textAlign: "center",
-                          color: theme == "dark" ? "white" : "#2f2d51",
-                          fontFamily: "Inter-Medium",
-                          marginVertical: 10,
-                        }}
-                      >
-                        {Moment(item.created_at).format("MMMM D, YYYY")}
-                      </Text>
-                    )}
-                    <View
-                      style={
-                        theme == "dark"
-                          ? [
-                              {
-                                alignSelf:
-                                  item.user_id == currentUser.id
-                                    ? "flex-end"
-                                    : "flex-start",
-                                backgroundColor:
-                                  item.user_id == currentUser.id
-                                    ? "#353535"
-                                    : "#212121",
-                                borderRadius: 10,
-                                marginBottom: 10,
-                                padding: 10,
-                                gap: 15,
-                                minWidth: 100,
-                                maxWidth: 300,
-                              },
-                            ]
-                          : {
-                              alignSelf:
-                                item.user_id == currentUser.id
-                                  ? "flex-end"
-                                  : "flex-start",
-                              backgroundColor:
-                                item.user_id == currentUser.id
-                                  ? "#abe1fa"
-                                  : "#93d8f8",
-                              borderRadius: 10,
-                              marginBottom: 10,
-                              padding: 10,
-                              gap: 15,
-                              maxWidth: 200,
-                            }
-                      }
-                    >
-                      {item.user_id != currentUser.id && (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 10,
-                          }}
-                        >
-                          <Image
-                            style={
-                              theme == "dark"
-                                ? styles.profileImgDark
-                                : styles.profileImg
-                            }
-                            source={{
-                              uri: item.profiles?.avatar_url
-                                ? item.profiles?.avatar_url
-                                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                    const isLastMessageForDay =
+                      !nextDate || !isSameDate(currentDate, nextDate);
+                    const isLastMessageInList = index === messages.length - 1;
+                    return (
+                      <View>
+                        {isLastMessageForDay && isLastMessageInList && (
+                          <Text
+                            style={{
+                              textAlign: "center",
+                              color: theme == "dark" ? "white" : "#2f2d51",
+                              fontFamily: "Inter-Medium",
+                              marginVertical: 10,
                             }}
-                          />
+                          >
+                            {Moment(item.created_at).format("MMMM D, YYYY")}
+                          </Text>
+                        )}
+                        <View
+                          style={
+                            theme == "dark"
+                              ? [
+                                  {
+                                    alignSelf:
+                                      item.user_id == currentUser.id
+                                        ? "flex-end"
+                                        : "flex-start",
+                                    backgroundColor:
+                                      item.user_id == currentUser.id
+                                        ? "#353535"
+                                        : "#212121",
+                                    borderRadius: 10,
+                                    marginBottom: 10,
+                                    padding: 10,
+                                    gap: 15,
+                                    minWidth: 100,
+                                    maxWidth: 300,
+                                  },
+                                ]
+                              : {
+                                  alignSelf:
+                                    item.user_id == currentUser.id
+                                      ? "flex-end"
+                                      : "flex-start",
+                                  backgroundColor:
+                                    item.user_id == currentUser.id
+                                      ? "#abe1fa"
+                                      : "#93d8f8",
+                                  borderRadius: 10,
+                                  marginBottom: 10,
+                                  padding: 10,
+                                  gap: 15,
+                                  maxWidth: 200,
+                                }
+                          }
+                        >
+                          {item.user_id != currentUser.id && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 10,
+                              }}
+                            >
+                              <Image
+                                style={
+                                  theme == "dark"
+                                    ? styles.profileImgDark
+                                    : styles.profileImg
+                                }
+                                source={{
+                                  uri: item.profiles?.avatar_url
+                                    ? item.profiles?.avatar_url
+                                    : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                                }}
+                              />
+                              <Text
+                                style={
+                                  theme == "dark"
+                                    ? {
+                                        color: "white",
+                                        fontFamily: "Inter-Medium",
+                                      }
+                                    : {
+                                        color: "#2f2d51",
+                                        fontFamily: "Inter-Medium",
+                                      }
+                                }
+                              >
+                                {item.profiles.full_name}
+                              </Text>
+                            </View>
+                          )}
+
                           <Text
                             style={
                               theme == "dark"
-                                ? { color: "white", fontFamily: "Inter-Medium" }
+                                ? {
+                                    color: "white",
+                                    fontFamily: "Inter-Regular",
+                                    fontSize: 15,
+                                  }
                                 : {
                                     color: "#2f2d51",
-                                    fontFamily: "Inter-Medium",
+                                    fontFamily: "Inter-Regular",
+                                    fontSize: 15,
                                   }
                             }
                           >
-                            {item.profiles.full_name}
+                            {item.message}
+                          </Text>
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    color: "#d6d6d6",
+                                    alignSelf: "flex-end",
+                                    fontFamily: "Inter-Light",
+                                    fontSize: 12,
+                                  }
+                                : {
+                                    color: "#2f2d51",
+                                    alignSelf: "flex-end",
+                                    fontFamily: "Inter-Light",
+                                    fontSize: 12,
+                                  }
+                            }
+                          >
+                            {Moment(item.created_at).fromNow()}
                           </Text>
                         </View>
-                      )}
-
-                      <Text
-                        style={
-                          theme == "dark"
-                            ? { color: "white", fontFamily: "Inter-Regular" }
-                            : { color: "#2f2d51", fontFamily: "Inter-Regular" }
-                        }
-                      >
-                        {item.message}
-                      </Text>
-                      <Text
-                        style={
-                          theme == "dark"
-                            ? {
-                                color: "#d6d6d6",
-                                alignSelf: "flex-end",
-                                fontFamily: "Inter-Light",
-                                fontSize: 12,
-                              }
-                            : {
-                                color: "#2f2d51",
-                                alignSelf: "flex-end",
-                                fontFamily: "Inter-Light",
-                                fontSize: 12,
-                              }
-                        }
-                      >
-                        {Moment(item.created_at).fromNow()}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
-            />
+                      </View>
+                    );
+                  }}
+                />
+              )}
+            </>
           )}
         </View>
         <View
