@@ -296,7 +296,12 @@ const Reminder = ({ navigation }) => {
                     onPress={() =>
                       navigation.navigate("Test", {
                         type: "Edit",
-                        reminderToEdit: item,
+                        reminderEditId: item.reminder.id,
+                        reminderIdentifier: item.identifier,
+                        ocurrence: item.ocurrence,
+                        reminderToEditTitle: item.reminder.message,
+                        reminderToEditNote: item.reminder.note,
+                        reminderToEditTime: item.reminder.time.toString(),
                       })
                     }
                   >

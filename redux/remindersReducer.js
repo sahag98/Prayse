@@ -18,16 +18,18 @@ export const reminderSlice = createSlice({
       state.reminders = Reminders;
     },
     deleteReminder: (state, action) => {
+      console.log("action: ", action);
       state.reminders = state.reminders.filter(
         (reminder) => reminder.reminder.id !== action.payload
       );
     },
     editReminder: (state, action) => {
+      console.log("edit action: ", action);
       const newReminders = [...state.reminders];
       const reminderIndex = state.reminders.findIndex(
-        (reminder) => reminder.id === action.payload.id
+        (reminder) => reminder.id === action.payload.reminder.id
       );
-      newReminders.splice(reminderIndex, 1, action.payload);
+      newReminders.splice(reminderIndex, 1, action.payload.re);
       state.reminders = newReminders;
     },
   },

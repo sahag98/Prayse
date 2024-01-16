@@ -34,6 +34,7 @@ export const SupabaseProvider = (props) => {
   const [userofSentMessage, setUserofSentMessage] = useState("");
   const [refreshComments, setRefreshComments] = useState(false);
   const [refreshGroup, setRefreshGroup] = useState(false);
+  // const [isTyping, setIsTyping] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
       storage: ExpoSecureStoreAdapter,
@@ -217,7 +218,7 @@ export const SupabaseProvider = (props) => {
               setIsNewMessage(true);
               setNewGroupMsgNum((prevState) => prevState + 1);
               setNewMsgGroupId(payload.new.group_id);
-              console.log("payload: ", payload);
+
               setUserofSentMessage(payload.new.user_id);
             }
           )
@@ -229,7 +230,6 @@ export const SupabaseProvider = (props) => {
               table: "members",
             },
             (payload) => {
-              console.log(payload);
               if (
                 payload.eventType == "INSERT" ||
                 payload.eventType == "DELETE"

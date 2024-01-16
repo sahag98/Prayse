@@ -197,7 +197,8 @@ const GroupInfoMenu = ({
                 style={{
                   paddingHorizontal: 15,
                   paddingVertical: 18,
-
+                  backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+                  borderRadius: 10,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -208,7 +209,7 @@ const GroupInfoMenu = ({
                   style={
                     theme === "dark"
                       ? { ...styles.menuItem, color: "#ff2727" }
-                      : { ...styles.menuItem, color: "#2f2d51" }
+                      : { ...styles.menuItem, color: "white" }
                   }
                 >
                   Remove User
@@ -403,7 +404,7 @@ const GroupInfoModal = ({
                           textAlign: "center",
                         }
                       : {
-                          color: "#001f3f",
+                          color: "#2f2d51",
                           fontFamily: "Inter-Bold",
                           marginBottom: 10,
                           fontSize: 22,
@@ -443,7 +444,7 @@ const GroupInfoModal = ({
                       width: "100%",
                     }
                   : {
-                      color: "#001f3f",
+                      color: "#2f2d51",
                       fontFamily: "Inter-Bold",
                       marginBottom: 10,
                       fontSize: 20,

@@ -3,11 +3,14 @@ import React from "react";
 import { ModalContainer, ModalView } from "../styles/appStyles";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 const AnnounceMeeting = ({
   theme,
   currGroup,
+  currentUser,
   hasAnnounced,
   setHasAnnounced,
+  allGroups,
   messages,
   supabase,
   isAnnouncingMeeting,
@@ -19,31 +22,44 @@ const AnnounceMeeting = ({
     setIsAnnouncingMeeting(false);
   };
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: "Announcement was sent!",
+      visibilityTime: 3000,
+    });
+  };
+
   const sendAnnounceMent = async () => {
     let { data: members, error } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
       .eq("group_id", currGroup.groups?.id)
       .order("id", { ascending: false });
-    console.log("members of group: ", members);
-    members.map(async (m) => {
-      console.log(m.profiles.expoToken);
 
-      const message = {
-        to: m.profiles.expoToken,
-        sound: "default",
-        title: `${currGroup.groups.name} 📢`,
-        body: `Join prayer meeting 🙏`,
-        data: { screen: "Community", group: currGroup.groups.name },
-      };
-      await axios.post("https://exp.host/--/api/v2/push/send", message, {
-        headers: {
-          Accept: "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-      });
+    members.map(async (m) => {
+      if (m.profiles.expoToken != currentUser.expoToken) {
+        const message = {
+          to: m.profiles.expoToken,
+          sound: "default",
+          title: `${currGroup.groups.name} 📢`,
+          body: `Join prayer meeting 🙏`,
+          data: {
+            screen: "Community",
+            currGroup: currGroup,
+            allGroups: allGroups,
+          },
+        };
+        await axios.post("https://exp.host/--/api/v2/push/send", message, {
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+        });
+      }
     });
+    showToast();
     setHasAnnounced(true);
     setIsAnnouncingMeeting(false);
   };

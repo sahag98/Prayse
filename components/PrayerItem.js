@@ -61,7 +61,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
       .from("comments")
       .select("*, profiles(*)")
       .eq("prayer_id", prayerId)
-      .order("id", { ascending: false });
+      .order("id", { ascending: true });
     setCommentsArray(comments);
 
     if (commentsError) {

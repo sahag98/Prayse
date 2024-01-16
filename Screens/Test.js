@@ -16,14 +16,18 @@ import * as Notifications from "expo-notifications";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewReminder, editReminder } from "../redux/remindersReducer";
+import {
+  addNewReminder,
+  deleteReminder,
+  editReminder,
+} from "../redux/remindersReducer";
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import { useIsFocused } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 export default function Reminder({ route, navigation }) {
-  const isFocus = useIsFocused();
+  const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
@@ -43,7 +47,6 @@ export default function Reminder({ route, navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(route.params);
     if (route.params.reminder != undefined && route.params.type == "Add") {
       // console.log(route.params);
       console.log("reminder: ", route?.params?.reminder);
@@ -63,45 +66,48 @@ export default function Reminder({ route, navigation }) {
       setReminderTime("");
     }
 
-    if (
-      route.params.reminderToEdit != undefined &&
-      route.params.type != "Add"
-    ) {
-      let reminderToEdit = route.params.reminderToEdit;
-      setNewReminder(reminderToEdit.reminder.message);
-      setNewNote(reminderToEdit.reminder?.note);
-      let originalTimestamp = reminderToEdit.reminder?.time;
-      const dateObject = new Date(originalTimestamp);
+    if (route.params.reminderToEditTitle && route.params.type != "Add") {
+      // let reminderToEdit = route.params.reminderToEdit;
+      // console.log("in editing: ", reminderToEdit);
+      setNewReminder(route.params.reminderToEditTitle);
+      setNewNote(route.params.reminderToEditNote);
+      let originalTimestamp = route.params.reminderToEditTime;
 
+      const dateObject = new Date(originalTimestamp);
       let date = new Date(
         dateObject.getFullYear(),
         dateObject.getMonth(),
         dateObject.getDate()
       );
-
       setReminderDate(date);
       let time = new Date(0); // Initialize with the epoch
       time.setHours(dateObject.getHours());
       time.setMinutes(dateObject.getMinutes());
-      console.log("time: ", time);
+
       setReminderTime(time);
-      if (reminderToEdit.ocurrence) {
-        console.log(reminderToEdit.ocurrence);
+
+      if (route.params.ocurrence != "None") {
+        console.log("here");
         setIsRepeat(true);
-        setRepeatOption(reminderToEdit.ocurrence.toLowerCase());
+        setRepeatOption(route.params.ocurrence.toLowerCase());
+      }
+
+      if (route.params.ocurrence == "None") {
+        setIsRepeat(false);
+        setRepeatOption("");
       }
     }
 
-    if (
-      route.params.reminderToEdit == undefined &&
-      route.params.type != "Add"
-    ) {
-      setNewReminder("");
-      setNewNote("");
-      setReminderDate("");
-      setReminderTime("");
-    }
-  }, [isFocus]);
+    // if (
+    //   route.params.reminderToEditTitle.length < 0 &&
+    //   route.params.type != "Add"
+    // ) {
+    //   setNewReminder("");
+    //   setNewNote("");
+    //   setReminderDate("");
+    //   setReminderTime("");
+    // }
+  }, [isFocused]);
 
   const showToast = (type, content) => {
     Toast.show({
@@ -136,6 +142,7 @@ export default function Reminder({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
+          data: { screen: "Reminder" },
         },
         trigger: {
           hour: combinedDate.getHours(),
@@ -165,6 +172,7 @@ export default function Reminder({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
+          data: { screen: "Reminder" },
         },
         trigger: {
           weekday: combinedDate.getDay() + 1,
@@ -201,6 +209,7 @@ export default function Reminder({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
+          data: { screen: "Reminder" },
         },
         trigger: {
           seconds: seconds,
@@ -213,7 +222,7 @@ export default function Reminder({ route, navigation }) {
           editReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "None",
+            ocurrence: "Weekly",
           })
         );
       } else {
@@ -221,7 +230,7 @@ export default function Reminder({ route, navigation }) {
           addNewReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "None",
+            ocurrence: "Weekly",
           })
         );
       }
@@ -230,6 +239,7 @@ export default function Reminder({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
+          data: { screen: "Reminder" },
         },
         trigger: {
           seconds: secondsUntilNotification,
@@ -237,11 +247,12 @@ export default function Reminder({ route, navigation }) {
       });
 
       if (type == "edit") {
+        console.log("dispatch edit");
         dispatch(
           editReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "None",
           })
         );
       } else {
@@ -249,7 +260,7 @@ export default function Reminder({ route, navigation }) {
           addNewReminder({
             reminder: reminder,
             identifier: identifier,
-            ocurrence: "Daily",
+            ocurrence: "None",
           })
         );
       }
@@ -272,15 +283,18 @@ export default function Reminder({ route, navigation }) {
       time: combinedDate,
     };
 
-    console.log(route.params.reminderToEdit.identifier);
+    console.log(route.params.reminderIdentifier);
 
     await Notifications.cancelScheduledNotificationAsync(
-      route.params.reminderToEdit.identifier
+      route.params.reminderIdentifier
     );
+
+    dispatch(deleteReminder(route.params.reminderEditId));
+
     scheduleNotification(
       newReminderObj,
       combinedDate,
-      "edit"
+      "add"
       // reminderTime.getHours(),
       // reminderTime.getMinutes()
     );
@@ -302,7 +316,6 @@ export default function Reminder({ route, navigation }) {
       return;
     }
 
-    console.log("date: ", reminderDate.toString().length);
     const combinedDate = new Date(
       reminderDate.getFullYear(),
       reminderDate.getMonth(),
@@ -311,8 +324,6 @@ export default function Reminder({ route, navigation }) {
       reminderTime.getMinutes()
     );
 
-    // console.log("time :", reminderTime);
-
     const newReminderObj = {
       id: uuid.v4(),
       message: newReminder,
@@ -320,13 +331,7 @@ export default function Reminder({ route, navigation }) {
       time: combinedDate,
     };
 
-    scheduleNotification(
-      newReminderObj,
-      combinedDate,
-      "add"
-      // reminderTime.getHours(),
-      // reminderTime.getMinutes()
-    );
+    scheduleNotification(newReminderObj, combinedDate, "add");
 
     setReminders([...reminders, newReminderObj]);
     showToast();
@@ -520,7 +525,7 @@ export default function Reminder({ route, navigation }) {
                 ? { minHeight: 30, color: "white" }
                 : { minHeight: 30, color: "#2f2d51" }
             }
-            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#808080"}
+            placeholderTextColor={theme == "dark" ? "#a1a1a1" : "#808080"}
             placeholder="Prayer Title"
             selectionColor={theme == "dark" ? "white" : "#2f2d51"}
             value={newReminder}
@@ -535,7 +540,7 @@ export default function Reminder({ route, navigation }) {
             }
           />
           <TextInput
-            placeholderTextColor={theme == "dark" ? "#d2d2d2" : "#808080"}
+            placeholderTextColor={theme == "dark" ? "#a1a1a1" : "#808080"}
             style={
               theme == "dark"
                 ? { minHeight: 50, color: "white" }
@@ -603,7 +608,7 @@ export default function Reminder({ route, navigation }) {
                 <Text
                   style={
                     theme == "dark"
-                      ? { fontFamily: "Inter-Regular", color: "grey" }
+                      ? { fontFamily: "Inter-Regular", color: "white" }
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
                 >
@@ -660,7 +665,7 @@ export default function Reminder({ route, navigation }) {
                 <Text
                   style={
                     theme == "dark"
-                      ? { fontFamily: "Inter-Regular", color: "grey" }
+                      ? { fontFamily: "Inter-Regular", color: "white" }
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
                 >

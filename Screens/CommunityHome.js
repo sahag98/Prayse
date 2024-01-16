@@ -61,15 +61,10 @@ const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
 const CommunityHome = ({ route }) => {
   const navigation = useNavigation();
-
   const {
     currentUser,
     setCurrentUser,
     session,
-    newGroupMsgNum,
-    userofSentMessage,
-
-    newMsgGroupId,
     refreshMembers,
     setRefreshMembers,
     logout,
@@ -154,6 +149,23 @@ const CommunityHome = ({ route }) => {
   }, [isFocused]);
 
   useEffect(() => {
+    if (route.params !== undefined) {
+      navigation.navigate("PrayerGroup", {
+        group: route.params.group,
+        allGroups: route.params.allGroups,
+      });
+    }
+  }, [route?.params]);
+
+  // useEffect(() => {
+  //   getUserPrayers();
+  //   getGroupUsers();
+  //   getUserGroups();
+  //   getPermission();
+  //   getPrayers();
+  // }, [route.params]);
+
+  useEffect(() => {
     console.log("refreshing members");
     getUserGroups();
     getGroupUsers();
@@ -205,15 +217,6 @@ const CommunityHome = ({ route }) => {
       .eq("id", currentUser?.id)
       .select();
   }
-  // async function getGroupMessages(currGroup) {
-  //   let { data: groupMessages, error } = await supabase
-  //     .from("messages")
-  //     .select("*,groups(*), profiles(*)")
-  //     .eq("group_id", currGroup.group_id)
-  //     .order("id", { ascending: false });
-  //   setNewMessages(groupMessages);
-
-  // }
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -246,11 +249,20 @@ const CommunityHome = ({ route }) => {
     sendToken(token);
   }
 
+  const ITEM_WIDTH = Dimensions.get("window").width / 2;
+
   const list = userGroups?.filter((item) =>
     searchName !== "" ? item.groups.name.includes(searchName) : true
   );
 
-  if (currentUser?.full_name == null) {
+  // if (route.params !== undefined) {
+  //   navigation.navigate("PrayerGroup", {
+  //     group: route.params.group,
+  //     allGroups: route.params.allGroups,
+  //   });
+  // }
+
+  if (currentUser && currentUser?.full_name == null) {
     return (
       <WelcomeModal
         supabase={supabase}
@@ -286,8 +298,6 @@ const CommunityHome = ({ route }) => {
       </View>
     );
   }
-
-  const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   return (
     <>
@@ -388,7 +398,7 @@ const CommunityHome = ({ route }) => {
                     }
               }
             >
-              <Text>Welcome {currentUser.full_name}</Text>
+              <Text>Welcome {currentUser?.full_name}</Text>
             </HeaderTitle>
             <Animated.View style={animatedStyle}>
               <MaterialCommunityIcons
@@ -563,35 +573,7 @@ const CommunityHome = ({ route }) => {
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
           </View>
-          {/* <View
-            style={{
-              justifyContent: "center",
-
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                      marginTop: 20,
-                      color: "white",
-                    }
-                  : {
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                      marginTop: 20,
-                      color: "#2f2d51",
-                    }
-              }
-            >
-              Coming soon in the next update!
-            </Text>
-          </View> */}
-
-          {userGroups.length > 0 && (
+          {userGroups?.length > 0 && (
             <FlatList
               pagingEnabled
               snapToInterval={ITEM_WIDTH}
@@ -750,9 +732,9 @@ const CommunityHome = ({ route }) => {
                           </View>
                         ))}
                       <View>
-                        {groups.length > 3 &&
+                        {groups?.length > 3 &&
                           groups.filter((g) => g.group_id === item.group_id)
-                            .length > 3 && (
+                            ?.length > 3 && (
                             <Text
                               style={
                                 theme == "dark"
@@ -771,29 +753,17 @@ const CommunityHome = ({ route }) => {
                               +
                               {groups.filter(
                                 (g) => g.group_id === item.group_id
-                              ).length - 3}
+                              )?.length - 3}
                             </Text>
                           )}
                       </View>
-
-                      {route.params?.group &&
-                        route.params?.group == item.groups.name && (
-                          <Animated.View style={[styles.box, pulseStyle]}>
-                            <Ionicons
-                              style={{ marginLeft: 10 }}
-                              name="megaphone-outline"
-                              size={20}
-                              color="red"
-                            />
-                          </Animated.View>
-                        )}
                     </View>
                   </TouchableOpacity>
                 );
               }}
             />
           )}
-          {userGroups.length >= 3 && (
+          {userGroups?.length >= 3 && (
             <TouchableOpacity
               onPress={() => setIsViewingGroups(true)}
               style={{
@@ -1186,9 +1156,9 @@ const CommunityHome = ({ route }) => {
                             </View>
                           ))}
                         <View>
-                          {groups.length > 6 &&
+                          {groups?.length > 6 &&
                             groups.filter((g) => g.group_id === item.group_id)
-                              .length > 6 && (
+                              ?.length > 6 && (
                               <Text
                                 style={
                                   theme == "dark"
@@ -1207,7 +1177,7 @@ const CommunityHome = ({ route }) => {
                                 +
                                 {groups.filter(
                                   (g) => g.group_id === item.group_id
-                                ).length - 6}
+                                )?.length - 6}
                               </Text>
                             )}
                         </View>

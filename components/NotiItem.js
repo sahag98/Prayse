@@ -61,7 +61,7 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
         >
           {item.notification}
         </Text>
-        <Text
+        {/* <Text
           style={
             theme == "dark"
               ? { color: "white", fontFamily: "Inter-Light", fontSize: 12 }
@@ -69,7 +69,7 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
           }
         >
           {item.date}
-        </Text>
+        </Text> */}
       </View>
       <TouchableOpacity
         onPress={() => viewNotification(item.screen)}

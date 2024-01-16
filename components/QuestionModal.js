@@ -2,26 +2,22 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   Modal,
 } from "react-native";
 import {
-  HeaderTitle,
-  HeaderView,
   ModalAction,
   ModalActionGroup,
   ModalContainer,
-  ModalIcon,
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Toast from "react-native-toast-message";
+import { PRAYSE_MESSAGE } from "@env";
 
 const QuestionModal = ({
   theme,
@@ -65,6 +61,32 @@ const QuestionModal = ({
       });
       handleCloseModal();
       fetchAnswers();
+      function truncateWords(str, numWords) {
+        let words = str.split(" ");
+        if (words.length > numWords) {
+          return words.slice(0, numWords).join(" ") + " ...";
+        } else {
+          return str;
+        }
+      }
+
+      let truncatedString = truncateWords(answer, 8);
+      console.log(truncatedString);
+      const message = {
+        title: "Question of the Week",
+        message: `${user?.full_name} has posted a answer: ${truncatedString}`,
+        data: { screen: "Question", verseTitle: "" },
+      };
+
+      fetch(PRAYSE_MESSAGE.toString(), {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }

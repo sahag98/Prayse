@@ -8,16 +8,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import * as Clipboard from "expo-clipboard";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AntDesign,
   Feather,
   FontAwesome,
   Entypo,
+  Octicons,
   Ionicons,
 } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
@@ -29,21 +31,36 @@ import GroupInfoModal from "../components/GroupInfoModal";
 import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useIsFocused } from "@react-navigation/native";
 import AnnounceMeeting from "../components/AnnounceMeeting";
+import { addMessage, clearMessages } from "../redux/messageReducer";
+import Animated, {
+  FadeIn,
+  SlideInUp,
+  SlideOutDown,
+} from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import GroupPrayerItem from "../components/GroupPrayerItem";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
+  const msgs = useSelector((state) => state.message.messages);
   const [messages, setMessages] = useState([]);
+  const [groupMessages, setGroupMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [inputHeight, setInputHeight] = useState(60);
+  const [inputHeight, setInputHeight] = useState(45);
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
   const currGroup = route.params.group;
   const allGroups = route.params.allGroups;
   const [isGroupRemoved, setIsGroupRemoved] = useState(false);
   const [countdown, setCountdown] = useState(300);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [hasAnnounced, setHasAnnounced] = useState(false);
   const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
+  const [channel, setChannel] = useState();
+  const [isShowingHeader, setIsShowingHeader] = useState(true);
+  console.log(inputHeight);
+  const dispatch = useDispatch();
   const {
     currentUser,
     isNewMessage,
@@ -52,6 +69,135 @@ const PrayerGroup = ({ route, navigation }) => {
     refreshGroup,
     supabase,
   } = useSupabase();
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const headerTimeout = setTimeout(() => {
+      setIsShowingHeader(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(headerTimeout);
+    };
+  }, []);
+
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+
+    // Check if the user is scrolling up
+    if (offsetY > 0 && !isShowingHeader) {
+      setIsShowingHeader(true);
+    }
+
+    if (offsetY < 0 && isShowingHeader) {
+      setIsShowingHeader(false);
+    }
+  };
+
+  useEffect(() => {
+    // setTimeout(() => {
+    //   setIsShowingHeader(false);
+    // }, 5000);
+    /** only create the channel if we have a roomCode and username */
+    if (currGroup.group_id && currentUser.id) {
+      // dispatch(clearMessages());
+      async function getGroupMessages() {
+        try {
+          setAreMessagesLoading(true);
+          let { data, error } = await supabase
+            .from("messages")
+            .select("*, profiles(full_name, avatar_url, expoToken)")
+            .eq("group_id", currGroup.group_id)
+            .order("id", { ascending: false });
+
+          // data.map((item) => {
+          //   // console.log("mapping: ", item);
+          //   dispatch(addMessage(item));
+          // });
+          setGroupMessages(data);
+        } catch (error) {
+          console.log(error);
+        }
+        setAreMessagesLoading(false);
+      }
+      getGroupMessages();
+
+      /**
+       * Step 1:
+       *
+       * Create the supabase channel for the roomCode, configured
+       * so the channel receives its own messages
+       */
+      const channel = supabase.channel(`room:${currGroup.group_id}`, {
+        config: {
+          broadcast: {
+            self: true,
+          },
+          presence: {
+            key: currentUser.id,
+          },
+        },
+      });
+
+      /**
+       * Step 2:
+       *
+       * Listen to broadcast messages with a `message` event
+       */
+      channel.on("broadcast", { event: "message" }, ({ payload }) => {
+        setGroupMessages((messages) => [payload, ...messages]);
+      });
+
+      channel.on("presence", { event: "sync" }, () => {
+        /** Get the presence state from the channel, keyed by realtime identifier */
+        const presenceState = channel.presenceState();
+
+        /** transform the presence */
+        const users = Object.keys(presenceState)
+          .map((presenceId) => {
+            const presences = presenceState[presenceId];
+            return presences.map((presence) => presence.currentUser);
+          })
+          .flat();
+
+        setOnlineUsers(users);
+        /** sort and set the users */
+        // setUsers(users.sort());
+      });
+
+      /**
+       * Step 3:
+       *
+       * Subscribe to the channel
+       */
+      channel.subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          channel.track({ currentUser });
+        }
+      });
+
+      /**
+       * Step 4:
+       *
+       * Set the channel in the state
+       */
+      setChannel(channel);
+
+      /**
+       * * Step 5:
+       *
+       * Return a clean-up function that unsubscribes from the channel
+       * and clears the channel state
+       */
+      return () => {
+        channel.unsubscribe();
+        setChannel(undefined);
+      };
+    }
+  }, [currGroup.group_id, currentUser.id, isFocused]);
+
+  // console.log(currGroup);
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -71,16 +217,18 @@ const PrayerGroup = ({ route, navigation }) => {
     };
   }, [hasAnnounced]);
 
-  useEffect(() => {
-    if (countdown === 0) {
-      setHasAnnounced(null);
-      setCountdown(600);
-    }
-  }, [countdown]);
+  // useEffect(() => {
+  //   if (countdown === 0) {
+  //     setHasAnnounced(null);
+  //     setCountdown(600);
+  //   }
+  // }, [countdown]);
+
+  let lastRenderedDate = null;
 
   const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 60) {
-      setInputHeight(60);
+    if (event.nativeEvent.contentSize.height < 45) {
+      setInputHeight(45);
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
@@ -92,94 +240,75 @@ const PrayerGroup = ({ route, navigation }) => {
     }
   };
 
-  const isFocused = useIsFocused();
-
-  async function sendGroupNotification() {
-    const notificationPromises = allGroups.map(async (g) => {
-      if (g.profiles.expoToken != currentUser.expoToken) {
-        const message = {
-          to: g.profiles.expoToken,
-          sound: "default",
-          title: `${currentUser.full_name} in ${currGroup.groups.name}`,
-          body: `${newMessage}`,
-          data: { screen: "PublicCommunity" },
-        };
-
-        return axios.post("https://exp.host/--/api/v2/push/send", message, {
-          headers: {
-            Accept: "application/json",
-            "Accept-encoding": "gzip, deflate",
-            "Content-Type": "application/json",
-          },
-        });
-      }
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: "Members are notified!",
+      visibilityTime: 3000,
     });
+  };
 
-    // Wait for all promises to resolve
-    await Promise.all(notificationPromises);
-  }
+  // useEffect(() => {
+  //   async function getGroupMessages() {
+  //     try {
+  //       setAreMessagesLoading(true);
+  //       let { data: groupMessages, error } = await supabase
+  //         .from("messages")
+  //         .select("*,groups(*), profiles(*)")
+  //         .eq("group_id", currGroup.group_id)
+  //         .order("id", { ascending: false });
+  //       setMessages(groupMessages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
 
-  useEffect(() => {
-    async function getGroupMessages() {
-      try {
-        setAreMessagesLoading(true);
-        let { data: groupMessages, error } = await supabase
-          .from("messages")
-          .select("*,groups(*), profiles(*)")
-          .eq("group_id", currGroup.group_id)
-          .order("id", { ascending: false });
-        setMessages(groupMessages);
-      } catch (error) {
-        console.log(error);
-      }
+  //     setAreMessagesLoading(false);
+  //     setIsNewMessage(false);
+  //   }
+  //   getGroupMessages();
+  // }, []);
 
-      setAreMessagesLoading(false);
-      setIsNewMessage(false);
-    }
-    getGroupMessages();
-  }, []);
+  // useEffect(() => {
+  //   async function getGroupMessages() {
+  //     try {
+  //       // setAreMessagesLoading(true);
+  //       let { data: groupMessages, error } = await supabase
+  //         .from("messages")
+  //         .select("*,groups(*), profiles(*)")
+  //         .eq("group_id", currGroup.group_id)
+  //         .order("id", { ascending: false });
 
-  useEffect(() => {
-    async function getGroupMessages() {
-      try {
-        // setAreMessagesLoading(true);
-        let { data: groupMessages, error } = await supabase
-          .from("messages")
-          .select("*,groups(*), profiles(*)")
-          .eq("group_id", currGroup.group_id)
-          .order("id", { ascending: false });
+  //       setMessages(groupMessages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
 
-        setMessages(groupMessages);
-      } catch (error) {
-        console.log(error);
-      }
+  //     // setAreMessagesLoading(false);
+  //     setIsNewMessage(false);
+  //   }
+  //   getGroupMessages();
+  // }, [isFocused]);
 
-      // setAreMessagesLoading(false);
-      setIsNewMessage(false);
-    }
-    getGroupMessages();
-  }, [isFocused]);
+  // useEffect(() => {
+  //   async function getGroupMessages() {
+  //     try {
+  //       setAreMessagesLoading(true);
+  //       let { data: groupMessages, error } = await supabase
+  //         .from("messages")
+  //         .select("*,groups(*), profiles(*)")
+  //         .eq("group_id", currGroup.group_id)
+  //         .order("id", { ascending: false });
 
-  useEffect(() => {
-    async function getGroupMessages() {
-      try {
-        setAreMessagesLoading(true);
-        let { data: groupMessages, error } = await supabase
-          .from("messages")
-          .select("*,groups(*), profiles(*)")
-          .eq("group_id", currGroup.group_id)
-          .order("id", { ascending: false });
+  //       setMessages(groupMessages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
 
-        setMessages(groupMessages);
-      } catch (error) {
-        console.log(error);
-      }
-
-      setAreMessagesLoading(false);
-      setIsNewMessage(false);
-    }
-    getGroupMessages();
-  }, [currGroup.group_id]);
+  //     setAreMessagesLoading(false);
+  //     setIsNewMessage(false);
+  //   }
+  //   getGroupMessages();
+  // }, [currGroup.group_id]);
 
   async function getSingleGroup() {
     let { data: groups, error } = await supabase
@@ -202,14 +331,29 @@ const PrayerGroup = ({ route, navigation }) => {
       setIsGroupRemoved(true);
       return;
     }
-    const optimisticMessage = {
-      group_id: currGroup.group_id,
-      user_id: currentUser.id,
-      // avatar_url: currentUser.avatar_url,
-      message: newMessage,
-    };
+    // const optimisticMessage = {
+    //   group_id: currGroup.group_id,
+    //   user_id: currentUser.id,
+    //   // avatar_url: currentUser.avatar_url,
+    //   message: newMessage,
+    // };
 
-    setMessages([optimisticMessage, ...messages]);
+    // setMessages([optimisticMessage, ...messages]);
+
+    const currentDate = new Date();
+    const isoDateString = currentDate.toISOString(); // e.g., "2024-01-03T01:01:03.537Z"
+    const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
+
+    channel.send({
+      type: "broadcast",
+      event: "message",
+      payload: {
+        message: newMessage,
+        created_at: isoStringWithOffset,
+        user_id: currentUser.id,
+        profiles: currentUser,
+      },
+    });
 
     const { data, error } = await supabase.from("messages").insert({
       group_id: currGroup.group_id,
@@ -225,27 +369,27 @@ const PrayerGroup = ({ route, navigation }) => {
 
     // sendGroupNotification();
   };
+  let currentDate = null;
+  // useEffect(() => {
+  //   async function getGroupMessages() {
+  //     try {
+  //       // setAreMessagesLoading(true);
+  //       let { data: groupMessages, error } = await supabase
+  //         .from("messages")
+  //         .select("*,groups(*), profiles(full_name, avatar_url, expoToken)")
+  //         .eq("group_id", currGroup.group_id)
+  //         .order("id", { ascending: false });
 
-  useEffect(() => {
-    async function getGroupMessages() {
-      try {
-        // setAreMessagesLoading(true);
-        let { data: groupMessages, error } = await supabase
-          .from("messages")
-          .select("*,groups(*), profiles(*)")
-          .eq("group_id", currGroup.group_id)
-          .order("id", { ascending: false });
+  //       setMessages(groupMessages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
 
-        setMessages(groupMessages);
-      } catch (error) {
-        console.log(error);
-      }
-
-      // setAreMessagesLoading(false);
-      setIsNewMessage(false);
-    }
-    getGroupMessages();
-  }, [isNewMessage]);
+  //     // setAreMessagesLoading(false);
+  //     setIsNewMessage(false);
+  //   }
+  //   getGroupMessages();
+  // }, [isNewMessage]);
 
   const isSameDate = (date1, date2) => {
     return (
@@ -285,7 +429,7 @@ const PrayerGroup = ({ route, navigation }) => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -100}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
     >
       <PrayerContainer
         style={
@@ -293,157 +437,200 @@ const PrayerGroup = ({ route, navigation }) => {
             ? {
                 backgroundColor: "#121212",
 
-                gap: 10,
                 position: "relative",
               }
             : {
                 backgroundColor: "#F2F7FF",
 
-                gap: 10,
                 position: "relative",
               }
         }
       >
-        <HeaderView
-          style={{
-            justifyContent: "space-between",
-            borderBottomWidth: 1,
-            borderBottomColor: currGroup.groups.color.toLowerCase(),
-            padding: 5,
-            width: "100%",
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", alignItems: "flex-start", gap: 5 }}
+        {isShowingHeader && (
+          <HeaderView
+            style={{
+              justifyContent: "space-between",
+              borderBottomWidth: 1,
+
+              borderBottomColor: currGroup.groups.color.toLowerCase(),
+              padding: 5,
+              alignItems: "flex-start",
+              width: "100%",
+            }}
           >
-            <TouchableOpacity onPress={() => navigation.navigate("Community")}>
-              <AntDesign
-                name="left"
-                size={24}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={openGroupInfo}
-              style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
+            <View
+              style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
             >
-              <HeaderTitle
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Bold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                }
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Community")}
               >
-                {currGroup.groups.name}
-              </HeaderTitle>
+                <AntDesign
+                  name="left"
+                  size={24}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={openGroupInfo}
+                style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
+              >
+                <HeaderTitle
+                  style={
+                    theme == "dark"
+                      ? { color: "white", fontFamily: "Inter-Bold" }
+                      : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                  }
+                >
+                  {currGroup.groups.name}
+                </HeaderTitle>
+                <Text
+                  style={{
+                    color: theme == "dark" ? "#bebebe" : "#9a9a9a",
+                    fontSize: 13,
+                    textDecorationLine: "underline",
+                    fontFamily: "Inter-Medium",
+                  }}
+                >
+                  Click here for group info
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {groupInfoVisible && (
+              <GroupInfoModal
+                group={currGroup}
+                theme={theme}
+                supabase={supabase}
+                allUsers={allGroups}
+                currentUser={currentUser}
+                groupInfoVisible={groupInfoVisible}
+                setGroupInfoVisible={setGroupInfoVisible}
+              />
+            )}
+            {isGroupRemoved && (
+              <RemovedGroupModal
+                isGroupRemoved={isGroupRemoved}
+                setRefreshGroup={setRefreshGroup}
+                setIsGroupRemoved={setIsGroupRemoved}
+                theme={theme}
+              />
+            )}
+            <TouchableOpacity
+              disabled={hasAnnounced}
+              onPress={() => setIsAnnouncingMeeting(true)}
+              style={{
+                borderRadius: 50,
+                // width: 45,
+                // height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 8,
+                backgroundColor: theme == "dark" ? "#212121" : "#abe1fa",
+              }}
+            >
+              {hasAnnounced ? (
+                <Text
+                  style={{
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                    fontFamily: "Inter-Regular",
+                  }}
+                >
+                  {formatTime(countdown)}
+                </Text>
+              ) : (
+                <Ionicons
+                  name="megaphone-outline"
+                  size={26}
+                  color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                />
+              )}
+            </TouchableOpacity>
+
+            {isAnnouncingMeeting && (
+              <AnnounceMeeting
+                hasAnnounced={hasAnnounced}
+                setHasAnnounced={setHasAnnounced}
+                allGroups={allGroups}
+                currGroup={currGroup}
+                currentUser={currentUser}
+                theme={theme}
+                supabase={supabase}
+                isAnnouncingMeeting={isAnnouncingMeeting}
+                messages={messages}
+                setIsAnnouncingMeeting={setIsAnnouncingMeeting}
+              />
+            )}
+            <TouchableOpacity
+              onPress={copyCode}
+              style={
+                theme == "dark"
+                  ? {
+                      padding: 8,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      alignSelf: "center",
+                      backgroundColor: "#212121",
+                      borderRadius: 10,
+                      gap: 8,
+                    }
+                  : {
+                      padding: 8,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      alignSelf: "center",
+                      backgroundColor: "#2f2d51",
+                      borderRadius: 10,
+                      gap: 8,
+                    }
+              }
+            >
+              <Feather name="copy" size={15} color="white" />
               <Text
                 style={{
-                  color: theme == "dark" ? "#bebebe" : "#9a9a9a",
+                  color: "white",
                   fontSize: 13,
-                  textDecorationLine: "underline",
                   fontFamily: "Inter-Medium",
                 }}
               >
-                Click here for group info
+                {currGroup.groups.code}
               </Text>
             </TouchableOpacity>
-          </View>
-          {groupInfoVisible && (
-            <GroupInfoModal
-              group={currGroup}
-              theme={theme}
-              supabase={supabase}
-              allUsers={allGroups}
-              currentUser={currentUser}
-              groupInfoVisible={groupInfoVisible}
-              setGroupInfoVisible={setGroupInfoVisible}
-            />
-          )}
-          {isGroupRemoved && (
-            <RemovedGroupModal
-              isGroupRemoved={isGroupRemoved}
-              setRefreshGroup={setRefreshGroup}
-              setIsGroupRemoved={setIsGroupRemoved}
-              theme={theme}
-            />
-          )}
-          <TouchableOpacity
-            disabled={hasAnnounced}
-            onPress={() => setIsAnnouncingMeeting(true)}
+          </HeaderView>
+        )}
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
+            alignItems: "center",
+            alignSelf: "center",
+            paddingHorizontal: 2,
+            paddingVertical: 4,
+            justifyContent: "center",
+            borderRadius: 50,
+            marginBottom: 10,
+            shadowColor: "#2bc035",
+            shadowOffset: {
+              width: 0,
+              height: 3,
+            },
+            shadowOpacity: 0.17,
+            shadowRadius: 3.05,
+            elevation: 4,
+            width: "35%",
+            gap: 5,
+          }}
+        >
+          <Octicons name="dot-fill" size={24} color="green" />
+          <Text
             style={{
-              borderRadius: 50,
-              // width: 45,
-              // height: 45,
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 8,
-              backgroundColor: theme == "dark" ? "#212121" : "#abe1fa",
+              color: theme == "dark" ? "white" : "#2f2d51",
+              fontFamily: "Inter-Regular",
+              fontSize: 13,
             }}
           >
-            {hasAnnounced ? (
-              <Text
-                style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontFamily: "Inter-Regular",
-                }}
-              >
-                {formatTime(countdown)}
-              </Text>
-            ) : (
-              <Ionicons
-                name="megaphone-outline"
-                size={26}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              />
-            )}
-          </TouchableOpacity>
-
-          {isAnnouncingMeeting && (
-            <AnnounceMeeting
-              hasAnnounced={hasAnnounced}
-              setHasAnnounced={setHasAnnounced}
-              currGroup={currGroup}
-              theme={theme}
-              supabase={supabase}
-              isAnnouncingMeeting={isAnnouncingMeeting}
-              messages={messages}
-              setIsAnnouncingMeeting={setIsAnnouncingMeeting}
-            />
-          )}
-          <TouchableOpacity
-            onPress={copyCode}
-            style={
-              theme == "dark"
-                ? {
-                    padding: 5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "#212121",
-                    borderRadius: 10,
-                    gap: 8,
-                  }
-                : {
-                    padding: 5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "#2f2d51",
-                    borderRadius: 10,
-                    gap: 8,
-                  }
-            }
-          >
-            <Feather name="copy" size={15} color="white" />
-            <Text
-              style={{
-                color: "white",
-                fontSize: 13,
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              {currGroup.groups.code}
-            </Text>
-          </TouchableOpacity>
-        </HeaderView>
+            {onlineUsers.length} Users Online
+          </Text>
+        </View>
         <View
           style={{
             flex: 1,
@@ -466,7 +653,7 @@ const PrayerGroup = ({ route, navigation }) => {
             </View>
           ) : (
             <>
-              {messages.length == 0 ? (
+              {groupMessages.length == 0 ? (
                 <View
                   style={{
                     flex: 1,
@@ -477,8 +664,8 @@ const PrayerGroup = ({ route, navigation }) => {
                   <Text
                     style={
                       theme == "dark"
-                        ? { fontFamily: "Inter-Medium", color: "white" }
-                        : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+                        ? { fontFamily: "Inter-Regular", color: "#bebebe" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
                     No messages yet.
@@ -491,148 +678,33 @@ const PrayerGroup = ({ route, navigation }) => {
                   ref={flatListRef}
                   inverted
                   estimatedListSize={{ height: 800, width: 450 }}
-                  data={messages}
+                  data={groupMessages}
+                  ListHeaderComponent={() => (
+                    <View
+                      style={
+                        theme == "dark"
+                          ? {
+                              height: 30,
+                            }
+                          : {
+                              height: 30,
+                            }
+                      }
+                    />
+                  )}
+                  onScroll={handleScroll}
                   keyExtractor={(e, i) => i.toString()}
                   initialNumToRender={30}
                   renderItem={({ item, index }) => {
-                    const currentDate = new Date(item.created_at);
-                    const nextItem =
-                      index < messages.length - 1 ? messages[index + 1] : null;
-                    const nextDate = nextItem
-                      ? new Date(nextItem.created_at)
-                      : null;
-
-                    const isLastMessageForDay =
-                      !nextDate || !isSameDate(currentDate, nextDate);
-                    const isLastMessageInList = index === messages.length - 1;
                     return (
-                      <View>
-                        {isLastMessageForDay && isLastMessageInList && (
-                          <Text
-                            style={{
-                              textAlign: "center",
-                              color: theme == "dark" ? "white" : "#2f2d51",
-                              fontFamily: "Inter-Medium",
-                              marginVertical: 10,
-                            }}
-                          >
-                            {Moment(item.created_at).format("MMMM D, YYYY")}
-                          </Text>
-                        )}
-                        <View
-                          style={
-                            theme == "dark"
-                              ? [
-                                  {
-                                    alignSelf:
-                                      item.user_id == currentUser.id
-                                        ? "flex-end"
-                                        : "flex-start",
-                                    backgroundColor:
-                                      item.user_id == currentUser.id
-                                        ? "#353535"
-                                        : "#212121",
-                                    borderRadius: 10,
-                                    marginBottom: 10,
-                                    padding: 10,
-                                    gap: 15,
-                                    minWidth: 100,
-                                    maxWidth: 300,
-                                  },
-                                ]
-                              : {
-                                  alignSelf:
-                                    item.user_id == currentUser.id
-                                      ? "flex-end"
-                                      : "flex-start",
-                                  backgroundColor:
-                                    item.user_id == currentUser.id
-                                      ? "#abe1fa"
-                                      : "#93d8f8",
-                                  borderRadius: 10,
-                                  marginBottom: 10,
-                                  padding: 10,
-                                  gap: 15,
-                                  maxWidth: 200,
-                                }
-                          }
-                        >
-                          {item.user_id != currentUser.id && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                gap: 10,
-                              }}
-                            >
-                              <Image
-                                style={
-                                  theme == "dark"
-                                    ? styles.profileImgDark
-                                    : styles.profileImg
-                                }
-                                source={{
-                                  uri: item.profiles?.avatar_url
-                                    ? item.profiles?.avatar_url
-                                    : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-                                }}
-                              />
-                              <Text
-                                style={
-                                  theme == "dark"
-                                    ? {
-                                        color: "white",
-                                        fontFamily: "Inter-Medium",
-                                      }
-                                    : {
-                                        color: "#2f2d51",
-                                        fontFamily: "Inter-Medium",
-                                      }
-                                }
-                              >
-                                {item.profiles.full_name}
-                              </Text>
-                            </View>
-                          )}
-
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    color: "white",
-                                    fontFamily: "Inter-Regular",
-                                    fontSize: 15,
-                                  }
-                                : {
-                                    color: "#2f2d51",
-                                    fontFamily: "Inter-Regular",
-                                    fontSize: 15,
-                                  }
-                            }
-                          >
-                            {item.message}
-                          </Text>
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    color: "#d6d6d6",
-                                    alignSelf: "flex-end",
-                                    fontFamily: "Inter-Light",
-                                    fontSize: 12,
-                                  }
-                                : {
-                                    color: "#2f2d51",
-                                    alignSelf: "flex-end",
-                                    fontFamily: "Inter-Light",
-                                    fontSize: 12,
-                                  }
-                            }
-                          >
-                            {Moment(item.created_at).fromNow()}
-                          </Text>
-                        </View>
-                      </View>
+                      <GroupPrayerItem
+                        theme={theme}
+                        currentUser={currentUser}
+                        supabase={supabase}
+                        currGroup={currGroup}
+                        item={item}
+                        showToast={showToast}
+                      />
                     );
                   }}
                 />
@@ -649,25 +721,58 @@ const PrayerGroup = ({ route, navigation }) => {
             },
           ]}
         >
-          <TextInput
-            style={theme == "dark" ? styles.inputDark : styles.input}
-            placeholder="Write a prayer..."
-            placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-            value={newMessage}
-            onChangeText={(text) => setNewMessage(text)}
-            onContentSizeChange={handleContentSizeChange}
-            onSubmitEditing={(e) => {
-              e.key === "Enter" && e.preventDefault();
+          <View
+            style={{
+              flex: 1,
+              minHeight: 35,
+              maxHeight: 200,
+              width: "85%",
+              backgroundColor: theme == "dark" ? "#212121" : "white",
+              borderWidth: theme == "dark" ? 0 : 1,
+              borderColor: "#2f2d51",
+              borderRadius: 10,
+              padding: 10,
+              justifyContent: "center",
             }}
-            // multiline={true}
-            // // ios fix for centering it at the top-left corner
-            // numberOfLines={5}
-          />
+          >
+            <TextInput
+              style={
+                theme == "dark"
+                  ? [
+                      styles.inputDark,
+                      { paddingBottom: Platform.OS == "android" ? 0 : 5 },
+                      // {
+                      //   height: inputHeight < 45 ? 45 : inputHeight,
+                      //   maxHeight: 200,
+                      // },
+                    ]
+                  : [
+                      styles.input,
+                      // {
+                      //   height: inputHeight < 45 ? 45 : inputHeight,
+                      //   maxHeight: 200,
+                      // },
+                    ]
+              }
+              placeholder="Write a prayer..."
+              placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
+              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+              value={newMessage}
+              textAlignVertical="center"
+              onChangeText={(text) => setNewMessage(text)}
+              onContentSizeChange={handleContentSizeChange}
+              onSubmitEditing={(e) => {
+                e.key === "Enter" && e.preventDefault();
+              }}
+              multiline={true}
+              // // ios fix for centering it at the top-left corner
+              // numberOfLines={5}
+            />
+          </View>
           <TouchableOpacity
             disabled={newMessage.length == 0 ? true : false}
             style={{
-              width: "20%",
+              width: "15%",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -690,7 +795,6 @@ export default PrayerGroup;
 const styles = StyleSheet.create({
   inputField: {
     flexDirection: "row",
-
     padding: 15,
     justifyContent: "space-between",
     alignItems: "center",
@@ -700,35 +804,18 @@ const styles = StyleSheet.create({
   inputDark: {
     color: "white",
     fontFamily: "Inter-Regular",
-    width: "85%",
-    borderColor: "#212121",
-    backgroundColor: "#212121",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 15,
+    width: "100%",
+    paddingBottom: 5,
+    // borderColor: "#212121",
+    // backgroundColor: "#212121",
+    // borderWidth: 1,
+    // borderRadius: 10,
+    // padding: 10,
   },
   input: {
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
     width: "85%",
-    borderColor: "#2f2d51",
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 15,
-  },
-  profileImg: {
-    borderColor: "#2F2D51",
-    borderWidth: 0.2,
-    width: 40,
-    height: 40,
-    borderRadius: 50,
-  },
-  profileImgDark: {
-    borderColor: "#A5C9FF",
-    borderWidth: 0.2,
-    width: 40,
-    height: 40,
-    borderRadius: 50,
+    paddingBottom: 5,
   },
 });

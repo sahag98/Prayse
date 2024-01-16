@@ -156,6 +156,8 @@ export default function Welcome({ navigation }) {
 
   const reminders = useSelector((state) => state.reminder.reminders);
 
+  console.log("all reminders: ", reminders);
+
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
@@ -270,10 +272,10 @@ export default function Welcome({ navigation }) {
       lastNotificationResponse &&
       lastNotificationResponse.notification.request.content.data
     ) {
-      console.log("last noti: ", lastNotificationResponse);
+      console.log("last noti: ", lastNotificationResponse.notification);
       const data = lastNotificationResponse.notification.request.content.data;
       const body = lastNotificationResponse.notification.request.content.body;
-
+      console.log("data of last noti: ", data);
       if (data && data.updateLink) {
         console.log("in update");
         if (Platform.OS === "ios") {
@@ -295,9 +297,14 @@ export default function Welcome({ navigation }) {
             verse: body,
             title: data.verseTitle,
           });
-        } else if (data.screen == "Community" && data.group) {
+        } else if (
+          data.screen == "Community" &&
+          data.currGroup &&
+          data.allGroups
+        ) {
           navigation.navigate(data.screen, {
-            group: data.group,
+            group: data.currGroup,
+            allGroups: data.allGroups,
           });
         } else {
           navigation.navigate(data.screen);
@@ -774,6 +781,7 @@ export default function Welcome({ navigation }) {
               data={reminders}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
+                console.log(item.reminder.time);
                 const daysOfWeek = [
                   "Sunday",
                   "Monday",
@@ -880,14 +888,14 @@ export default function Welcome({ navigation }) {
                           style={
                             theme == "dark"
                               ? {
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   fontFamily: "Inter-Regular",
                                   color: "#f1d592",
                                 }
                               : {
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   fontFamily: "Inter-Regular",
-                                  color: "grey",
+                                  color: "#dda41c",
                                 }
                           }
                         >
@@ -900,14 +908,14 @@ export default function Welcome({ navigation }) {
                           style={
                             theme == "dark"
                               ? {
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   fontFamily: "Inter-Regular",
                                   color: "#f1d592",
                                 }
                               : {
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   fontFamily: "Inter-Regular",
-                                  color: "grey",
+                                  color: "#dda41c",
                                 }
                           }
                         >
@@ -942,7 +950,7 @@ export default function Welcome({ navigation }) {
                         style={{
                           fontFamily: "Inter-Regular",
                           fontSize: 13,
-                          color: "grey",
+                          color: "#bebebe",
                         }}
                       >
                         {item.reminder.note}
@@ -960,7 +968,12 @@ export default function Welcome({ navigation }) {
                         onPress={() =>
                           navigation.navigate("Test", {
                             type: "Edit",
-                            reminderToEdit: item,
+                            reminderEditId: item.reminder.id,
+                            reminderIdentifier: item.identifier,
+                            ocurrence: item.ocurrence,
+                            reminderToEditTitle: item.reminder.message,
+                            reminderToEditNote: item.reminder.note,
+                            reminderToEditTime: item.reminder.time.toString(),
                           })
                         }
                       >

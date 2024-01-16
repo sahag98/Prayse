@@ -58,6 +58,7 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
+    console.log("adding prayer");
     function truncateWords(str, numWords) {
       let words = str.split(" ");
       if (words.length > numWords) {
@@ -86,12 +87,10 @@ const CommunityModal = ({
       const message = {
         title: "Community 🌐",
         message: `${user?.full_name} has posted a prayer: ${truncatedString} .Click here to pray for their request.`,
-        data: { screen: "Community", verseTitle: "" },
+        data: { screen: "PublicCommunity", verseTitle: "" },
       };
 
-      console.log(message.message);
-
-      fetch(PRAYSE_MESSAGE, {
+      fetch(PRAYSE_MESSAGE.toString(), {
         method: "POST",
         headers: {
           Accept: "application/json",
