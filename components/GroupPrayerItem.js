@@ -1,10 +1,19 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+} from "react-native-reanimated";
+import React, { useEffect, useRef, useState } from "react";
 import Moment from "moment";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import ChatBubble from "react-native-chat-bubble";
 import { useIsFocused } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 const GroupPrayerItem = ({
   setRefreshMsgLikes,
@@ -19,8 +28,9 @@ const GroupPrayerItem = ({
 }) => {
   const [likes, setLikes] = useState([]);
   const [channel, setChannel] = useState();
-
+  const [isPraying, setIsPraying] = useState(false);
   const isFocused = useIsFocused();
+  const animationRef = useRef(null);
   useEffect(() => {
     fetchLikes(item.id);
   }, [item.id, refreshMsgLikes]);
@@ -110,9 +120,19 @@ const GroupPrayerItem = ({
       },
     });
   };
+  const scale = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
 
   async function toggleLike(id, expoToken, message) {
     if (isLikedByMe) {
+      scale.value = withSequence(
+        withSpring(1.2, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
+      );
       const { data, error } = await supabase
         .from("message_likes")
         .delete()
@@ -139,10 +159,16 @@ const GroupPrayerItem = ({
         user_id: currentUser.id,
       },
     });
+    setIsPraying(true);
+    scale.value = withSequence(
+      withSpring(1.2, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
+    );
     const { data, error } = await supabase.from("message_likes").insert({
       prayer_id: id,
       user_id: currentUser.id,
     });
+
     notifyLike(expoToken, message);
     if (error) {
       console.log(error);
@@ -199,6 +225,7 @@ const GroupPrayerItem = ({
     // setHasAnnounced(true);
     // setIsAnnouncingMeeting(false);
   };
+  console.log("checking ref: ", animationRef.current);
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   return (
     <>
@@ -348,24 +375,20 @@ const GroupPrayerItem = ({
                 toggleLike(item.id, item.profiles.expoToken, item.message)
               }
             >
-              <Image
-                style={
-                  theme == "dark"
-                    ? {
-                        width: 27,
-                        height: 27,
-                        tintColor: isLikedByMe ? "#ff4e4e" : "white",
-                      }
-                    : {
-                        width: 27,
-                        height: 27,
-                        tintColor: isLikedByMe ? "#ff4e4e" : "#2f2d51",
-                      }
-                }
-                source={{
-                  uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
-                }}
-              />
+              <Animated.View style={animatedStyle}>
+                <Image
+                  style={
+                    isLikedByMe
+                      ? { width: 28, height: 28, tintColor: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { width: 28, height: 28, tintColor: "white" }
+                      : { width: 28, height: 28, tintColor: "#2f2d51" }
+                  }
+                  source={{
+                    uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
+                  }}
+                />
+              </Animated.View>
             </TouchableOpacity>
             <Text
               style={
@@ -386,31 +409,34 @@ const GroupPrayerItem = ({
             >
               {Moment(item.created_at).fromNow()}
             </Text>
-          </View>
-        )}
-        {likes?.length > 0 && (
-          <View
-            style={{
-              backgroundColor: theme == "dark" ? "white" : "#2f2d51",
-              position: "absolute",
-              borderRadius: 100,
-              padding: 5,
-              bottom: -18,
-              right: item.user_id == currentUser.id ? null : -5,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Inter-Medium",
-                color: theme == "dark" ? "#121212" : "white",
-              }}
-            >
-              🙏 {likes?.length}
-            </Text>
+            {likes?.length > 0 && (
+              <Animated.View
+                entering={FadeIn.duration(500)}
+                exiting={FadeOut.duration(500)}
+                style={{
+                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  position: "absolute",
+                  borderRadius: 100,
+                  zIndex: 20,
+                  padding: 5,
+                  bottom: -18,
+                  right: item.user_id == currentUser.id ? null : -40,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    color: theme == "dark" ? "#121212" : "white",
+                  }}
+                >
+                  🙏 {likes?.length}
+                </Text>
+              </Animated.View>
+            )}
           </View>
         )}
       </ChatBubble>
-      <View style={{ marginBottom: likes?.length > 0 ? 10 : 5 }} />
+      {/* <View style={{ marginBottom: likes?.length > 0 ? 10 : 5 }} /> */}
     </>
   );
 };
@@ -431,5 +457,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50,
+  },
+  animation: {
+    width: 40,
+    height: 40,
+    alignSelf: "center",
+    textAlign: "center",
+    justifyContent: "center",
   },
 });

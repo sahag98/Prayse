@@ -8,10 +8,12 @@ import {
   Image,
   RefreshControl,
   Linking,
+  TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { Divider } from "react-native-paper";
 import useIsReady from "../hooks/useIsReady";
@@ -19,15 +21,18 @@ import { TouchableOpacity } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import tbf from "../assets/tbf-logo.jpg";
 import NetInfo from "@react-native-community/netinfo";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { useSupabase } from "../context/useSupabase";
 
-const Devotional = () => {
+const Devotional = ({ navigation }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const [devotionals, setDevotionals] = useState([]);
   const [refresh, setRefresh] = useState(true);
   const [connected, setConnected] = useState(false);
-
+  const [thought, setThought] = useState("");
+  const { isLoggedIn, currentUser } = useSupabase();
   useEffect(() => {
     loadDevotionals();
   }, [isFocused]);
@@ -85,152 +90,254 @@ const Devotional = () => {
             : { backgroundColor: "#F2F7FF" }
         }
       >
-        {devotionals?.map((d) => (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refresh}
-                onRefresh={loadDevotionals}
-              />
+        <HeaderView
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-start",
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <AntDesign
+              name="left"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+          </TouchableOpacity>
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
             }
-            showsVerticalScrollIndicator={false}
-            key={d._id}
           >
-            <HeaderTitle
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Bold",
-                      marginTop: 20,
-                      letterSpacing: 1,
-                      marginBottom: 5,
-                      fontSize: 24,
-                      color: "white",
-                    }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      letterSpacing: 1,
-                      marginTop: 20,
-                      fontSize: 24,
-                      marginBottom: 5,
-                      color: "#2F2D51",
-                    }
+            Devotional
+          </Text>
+        </HeaderView>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
+        >
+          {devotionals?.map((d) => (
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresh}
+                  onRefresh={loadDevotionals}
+                />
               }
+              showsVerticalScrollIndicator={false}
+              key={d._id}
             >
-              {d.title}
-            </HeaderTitle>
-            <Text
-              style={
-                theme == "dark" ? styles.descriptionDark : styles.description
-              }
-            >
-              {d.description}
-            </Text>
-            <View style={theme == "dark" ? styles.refreshDark : styles.refresh}>
-              <Text
-                style={{
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                  color: "#7a7a7a",
-                }}
-              >
-                Pull page down to refresh
-              </Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    "https://triedbyfire.substack.com?utm_source=navbar&utm_medium=web"
-                  )
+              <HeaderTitle
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Bold",
+                        marginTop: 0,
+                        letterSpacing: 1,
+                        marginBottom: 5,
+                        fontSize: 24,
+                        color: "white",
+                      }
+                    : {
+                        fontFamily: "Inter-Bold",
+                        letterSpacing: 1,
+                        marginTop: 0,
+                        fontSize: 24,
+                        marginBottom: 5,
+                        color: "#2F2D51",
+                      }
                 }
-                style={{
-                  marginVertical: 10,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
               >
-                <View style={{ gap: 2 }}>
+                {d.title}
+              </HeaderTitle>
+              <Text
+                style={
+                  theme == "dark" ? styles.descriptionDark : styles.description
+                }
+              >
+                {d.description}
+              </Text>
+              <View
+                style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+              >
+                <View>
                   <Text
-                    style={theme == "dark" ? styles.ownerDark : styles.owner}
+                    style={{
+                      fontFamily: "Inter-Medium",
+                      textDecorationLine: "underline",
+                      color: "#2f2d51",
+                    }}
                   >
-                    TRIED BY FIRE
+                    Reflections (0)
                   </Text>
+                </View>
+                <View
+                  style={theme == "dark" ? styles.refreshDark : styles.refresh}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Regular",
+                      fontSize: 13,
+                      color: "#7a7a7a",
+                    }}
+                  >
+                    Pull page down to refresh
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://triedbyfire.substack.com?utm_source=navbar&utm_medium=web"
+                    )
+                  }
+                  style={{
+                    marginVertical: 10,
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ gap: 2 }}>
+                    <Text
+                      style={theme == "dark" ? styles.ownerDark : styles.owner}
+                    >
+                      TRIED BY FIRE
+                    </Text>
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? {
+                              color: "#d6d6d6",
+                              fontSize: 13,
+                              fontFamily: "Inter-Regular",
+                            }
+                          : {
+                              color: "#2f2d51",
+                              fontSize: 13,
+                              fontFamily: "Inter-Regular",
+                            }
+                      }
+                    >
+                      {convertDigitIn(d.date)}
+                    </Text>
+                  </View>
+                  <Image style={styles.img} source={tbf} />
+                </TouchableOpacity>
+                <View
+                  style={
+                    theme == "dark"
+                      ? {
+                          marginTop: 5,
+                          marginBottom: 10,
+                          borderLeftWidth: 2,
+                          borderLeftColor: "#A5C9FF",
+                          paddingHorizontal: 10,
+                        }
+                      : {
+                          marginTop: 5,
+                          marginBottom: 10,
+                          borderLeftWidth: 2,
+                          borderLeftColor: "#ffcd8b",
+                          paddingHorizontal: 10,
+                        }
+                  }
+                >
                   <Text
                     style={
                       theme == "dark"
                         ? {
                             color: "#d6d6d6",
-                            fontSize: 13,
+                            lineHeight: 22,
                             fontFamily: "Inter-Regular",
                           }
                         : {
                             color: "#2f2d51",
-                            fontSize: 13,
+                            lineHeight: 22,
                             fontFamily: "Inter-Regular",
                           }
                     }
                   >
-                    {convertDigitIn(d.date)}
+                    {d.verse}
                   </Text>
                 </View>
-                <Image style={styles.img} source={tbf} />
-              </TouchableOpacity>
-              <View
-                style={
-                  theme == "dark"
-                    ? {
-                        marginTop: 5,
-                        marginBottom: 10,
-                        borderLeftWidth: 2,
-                        borderLeftColor: "#A5C9FF",
-                        paddingHorizontal: 10,
-                      }
-                    : {
-                        marginTop: 5,
-                        marginBottom: 10,
-                        borderLeftWidth: 2,
-                        borderLeftColor: "#ffcd8b",
-                        paddingHorizontal: 10,
-                      }
-                }
-              >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "#d6d6d6",
-                          lineHeight: 22,
-                          fontFamily: "Inter-Regular",
-                        }
-                      : {
-                          color: "#2f2d51",
-                          lineHeight: 22,
-                          fontFamily: "Inter-Regular",
-                        }
-                  }
-                >
-                  {d.verse}
-                </Text>
               </View>
-            </View>
-            {/* <Divider style={{ height: 1.1, marginVertical: 10 }} /> */}
-            <Text style={theme == "dark" ? styles.dayDark : styles.day}>
-              {d.day}
-            </Text>
-            <Text style={theme == "dark" ? styles.contentDark : styles.content}>
-              {d.content}
-            </Text>
-          </ScrollView>
-        ))}
+              {/* <Divider style={{ height: 1.1, marginVertical: 10 }} /> */}
+              <Text style={theme == "dark" ? styles.dayDark : styles.day}>
+                {d.day}
+              </Text>
+              <Text
+                style={theme == "dark" ? styles.contentDark : styles.content}
+              >
+                {d.content}
+              </Text>
+              {/* <View style={{ marginTop: 10, gap: 5, marginBottom: 20 }}>
+                <Text style={{ fontSize: 17, fontFamily: "Inter-Medium" }}>
+                  Reflections
+                </Text>
+                <TextInput
+                  value={thought}
+                  style={styles.input}
+                  onChangeText={(text) => setThought(text)}
+                  placeholder="Write a reflection"
+                />
+              </View> */}
+            </ScrollView>
+          ))}
+        </KeyboardAvoidingView>
+
+        <View
+          style={{
+            position: "absolute",
+            bottom: 5,
+            width: "50%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-around",
+            alignSelf: "center",
+            padding: 10,
+            borderRadius: 20,
+            backgroundColor: "#93d8f8",
+          }}
+        >
+          <AntDesign name="hearto" size={24} color="#2f2d51" />
+          <View
+            style={{ height: "100%", backgroundColor: "black", width: 1 }}
+          />
+          <FontAwesome
+            style={{ marginBottom: 4 }}
+            name="comment-o"
+            size={24}
+            color="#2f2d51"
+          />
+        </View>
       </Container>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  input: {
+    backgroundColor: "#93D8F8",
+    borderRadius: 10,
+    color: "#2f2d51",
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+  },
   imgContainer: {
     backgroundColor: "white",
     height: 180,
@@ -247,7 +354,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   refreshDark: {
-    width: "100%",
     paddingVertical: 7,
     display: "flex",
     flexDirection: "row",
@@ -255,7 +361,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   refresh: {
-    width: "100%",
     paddingVertical: 7,
     display: "flex",
     flexDirection: "row",
@@ -297,12 +402,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 35,
     fontFamily: "Inter-Regular",
+    marginBottom: 50,
   },
   content: {
     color: "#2F2D51",
     fontSize: 15,
     fontFamily: "Inter-Regular",
     lineHeight: 35,
+    marginBottom: 50,
   },
 });
 

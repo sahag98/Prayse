@@ -37,7 +37,7 @@ const Tab = createBottomTabNavigator();
 const Navigation = () => {
   const insets = useSafeAreaInsets();
   const theme = useSelector((state) => state.user.theme);
-  const { isLoggedIn } = useSupabase();
+  const { isLoggedIn, currentUser } = useSupabase();
 
   const prefix = Linking.createURL("/");
   const linking = {
@@ -147,7 +147,7 @@ const Navigation = () => {
             name="Devotional"
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-              tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+              tabBarStyle: { display: "none" },
             })}
             component={Devotional}
           />

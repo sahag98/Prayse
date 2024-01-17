@@ -482,12 +482,12 @@ const GroupInfoModal = ({
                       ? {
                           color: "white",
                           fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontSize: 17,
                         }
                       : {
                           color: "#2f2d51",
                           fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontSize: 17,
                         }
                   }
                 >
@@ -679,8 +679,8 @@ const GroupInfoModal = ({
                   borderRadius: 10,
                 }}
               >
-                <Ionicons name="exit-outline" size={36} color="white" />
-                <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+                <Ionicons name="exit-outline" size={36} color="#ff2727" />
+                <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
                   Leave group
                 </Text>
               </TouchableOpacity>
