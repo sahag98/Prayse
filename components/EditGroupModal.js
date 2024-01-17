@@ -17,6 +17,7 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import { useNavigation } from "@react-navigation/native";
 
 const EditGroupModal = ({
   theme,
@@ -24,9 +25,12 @@ const EditGroupModal = ({
   openEdit,
   group,
   groupName,
+  setGroupInfoVisible,
   setGroupName,
   setOpenEdit,
 }) => {
+  const navigation = useNavigation();
+
   const editGroup = async () => {
     console.log("new name: ", groupName);
     console.log("id: ", group.group_id);
@@ -35,7 +39,10 @@ const EditGroupModal = ({
       .update({ name: groupName })
       .eq("id", group.group_id)
       .select();
-    console.log(data);
+
+    setGroupInfoVisible(false);
+    navigation.navigate("Community");
+
     if (error) {
       console.log(error);
     }

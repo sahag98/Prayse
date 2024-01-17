@@ -29,6 +29,7 @@ export const SupabaseProvider = (props) => {
   const [refreshLikes, setRefreshLikes] = useState(false);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [refreshMembers, setRefreshMembers] = useState(false);
+  const [refreshMsgLikes, setRefreshMsgLikes] = useState(false);
   const [newGroupMsgNum, setNewGroupMsgNum] = useState(0);
   const [newMsgGroupId, setNewMsgGroupId] = useState(0);
   const [userofSentMessage, setUserofSentMessage] = useState("");
@@ -238,6 +239,23 @@ export const SupabaseProvider = (props) => {
               }
             }
           )
+          // .on(
+          //   "postgres_changes",
+          //   {
+          //     event: "*",
+          //     schema: "public",
+          //     table: "message_likes",
+          //   },
+          //   (payload) => {
+          //     if (
+          //       payload.eventType == "INSERT" ||
+          //       payload.eventType == "DELETE"
+          //     ) {
+          //       console.log(payload);
+          //       setRefreshMsgLikes(true);
+          //     }
+          //   }
+          // )
           .on(
             "postgres_changes",
             {
@@ -286,6 +304,8 @@ export const SupabaseProvider = (props) => {
         newAnswer,
         setNewAnswer,
         isNewMessage,
+        setRefreshMsgLikes,
+        refreshMsgLikes,
         setRefreshGroup,
         refreshGroup,
         setIsNewMessage,

@@ -42,6 +42,7 @@ const CreateGroupModal = ({
   const handleCloseModal = () => {
     setModalVisible(false);
     setGroupName("");
+    setDescription("");
   };
 
   const handleContentSizeChange = (event) => {
@@ -236,6 +237,16 @@ const CreateGroupModal = ({
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
+                backgroundColor:
+                  theme == "dark"
+                    ? groupName.length == 0
+                      ? "#212121"
+                      : "#a5c9ff"
+                    : groupName.length == 0
+                    ? "grey"
+                    : "#2f2d51",
+                padding: 8,
+                borderRadius: 20,
                 alignItems: "center",
                 gap: 5,
               }}
@@ -246,31 +257,18 @@ const CreateGroupModal = ({
                   theme == "dark"
                     ? {
                         fontFamily: "Inter-Bold",
-                        fontSize: 18,
-                        color: groupName.length == 0 ? "grey" : "#a5c9ff",
+                        fontSize: 16,
+                        color: groupName.length == 0 ? "grey" : "#121212",
                       }
                     : {
                         fontFamily: "Inter-Bold",
-                        fontSize: 18,
-                        color: groupName.length == 0 ? "grey" : "#2f2d51",
+                        fontSize: 16,
+                        color: groupName.length == 0 ? "white" : "white",
                       }
                 }
               >
                 Create
               </Text>
-              <AntDesign
-                name="plus"
-                size={28}
-                color={
-                  theme == "dark"
-                    ? groupName.length == 0
-                      ? "grey"
-                      : "#a5c9ff"
-                    : groupName.length == 0
-                    ? "grey"
-                    : "#2f2d51"
-                }
-              />
             </TouchableOpacity>
           </HeaderView>
 

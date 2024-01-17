@@ -156,8 +156,6 @@ export default function Welcome({ navigation }) {
 
   const reminders = useSelector((state) => state.reminder.reminders);
 
-  console.log("all reminders: ", reminders);
-
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
@@ -165,19 +163,20 @@ export default function Welcome({ navigation }) {
   );
 
   async function fetchUpdate() {
-    let { data: update, error } = await supabase
-      .from("update")
-      .select("isUpdateAvailable");
+    try {
+      let { data: update, error } = await supabase
+        .from("update")
+        .select("isUpdateAvailable");
 
-    console.log(nativeApplicationVersion.toString());
-    console.log("fetching");
-
-    if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-      console.log("update is available");
-      // setIsUpdateAvailable(true);
-    } else {
-      console.log("update is not available");
-      setIsUpdateAvailable(false);
+      if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
+        console.log("update is available");
+        // setIsUpdateAvailable(true);
+      } else {
+        console.log("update is not available");
+        setIsUpdateAvailable(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -319,13 +318,13 @@ export default function Welcome({ navigation }) {
   // };
 
   useEffect(() => {
-    AsyncStorage.getItem("modalShown").then((value) => {
-      if (value === null) {
-        // If the modal hasn't been shown before, show it and set the flag
-        setFeatureVisible(true);
-        AsyncStorage.setItem("modalShown", "true");
-      }
-    });
+    // AsyncStorage.getItem("modalShown").then((value) => {
+    //   if (value === null) {
+    //     // If the modal hasn't been shown before, show it and set the flag
+    //     setFeatureVisible(true);
+    //     AsyncStorage.setItem("modalShown", "true");
+    //   }
+    // });
     const loadOpenings = async () => {
       // await AsyncStorage.removeItem("AppOpenings");
       // await AsyncStorage.removeItem("ReminderOn");

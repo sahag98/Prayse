@@ -67,6 +67,8 @@ const PrayerGroup = ({ route, navigation }) => {
     setIsNewMessage,
     setRefreshGroup,
     refreshGroup,
+    setRefreshMsgLikes,
+    refreshMsgLikes,
     supabase,
   } = useSupabase();
 
@@ -201,6 +203,7 @@ const PrayerGroup = ({ route, navigation }) => {
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
+    showToast("success", "Copied to Clipboard.");
   };
 
   useEffect(() => {
@@ -243,7 +246,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const showToast = (type, content) => {
     Toast.show({
       type,
-      text1: "Members are notified!",
+      text1: content,
       visibilityTime: 3000,
     });
   };
@@ -703,6 +706,9 @@ const PrayerGroup = ({ route, navigation }) => {
                         supabase={supabase}
                         currGroup={currGroup}
                         item={item}
+                        setRefreshMsgLikes={setRefreshMsgLikes}
+                        refreshMsgLikes={refreshMsgLikes}
+                        allGroups={allGroups}
                         showToast={showToast}
                       />
                     );

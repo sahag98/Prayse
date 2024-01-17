@@ -426,6 +426,7 @@ const GroupInfoModal = ({
                 group={group}
                 supabase={supabase}
                 groupName={groupName}
+                setGroupInfoVisible={setGroupInfoVisible}
                 setGroupName={setGroupName}
                 openEdit={openEdit}
                 setOpenEdit={setOpenEdit}

@@ -19,6 +19,10 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
 import { Switch } from "react-native-paper";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const CommunityModal = ({
   modalVisible,
@@ -32,6 +36,7 @@ const CommunityModal = ({
   const [prayer, setPrayer] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
   const [isEnabled, setIsEnabled] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const handleCloseModal = () => {
     setModalVisible(false);
@@ -111,6 +116,7 @@ const CommunityModal = ({
   };
 
   return (
+    // <SafeAreaProvider>
     <Modal
       animationType="slide"
       transparent={true}
@@ -124,14 +130,93 @@ const CommunityModal = ({
                 backgroundColor: "#121212",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
+                paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
               }
             : {
                 backgroundColor: "#F2F7FF",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
+                paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
               }
         }
       >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
+            onPress={handleCloseModal}
+          >
+            <AntDesign
+              name="left"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      fontSize: 20,
+                      marginLeft: 10,
+                      fontFamily: "Inter-Bold",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 20,
+                      marginLeft: 10,
+                      fontFamily: "Inter-Bold",
+                    }
+              }
+            >
+              Prayer Post
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            disabled={prayer.length == 0 ? true : false}
+            onPress={addPrayer}
+            style={
+              theme == "dark"
+                ? {
+                    backgroundColor: prayer.length == 0 ? "#212121" : "#A5C9FF",
+
+                    padding: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+                : {
+                    backgroundColor:
+                      prayer.length == 0 ? "lightgrey" : "#2f2d51",
+
+                    padding: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  }
+            }
+          >
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: prayer.length == 0 ? "grey" : "#121212",
+                      fontFamily: "Inter-Bold",
+                    }
+                  : { color: "white", fontFamily: "Inter-Bold" }
+              }
+            >
+              Post Prayer
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.inputField}>
           <Text
             style={
@@ -208,88 +293,9 @@ const CommunityModal = ({
             value={isEnabled}
           />
         </View>
-        <View
-          style={{
-            marginTop: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <TouchableOpacity
-            onPress={handleCloseModal}
-            style={
-              theme == "dark"
-                ? {
-                    borderWidth: 1,
-                    borderColor: "#A5C9FF",
-                    width: "45%",
-                    padding: 15,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 10,
-                  }
-                : {
-                    borderWidth: 1,
-                    borderColor: "#2f2d51",
-                    width: "45%",
-                    padding: 15,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 10,
-                  }
-            }
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "#A5C9FF", fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-              }
-            >
-              Close
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={prayer.length == 0 ? true : false}
-            onPress={addPrayer}
-            style={
-              theme == "dark"
-                ? {
-                    backgroundColor: prayer.length == 0 ? "#212121" : "#A5C9FF",
-                    width: "45%",
-                    padding: 15,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 10,
-                  }
-                : {
-                    backgroundColor:
-                      prayer.length == 0 ? "lightgrey" : "#2f2d51",
-                    width: "45%",
-                    padding: 15,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 10,
-                  }
-            }
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: prayer.length == 0 ? "grey" : "#121212",
-                      fontFamily: "Inter-Bold",
-                    }
-                  : { color: "white", fontFamily: "Inter-Bold" }
-              }
-            >
-              Post Prayer
-            </Text>
-          </TouchableOpacity>
-        </View>
       </ModalContainer>
     </Modal>
+    // </SafeAreaProvider>
   );
 };
 
@@ -297,7 +303,6 @@ export default CommunityModal;
 
 const styles = StyleSheet.create({
   inputField: {
-    marginTop: 50,
     marginVertical: 10,
     width: "100%",
   },

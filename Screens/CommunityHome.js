@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -48,6 +49,7 @@ import communityReady from "../hooks/communityReady";
 import * as Clipboard from "expo-clipboard";
 import Constants from "expo-constants";
 import * as Network from "expo-network";
+import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -121,6 +123,14 @@ const CommunityHome = ({ route }) => {
     }
 
     setExtended(currentScrollPosition <= 0);
+  };
+
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: "Copied to Clipboard.",
+      visibilityTime: 3000,
+    });
   };
 
   useEffect(() => {
@@ -220,6 +230,7 @@ const CommunityHome = ({ route }) => {
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
+    showToast("success");
   };
 
   async function getPermission() {
@@ -302,28 +313,36 @@ const CommunityHome = ({ route }) => {
   return (
     <>
       {!isViewingGroups ? (
-        <Container
+        <ScrollView
+          contentContainerStyle={{ justifyContent: "center", gap: 10 }}
           style={
             theme == "dark"
               ? {
                   backgroundColor: "#121212",
-                  justifyContent: "center",
-                  gap: 10,
+                  padding: 15,
+                  flex: 1,
+                  paddingTop: statusBarHeight,
+                  paddingBottom: 10,
                   position: "relative",
                 }
               : {
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "center",
-                  gap: 10,
+                  backgroundColor: "#f2f7ff",
+                  padding: 15,
+                  flex: 1,
+                  paddingTop: statusBarHeight,
+                  paddingBottom: 10,
+                  // justifyContent: "center",
+
                   position: "relative",
                 }
           }
         >
-          <HeaderView
+          <View
             style={{
               position: "absolute",
-              top: 35,
-              right: 10,
+
+              top: 0,
+              right: 0,
             }}
           >
             <ProfileModal
@@ -357,7 +376,7 @@ const CommunityHome = ({ route }) => {
                 <Ionicons name="settings" size={20} color="black" />
               </TouchableOpacity>
             </TouchableOpacity>
-          </HeaderView>
+          </View>
           {/* <View
             style={{
               // flex: 1,
@@ -597,6 +616,7 @@ const CommunityHome = ({ route }) => {
                         ? {
                             borderWidth: 1,
                             padding: 10,
+                            paddingBottom: 20,
                             gap: 5,
                             marginRight: 15,
                             borderRadius: 10,
@@ -604,6 +624,7 @@ const CommunityHome = ({ route }) => {
                             borderColor: item.groups.color.toLowerCase(),
                             backgroundColor: "#121212",
                             maxWidth: ITEM_WIDTH + 100,
+                            height: "auto",
                           }
                         : {
                             borderWidth: 1,
@@ -611,10 +632,12 @@ const CommunityHome = ({ route }) => {
                             gap: 5,
                             justifyContent: "space-between",
                             padding: 10,
+                            paddingBottom: 20,
                             borderRadius: 10,
                             borderColor: item.groups.color.toLowerCase(),
                             backgroundColor: "#f2f7ff",
                             maxWidth: ITEM_WIDTH + 100,
+                            height: "auto",
                           }
                     }
                   >
@@ -789,120 +812,124 @@ const CommunityHome = ({ route }) => {
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={
-              theme == "dark"
-                ? {
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 15,
-                    borderRadius: 10,
-                    justifyContent: "space-between",
-                    backgroundColor: "#a5c9ff",
-                  }
-                : {
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 15,
-                    borderRadius: 10,
-                    justifyContent: "space-between",
-                    backgroundColor: "#2f2d51",
-                  }
-            }
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+          <View style={{ marginTop: 5, gap: 10 }}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "space-between",
+                      backgroundColor: "#a5c9ff",
+                    }
+                  : {
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "space-between",
+                      backgroundColor: "#2f2d51",
+                    }
+              }
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        color: "#121212",
-                        fontSize: 15,
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        color: "white",
-                        fontSize: 15,
-                      }
-                }
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                Create a Group
-              </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          color: "#121212",
+                          fontSize: 15,
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          color: "white",
+                          fontSize: 15,
+                        }
+                  }
+                >
+                  Create a Group
+                </Text>
+                <AntDesign
+                  name="addusergroup"
+                  size={24}
+                  color={theme == "dark" ? "#121212" : "white"}
+                />
+              </View>
               <AntDesign
-                name="addusergroup"
+                name="plus"
                 size={24}
                 color={theme == "dark" ? "#121212" : "white"}
               />
-            </View>
-            <AntDesign
-              name="plus"
-              size={24}
-              color={theme == "dark" ? "#121212" : "white"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setJoinVisible(true)}
-            style={
-              theme == "dark"
-                ? {
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 15,
-                    borderRadius: 10,
-                    justifyContent: "space-between",
-                    borderColor: "#a5c9ff",
-                    borderWidth: 1,
-                  }
-                : {
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 15,
-                    borderRadius: 10,
-                    justifyContent: "space-between",
-                    borderColor: "#93d8f8",
-                    borderWidth: 1,
-                  }
-            }
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setJoinVisible(true)}
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "space-between",
+                      borderColor: "#a5c9ff",
+                      borderWidth: 1,
+                    }
+                  : {
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      padding: 15,
+                      borderRadius: 10,
+                      justifyContent: "space-between",
+                      borderColor: "#93d8f8",
+                      borderWidth: 1,
+                    }
+              }
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                        color: "#a5c9ff",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                        color: "#2f2d51",
-                      }
-                }
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                Join a Group
-              </Text>
-              <MaterialIcons
-                name="group-add"
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                          color: "#a5c9ff",
+                        }
+                      : {
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Join a Group
+                </Text>
+                <MaterialIcons
+                  name="group-add"
+                  size={24}
+                  color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                />
+              </View>
+              <AntDesign
+                name="plus"
                 size={24}
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
-            </View>
-            <AntDesign
-              name="plus"
-              size={24}
-              color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-            />
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
+
           <CreateGroupModal
             getUserGroups={getUserGroups}
             getGroupUsers={getGroupUsers}
@@ -921,7 +948,7 @@ const CommunityHome = ({ route }) => {
             modalVisible={joinVisible}
             setModalVisible={setJoinVisible}
           />
-        </Container>
+        </ScrollView>
       ) : (
         <Animated.View
           entering={FadeIn.duration(500)}

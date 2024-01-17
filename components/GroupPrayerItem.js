@@ -3,8 +3,13 @@ import React, { useEffect, useState } from "react";
 import Moment from "moment";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
+import ChatBubble from "react-native-chat-bubble";
+import { useIsFocused } from "@react-navigation/native";
 
 const GroupPrayerItem = ({
+  setRefreshMsgLikes,
+  allGroups,
+  refreshMsgLikes,
   item,
   currentUser,
   showToast,
@@ -13,28 +18,132 @@ const GroupPrayerItem = ({
   theme,
 }) => {
   const [likes, setLikes] = useState([]);
+  const [channel, setChannel] = useState();
 
+  const isFocused = useIsFocused();
   useEffect(() => {
     fetchLikes(item.id);
-  }, [item.id]);
+  }, [item.id, refreshMsgLikes]);
 
-  async function toggleLike(id) {
+  useEffect(() => {
+    // setTimeout(() => {
+    //   setIsShowingHeader(false);
+    // }, 5000);
+    /** only create the channel if we have a roomCode and username */
+    if (currGroup.group_id && currentUser.id) {
+      // dispatch(clearMessages());
+      /**
+       * Step 1:
+       *
+       * Create the supabase channel for the roomCode, configured
+       * so the channel receives its own messages
+       */
+      const channel = supabase.channel(`room:${item.id}`, {
+        config: {
+          broadcast: {
+            self: true,
+          },
+          presence: {
+            key: currentUser.id,
+          },
+        },
+      });
+
+      /**
+       * Step 2:
+       *
+       * Listen to broadcast messages with a `message` event
+       */
+      channel.on("broadcast", { event: "message" }, ({ payload }) => {
+        console.log("payload");
+        fetchLikes(item.id);
+      });
+
+      /**
+       * Step 3:
+       *
+       * Subscribe to the channel
+       */
+      channel.subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          channel.track({ currentUser });
+        }
+      });
+
+      /**
+       * Step 4:
+       *
+       * Set the channel in the state
+       */
+      setChannel(channel);
+
+      /**
+       * * Step 5:
+       *
+       * Return a clean-up function that unsubscribes from the channel
+       * and clears the channel state
+       */
+      return () => {
+        channel.unsubscribe();
+        setChannel(undefined);
+      };
+    }
+  }, [currGroup.group_id, currentUser.id, isFocused]);
+
+  const notifyLike = async (expoToken, item) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: `${currGroup.groups.name} 📢`,
+      body: `${currentUser.full_name} is praying for ${item}`,
+      data: {
+        screen: "Community",
+        currGroup: currGroup,
+        allGroups: allGroups,
+      },
+    };
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  async function toggleLike(id, expoToken, message) {
     if (isLikedByMe) {
       const { data, error } = await supabase
         .from("message_likes")
         .delete()
         .eq("prayer_id", id)
         .eq("user_id", currentUser.id);
-      fetchLikes(id);
+      channel.send({
+        type: "broadcast",
+        event: "message",
+        payload: {
+          prayer_id: id,
+          user_id: currentUser.id,
+        },
+      });
       return;
     }
     //prayer_id for production
     //prayertest_id for testing
+    console.log("here in toggle");
+    channel.send({
+      type: "broadcast",
+      event: "message",
+      payload: {
+        prayer_id: id,
+        user_id: currentUser.id,
+      },
+    });
     const { data, error } = await supabase.from("message_likes").insert({
       prayer_id: id,
       user_id: currentUser.id,
     });
-    fetchLikes(id);
+    notifyLike(expoToken, message);
     if (error) {
       console.log(error);
     }
@@ -86,24 +195,28 @@ const GroupPrayerItem = ({
         });
       }
     });
-    showToast();
+    showToast("success", "Members are notified.");
     // setHasAnnounced(true);
     // setIsAnnouncingMeeting(false);
   };
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
-
-  console.log(isLikedByMe);
   return (
     <>
-      <View
+      <ChatBubble
+        isOwnMessage={item.user_id == currentUser.id ? true : false}
+        bubbleColor={
+          item.user_id == currentUser.id
+            ? theme == "dark"
+              ? "#353535"
+              : "#abe1fa"
+            : theme == "light"
+            ? "#dee4e7"
+            : "#212121"
+        }
         style={
           theme == "dark"
             ? [
                 {
-                  alignSelf:
-                    item.user_id == currentUser.id ? "flex-end" : "flex-start",
-                  backgroundColor:
-                    item.user_id == currentUser.id ? "#353535" : "#212121",
                   borderRadius: 10,
                   marginBottom: 10,
                   padding: 10,
@@ -113,15 +226,12 @@ const GroupPrayerItem = ({
                 },
               ]
             : {
-                alignSelf:
-                  item.user_id == currentUser.id ? "flex-end" : "flex-start",
-                backgroundColor:
-                  item.user_id == currentUser.id ? "#abe1fa" : "#93d8f8",
                 borderRadius: 10,
                 marginBottom: 10,
                 padding: 10,
                 gap: 15,
-                maxWidth: 200,
+                minWidth: 100,
+                maxWidth: 300,
               }
         }
       >
@@ -233,13 +343,25 @@ const GroupPrayerItem = ({
               justifyContent: "space-between",
             }}
           >
-            <TouchableOpacity onPress={() => toggleLike(item.id)}>
+            <TouchableOpacity
+              onPress={() =>
+                toggleLike(item.id, item.profiles.expoToken, item.message)
+              }
+            >
               <Image
-                style={{
-                  width: 27,
-                  height: 27,
-                  tintColor: isLikedByMe ? "#ff4e4e" : "white",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        width: 27,
+                        height: 27,
+                        tintColor: isLikedByMe ? "#ff4e4e" : "white",
+                      }
+                    : {
+                        width: 27,
+                        height: 27,
+                        tintColor: isLikedByMe ? "#ff4e4e" : "#2f2d51",
+                      }
+                }
                 source={{
                   uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
                 }}
@@ -266,24 +388,29 @@ const GroupPrayerItem = ({
             </Text>
           </View>
         )}
-        {likes.length > 0 && (
+        {likes?.length > 0 && (
           <View
             style={{
-              backgroundColor: "white",
+              backgroundColor: theme == "dark" ? "white" : "#2f2d51",
               position: "absolute",
               borderRadius: 100,
               padding: 5,
-              bottom: -15,
-              right: -5,
+              bottom: -18,
+              right: item.user_id == currentUser.id ? null : -5,
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", color: "#121212" }}>
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                color: theme == "dark" ? "#121212" : "white",
+              }}
+            >
               🙏 {likes?.length}
             </Text>
           </View>
         )}
-      </View>
-      <View style={{ marginBottom: likes.length > 0 ? 15 : 5 }} />
+      </ChatBubble>
+      <View style={{ marginBottom: likes?.length > 0 ? 10 : 5 }} />
     </>
   );
 };

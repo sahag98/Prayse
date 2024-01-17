@@ -315,7 +315,7 @@ const Folder = ({ navigation, todos }) => {
           <View style={styles.actionButtons}>
             <AnimatedFAB
               icon={"plus"}
-              label={"Add Folder"}
+              label={"Create Folder"}
               extended={isExtended}
               onPress={() => {
                 setAddVisible(true);
