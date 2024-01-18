@@ -32,6 +32,7 @@ import * as Linking from "expo-linking";
 import Reminder from "./Screens/Reminder";
 import PrayerGroup from "./Screens/PrayerGroup";
 import OnboardingScreen from "./Screens/Onboarding";
+import Relfection from "./Screens/Relfection";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -195,6 +196,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={Settings}
+          />
+          <Tab.Screen
+            name="Reflection"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Relfection}
           />
           <Tab.Screen
             name="Favorites"

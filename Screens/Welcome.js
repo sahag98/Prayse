@@ -387,7 +387,7 @@ export default function Welcome({ navigation }) {
       // await AsyncStorage.removeItem("isFirstTime");
       try {
         const isFirstTime = await AsyncStorage.getItem("isFirstTime");
-        console.log("first time: ", isFirstTime);
+
         if (isFirstTime == null) {
           console.log("it is the first time");
           setIsFirst(true);
