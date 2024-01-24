@@ -31,7 +31,8 @@
         {
           "username": "sahag98"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "splash": {
       "image": "./assets/prayer-splash.png",

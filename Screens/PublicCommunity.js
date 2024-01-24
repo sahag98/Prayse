@@ -47,7 +47,7 @@ const PublicCommunity = ({ route }) => {
   const [prayers, setPrayers] = useState([]);
   const [userPrayers, setUserPrayers] = useState([]);
   const isIOS = Platform.OS === "ios";
-  const { current: velocity } = useRef(new Animated.Value(0));
+  // const { current: velocity } = useRef(new Animated.Value(0));
   const scrollTimeoutRef = useRef(null);
 
   const rotation = useSharedValue(0);
@@ -58,21 +58,21 @@ const PublicCommunity = ({ route }) => {
     };
   });
 
-  const onScroll = ({ nativeEvent }) => {
-    const currentScrollPosition =
-      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-    if (!isIOS) {
-      return velocity.setValue(currentScrollPosition);
-    }
+  // const onScroll = ({ nativeEvent }) => {
+  //   const currentScrollPosition =
+  //     Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+  //   if (!isIOS) {
+  //     return velocity.setValue(currentScrollPosition);
+  //   }
 
-    setExtended(currentScrollPosition <= 0);
-  };
+  //   setExtended(currentScrollPosition <= 0);
+  // };
 
   useEffect(() => {
     if (!isIOS) {
       setExtended(true);
     } else setExtended(extended);
-  }, [velocity, extended, isIOS]);
+  }, [extended, isIOS]);
 
   useEffect(() => {
     const wavingAnimation = withSpring(15, { damping: 2, stiffness: 80 });
@@ -299,7 +299,7 @@ const PublicCommunity = ({ route }) => {
           setVisible={setVisible}
           prayers={prayers}
           setPrayers={setPrayers}
-          onScroll={onScroll}
+          // onScroll={onScroll}
           supabase={supabase}
           currentUser={currentUser}
         />

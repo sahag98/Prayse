@@ -68,7 +68,7 @@ import { deleteReminder } from "../redux/remindersReducer";
 import axios from "axios";
 import ReminderModal from "../components/ReminderModal";
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
@@ -140,7 +140,9 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export default function Welcome({ navigation }) {
+const initialOffset = 200;
+
+const Welcome = () => {
   const theme = useSelector((state) => state.user.theme);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
@@ -153,14 +155,29 @@ export default function Welcome({ navigation }) {
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
-
   const reminders = useSelector((state) => state.reminder.reminders);
-
   const notis = useSelector((state) => state.noti.notifications);
   const folders = useSelector((state) => state.folder.folders);
   const quickFolderExists = useSelector(
     (state) => state.folder.quickFolderExists
   );
+  const offset = useSharedValue(initialOffset);
+  // const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const [quickModal, setQuickModal] = useState(false);
+  const notificationListener = useRef();
+  const [isReminderOff, setIsReminderOff] = useState(false);
+  const [isFirst, setIsFirst] = useState(false);
+  const responseListener = useRef();
+  const isFocused = useIsFocused();
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
+  const [inputHeight, setInputHeight] = useState(60);
+  const [quickprayervalue, setQuickprayervalue] = useState("");
+  const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
+  const [notiVisible, setNotiVisible] = useState(false);
+  const [reminderVisible, setReminderVisible] = useState(false);
+  const [image, setImage] = useState(null);
 
   async function fetchUpdate() {
     try {
@@ -233,29 +250,14 @@ export default function Welcome({ navigation }) {
     setToolVisible(false);
   }
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   function handleCloseModal() {
     setQuickprayervalue("");
     setQuickModal(false);
   }
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const [quickModal, setQuickModal] = useState(false);
-  const notificationListener = useRef();
-  const [isReminderOff, setIsReminderOff] = useState(false);
-  const [isFirst, setIsFirst] = useState(false);
-  const responseListener = useRef();
-  const isFocused = useIsFocused();
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const [inputHeight, setInputHeight] = useState(60);
-  const [quickprayervalue, setQuickprayervalue] = useState("");
-  const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
-  const [notiVisible, setNotiVisible] = useState(false);
-  const [reminderVisible, setReminderVisible] = useState(false);
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -264,7 +266,6 @@ export default function Welcome({ navigation }) {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
-  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (
@@ -312,11 +313,6 @@ export default function Welcome({ navigation }) {
     }
   }, [lastNotificationResponse]);
 
-  // const handleReminder = async () => {
-  //   const reminder = await AsyncStorage.getItem("ReminderOn");
-  //   set(reminder);
-  // };
-
   useEffect(() => {
     // AsyncStorage.getItem("modalShown").then((value) => {
     //   if (value === null) {
@@ -344,11 +340,11 @@ export default function Welcome({ navigation }) {
     };
     loadOpenings();
 
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
+    // Animated.timing(fadeAnim, {
+    //   toValue: 1,
+    //   duration: 3000,
+    //   useNativeDriver: true,
+    // }).start();
 
     getHour();
     function getHour() {
@@ -400,10 +396,6 @@ export default function Welcome({ navigation }) {
       }
     };
     storedData();
-  }, [isFocused]);
-
-  useEffect(() => {
-    // Save the number of openings to AsyncStorage
 
     const saveOpenings = async () => {
       const reminder = await AsyncStorage.getItem("ReminderOn");
@@ -1023,13 +1015,6 @@ export default function Welcome({ navigation }) {
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    {/* <ReminderModal
-                      reminderVisible={reminderVisible}
-                      setReminderVisible={setReminderVisible}
-                      theme={theme}
-                      reminder={item.reminder.message}
-                      note={item.reminder.note}
-                    /> */}
                   </View>
                 );
               }}
@@ -1128,11 +1113,11 @@ export default function Welcome({ navigation }) {
           </Animated.View>
         )}
       </View>
-      <NewFeaturesModal
+      {/* <NewFeaturesModal
         theme={theme}
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
-      />
+      /> */}
       <View
         style={{
           width: "100%",
@@ -1461,7 +1446,6 @@ export default function Welcome({ navigation }) {
             </TouchableOpacity>
           )}
         </View>
-        {/* {image && <Image source={{ uri: image }} style={styles.image} />} */}
         <View
           style={{
             marginBottom: 15,
@@ -1678,7 +1662,9 @@ export default function Welcome({ navigation }) {
       </Modal>
     </Container>
   );
-}
+};
+
+export default Welcome;
 
 const styles = StyleSheet.create({
   container: {
@@ -1874,7 +1860,7 @@ const styles = StyleSheet.create({
   greetingDark: {
     // marginVertical: 5,
     fontSize: 22,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Inter-Black",
     alignSelf: "flex-start",
     letterSpacing: 2,
     color: "white",

@@ -20,13 +20,16 @@ const DevoItem = ({
   channel,
   setChannel,
   fetchLikes,
+  fetchReflections,
   loadDevotionals,
   convertDigitIn,
   supabase,
   theme,
+  refreshReflections,
 }) => {
   useEffect(() => {
     fetchLikes(devo.title);
+    fetchReflections(devo.title);
     // setTimeout(() => {
     //   setIsShowingHeader(false);
     // }, 5000);
@@ -88,7 +91,7 @@ const DevoItem = ({
       channel.unsubscribe();
       setChannel(undefined);
     };
-  }, [currentUser.id, devo.title, isFocused]);
+  }, [currentUser?.id, devo.title, refreshReflections, isFocused]);
 
   return (
     <ScrollView
@@ -102,7 +105,7 @@ const DevoItem = ({
         style={
           theme == "dark"
             ? {
-                fontFamily: "Inter-Bold",
+                fontFamily: "Inter-Black",
                 marginTop: 0,
                 letterSpacing: 1,
                 marginBottom: 5,
@@ -110,7 +113,7 @@ const DevoItem = ({
                 color: "white",
               }
             : {
-                fontFamily: "Inter-Bold",
+                fontFamily: "Inter-Black",
                 letterSpacing: 1,
                 marginTop: 0,
                 fontSize: 24,

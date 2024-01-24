@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React from "react";
 import { Modal } from "react-native";
-import { PRAYSE_MESSAGE } from "@env";
+import { PRAYSE_TEST_MESSAGE } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
@@ -83,11 +83,11 @@ const CommunityModal = ({
     } else {
       //prayers for production
       //prayers_test for testing
-      const { data, error } = await supabase.from("prayers").insert({
-        prayer: prayer,
-        user_id: user?.id,
-        disable_response: isEnabled,
-      });
+      // const { data, error } = await supabase.from("prayers").insert({
+      //   prayer: prayer,
+      //   user_id: user?.id,
+      //   disable_response: isEnabled,
+      // });
       showToast("success", "Prayer posted successfully.🙏🏼");
       const message = {
         title: "Community 🌐",
@@ -95,7 +95,7 @@ const CommunityModal = ({
         data: { screen: "PublicCommunity", verseTitle: "" },
       };
 
-      fetch(PRAYSE_MESSAGE.toString(), {
+      fetch(PRAYSE_TEST_MESSAGE.toString(), {
         method: "POST",
         headers: {
           Accept: "application/json",

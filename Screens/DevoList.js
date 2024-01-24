@@ -9,15 +9,15 @@ import {
   RefreshControl,
   Linking,
   TextInput,
+  Alert,
+  TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { Container, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
-import { Divider } from "react-native-paper";
 import useIsReady from "../hooks/useIsReady";
-import { TouchableOpacity } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import tbf from "../assets/tbf-logo.jpg";
 import NetInfo from "@react-native-community/netinfo";
@@ -31,17 +31,51 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-const Devotional = ({ navigation }) => {
+const DevoList = ({ navigation }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const [devotionals, setDevotionals] = useState([]);
   const [refresh, setRefresh] = useState(true);
   const [connected, setConnected] = useState(false);
-
+  const [thought, setThought] = useState("");
+  const {
+    isLoggedIn,
+    currentUser,
+    refreshReflections,
+    setRefreshReflections,
+    supabase,
+  } = useSupabase();
+  const [likesArray, setLikesArray] = useState([]);
+  const [reflectionsArray, setReflectionsArray] = useState([]);
+  const [channel, setChannel] = useState([]);
   useEffect(() => {
     loadDevotionals();
   }, [isFocused]);
+
+  const createTwoButtonAlert = () =>
+    Alert.alert("Not Signed In", "You need to be signed in to like.", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Sign in",
+        onPress: () => navigation.navigate("Community"),
+      },
+    ]);
+
+  console.log("isLogged IN : ", isLoggedIn);
+
+  const fetchReflections = async (title) => {
+    const { data, error } = await supabase
+      .from("reflections")
+      .select("*, profiles(full_name,avatar_url)")
+      .eq("devo_title", title);
+    setReflectionsArray(data);
+    setRefreshReflections(false);
+  };
 
   const loadDevotionals = () => {
     const query = '*[_type=="devotional"]';
@@ -60,6 +94,68 @@ const Devotional = ({ navigation }) => {
     setConnected(state.isConnected);
   });
 
+  async function insertLike(title) {
+    if (!isLoggedIn && currentUser == null) {
+      createTwoButtonAlert();
+      return;
+    }
+
+    if (isLikedByMe) {
+      console.log("liked it");
+      scale.value = withSequence(
+        withSpring(1.2, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
+      );
+
+      console.log(title);
+      const { data, error } = await supabase
+        .from("devo_likes")
+        .delete()
+        // .eq("devo_title", title)
+        .eq("user_id", currentUser?.id);
+
+      channel.send({
+        type: "broadcast",
+        event: "message",
+        payload: {
+          user_id: currentUser?.id,
+          devo_title: title,
+        },
+      });
+      return;
+    }
+    scale.value = withSequence(
+      withSpring(1.2, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
+    );
+    const { data, error } = await supabase.from("devo_likes").insert({
+      user_id: currentUser?.id,
+      devo_title: title,
+    });
+    channel.send({
+      type: "broadcast",
+      event: "message",
+      payload: {
+        user_id: currentUser?.id,
+        devo_title: title,
+      },
+    });
+  }
+
+  async function fetchLikes(devoTitle) {
+    //prayer_id for production
+    //prayertest_id for testing
+    const { data: likes, error: likesError } = await supabase
+      .from("devo_likes")
+      .select()
+      .eq("devo_title", devoTitle);
+    setLikesArray(likes);
+
+    if (likesError) {
+      console.log(likesError);
+    }
+  }
+
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -67,16 +163,14 @@ const Devotional = ({ navigation }) => {
     };
   });
 
-  function convertDate(str) {
-    const inputDate = new Date(str);
-    inputDate.setDate(inputDate.getDate() + 1); // Add 1 day
-
-    const options = { month: "short", day: "numeric" };
-
-    const formattedDate = inputDate.toLocaleDateString("en-US", options);
-
-    return formattedDate;
+  function convertDigitIn(str) {
+    let newStr = str.replace(/-/g, "/");
+    return newStr.split("/").reverse().join("/");
   }
+
+  const isLikedByMe = !!likesArray?.find(
+    (like) => like.user_id == currentUser.id
+  );
 
   const BusyIndicator = () => {
     return (
@@ -105,103 +199,44 @@ const Devotional = ({ navigation }) => {
       <Container
         style={
           theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-                justifyContent: "center",
-                alignItems: "center",
-              }
+            ? { backgroundColor: "#121212" }
+            : { backgroundColor: "#F2F7FF" }
         }
       >
-        <View
+        <HeaderView
           style={{
-            backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 10,
-            borderRadius: 10,
-            gap: 5,
+            flexDirection: "row",
+            justifyContent: "flex-start",
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%",
-              gap: 10,
-            }}
-          >
-            <Image style={styles.img} source={tbf} />
-            <Text
-              style={{
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              triedbyfire
-            </Text>
-
-            <Text
-              style={{
-                marginLeft: "auto",
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              {convertDate(devotionals[0].date)}
-            </Text>
-          </View>
-          <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Black",
-              letterSpacing: 1,
-              fontSize: 23,
-            }}
-          >
-            {devotionals[0].title}
-          </Text>
-          <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Regular",
-              textAlign: "left",
-              fontSize: 16,
-              marginBottom: 10,
-            }}
-          >
-            {devotionals[0].description}
-          </Text>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate("DevoList")}
-            style={{
-              width: "100%",
-              marginTop: 10,
-              padding: 15,
-              borderRadius: 10,
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Inter-Bold",
-                fontSize: 15,
-                color: theme == "dark" ? "#a5c9ff" : "white",
-              }}
-            >
-              View
-            </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Devotional")}>
+            <AntDesign
+              name="left"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
           </TouchableOpacity>
-        </View>
-        {/* <KeyboardAvoidingView
+          <Text
+            style={
+              theme == "dark"
+                ? {
+                    color: "white",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
+                : {
+                    color: "#2f2d51",
+                    fontSize: 20,
+                    marginLeft: 10,
+                    fontFamily: "Inter-Bold",
+                  }
+            }
+          >
+            Devotional
+          </Text>
+        </HeaderView>
+        <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : null}
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
@@ -344,7 +379,7 @@ const Devotional = ({ navigation }) => {
               </View>
             </View>
           ))}
-        </KeyboardAvoidingView> */}
+        </KeyboardAvoidingView>
       </Container>
     </>
   );
@@ -372,8 +407,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 100,
-    borderWidth: 0.5,
-    borderColor: "#d2d2d2",
   },
   refreshDark: {
     paddingVertical: 7,
@@ -435,4 +468,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Devotional;
+export default DevoList;

@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -7,25 +8,88 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, HeaderView } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { Divider } from "react-native-paper";
 import ReflectionItem from "../components/ReflectionItem";
+import { useSupabase } from "../context/useSupabase";
+import { useIsFocused } from "@react-navigation/native";
 
 const Relfection = ({ navigation, route }) => {
   const theme = useSelector((state) => state.user.theme);
   const [reflectionsArray, setReflectionsArray] = useState([]);
   const [reflection, setReflection] = useState("");
   const [inputHeight, setInputHeight] = useState(60);
+  const {
+    isLoggedIn,
+    currentUser,
+    refreshReflections,
+    setRefreshReflections,
+    supabase,
+  } = useSupabase();
+  const isFocused = useIsFocused();
+  const [channel, setChannel] = useState();
+
+  useEffect(() => {
+    fetchReflections();
+  }, [isFocused, refreshReflections]);
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
       setInputHeight(60);
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
+    }
+  };
+
+  const createTwoButtonAlert = () =>
+    Alert.alert("Not Signed In", "Sign in to write a reflection.", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Sign in",
+        onPress: () => navigation.navigate("Community"),
+      },
+    ]);
+
+  const checkSignIn = () => {
+    if (!isLoggedIn && currentUser == null) {
+      createTwoButtonAlert();
+      return;
+    } else {
+      console.log("signed in");
+    }
+  };
+
+  const fetchReflections = async () => {
+    const { data, error } = await supabase
+      .from("reflections")
+      .select("*, profiles(full_name,avatar_url)")
+      .eq("devo_title", route?.params?.devoTitle);
+    setReflectionsArray(data);
+    setRefreshReflections(false);
+  };
+
+  const sendReflection = async () => {
+    if (reflection.length == 0) {
+      return;
+    }
+    try {
+      const { data, error } = await supabase.from("reflections").insert({
+        user_id: currentUser?.id,
+        devo_title: route?.params?.devoTitle,
+        reflection: reflection,
+      });
+
+      setReflection("");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -47,10 +111,21 @@ const Relfection = ({ navigation, route }) => {
             justifyContent: "flex-start",
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Devotional")}>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#212121",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 100,
+              padding: 5,
+              gap: 5,
+            }}
+            onPress={() => navigation.navigate("Devotional")}
+          >
             <AntDesign
               name="left"
-              size={30}
+              size={28}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
@@ -59,14 +134,14 @@ const Relfection = ({ navigation, route }) => {
           style={
             theme == "dark"
               ? {
-                  color: "white",
-                  fontSize: 16,
+                  color: "#d2d2d2",
+
                   textTransform: "uppercase",
                   fontFamily: "Inter-Medium",
                 }
               : {
                   color: "#2f2d51",
-                  fontSize: 16,
+
                   textTransform: "uppercase",
                   fontFamily: "Inter-Medium",
                 }
@@ -81,12 +156,14 @@ const Relfection = ({ navigation, route }) => {
                   color: "white",
                   fontSize: 24,
                   marginTop: 10,
+                  marginBottom: 10,
                   fontFamily: "Inter-Bold",
                 }
               : {
                   color: "#2f2d51",
                   fontSize: 24,
                   marginTop: 10,
+                  marginBottom: 10,
                   fontFamily: "Inter-Bold",
                 }
           }
@@ -105,7 +182,7 @@ const Relfection = ({ navigation, route }) => {
               <FontAwesome5
                 name="comments"
                 size={80}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                color={theme == "dark" ? "white" : "#2f2d51"}
               />
 
               <Text
@@ -115,7 +192,7 @@ const Relfection = ({ navigation, route }) => {
                         fontFamily: "Inter-Bold",
                         marginTop: 10,
                         fontSize: 18,
-                        color: "#A5C9FF",
+                        color: "white",
                       }
                     : {
                         fontFamily: "Inter-Bold",
@@ -133,7 +210,7 @@ const Relfection = ({ navigation, route }) => {
                     ? {
                         fontFamily: "Inter-Regular",
                         marginTop: 10,
-                        color: "#A5C9FF",
+                        color: "#d2d2d2",
                       }
                     : {
                         fontFamily: "Inter-Regular",
@@ -142,7 +219,7 @@ const Relfection = ({ navigation, route }) => {
                       }
                 }
               >
-                Be the first one and leave a reflection.
+                Be the first and write a reflection.
               </Text>
             </View>
           ) : (
@@ -161,15 +238,18 @@ const Relfection = ({ navigation, route }) => {
                   }
                 />
               )}
-              renderItem={({ item }) => <ReflectionItem theme={theme} />}
+              renderItem={({ item }) => (
+                <ReflectionItem item={item} theme={theme} />
+              )}
             />
           )}
         </View>
       </Container>
-      <View style={styles.inputField}>
+      <View style={theme == "dark" ? styles.inputFieldDark : styles.inputField}>
         <TextInput
           style={theme == "dark" ? styles.inputDark : styles.input}
           placeholder="Add your reflection..."
+          onPressIn={checkSignIn}
           placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
           selectionColor={theme == "dark" ? "white" : "#2f2d51"}
           value={reflection}
@@ -178,21 +258,33 @@ const Relfection = ({ navigation, route }) => {
           onSubmitEditing={(e) => {
             e.key === "Enter" && e.preventDefault();
           }}
-          // multiline={true}
+          multiline={true}
           // // ios fix for centering it at the top-left corner
           // numberOfLines={5}
         />
         <TouchableOpacity
+          disabled={reflection.length == 0 ? true : false}
+          onPress={sendReflection}
           style={{
-            backgroundColor: "#2f2d51",
+            backgroundColor:
+              theme == "dark"
+                ? reflection.length == 0
+                  ? "#212121"
+                  : "#a5c9ff"
+                : reflection.length == 0
+                ? "grey"
+                : "#2f2d51",
             borderRadius: 100,
             padding: 8,
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => {}}
         >
-          <AntDesign name="arrowup" size={38} color="white" />
+          <AntDesign
+            name="arrowup"
+            size={38}
+            color={theme == "dark" ? "#121212" : "white"}
+          />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -202,6 +294,18 @@ const Relfection = ({ navigation, route }) => {
 export default Relfection;
 
 const styles = StyleSheet.create({
+  inputFieldDark: {
+    borderTopColor: "#484848",
+    borderTopWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: "#121212",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
+  },
   inputField: {
     borderTopColor: "#d2d2d2",
     borderTopWidth: 1,

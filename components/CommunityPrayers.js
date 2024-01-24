@@ -9,13 +9,7 @@ import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
 import communityReady from "../hooks/communityReady";
 
-const CommunityPrayers = ({
-  onScroll,
-  session,
-  setNewPost,
-  prayers,
-  getPrayers,
-}) => {
+const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   const theme = useSelector((state) => state.user.theme);
   const isReady = communityReady();
   const [refreshing, setRefreshing] = useState(false);
@@ -49,7 +43,7 @@ const CommunityPrayers = ({
           data={prayers}
           keyExtractor={(item) => item.id}
           onEndReachedThreshold={0}
-          onScroll={onScroll}
+          // onScroll={onScroll}
           initialNumToRender={4}
           windowSize={8}
           ListFooterComponent={() => (

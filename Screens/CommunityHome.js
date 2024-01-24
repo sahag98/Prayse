@@ -88,7 +88,7 @@ const CommunityHome = ({ route }) => {
   const [userGroups, setUserGroups] = useState([]);
   const [groups, setGroups] = useState([]);
   const isIOS = Platform.OS === "ios";
-  const { current: velocity } = useRef(new Animated.Value(0));
+  // const { current: velocity } = useRef(new Animated.Value(0));
   const [searchName, setSearchName] = useState("");
   const [isViewingGroups, setIsViewingGroups] = useState(false);
   const isReady = communityReady();
@@ -115,15 +115,15 @@ const CommunityHome = ({ route }) => {
     };
   });
 
-  const onScroll = ({ nativeEvent }) => {
-    const currentScrollPosition =
-      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-    if (!isIOS) {
-      return velocity.setValue(currentScrollPosition);
-    }
+  // const onScroll = ({ nativeEvent }) => {
+  //   const currentScrollPosition =
+  //     Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+  //   if (!isIOS) {
+  //     return velocity.setValue(currentScrollPosition);
+  //   }
 
-    setExtended(currentScrollPosition <= 0);
-  };
+  //   setExtended(currentScrollPosition <= 0);
+  // };
 
   const showToast = (type, content) => {
     Toast.show({
@@ -137,7 +137,7 @@ const CommunityHome = ({ route }) => {
     if (!isIOS) {
       setExtended(true);
     } else setExtended(extended);
-  }, [velocity, extended, isIOS]);
+  }, [extended, isIOS]);
 
   useEffect(() => {
     const checkConnection = async () => {

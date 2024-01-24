@@ -20,17 +20,17 @@ const QuestionHelpModal = ({
   theme,
 }) => {
   const [page, setPage] = useState(0);
-  const transition = (
-    <Transition.Together>
-      <Transition.In type="fade" durationMs={500} />
-      <Transition.Out type="fade" durationMs={500} />
-    </Transition.Together>
-  );
+  // const transition = (
+  //   <Transition.Together>
+  //     <Transition.In type="fade" durationMs={500} />
+  //     <Transition.Out type="fade" durationMs={500} />
+  //   </Transition.Together>
+  // );
   const ref = useRef();
 
   const onNextPage = () => {
     if (page < 2) {
-      ref.current.animateNextTransition();
+      // ref.current.animateNextTransition();
       setPage(page + 1);
     }
   };
@@ -95,7 +95,7 @@ const QuestionHelpModal = ({
           >
             Welcome to Question of the Week!
           </Text>
-          <Transitioning.View ref={ref} transition={transition}>
+          <View ref={ref}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Image
@@ -282,7 +282,7 @@ const QuestionHelpModal = ({
                 </TouchableOpacity>
               </View>
             )}
-          </Transitioning.View>
+          </View>
         </View>
       </ModalContainer>
     </Modal>

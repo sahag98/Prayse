@@ -6,7 +6,7 @@ import { store } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Buffer } from "buffer";
 global.Buffer = Buffer;
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { persistStore } from "redux-persist";
 import Navigation from "./Navigation";
 import "react-native-url-polyfill/auto";
@@ -103,15 +103,17 @@ export default function App() {
         logoHeight={200}
         logoWidth={200}
       >
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <SafeAreaProvider>
-              <SupabaseProvider>
-                <Navigation />
-              </SupabaseProvider>
-            </SafeAreaProvider>
-          </PersistGate>
-        </Provider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <SafeAreaProvider>
+                <SupabaseProvider>
+                  <Navigation />
+                </SupabaseProvider>
+              </SafeAreaProvider>
+            </PersistGate>
+          </Provider>
+        </GestureHandlerRootView>
       </AnimatedSplash>
       <Toast config={toastConfig} />
     </>

@@ -35,6 +35,8 @@ export const SupabaseProvider = (props) => {
   const [userofSentMessage, setUserofSentMessage] = useState("");
   const [refreshComments, setRefreshComments] = useState(false);
   const [refreshGroup, setRefreshGroup] = useState(false);
+
+  const [refreshReflections, setRefreshReflections] = useState(false);
   // const [isTyping, setIsTyping] = useState(false);
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
     auth: {
@@ -285,6 +287,19 @@ export const SupabaseProvider = (props) => {
               }
             }
           )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "reflections",
+            },
+            (payload) => {
+              if (payload.eventType === "INSERT") {
+                setRefreshReflections(true);
+              }
+            }
+          )
           .subscribe();
 
         return () => {
@@ -306,6 +321,8 @@ export const SupabaseProvider = (props) => {
         isNewMessage,
         setRefreshMsgLikes,
         refreshMsgLikes,
+        setRefreshReflections,
+        refreshReflections,
         setRefreshGroup,
         refreshGroup,
         setIsNewMessage,

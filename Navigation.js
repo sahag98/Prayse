@@ -33,6 +33,7 @@ import Reminder from "./Screens/Reminder";
 import PrayerGroup from "./Screens/PrayerGroup";
 import OnboardingScreen from "./Screens/Onboarding";
 import Relfection from "./Screens/Relfection";
+import DevoList from "./Screens/DevoList";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -60,6 +61,7 @@ const Navigation = () => {
   };
 
   let [fontsLoaded] = useFonts({
+    "Inter-Black": require("./assets/fonts/Inter-Black.ttf"),
     "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("./assets/fonts/Inter-Regular.ttf"),
     "Inter-Medium": require("./assets/fonts/Inter-Medium.ttf"),
@@ -148,9 +150,18 @@ const Navigation = () => {
             name="Devotional"
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-              tabBarStyle: { display: "none" },
+              tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
             })}
             component={Devotional}
+          />
+          <Tab.Screen
+            name="DevoList"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={DevoList}
           />
           <Tab.Screen
             name="OldPrayerPage"
