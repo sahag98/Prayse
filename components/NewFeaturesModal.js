@@ -22,17 +22,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const [page, setPage] = useState(0);
-  const transition = (
-    <Transition.Together>
-      <Transition.In type="fade" durationMs={500} />
-      <Transition.Out type="fade" durationMs={500} />
-    </Transition.Together>
-  );
+
   const ref = useRef();
 
   const onNextPage = () => {
     if (page < 3) {
-      ref.current.animateNextTransition();
       setPage(page + 1);
     }
   };
@@ -53,8 +47,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
       <ModalContainer
         style={
           theme == "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.9)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.9)" }
+            ? { backgroundColor: "rgba(0, 0, 0, 0.5)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.5)" }
         }
       >
         <Animated.View
@@ -102,7 +96,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
           >
             What's new!
           </Text>
-          <Transitioning.View ref={ref} transition={transition}>
+          <View ref={ref}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Animated.Image
@@ -126,7 +120,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Prayer Reminders
+                  Devotional Interactions
                 </Text>
                 <Text
                   style={
@@ -143,7 +137,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Setup and customize daily or weekly prayer reminders.
+                  Ability to like and write a reflection for that daily
+                  devotional.
                 </Text>
                 {/* <View style={{ width: "100%", gap: 5 }}>
                   <Text
@@ -642,7 +637,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </TouchableOpacity>
               </View>
             )}
-          </Transitioning.View>
+          </View>
         </Animated.View>
       </ModalContainer>
     </Modal>

@@ -92,38 +92,15 @@ const CommunityHome = ({ route }) => {
   const [searchName, setSearchName] = useState("");
   const [isViewingGroups, setIsViewingGroups] = useState(false);
   const isReady = communityReady();
-  const sv = useSharedValue(0);
   const [hasConnection, setHasConnection] = useState(true);
-  useEffect(() => {
-    sv.value = withRepeat(
-      withTiming(1, {
-        duration: 2000,
-        easing: Easing.bounce,
-      }),
-      -1
-    );
-  }, []);
-  const rotation = useSharedValue(0);
 
-  const pulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: sv.value * 1.2 }],
-  }));
+  const rotation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotateZ: `${rotation.value}deg` }],
     };
   });
-
-  // const onScroll = ({ nativeEvent }) => {
-  //   const currentScrollPosition =
-  //     Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-  //   if (!isIOS) {
-  //     return velocity.setValue(currentScrollPosition);
-  //   }
-
-  //   setExtended(currentScrollPosition <= 0);
-  // };
 
   const showToast = (type, content) => {
     Toast.show({
@@ -176,7 +153,6 @@ const CommunityHome = ({ route }) => {
   // }, [route.params]);
 
   useEffect(() => {
-    console.log("refreshing members");
     getUserGroups();
     getGroupUsers();
   }, [refreshMembers]);

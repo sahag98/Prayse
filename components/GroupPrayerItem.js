@@ -19,6 +19,8 @@ const GroupPrayerItem = ({
   setRefreshMsgLikes,
   allGroups,
   refreshMsgLikes,
+  setGroupMessages,
+  getGroupMessagesForLikes,
   item,
   currentUser,
   showToast,
@@ -30,10 +32,13 @@ const GroupPrayerItem = ({
   const [channel, setChannel] = useState();
   const [isPraying, setIsPraying] = useState(false);
   const isFocused = useIsFocused();
+  const [likedId, setLikedId] = useState();
   const animationRef = useRef(null);
+  const [loadingLikes, setLoadingLikes] = useState(false);
+  // console.log("item: ", item.message, item.id);
   useEffect(() => {
     fetchLikes(item.id);
-  }, [item.id, refreshMsgLikes]);
+  }, [item.id]);
 
   useEffect(() => {
     // setTimeout(() => {
@@ -65,8 +70,8 @@ const GroupPrayerItem = ({
        * Listen to broadcast messages with a `message` event
        */
       channel.on("broadcast", { event: "message" }, ({ payload }) => {
-        console.log("payload");
-        fetchLikes(item.id);
+        console.log("payload", payload.prayer_id);
+        fetchLikes(payload.prayer_id);
       });
 
       /**
@@ -128,6 +133,7 @@ const GroupPrayerItem = ({
   });
 
   async function toggleLike(id, expoToken, message) {
+    console.log("id of item to like: ", id);
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
@@ -138,6 +144,7 @@ const GroupPrayerItem = ({
         .delete()
         .eq("prayer_id", id)
         .eq("user_id", currentUser.id);
+
       channel.send({
         type: "broadcast",
         event: "message",
@@ -150,7 +157,7 @@ const GroupPrayerItem = ({
     }
     //prayer_id for production
     //prayertest_id for testing
-    console.log("here in toggle");
+
     channel.send({
       type: "broadcast",
       event: "message",
@@ -171,22 +178,43 @@ const GroupPrayerItem = ({
 
     notifyLike(expoToken, message);
     if (error) {
-      console.log(error);
+      console.log("insert like err: ", error);
     }
   }
+
+  // async function getGroupMessagesForLikes() {
+  //   try {
+  //     let { data, error } = await supabase
+  //       .from("messages")
+  //       .select("*, profiles(full_name, avatar_url, expoToken)")
+  //       .eq("group_id", currGroup.group_id)
+  //       .order("id", { ascending: false });
+
+  //     setGroupMessages(data);
+  //   } catch (error) {
+  //     console.log("fetching error: ", error);
+  //   }
+  // }
 
   async function fetchLikes(prayerId) {
     //prayer_id for production
     //prayertest_id for testing
-    const { data: likes, error: likesError } = await supabase
-      .from("message_likes")
-      .select()
-      .eq("prayer_id", prayerId);
-    setLikes(likes);
+    // getGroupMessagesForLikes();
+    try {
+      setLoadingLikes(true);
+      const { data: likes, error: likesError } = await supabase
+        .from("message_likes")
+        .select()
+        .eq("prayer_id", prayerId);
+      setLikes(likes);
 
-    if (likesError) {
-      console.log(likesError);
+      if (likesError) {
+        console.log("likesError: ", likesError);
+      }
+    } catch (error) {
+      console.log(error);
     }
+    setLoadingLikes(false);
   }
   const sendUrgentAnnouncement = async (urgentMessage, user) => {
     console.log(urgentMessage);
@@ -225,8 +253,9 @@ const GroupPrayerItem = ({
     // setHasAnnounced(true);
     // setIsAnnouncingMeeting(false);
   };
-  console.log("checking ref: ", animationRef.current);
+
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
+  const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
   return (
     <>
       <ChatBubble
@@ -348,18 +377,47 @@ const GroupPrayerItem = ({
                       color: "#d6d6d6",
                       alignSelf: "flex-end",
                       fontFamily: "Inter-Light",
-                      fontSize: 12,
+                      fontSize: 11,
                     }
                   : {
                       color: "#2f2d51",
                       alignSelf: "flex-end",
                       fontFamily: "Inter-Light",
-                      fontSize: 12,
+                      fontSize: 11,
                     }
               }
             >
               {Moment(item.created_at).fromNow()}
             </Text>
+
+            {!loadingLikes && likes?.length > 0 && (
+              <Animated.View
+                entering={FadeIn.duration(500)}
+                exiting={FadeOut.duration(500)}
+                style={{
+                  display: isPrayerLiked ? "flex" : "none",
+                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  position: "absolute",
+                  borderRadius: 100,
+                  zIndex: 20,
+                  padding: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bottom: -20,
+                  left: item.user_id == currentUser.id ? -30 : -40,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    fontSize: 13,
+                    color: theme == "dark" ? "#121212" : "white",
+                  }}
+                >
+                  🙏 {likes?.length}
+                </Text>
+              </Animated.View>
+            )}
           </View>
         ) : (
           <View
@@ -379,10 +437,10 @@ const GroupPrayerItem = ({
                 <Image
                   style={
                     isLikedByMe
-                      ? { width: 28, height: 28, tintColor: "#ff4e4e" }
+                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
                       : theme == "dark"
-                      ? { width: 28, height: 28, tintColor: "white" }
-                      : { width: 28, height: 28, tintColor: "#2f2d51" }
+                      ? { width: 25, height: 25, tintColor: "white" }
+                      : { width: 25, height: 25, tintColor: "#2f2d51" }
                   }
                   source={{
                     uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -397,35 +455,40 @@ const GroupPrayerItem = ({
                       color: "#d6d6d6",
                       alignSelf: "flex-end",
                       fontFamily: "Inter-Light",
-                      fontSize: 12,
+                      fontSize: 11,
                     }
                   : {
                       color: "#2f2d51",
                       alignSelf: "flex-end",
                       fontFamily: "Inter-Light",
-                      fontSize: 12,
+                      fontSize: 11,
                     }
               }
             >
               {Moment(item.created_at).fromNow()}
             </Text>
-            {likes?.length > 0 && (
+
+            {!loadingLikes && likes?.length > 0 && (
               <Animated.View
                 entering={FadeIn.duration(500)}
                 exiting={FadeOut.duration(500)}
                 style={{
+                  display: isPrayerLiked ? "flex" : "none",
                   backgroundColor: theme == "dark" ? "white" : "#2f2d51",
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
-                  padding: 5,
-                  bottom: -18,
-                  right: item.user_id == currentUser.id ? null : -40,
+                  padding: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bottom: -20,
+                  right: item.user_id == currentUser.id ? -30 : -30,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
+                    fontSize: 13,
                     color: theme == "dark" ? "#121212" : "white",
                   }}
                 >
@@ -436,7 +499,6 @@ const GroupPrayerItem = ({
           </View>
         )}
       </ChatBubble>
-      {/* <View style={{ marginBottom: likes?.length > 0 ? 10 : 5 }} /> */}
     </>
   );
 };

@@ -399,15 +399,6 @@ const Question = ({ navigation }) => {
                   }
                 />
               )}
-              ItemSeparatorComponent={() => (
-                <Divider
-                  style={
-                    theme == "dark"
-                      ? { backgroundColor: "#525252", marginBottom: 10 }
-                      : { backgroundColor: "#2f2d51", marginBottom: 10 }
-                  }
-                />
-              )}
               renderItem={({ item }) => (
                 <AnswerItem item={item} theme={theme} />
               )}

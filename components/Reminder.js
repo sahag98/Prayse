@@ -11,21 +11,6 @@ export default function Reminder() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [reminderTime, setReminderTime] = useState(new Date());
 
-  // useEffect(() => {
-  //   registerForPushNotifications();
-  // }, []);
-
-  // const registerForPushNotifications = async () => {
-  //   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  //   if (status !== "granted") {
-  //     console.error("Permission to receive notifications denied");
-  //     return;
-  //   }
-
-  //   const pushToken = await Notifications.getExpoPushTokenAsync();
-  //   console.log("Expo Push Token:", pushToken);
-  // };
-
   const scheduleNotification = async (reminder) => {
     await Notifications.scheduleNotificationAsync({
       content: {

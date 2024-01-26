@@ -142,7 +142,7 @@ async function registerForPushNotificationsAsync() {
 
 const initialOffset = 200;
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
@@ -418,9 +418,6 @@ const Welcome = () => {
   }, [isFocused]);
 
   const dismissNotification = async (item) => {
-    // const all = await Notifications.getAllScheduledNotificationsAsync();
-    // console.log("all notis:", all);
-    // await Notifications.cancelAllScheduledNotificationsAsync();
     dispatch(deleteReminder(item.reminder.id));
     await Notifications.cancelScheduledNotificationAsync(item.identifier);
   };
@@ -442,8 +439,6 @@ const Welcome = () => {
           hour12: true,
         });
 
-        console.log(notification.request.content.data);
-        console.log("notification recieved: ", notification.request.identifier);
         if (!notification.request.content.data.group) {
           dispatch(
             addNoti({
@@ -772,7 +767,6 @@ const Welcome = () => {
               data={reminders}
               keyExtractor={(e, i) => i.toString()}
               renderItem={({ item }) => {
-                console.log(item.reminder.time);
                 const daysOfWeek = [
                   "Sunday",
                   "Monday",
@@ -1113,11 +1107,11 @@ const Welcome = () => {
           </Animated.View>
         )}
       </View>
-      {/* <NewFeaturesModal
+      <NewFeaturesModal
         theme={theme}
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
-      /> */}
+      />
       <View
         style={{
           width: "100%",
@@ -1196,7 +1190,7 @@ const Welcome = () => {
                       }
                 }
               >
-                What's New in v9!
+                What's New in v9.1!
               </Text>
             </View>
             <AntDesign

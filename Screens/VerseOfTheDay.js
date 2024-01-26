@@ -61,30 +61,6 @@ const VerseOfTheDay = ({ route }) => {
     }
   };
 
-  // const loadDailyVerse = () => {
-  //   AsyncStorage.getItem("storedVerse")
-  //     .then((data) => {
-  //       if (data !== null) {
-  //         setVerse(data);
-  //       } else {
-  //         setVerse("No daily verse just yet");
-  //       }
-  //     })
-  //     .catch((error) => console.log(error));
-  // };
-
-  // const loadDailyVerseTitle = () => {
-  //   AsyncStorage.getItem("storedVerseTitle")
-  //     .then((data) => {
-  //       if (data !== null) {
-  //         setVerseTitle(data);
-  //       } else {
-  //         setVerseTitle("");
-  //       }
-  //     })
-  //     .catch((error) => console.log(error));
-  // };
-
   const HandleFavorites = (verse) => {
     dispatch(
       addToFavorites({

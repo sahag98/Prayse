@@ -12,7 +12,6 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
 
   const viewNotification = (screen) => {
     if (!screen) {
-      console.log(item);
       dismissNotification(item);
       dispatch(deleteNoti(item.noti_id));
       setNotiVisible(false);

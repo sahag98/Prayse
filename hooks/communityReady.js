@@ -4,7 +4,7 @@ const communityReady = () => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setIsReady(true), 2000);
+    setTimeout(() => setIsReady(true), 500);
   }, []);
 
   return isReady;

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
 import communityReady from "../hooks/communityReady";
+import { ActivityIndicator } from "react-native";
 
 const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -27,6 +28,23 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
     });
   };
 
+  const BusyIndicator = () => {
+    return (
+      <View
+        style={
+          theme == "dark"
+            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
+            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
+        }
+      >
+        <ActivityIndicator
+          size="large"
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      </View>
+    );
+  };
+
   const handleRefresh = () => {
     setRefreshing(true); // Start the refreshing indicator
     getPrayers();
@@ -37,7 +55,7 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   return (
     <View style={{ flex: 1 }}>
       {!isReady || !isConnected ? (
-        <Skeleton />
+        <BusyIndicator />
       ) : (
         <FlatList
           data={prayers}

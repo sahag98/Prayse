@@ -100,7 +100,14 @@ const Devotional = ({ navigation }) => {
   }
 
   return (
-    <>
+    <ScrollView
+      style={{ backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff" }}
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refresh} onRefresh={loadDevotionals} />
+      }
+      showsVerticalScrollIndicator={false}
+    >
       {refresh ? <ActivityIndicator /> : null}
       <Container
         style={
@@ -123,6 +130,7 @@ const Devotional = ({ navigation }) => {
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
+
             padding: 10,
             borderRadius: 10,
             gap: 5,
@@ -201,152 +209,18 @@ const Devotional = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
+        <Text
+          onPress={loadDevotionals}
+          style={{
+            marginTop: 20,
+            fontFamily: "Inter-Medium",
+            color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+          }}
         >
-          {devotionals?.map((d, index) => (
-            <View key={d._id}>
-              <DevoItem
-                theme={theme}
-                tbf={tbf}
-                supabase={supabase}
-                currentUser={currentUser}
-                channel={channel}
-                setChannel={setChannel}
-                fetchLikes={fetchLikes}
-                refreshReflections={refreshReflections}
-                fetchReflections={fetchReflections}
-                isFocused={isFocused}
-                refresh={refresh}
-                loadDevotionals={loadDevotionals}
-                convertDigitIn={convertDigitIn}
-                devo={d}
-              />
-              <View
-                style={
-                  theme == "dark"
-                    ? {
-                        position: "absolute",
-                        bottom: 10,
-                        width: "75%",
-
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        alignSelf: "center",
-                        padding: 10,
-                        borderRadius: 20,
-                        backgroundColor: "#212121",
-                      }
-                    : {
-                        position: "absolute",
-                        bottom: 10,
-                        width: "75%",
-                        shadowColor: "#9f9f9f",
-                        shadowOffset: {
-                          width: 0,
-                          height: 6,
-                        },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 5.62,
-                        elevation: 8,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        alignSelf: "center",
-                        padding: 10,
-                        borderRadius: 20,
-                        backgroundColor: "white",
-                      }
-                }
-              >
-                <TouchableOpacity onPress={() => insertLike(d.title)}>
-                  <Animated.View
-                    style={[
-                      animatedStyle,
-                      { flexDirection: "row", alignItems: "center", gap: 5 },
-                    ]}
-                  >
-                    <AntDesign
-                      name="hearto"
-                      size={24}
-                      color={
-                        isLikedByMe
-                          ? "red"
-                          : theme == "dark"
-                          ? "white"
-                          : "#2f2d51"
-                      }
-                    />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: "Inter-Medium",
-                        color: isLikedByMe
-                          ? "red"
-                          : theme == "dark"
-                          ? "white"
-                          : "#2f2d51",
-                      }}
-                    >
-                      {likesArray.length}
-                    </Text>
-                  </Animated.View>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    height: "100%",
-                    backgroundColor: theme == "dark" ? "white" : "black",
-                    width: 1,
-                  }}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("Reflection", { devoTitle: d.title })
-                  }
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
-                  <FontAwesome
-                    style={{ marginBottom: 4 }}
-                    name="comment-o"
-                    size={24}
-                    color={theme == "dark" ? "white" : "#2f2d51"}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: theme == "dark" ? "white" : "white",
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    {reflectionsArray.length}
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    height: "100%",
-                    backgroundColor: theme == "dark" ? "white" : "black",
-                    width: 1,
-                  }}
-                />
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Reflection")}
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
-                  <FontAwesome5
-                    name="share"
-                    size={24}
-                    color={theme == "dark" ? "white" : "#2f2d51"}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </KeyboardAvoidingView> */}
+          Pull page down or press here to refresh!
+        </Text>
       </Container>
-    </>
+    </ScrollView>
   );
 };
 

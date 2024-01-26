@@ -9,7 +9,6 @@ const ReminderModal = ({
   reminderVisible,
   setReminderVisible,
 }) => {
-  console.log(reminder);
   return (
     <Modal
       key={reminder.id}

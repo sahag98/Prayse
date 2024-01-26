@@ -15,7 +15,7 @@ export const useTypingIndicator = ({ roomId, userId }) => {
 
   useEffect(() => {
     const newChannel = supabase.channel(`typing:${62}`);
-    console.log("channel: ", newChannel);
+
     const onTyping = (payload) => {
       setPayload(payload);
       setIsTyping(true);

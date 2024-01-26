@@ -7,14 +7,14 @@ import Toast from "react-native-toast-message";
 import { SUPABASE_URL, SUPABASE_ANON } from "@env";
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
-  getItem: (key) => {
-    return SecureStore.getItemAsync(key);
+  getItem: async (key) => {
+    return await SecureStore.getItemAsync(key);
   },
-  setItem: (key, value) => {
-    SecureStore.setItemAsync(key, value);
+  setItem: async (key, value) => {
+    await SecureStore.setItemAsync(key, value);
   },
-  removeItem: (key) => {
-    SecureStore.deleteItemAsync(key);
+  removeItem: async (key) => {
+    await SecureStore.deleteItemAsync(key);
   },
 };
 
@@ -160,13 +160,6 @@ export const SupabaseProvider = (props) => {
               table: "prayers",
             },
             (payload) => {
-              console.log("new prayer :", payload);
-
-              console.log(
-                "prayer user: ",
-                profiles[0].id + "payload: ",
-                payload.new.user_id
-              );
               if (
                 payload.eventType === "INSERT" &&
                 profiles[0].id !== payload.new.user_id
@@ -183,11 +176,6 @@ export const SupabaseProvider = (props) => {
               table: "answers",
             },
             (payload) => {
-              console.log(
-                "prayer user: ",
-                profiles[0].id + "payload: ",
-                payload.new.user_id
-              );
               if (
                 payload.eventType === "INSERT" &&
                 profiles[0].id !== payload.new.user_id
@@ -241,23 +229,23 @@ export const SupabaseProvider = (props) => {
               }
             }
           )
-          // .on(
-          //   "postgres_changes",
-          //   {
-          //     event: "*",
-          //     schema: "public",
-          //     table: "message_likes",
-          //   },
-          //   (payload) => {
-          //     if (
-          //       payload.eventType == "INSERT" ||
-          //       payload.eventType == "DELETE"
-          //     ) {
-          //       console.log(payload);
-          //       setRefreshMsgLikes(true);
-          //     }
-          //   }
-          // )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "message_likes",
+            },
+            (payload) => {
+              if (
+                payload.eventType == "INSERT" ||
+                payload.eventType == "DELETE"
+              ) {
+                console.log("refresh payload");
+                setRefreshMsgLikes(true);
+              }
+            }
+          )
           .on(
             "postgres_changes",
             {
@@ -296,6 +284,7 @@ export const SupabaseProvider = (props) => {
             },
             (payload) => {
               if (payload.eventType === "INSERT") {
+                console.log(payload);
                 setRefreshReflections(true);
               }
             }

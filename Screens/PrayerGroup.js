@@ -59,7 +59,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const [channel, setChannel] = useState();
   const [isShowingHeader, setIsShowingHeader] = useState(true);
-  console.log(inputHeight);
+
   const dispatch = useDispatch();
   const {
     currentUser,
@@ -76,13 +76,17 @@ const PrayerGroup = ({ route, navigation }) => {
 
   useEffect(() => {
     const headerTimeout = setTimeout(() => {
-      setIsShowingHeader(false);
+      if (groupMessages.length < 5 || groupMessages.length == 0) {
+        setIsShowingHeader(true);
+      } else {
+        setIsShowingHeader(false);
+      }
     }, 2000);
 
     return () => {
       clearTimeout(headerTimeout);
     };
-  }, []);
+  }, [isFocused]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -96,6 +100,20 @@ const PrayerGroup = ({ route, navigation }) => {
       setIsShowingHeader(false);
     }
   };
+
+  async function getGroupMessagesForLikes() {
+    try {
+      let { data, error } = await supabase
+        .from("messages")
+        .select("*, profiles(full_name, avatar_url, expoToken)")
+        .eq("group_id", currGroup.group_id)
+        .order("id", { ascending: false });
+
+      setGroupMessages(data);
+    } catch (error) {
+      console.log("fetching error: ", error);
+    }
+  }
 
   useEffect(() => {
     // setTimeout(() => {
@@ -113,13 +131,9 @@ const PrayerGroup = ({ route, navigation }) => {
             .eq("group_id", currGroup.group_id)
             .order("id", { ascending: false });
 
-          // data.map((item) => {
-          //   // console.log("mapping: ", item);
-          //   dispatch(addMessage(item));
-          // });
           setGroupMessages(data);
         } catch (error) {
-          console.log(error);
+          console.log("fetching error: ", error);
         }
         setAreMessagesLoading(false);
       }
@@ -198,8 +212,6 @@ const PrayerGroup = ({ route, navigation }) => {
       };
     }
   }, [currGroup.group_id, currentUser.id, isFocused]);
-
-  // console.log(currGroup);
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -347,23 +359,27 @@ const PrayerGroup = ({ route, navigation }) => {
     const isoDateString = currentDate.toISOString(); // e.g., "2024-01-03T01:01:03.537Z"
     const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
 
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        group_id: currGroup.group_id,
+        user_id: currentUser.id,
+        message: newMessage,
+      })
+      .select();
+
     channel.send({
       type: "broadcast",
       event: "message",
       payload: {
+        id: data[0].id,
         message: newMessage,
         created_at: isoStringWithOffset,
         user_id: currentUser.id,
         profiles: currentUser,
       },
     });
-
-    const { data, error } = await supabase.from("messages").insert({
-      group_id: currGroup.group_id,
-      user_id: currentUser.id,
-      message: newMessage,
-    });
-
+    // getGroupMessagesForLikes();
     if (error) {
       throw new Error(error);
     } else {
@@ -373,26 +389,6 @@ const PrayerGroup = ({ route, navigation }) => {
     // sendGroupNotification();
   };
   let currentDate = null;
-  // useEffect(() => {
-  //   async function getGroupMessages() {
-  //     try {
-  //       // setAreMessagesLoading(true);
-  //       let { data: groupMessages, error } = await supabase
-  //         .from("messages")
-  //         .select("*,groups(*), profiles(full_name, avatar_url, expoToken)")
-  //         .eq("group_id", currGroup.group_id)
-  //         .order("id", { ascending: false });
-
-  //       setMessages(groupMessages);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //     // setAreMessagesLoading(false);
-  //     setIsNewMessage(false);
-  //   }
-  //   getGroupMessages();
-  // }, [isNewMessage]);
 
   const isSameDate = (date1, date2) => {
     return (
@@ -600,6 +596,7 @@ const PrayerGroup = ({ route, navigation }) => {
             </TouchableOpacity>
           </HeaderView>
         )}
+
         <View
           style={{
             flexDirection: "row",
@@ -703,6 +700,8 @@ const PrayerGroup = ({ route, navigation }) => {
                       <GroupPrayerItem
                         theme={theme}
                         currentUser={currentUser}
+                        groupMessages={groupMessages}
+                        setGroupMessages={setGroupMessages}
                         supabase={supabase}
                         currGroup={currGroup}
                         item={item}

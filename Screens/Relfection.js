@@ -88,6 +88,7 @@ const Relfection = ({ navigation, route }) => {
       });
 
       setReflection("");
+      fetchReflections();
     } catch (error) {
       console.log(error);
     }
@@ -114,14 +115,14 @@ const Relfection = ({ navigation, route }) => {
           <TouchableOpacity
             style={{
               flexDirection: "row",
-              backgroundColor: "#212121",
+              backgroundColor: theme == "dark" ? "#212121" : "#d2d2d2",
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 100,
               padding: 5,
               gap: 5,
             }}
-            onPress={() => navigation.navigate("Devotional")}
+            onPress={() => navigation.navigate("DevoList")}
           >
             <AntDesign
               name="left"
@@ -250,6 +251,7 @@ const Relfection = ({ navigation, route }) => {
           style={theme == "dark" ? styles.inputDark : styles.input}
           placeholder="Add your reflection..."
           onPressIn={checkSignIn}
+          autoFocus={false}
           placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
           selectionColor={theme == "dark" ? "white" : "#2f2d51"}
           value={reflection}

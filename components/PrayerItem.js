@@ -43,7 +43,6 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
 
   useEffect(() => {
     setLoadingLikes(true);
-    // console.log("use effect");
     fetchLikes(item.id).then(() => {
       setLoadingLikes(false);
       setRefreshLikes(false);
@@ -83,7 +82,6 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
     }
   }
 
-  // console.log("created at: ", format(item.created_at));
   const sendNotification = async (expoToken, title) => {
     const message = {
       to: expoToken,

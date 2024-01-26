@@ -159,19 +159,16 @@ const WelcomeModal = ({
   };
 
   const handleNext = async () => {
-    console.log("going next");
     if (name.length == 0) {
       showToast("error", "Username field is required.");
       return;
     }
     const isUniqueName = await checkIfUnique();
     if (!isUniqueName) {
-      console.log("not unique");
       setIsUnique(false);
     }
 
     if (isUniqueName) {
-      console.log("is unique");
       const { data, error } = await supabase
         .from("profiles")
         .update({

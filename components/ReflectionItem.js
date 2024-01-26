@@ -11,7 +11,7 @@ const ReflectionItem = ({ item, theme }) => {
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Image
             style={styles.avatar}
             source={{
@@ -21,18 +21,31 @@ const ReflectionItem = ({ item, theme }) => {
             }}
           />
           <Text
-            style={{ color: "white", fontSize: 15, fontFamily: "Inter-Medium" }}
+            style={{
+              color: theme == "dark" ? "white" : "#2f2d51",
+              fontSize: 15,
+              fontFamily: "Inter-Medium",
+            }}
           >
             {item.profiles.full_name}
           </Text>
         </View>
         <Text
-          style={{ color: "white", fontSize: 12, fontFamily: "Inter-Regular" }}
+          style={{
+            color: theme == "dark" ? "white" : "#2f2d51",
+            fontSize: 12,
+            fontFamily: "Inter-Regular",
+          }}
         >
           {Moment(item.created_at).fromNow()}
         </Text>
       </View>
-      <Text style={{ color: "white", fontFamily: "Inter-Regular" }}>
+      <Text
+        style={{
+          color: theme == "dark" ? "white" : "#2f2d51",
+          fontFamily: "Inter-Regular",
+        }}
+      >
         {item.reflection}
       </Text>
     </View>

@@ -48,7 +48,6 @@ export default function Reminder({ route, navigation }) {
 
   useEffect(() => {
     if (route.params.reminder != undefined && route.params.type == "Add") {
-      // console.log(route.params);
       console.log("reminder: ", route?.params?.reminder);
       setReminderDate("");
       setRepeatOption("");
@@ -67,8 +66,6 @@ export default function Reminder({ route, navigation }) {
     }
 
     if (route.params.reminderToEditTitle && route.params.type != "Add") {
-      // let reminderToEdit = route.params.reminderToEdit;
-      // console.log("in editing: ", reminderToEdit);
       setNewReminder(route.params.reminderToEditTitle);
       setNewNote(route.params.reminderToEditNote);
       let originalTimestamp = route.params.reminderToEditTime;

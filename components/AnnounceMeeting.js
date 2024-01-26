@@ -90,7 +90,7 @@ const AnnounceMeeting = ({
           <Text
             style={{
               color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Medium",
+              fontFamily: "Inter-Bold",
               fontSize: 17,
               textAlign: "center",
             }}
@@ -99,14 +99,14 @@ const AnnounceMeeting = ({
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              color: theme == "dark" ? "red" : "red",
               marginTop: 10,
-              fontFamily: "Inter-Medium",
-              fontSize: 14,
-              textAlign: "center",
+              fontFamily: "Inter-Regular",
+
+              textAlign: "left",
             }}
           >
-            You can only once a meeting once every 10 minutes.
+            You can announce a meeting once every 5 minutes.
           </Text>
           <TouchableOpacity
             onPress={sendAnnounceMent}

@@ -126,7 +126,6 @@ const Reminder = ({ navigation }) => {
               };
               timeOptions = options;
             } else if (item.ocurrence === "None") {
-              console.log("none");
               let options = {
                 month: "numeric",
                 day: "numeric",

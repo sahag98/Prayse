@@ -12,6 +12,7 @@ import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Share,
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
@@ -66,9 +67,8 @@ const DevoList = ({ navigation }) => {
       },
     ]);
 
-  console.log("isLogged IN : ", isLoggedIn);
-
   const fetchReflections = async (title) => {
+    console.log("fetching", title);
     const { data, error } = await supabase
       .from("reflections")
       .select("*, profiles(full_name,avatar_url)")
@@ -128,6 +128,7 @@ const DevoList = ({ navigation }) => {
       withSpring(1.2, { damping: 2, stiffness: 80 }),
       withSpring(1, { damping: 2, stiffness: 80 })
     );
+
     const { data, error } = await supabase.from("devo_likes").insert({
       user_id: currentUser?.id,
       devo_title: title,
@@ -163,13 +164,28 @@ const DevoList = ({ navigation }) => {
     };
   });
 
+  const onShare = async (title, description, day, content) => {
+    console.log(title);
+
+    if (title) {
+      try {
+        await Share.share({
+          message:
+            title + "\n" + description + "\n" + "\n" + day + "\n" + content,
+        });
+      } catch (error) {
+        Alert.alert(error.message);
+      }
+    }
+  };
+
   function convertDigitIn(str) {
     let newStr = str.replace(/-/g, "/");
     return newStr.split("/").reverse().join("/");
   }
 
   const isLikedByMe = !!likesArray?.find(
-    (like) => like.user_id == currentUser.id
+    (like) => like.user_id == currentUser?.id
   );
 
   const BusyIndicator = () => {
@@ -326,7 +342,7 @@ const DevoList = ({ navigation }) => {
                           : "#2f2d51",
                       }}
                     >
-                      {likesArray.length}
+                      {likesArray?.length}
                     </Text>
                   </Animated.View>
                 </TouchableOpacity>
@@ -352,11 +368,11 @@ const DevoList = ({ navigation }) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      color: theme == "dark" ? "white" : "white",
+                      color: theme == "dark" ? "white" : "#2f2d51",
                       fontFamily: "Inter-Medium",
                     }}
                   >
-                    {reflectionsArray.length}
+                    {reflectionsArray?.length}
                   </Text>
                 </TouchableOpacity>
                 <View
@@ -367,7 +383,9 @@ const DevoList = ({ navigation }) => {
                   }}
                 />
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Reflection")}
+                  onPress={() =>
+                    onShare(d.title, d.description, d.day, d.content)
+                  }
                   style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
                 >
                   <FontAwesome5
