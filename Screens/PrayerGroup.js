@@ -31,12 +31,6 @@ import GroupInfoModal from "../components/GroupInfoModal";
 import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useIsFocused } from "@react-navigation/native";
 import AnnounceMeeting from "../components/AnnounceMeeting";
-import { addMessage, clearMessages } from "../redux/messageReducer";
-import Animated, {
-  FadeIn,
-  SlideInUp,
-  SlideOutDown,
-} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import GroupPrayerItem from "../components/GroupPrayerItem";
 
@@ -116,6 +110,7 @@ const PrayerGroup = ({ route, navigation }) => {
   }
 
   useEffect(() => {
+    console.log("curr user: ", currentUser.id);
     // setTimeout(() => {
     //   setIsShowingHeader(false);
     // }, 5000);
@@ -211,7 +206,7 @@ const PrayerGroup = ({ route, navigation }) => {
         setChannel(undefined);
       };
     }
-  }, [currGroup.group_id, currentUser.id, isFocused]);
+  }, [currGroup?.group_id, currentUser?.id, isFocused]);
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -263,68 +258,6 @@ const PrayerGroup = ({ route, navigation }) => {
     });
   };
 
-  // useEffect(() => {
-  //   async function getGroupMessages() {
-  //     try {
-  //       setAreMessagesLoading(true);
-  //       let { data: groupMessages, error } = await supabase
-  //         .from("messages")
-  //         .select("*,groups(*), profiles(*)")
-  //         .eq("group_id", currGroup.group_id)
-  //         .order("id", { ascending: false });
-  //       setMessages(groupMessages);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //     setAreMessagesLoading(false);
-  //     setIsNewMessage(false);
-  //   }
-  //   getGroupMessages();
-  // }, []);
-
-  // useEffect(() => {
-  //   async function getGroupMessages() {
-  //     try {
-  //       // setAreMessagesLoading(true);
-  //       let { data: groupMessages, error } = await supabase
-  //         .from("messages")
-  //         .select("*,groups(*), profiles(*)")
-  //         .eq("group_id", currGroup.group_id)
-  //         .order("id", { ascending: false });
-
-  //       setMessages(groupMessages);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //     // setAreMessagesLoading(false);
-  //     setIsNewMessage(false);
-  //   }
-  //   getGroupMessages();
-  // }, [isFocused]);
-
-  // useEffect(() => {
-  //   async function getGroupMessages() {
-  //     try {
-  //       setAreMessagesLoading(true);
-  //       let { data: groupMessages, error } = await supabase
-  //         .from("messages")
-  //         .select("*,groups(*), profiles(*)")
-  //         .eq("group_id", currGroup.group_id)
-  //         .order("id", { ascending: false });
-
-  //       setMessages(groupMessages);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //     setAreMessagesLoading(false);
-  //     setIsNewMessage(false);
-  //   }
-  //   getGroupMessages();
-  // }, [currGroup.group_id]);
-
   async function getSingleGroup() {
     let { data: groups, error } = await supabase
       .from("groups")
@@ -334,6 +267,7 @@ const PrayerGroup = ({ route, navigation }) => {
   }
 
   const sendMessage = async () => {
+    console.log("sending msg: ", currentUser);
     if (newMessage.length == 0) {
       return;
     }
@@ -346,14 +280,6 @@ const PrayerGroup = ({ route, navigation }) => {
       setIsGroupRemoved(true);
       return;
     }
-    // const optimisticMessage = {
-    //   group_id: currGroup.group_id,
-    //   user_id: currentUser.id,
-    //   // avatar_url: currentUser.avatar_url,
-    //   message: newMessage,
-    // };
-
-    // setMessages([optimisticMessage, ...messages]);
 
     const currentDate = new Date();
     const isoDateString = currentDate.toISOString(); // e.g., "2024-01-03T01:01:03.537Z"
@@ -628,7 +554,8 @@ const PrayerGroup = ({ route, navigation }) => {
               fontSize: 13,
             }}
           >
-            {onlineUsers.length} Users Online
+            {onlineUsers.length} User{onlineUsers.length > 1 ? "'s " : ""}
+            Online
           </Text>
         </View>
         <View

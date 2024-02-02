@@ -598,7 +598,7 @@ const CommunityHome = ({ route }) => {
                             borderRadius: 10,
                             justifyContent: "space-between",
                             borderColor: item.groups.color.toLowerCase(),
-                            backgroundColor: "#121212",
+                            backgroundColor: "#212121",
                             maxWidth: ITEM_WIDTH + 100,
                             height: "auto",
                           }
@@ -611,7 +611,7 @@ const CommunityHome = ({ route }) => {
                             paddingBottom: 20,
                             borderRadius: 10,
                             borderColor: item.groups.color.toLowerCase(),
-                            backgroundColor: "#f2f7ff",
+                            backgroundColor: "white",
                             maxWidth: ITEM_WIDTH + 100,
                             height: "auto",
                           }
@@ -653,7 +653,7 @@ const CommunityHome = ({ route }) => {
                                 padding: 5,
                                 flexDirection: "row",
                                 alignItems: "center",
-                                backgroundColor: "#212121",
+                                backgroundColor: "#121212",
                                 borderRadius: 10,
                                 gap: 8,
                               }

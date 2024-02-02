@@ -275,9 +275,9 @@ const GroupPrayerItem = ({
                 {
                   borderRadius: 10,
                   marginBottom: 10,
-                  padding: 10,
-                  gap: 10,
-                  minWidth: 100,
+                  padding: 30,
+                  gap: 5,
+                  minWidth: 130,
                   maxWidth: 300,
                 },
               ]
@@ -286,7 +286,7 @@ const GroupPrayerItem = ({
                 marginBottom: 10,
                 padding: 10,
                 gap: 15,
-                minWidth: 100,
+                minWidth: 130,
                 maxWidth: 300,
               }
         }
@@ -328,7 +328,6 @@ const GroupPrayerItem = ({
             </Text>
           </View>
         )}
-
         <Text
           style={
             theme == "dark"

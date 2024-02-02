@@ -129,6 +129,7 @@ export const SupabaseProvider = (props) => {
     setSession(result.data.session ? result.data.session : null);
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
+      console.log("session is on");
       let { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("*")
@@ -327,6 +328,7 @@ export const SupabaseProvider = (props) => {
         session,
         currentUser,
         newMsgGroupId,
+        checkIfUserIsLoggedIn,
         setNewMsgGroupId,
         setCurrentUser,
         register,

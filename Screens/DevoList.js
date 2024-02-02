@@ -111,7 +111,7 @@ const DevoList = ({ navigation }) => {
       const { data, error } = await supabase
         .from("devo_likes")
         .delete()
-        // .eq("devo_title", title)
+        .eq("devo_title", title)
         .eq("user_id", currentUser?.id);
 
       channel.send({

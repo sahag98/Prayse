@@ -13,7 +13,7 @@ import Animated, {
 
 import { useRef } from "react";
 
-import remind from "../assets/remind.png";
+import likewrite from "../assets/likewrite.png";
 
 import quest2 from "../assets/quest2.png";
 
@@ -80,7 +80,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 ? {
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
-                    color: "#A5C9FF",
+                    color: "white",
                     fontSize: 25,
                     letterSpacing: 1,
                     marginBottom: 10,
@@ -101,8 +101,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Animated.Image
                   entering={FadeIn.duration(500)}
-                  style={[styles.img, { tintColor: "#ffa500" }]}
-                  source={theme == "dark" ? remind : remind}
+                  style={[styles.img]}
+                  source={theme == "dark" ? likewrite : likewrite}
                 />
 
                 <Text
@@ -110,12 +110,12 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                     theme == "dark"
                       ? {
                           fontFamily: "Inter-Bold",
-                          fontSize: 20,
+                          fontSize: 22,
                           color: "white",
                         }
                       : {
                           fontFamily: "Inter-Bold",
-                          fontSize: 20,
+                          fontSize: 22,
                           color: "#2f2d51",
                         }
                   }
@@ -137,7 +137,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Ability to like and write a reflection for that daily
+                  Ability to like and write a reflection for the weekly
                   devotional.
                 </Text>
                 {/* <View style={{ width: "100%", gap: 5 }}>
@@ -274,18 +274,18 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   style={
                     theme == "dark"
                       ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
                           color: "white",
                         }
                       : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
                           color: "#2f2d51",
                         }
                   }
                 >
-                  Prayer Groups
+                  Prayer Groups Prayer
                 </Text>
                 <Text
                   style={
@@ -294,8 +294,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
                 >
-                  Create or join a prayer group and pray for one another on the
-                  Community screen!
+                  Ability to let each other know you're praying for their
+                  request by clicking the prayer icon under their prayer!
                 </Text>
 
                 <View
@@ -386,18 +386,18 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   style={
                     theme == "dark"
                       ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
                           color: "white",
                         }
                       : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 18,
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
                           color: "#2f2d51",
                         }
                   }
                 >
-                  Changes:
+                  Changes/Fixes:
                 </Text>
                 <View style={{ gap: 5 }}>
                   <Text
@@ -416,8 +416,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Added notification for every answer to the week's
-                    question.
+                    - Fixed app crashing when prayer group notification is
+                    pressed if the app is fully closed.
                   </Text>
                   <Text
                     style={
@@ -426,7 +426,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Seperate Question of the Week screen.
+                    - New Devotional page and design changes.
                   </Text>
                   <Text
                     style={
@@ -435,19 +435,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Design and layout changes on multiple screens.
+                    - Changed prayer group design.
                   </Text>
-
-                  {/* <Text
-                    style={
-                      theme == "dark"
-                        ? { fontFamily: "Inter-Regular", color: "white" }
-                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                    }
-                  >
-                    Once you answer the question you will not be able to edit or
-                    delete your question.
-                  </Text> */}
                 </View>
                 <View
                   style={{
@@ -648,8 +637,7 @@ export default NewFeaturesModal;
 
 const styles = StyleSheet.create({
   img: {
-    borderRadius: 10,
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
   },
 });

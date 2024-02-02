@@ -1,6 +1,7 @@
 import {
   Alert,
   FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -92,6 +93,8 @@ const Relfection = ({ navigation, route }) => {
     } catch (error) {
       console.log(error);
     }
+
+    Keyboard.dismiss();
   };
 
   return (

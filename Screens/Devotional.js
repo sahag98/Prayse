@@ -108,7 +108,12 @@ const Devotional = ({ navigation }) => {
       }
       showsVerticalScrollIndicator={false}
     >
-      {refresh ? <ActivityIndicator /> : null}
+      {refresh ? (
+        <ActivityIndicator
+          size="large"
+          color={theme == "dark" ? "white" : "red"}
+        />
+      ) : null}
       <Container
         style={
           theme == "dark"
@@ -161,7 +166,7 @@ const Devotional = ({ navigation }) => {
                 fontFamily: "Inter-Medium",
               }}
             >
-              {convertDate(devotionals[0].date)}
+              {convertDate(devotionals[0]?.date)}
             </Text>
           </View>
           <Text
@@ -172,7 +177,7 @@ const Devotional = ({ navigation }) => {
               fontSize: 23,
             }}
           >
-            {devotionals[0].title}
+            {devotionals[0]?.title}
           </Text>
           <Text
             style={{
@@ -183,7 +188,7 @@ const Devotional = ({ navigation }) => {
               marginBottom: 10,
             }}
           >
-            {devotionals[0].description}
+            {devotionals[0]?.description}
           </Text>
 
           <TouchableOpacity
@@ -214,6 +219,7 @@ const Devotional = ({ navigation }) => {
           style={{
             marginTop: 20,
             fontFamily: "Inter-Medium",
+            fontSize: 13,
             color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
           }}
         >

@@ -58,7 +58,7 @@ const ProfileModal = ({
   const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
   const isFocused = useIsFocused();
-
+  const navigation = useNavigation();
   useEffect(() => {
     getUserPrayers();
   }, []);
@@ -72,6 +72,7 @@ const ProfileModal = ({
 
   const addPrayer = () => {
     setProfileVisible(false);
+    navigation.navigate("PublicCommunity");
     setPrayerModal(true);
   };
 
