@@ -33,6 +33,8 @@ import { useIsFocused } from "@react-navigation/native";
 import AnnounceMeeting from "../components/AnnounceMeeting";
 import Toast from "react-native-toast-message";
 import GroupPrayerItem from "../components/GroupPrayerItem";
+import ToolTip from "../components/ToolTip";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -52,6 +54,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const [channel, setChannel] = useState();
+  const [tooltipVisible, setTooltipVisible] = useState(false);
   const [isShowingHeader, setIsShowingHeader] = useState(true);
 
   const dispatch = useDispatch();
@@ -67,6 +70,26 @@ const PrayerGroup = ({ route, navigation }) => {
   } = useSupabase();
 
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function checkToolTip() {
+      // await AsyncStorage.removeItem("isChecked");
+      try {
+        const isChecked = await AsyncStorage.getItem("isChecked");
+
+        if (isChecked == null) {
+          console.log("it is the first time");
+          setTooltipVisible(true);
+          await AsyncStorage.setItem("isChecked", "true");
+        } else if (isChecked != null) {
+          setTooltipVisible(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    checkToolTip();
+  }, []);
 
   useEffect(() => {
     const headerTimeout = setTimeout(() => {
@@ -110,12 +133,11 @@ const PrayerGroup = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    console.log("curr user: ", currentUser.id);
     // setTimeout(() => {
     //   setIsShowingHeader(false);
     // }, 5000);
     /** only create the channel if we have a roomCode and username */
-    if (currGroup.group_id && currentUser.id) {
+    if (currGroup.group_id && currentUser?.id) {
       // dispatch(clearMessages());
       async function getGroupMessages() {
         try {
@@ -146,7 +168,7 @@ const PrayerGroup = ({ route, navigation }) => {
             self: true,
           },
           presence: {
-            key: currentUser.id,
+            key: currentUser?.id,
           },
         },
       });
@@ -173,8 +195,6 @@ const PrayerGroup = ({ route, navigation }) => {
           .flat();
 
         setOnlineUsers(users);
-        /** sort and set the users */
-        // setUsers(users.sort());
       });
 
       /**
@@ -227,26 +247,11 @@ const PrayerGroup = ({ route, navigation }) => {
     };
   }, [hasAnnounced]);
 
-  // useEffect(() => {
-  //   if (countdown === 0) {
-  //     setHasAnnounced(null);
-  //     setCountdown(600);
-  //   }
-  // }, [countdown]);
-
-  let lastRenderedDate = null;
-
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 45) {
       setInputHeight(45);
     } else {
       setInputHeight(event.nativeEvent.contentSize.height);
-    }
-  };
-
-  const scrollToBottom = () => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
     }
   };
 
@@ -305,23 +310,12 @@ const PrayerGroup = ({ route, navigation }) => {
         profiles: currentUser,
       },
     });
-    // getGroupMessagesForLikes();
+
     if (error) {
       throw new Error(error);
     } else {
       setNewMessage("");
     }
-
-    // sendGroupNotification();
-  };
-  let currentDate = null;
-
-  const isSameDate = (date1, date2) => {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
   };
 
   const openGroupInfo = async () => {
@@ -371,6 +365,11 @@ const PrayerGroup = ({ route, navigation }) => {
               }
         }
       >
+        <ToolTip
+          tooltipVisible={tooltipVisible}
+          setTooltipVisible={setTooltipVisible}
+          theme={theme}
+        />
         {isShowingHeader && (
           <HeaderView
             style={{
@@ -445,8 +444,7 @@ const PrayerGroup = ({ route, navigation }) => {
               onPress={() => setIsAnnouncingMeeting(true)}
               style={{
                 borderRadius: 50,
-                // width: 45,
-                // height: 45,
+
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 8,
@@ -673,17 +671,10 @@ const PrayerGroup = ({ route, navigation }) => {
                   ? [
                       styles.inputDark,
                       { paddingBottom: Platform.OS == "android" ? 0 : 5 },
-                      // {
-                      //   height: inputHeight < 45 ? 45 : inputHeight,
-                      //   maxHeight: 200,
-                      // },
                     ]
                   : [
                       styles.input,
-                      // {
-                      //   height: inputHeight < 45 ? 45 : inputHeight,
-                      //   maxHeight: 200,
-                      // },
+                      { paddingBottom: Platform.OS == "android" ? 0 : 5 },
                     ]
               }
               placeholder="Write a prayer..."
@@ -697,8 +688,6 @@ const PrayerGroup = ({ route, navigation }) => {
                 e.key === "Enter" && e.preventDefault();
               }}
               multiline={true}
-              // // ios fix for centering it at the top-left corner
-              // numberOfLines={5}
             />
           </View>
           <TouchableOpacity
@@ -738,11 +727,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
     width: "100%",
     paddingBottom: 5,
-    // borderColor: "#212121",
-    // backgroundColor: "#212121",
-    // borderWidth: 1,
-    // borderRadius: 10,
-    // padding: 10,
   },
   input: {
     color: "#2f2d51",

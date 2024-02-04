@@ -133,7 +133,6 @@ async function registerForPushNotificationsAsync() {
     token = (
       await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
     ).data;
-    console.log(token);
   } else {
     console.log("Must use physical device for Push Notifications");
   }
@@ -186,7 +185,6 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        console.log("update is available");
         // setIsUpdateAvailable(true);
       } else {
         console.log("update is not available");
@@ -1063,7 +1061,6 @@ const Welcome = ({ navigation }) => {
                 onEndReachedThreshold={0}
                 initialNumToRender={4}
                 windowSize={8}
-                // ListHeaderComponent={()=>}
                 ListFooterComponent={() => (
                   <TouchableOpacity
                     onPress={() => {

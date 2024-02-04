@@ -22,13 +22,6 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
       navigation.navigate(screen);
     }
 
-    // if (screen == "PublicCommunity") {
-    //   console.log("prayer id: ", item.prayerId);
-    //   navigation.navigate(screen, {
-    //     prayerId: item.prayerId,
-    //   });
-    // }
-
     setNotiVisible(false);
     dismissNotification(item);
     navigation.navigate(screen);

@@ -284,7 +284,6 @@ const GroupInfoModal = ({
       .delete()
       .eq("group_id", group.group_id)
       .eq("user_id", currentUser.id);
-    console.log("here");
     navigation.navigate("Community");
     setGroupInfoVisible(false);
   };

@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ChatBubble from "react-native-chat-bubble";
 import { useIsFocused } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
+import ReactionModal from "./ReactionModal";
 
 const GroupPrayerItem = ({
   setRefreshMsgLikes,
@@ -33,6 +34,8 @@ const GroupPrayerItem = ({
   const [isPraying, setIsPraying] = useState(false);
   const isFocused = useIsFocused();
   const [likedId, setLikedId] = useState();
+  const [reactionModalVisibile, setReactionModalVisibile] = useState(false);
+  const [isPressedLong, setIsPressedLong] = useState();
   const animationRef = useRef(null);
   const [loadingLikes, setLoadingLikes] = useState(false);
   // console.log("item: ", item.message, item.id);
@@ -70,7 +73,6 @@ const GroupPrayerItem = ({
        * Listen to broadcast messages with a `message` event
        */
       channel.on("broadcast", { event: "message" }, ({ payload }) => {
-        console.log("payload", payload.prayer_id);
         fetchLikes(payload.prayer_id);
       });
 
@@ -133,7 +135,6 @@ const GroupPrayerItem = ({
   });
 
   async function toggleLike(id, expoToken, message) {
-    console.log("id of item to like: ", id);
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
@@ -153,6 +154,7 @@ const GroupPrayerItem = ({
           user_id: currentUser.id,
         },
       });
+      setReactionModalVisibile(false);
       return;
     }
     //prayer_id for production
@@ -177,29 +179,15 @@ const GroupPrayerItem = ({
     });
 
     notifyLike(expoToken, message);
+    setReactionModalVisibile(false);
     if (error) {
       console.log("insert like err: ", error);
     }
   }
 
-  // async function getGroupMessagesForLikes() {
-  //   try {
-  //     let { data, error } = await supabase
-  //       .from("messages")
-  //       .select("*, profiles(full_name, avatar_url, expoToken)")
-  //       .eq("group_id", currGroup.group_id)
-  //       .order("id", { ascending: false });
-
-  //     setGroupMessages(data);
-  //   } catch (error) {
-  //     console.log("fetching error: ", error);
-  //   }
-  // }
-
   async function fetchLikes(prayerId) {
     //prayer_id for production
     //prayertest_id for testing
-    // getGroupMessagesForLikes();
     try {
       setLoadingLikes(true);
       const { data: likes, error: likesError } = await supabase
@@ -217,10 +205,6 @@ const GroupPrayerItem = ({
     setLoadingLikes(false);
   }
   const sendUrgentAnnouncement = async (urgentMessage, user) => {
-    console.log(urgentMessage);
-    console.log(user);
-
-    console.log(currentUser.expoToken);
     let { data: members, error } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
@@ -250,15 +234,28 @@ const GroupPrayerItem = ({
       }
     });
     showToast("success", "Members are notified.");
-    // setHasAnnounced(true);
-    // setIsAnnouncingMeeting(false);
+  };
+
+  const openReactionModal = (item) => {
+    setIsPressedLong(item);
+    setReactionModalVisibile(true);
   };
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
   return (
-    <>
+    <TouchableOpacity onLongPress={() => openReactionModal(item)}>
+      <ReactionModal
+        currentUser={currentUser}
+        likes={likes}
+        toggleLike={toggleLike}
+        reactionModalVisibile={reactionModalVisibile}
+        setReactionModalVisibile={setReactionModalVisibile}
+        isPressedLong={isPressedLong}
+        theme={theme}
+      />
       <ChatBubble
+        onLongPress={() => console.log("press")}
         isOwnMessage={item.user_id == currentUser.id ? true : false}
         bubbleColor={
           item.user_id == currentUser.id
@@ -427,26 +424,6 @@ const GroupPrayerItem = ({
               justifyContent: "space-between",
             }}
           >
-            <TouchableOpacity
-              onPress={() =>
-                toggleLike(item.id, item.profiles.expoToken, item.message)
-              }
-            >
-              <Animated.View style={animatedStyle}>
-                <Image
-                  style={
-                    isLikedByMe
-                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "white" }
-                      : { width: 25, height: 25, tintColor: "#2f2d51" }
-                  }
-                  source={{
-                    uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
-                  }}
-                />
-              </Animated.View>
-            </TouchableOpacity>
             <Text
               style={
                 theme == "dark"
@@ -498,7 +475,7 @@ const GroupPrayerItem = ({
           </View>
         )}
       </ChatBubble>
-    </>
+    </TouchableOpacity>
   );
 };
 

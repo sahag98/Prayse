@@ -260,7 +260,7 @@ const Settings = ({ navigation }) => {
               </Text>
             </View>
             <View>
-              <TouchableOpacity onPress={systemTheme} style={styles.system}>
+              <TouchableOpacity onPress={SystemTheme} style={styles.system}>
                 <View style={styles.systemDark}>
                   <Text
                     style={{ color: "black", paddingLeft: 5, color: "white" }}

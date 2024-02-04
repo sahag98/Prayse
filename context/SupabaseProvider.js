@@ -147,6 +147,7 @@ export const SupabaseProvider = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
+
       // Check if user is logged in before setting up subscriptions
       if (profiles[0] && profiles.length > 0) {
         //prayers for production
