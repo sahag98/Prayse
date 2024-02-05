@@ -30,6 +30,7 @@ const GroupPrayerItem = ({
   theme,
 }) => {
   const [likes, setLikes] = useState([]);
+  const [praises, setPraises] = useState([]);
   const [channel, setChannel] = useState();
   const [isPraying, setIsPraying] = useState(false);
   const isFocused = useIsFocused();
@@ -41,6 +42,7 @@ const GroupPrayerItem = ({
   // console.log("item: ", item.message, item.id);
   useEffect(() => {
     fetchLikes(item.id);
+    fetchPraises(item.id);
   }, [item.id]);
 
   useEffect(() => {
@@ -73,7 +75,11 @@ const GroupPrayerItem = ({
        * Listen to broadcast messages with a `message` event
        */
       channel.on("broadcast", { event: "message" }, ({ payload }) => {
-        fetchLikes(payload.prayer_id);
+        if (payload.type === "like") {
+          fetchLikes(payload.prayer_id);
+        } else if (payload.type === "praise") {
+          fetchPraises(payload.prayer_id);
+        }
       });
 
       /**
@@ -112,7 +118,28 @@ const GroupPrayerItem = ({
       to: expoToken,
       sound: "default",
       title: `${currGroup.groups.name} 📢`,
-      body: `${currentUser.full_name} is praying for ${item}`,
+      body: `${currentUser.full_name} has reacted with a prayer on ${item}`,
+      data: {
+        screen: "Community",
+        currGroup: currGroup,
+        allGroups: allGroups,
+      },
+    };
+    await axios.post("https://exp.host/--/api/v2/push/send", message, {
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const notifyPraise = async (expoToken, item) => {
+    const message = {
+      to: expoToken,
+      sound: "default",
+      title: `${currGroup.groups.name} 📢`,
+      body: `${currentUser.full_name} has reacted with a praise on ${item}`,
       data: {
         screen: "Community",
         currGroup: currGroup,
@@ -150,6 +177,7 @@ const GroupPrayerItem = ({
         type: "broadcast",
         event: "message",
         payload: {
+          type: "like",
           prayer_id: id,
           user_id: currentUser.id,
         },
@@ -164,6 +192,7 @@ const GroupPrayerItem = ({
       type: "broadcast",
       event: "message",
       payload: {
+        type: "like",
         prayer_id: id,
         user_id: currentUser.id,
       },
@@ -198,6 +227,78 @@ const GroupPrayerItem = ({
 
       if (likesError) {
         console.log("likesError: ", likesError);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setLoadingLikes(false);
+  }
+
+  async function togglePraise(id, expoToken, message) {
+    if (isPraisedByMe) {
+      scale.value = withSequence(
+        withSpring(1.2, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
+      );
+      const { data, error } = await supabase
+        .from("message_praises")
+        .delete()
+        .eq("prayer_id", id)
+        .eq("user_id", currentUser.id);
+
+      channel.send({
+        type: "broadcast",
+        event: "message",
+        payload: {
+          type: "praise",
+          prayer_id: id,
+          user_id: currentUser.id,
+        },
+      });
+      setReactionModalVisibile(false);
+      return;
+    }
+    //prayer_id for production
+    //prayertest_id for testing
+
+    channel.send({
+      type: "broadcast",
+      event: "message",
+      payload: {
+        type: "praise",
+        prayer_id: id,
+        user_id: currentUser.id,
+      },
+    });
+    setIsPraying(true);
+    scale.value = withSequence(
+      withSpring(1.2, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
+    );
+    const { data, error } = await supabase.from("message_praises").insert({
+      prayer_id: id,
+      user_id: currentUser.id,
+    });
+    notifyPraise(expoToken, message);
+    setReactionModalVisibile(false);
+    if (error) {
+      console.log("insert like err: ", error);
+    }
+  }
+
+  async function fetchPraises(prayerId) {
+    //prayer_id for production
+    //prayertest_id for testing
+    try {
+      setLoadingLikes(true);
+      const { data: praises, error: praisesError } = await supabase
+        .from("message_praises")
+        .select()
+        .eq("prayer_id", prayerId);
+      setPraises(praises);
+
+      if (praisesError) {
+        console.log("likesError: ", praisesError);
       }
     } catch (error) {
       console.log(error);
@@ -242,13 +343,18 @@ const GroupPrayerItem = ({
   };
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
+  const isPraisedByMe = !!praises?.find(
+    (praise) => praise.user_id == currentUser.id
+  );
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
   return (
     <TouchableOpacity onLongPress={() => openReactionModal(item)}>
       <ReactionModal
         currentUser={currentUser}
         likes={likes}
+        praises={praises}
         toggleLike={toggleLike}
+        togglePraise={togglePraise}
         reactionModalVisibile={reactionModalVisibile}
         setReactionModalVisibile={setReactionModalVisibile}
         isPressedLong={isPressedLong}

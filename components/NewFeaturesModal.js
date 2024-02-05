@@ -79,7 +79,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               theme == "dark"
                 ? {
                     textAlign: "center",
-                    fontFamily: "Inter-Bold",
+                    fontFamily: "Inter-Black",
                     color: "white",
                     fontSize: 25,
                     letterSpacing: 1,
@@ -87,7 +87,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   }
                 : {
                     textAlign: "center",
-                    fontFamily: "Inter-Bold",
+                    fontFamily: "Inter-Black",
                     color: "#2f2d51",
                     fontSize: 25,
                     marginBottom: 10,

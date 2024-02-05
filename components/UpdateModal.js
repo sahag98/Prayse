@@ -42,15 +42,16 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
-                  : { fontSize: 18, fontFamily: "Inter-Bold" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
+                  : { fontSize: 20, fontFamily: "Inter-Bold" }
               }
             >
-              An update is Available
+              An Update is Available
             </HeaderTitle>
           </ModalIcon>
           <View
             style={{
+              marginTop: 10,
               alignItems: "center",
               justifyContent: "space-between",
             }}

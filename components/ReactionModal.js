@@ -15,8 +15,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+
+import praise from "../assets/praise.png";
 const ReactionModal = ({
   toggleLike,
+  togglePraise,
+  praises,
   likes,
   reactionModalVisibile,
   currentUser,
@@ -32,6 +36,9 @@ const ReactionModal = ({
   });
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
+  const isPraisedByMe = !!praises?.find(
+    (praise) => praise.user_id == currentUser.id
+  );
 
   return (
     <Modal
@@ -57,45 +64,90 @@ const ReactionModal = ({
                 }
               : {
                   padding: 30,
+                  alignItems:
+                    isPressedLong?.user_id == currentUser.id
+                      ? "flex-end"
+                      : "flex-start",
                   justifyContent: "center",
                   flex: 1,
                   backgroundColor: "rgba(0, 0, 0, 0.7)",
                 }
           }
         >
-          <TouchableOpacity
-            style={{
-              padding: 10,
-              borderRadius: 50,
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TouchableOpacity
+              style={{
+                padding: 10,
+                borderRadius: 50,
 
-              backgroundColor:
-                isPressedLong?.user_id == currentUser.id
-                  ? "#353535"
-                  : "#212121",
-            }}
-            onPress={() =>
-              toggleLike(
-                isPressedLong.id,
-                isPressedLong.profiles.expoToken,
-                isPressedLong.message
-              )
-            }
-          >
-            <Animated.View style={animatedStyle}>
-              <Image
-                style={
-                  isLikedByMe
-                    ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                backgroundColor:
+                  isPressedLong?.user_id == currentUser.id
+                    ? theme == "dark"
+                      ? "#353535"
+                      : "#abe1fa"
                     : theme == "dark"
-                    ? { width: 25, height: 25, tintColor: "white" }
-                    : { width: 25, height: 25, tintColor: "#2f2d51" }
-                }
-                source={{
-                  uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
-                }}
-              />
-            </Animated.View>
-          </TouchableOpacity>
+                    ? "#212121"
+                    : "#dee4e7",
+              }}
+              onPress={() =>
+                toggleLike(
+                  isPressedLong.id,
+                  isPressedLong.profiles.expoToken,
+                  isPressedLong.message
+                )
+              }
+            >
+              <Animated.View style={animatedStyle}>
+                <Image
+                  style={
+                    isLikedByMe
+                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { width: 25, height: 25, tintColor: "white" }
+                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                  }
+                  source={{
+                    uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
+                  }}
+                />
+              </Animated.View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                padding: 10,
+                borderRadius: 50,
+
+                backgroundColor:
+                  isPressedLong?.user_id == currentUser.id
+                    ? theme == "dark"
+                      ? "#353535"
+                      : "#abe1fa"
+                    : theme == "dark"
+                    ? "#212121"
+                    : "#dee4e7",
+              }}
+              onPress={() =>
+                toggleLike(
+                  isPressedLong.id,
+                  isPressedLong.profiles.expoToken,
+                  isPressedLong.message
+                )
+              }
+            >
+              <Animated.View style={animatedStyle}>
+                <Image
+                  style={
+                    isPraisedByMe
+                      ? { width: 25, height: 25, tintColor: "#ff4e4e" }
+                      : theme == "dark"
+                      ? { width: 25, height: 25, tintColor: "white" }
+                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                  }
+                  source={praise}
+                />
+              </Animated.View>
+            </TouchableOpacity>
+          </View>
           <ChatBubble
             isOwnMessage={
               isPressedLong?.user_id == currentUser.id ? true : false
