@@ -32,13 +32,13 @@ const GroupPrayerItem = ({
   const [likes, setLikes] = useState([]);
   const [praises, setPraises] = useState([]);
   const [channel, setChannel] = useState();
-  const [isPraying, setIsPraying] = useState(false);
   const isFocused = useIsFocused();
   const [likedId, setLikedId] = useState();
   const [reactionModalVisibile, setReactionModalVisibile] = useState(false);
   const [isPressedLong, setIsPressedLong] = useState();
   const animationRef = useRef(null);
   const [loadingLikes, setLoadingLikes] = useState(false);
+  const [loadingPraises, setLoadingPraises] = useState(false);
   // console.log("item: ", item.message, item.id);
   useEffect(() => {
     fetchLikes(item.id);
@@ -118,7 +118,7 @@ const GroupPrayerItem = ({
       to: expoToken,
       sound: "default",
       title: `${currGroup.groups.name} 📢`,
-      body: `${currentUser.full_name} has reacted with a prayer on ${item}`,
+      body: `${currentUser.full_name} has reacted on ${item} with a prayer 🙏`,
       data: {
         screen: "Community",
         currGroup: currGroup,
@@ -139,7 +139,7 @@ const GroupPrayerItem = ({
       to: expoToken,
       sound: "default",
       title: `${currGroup.groups.name} 📢`,
-      body: `${currentUser.full_name} has reacted with a praise on ${item}`,
+      body: `${currentUser.full_name} has reacted on ${item} with a praise 🙌`,
       data: {
         screen: "Community",
         currGroup: currGroup,
@@ -197,7 +197,7 @@ const GroupPrayerItem = ({
         user_id: currentUser.id,
       },
     });
-    setIsPraying(true);
+
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
       withSpring(1, { damping: 2, stiffness: 80 })
@@ -270,7 +270,7 @@ const GroupPrayerItem = ({
         user_id: currentUser.id,
       },
     });
-    setIsPraying(true);
+
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
       withSpring(1, { damping: 2, stiffness: 80 })
@@ -290,7 +290,7 @@ const GroupPrayerItem = ({
     //prayer_id for production
     //prayertest_id for testing
     try {
-      setLoadingLikes(true);
+      setLoadingPraises(true);
       const { data: praises, error: praisesError } = await supabase
         .from("message_praises")
         .select()
@@ -303,7 +303,7 @@ const GroupPrayerItem = ({
     } catch (error) {
       console.log(error);
     }
-    setLoadingLikes(false);
+    setLoadingPraises(false);
   }
   const sendUrgentAnnouncement = async (urgentMessage, user) => {
     let { data: members, error } = await supabase
@@ -347,8 +347,14 @@ const GroupPrayerItem = ({
     (praise) => praise.user_id == currentUser.id
   );
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
+  const isPrayerPraised = !!praises?.find(
+    (praise) => praise.prayer_id == item.id
+  );
   return (
-    <TouchableOpacity onLongPress={() => openReactionModal(item)}>
+    <TouchableOpacity
+      style={{ marginBottom: 5 }}
+      onLongPress={() => openReactionModal(item)}
+    >
       <ReactionModal
         currentUser={currentUser}
         likes={likes}
@@ -377,7 +383,7 @@ const GroupPrayerItem = ({
             ? [
                 {
                   borderRadius: 10,
-                  marginBottom: 10,
+                  marginBottom: 15,
                   padding: 30,
                   gap: 5,
                   minWidth: 130,
@@ -502,10 +508,10 @@ const GroupPrayerItem = ({
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
-                  padding: 2,
+                  padding: 4,
                   justifyContent: "center",
                   alignItems: "center",
-                  bottom: -20,
+                  bottom: -25,
                   left: item.user_id == currentUser.id ? -30 : -40,
                 }}
               >
@@ -517,6 +523,34 @@ const GroupPrayerItem = ({
                   }}
                 >
                   🙏 {likes?.length}
+                </Text>
+              </Animated.View>
+            )}
+            {!loadingPraises && praises?.length > 0 && (
+              <Animated.View
+                entering={FadeIn.duration(500)}
+                exiting={FadeOut.duration(500)}
+                style={{
+                  display: isPrayerPraised ? "flex" : "none",
+                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  position: "absolute",
+                  borderRadius: 100,
+                  zIndex: 20,
+                  padding: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bottom: -25,
+                  left: item.user_id == currentUser.id ? 8 : -10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    fontSize: 13,
+                    color: theme == "dark" ? "#121212" : "white",
+                  }}
+                >
+                  🙌 {praises?.length}
                 </Text>
               </Animated.View>
             )}
@@ -560,11 +594,11 @@ const GroupPrayerItem = ({
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
-                  padding: 2,
+                  padding: 4,
                   justifyContent: "center",
                   alignItems: "center",
-                  bottom: -20,
-                  right: item.user_id == currentUser.id ? -30 : -30,
+                  bottom: -25,
+                  right: item.user_id == currentUser.id ? -30 : -25,
                 }}
               >
                 <Text
@@ -575,6 +609,34 @@ const GroupPrayerItem = ({
                   }}
                 >
                   🙏 {likes?.length}
+                </Text>
+              </Animated.View>
+            )}
+            {!loadingPraises && praises?.length > 0 && (
+              <Animated.View
+                entering={FadeIn.duration(500)}
+                exiting={FadeOut.duration(500)}
+                style={{
+                  display: isPrayerPraised ? "flex" : "none",
+                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  position: "absolute",
+                  borderRadius: 100,
+                  zIndex: 20,
+                  padding: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bottom: -25,
+                  right: item.user_id == currentUser.id ? -10 : 14,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    fontSize: 13,
+                    color: theme == "dark" ? "#121212" : "white",
+                  }}
+                >
+                  🙌 {praises?.length}
                 </Text>
               </Animated.View>
             )}

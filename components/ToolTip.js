@@ -46,7 +46,7 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
         >
           <View
             style={{
-              backgroundColor: "#212121",
+              backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
               width: "100%",
               padding: 15,
               borderRadius: 10,
@@ -55,7 +55,7 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
           >
             <Text
               style={{
-                color: "white",
+                color: theme == "dark" ? "white" : "#2f2d51",
                 fontSize: 18,
                 textAlign: "center",
                 fontFamily: "Inter-Bold",
@@ -69,8 +69,13 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
             >
               <AntDesign name="close" size={28} color="red" />
             </TouchableOpacity>
-            <Text style={{ color: "white", fontFamily: "Inter-Regular" }}>
-              Press and hold a prayer to react to it with a prayer!
+            <Text
+              style={{
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontFamily: "Inter-Regular",
+              }}
+            >
+              Press and hold a prayer to react!
             </Text>
           </View>
         </View>

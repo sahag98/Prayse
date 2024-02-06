@@ -294,8 +294,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
                 >
-                  Ability to let each other know you're praying for their
-                  request by clicking the prayer icon under their prayer!
+                  Prayer reactions in prayer groups!
                 </Text>
 
                 <View

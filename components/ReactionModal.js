@@ -127,7 +127,7 @@ const ReactionModal = ({
                     : "#dee4e7",
               }}
               onPress={() =>
-                toggleLike(
+                togglePraise(
                   isPressedLong.id,
                   isPressedLong.profiles.expoToken,
                   isPressedLong.message
