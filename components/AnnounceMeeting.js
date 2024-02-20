@@ -8,10 +8,10 @@ const AnnounceMeeting = ({
   theme,
   currGroup,
   currentUser,
-  hasAnnounced,
+
   setHasAnnounced,
   allGroups,
-  messages,
+
   supabase,
   isAnnouncingMeeting,
   setIsAnnouncingMeeting,

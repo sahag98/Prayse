@@ -35,6 +35,7 @@ import Toast from "react-native-toast-message";
 import GroupPrayerItem from "../components/GroupPrayerItem";
 import ToolTip from "../components/ToolTip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NotifyFirstMsg from "../components/NotifyFirstMsg";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -55,6 +56,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const [channel, setChannel] = useState();
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [isNotifyVisible, setIsNotifyVisible] = useState(false);
   const [isShowingHeader, setIsShowingHeader] = useState(true);
 
   const dispatch = useDispatch();
@@ -271,11 +273,29 @@ const PrayerGroup = ({ route, navigation }) => {
     return groups;
   }
 
+  async function notifyOnFirstMsg() {
+    // await AsyncStorage.removeItem("isNotify");
+    try {
+      const isChecked = await AsyncStorage.getItem("isNotify");
+      console.log(isChecked);
+      if (isChecked == null) {
+        console.log("it is the first time to send noti");
+        setIsNotifyVisible(true);
+        await AsyncStorage.setItem("isNotify", "true");
+      } else if (isChecked != null) {
+        setIsNotifyVisible(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const sendMessage = async () => {
-    console.log("sending msg: ", currentUser);
     if (newMessage.length == 0) {
       return;
     }
+
+    await notifyOnFirstMsg();
 
     const groups = await getSingleGroup();
     if (groups.length == 0) {
@@ -287,7 +307,7 @@ const PrayerGroup = ({ route, navigation }) => {
     }
 
     const currentDate = new Date();
-    const isoDateString = currentDate.toISOString(); // e.g., "2024-01-03T01:01:03.537Z"
+    const isoDateString = currentDate.toISOString();
     const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
 
     const { data, error } = await supabase
@@ -368,6 +388,19 @@ const PrayerGroup = ({ route, navigation }) => {
         <ToolTip
           tooltipVisible={tooltipVisible}
           setTooltipVisible={setTooltipVisible}
+          theme={theme}
+        />
+
+        <NotifyFirstMsg
+          messagetoNotify={newMessage}
+          allGroups={allGroups}
+          currGroup={currGroup}
+          currentUser={currentUser}
+          showToast={showToast}
+          supabase={supabase}
+          messages={messages}
+          isNotifyVisible={isNotifyVisible}
+          setIsNotifyVisible={setIsNotifyVisible}
           theme={theme}
         />
         {isShowingHeader && (
@@ -552,7 +585,7 @@ const PrayerGroup = ({ route, navigation }) => {
               fontSize: 13,
             }}
           >
-            {onlineUsers.length} User{onlineUsers.length > 1 ? "'s " : ""}
+            {onlineUsers.length} User{onlineUsers.length > 1 ? "'s " : " "}
             Online
           </Text>
         </View>
