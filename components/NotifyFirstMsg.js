@@ -149,15 +149,23 @@ const NotifyFirstMsg = ({
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={sendAnnounceMent}
-                style={[styles.actionButton, { backgroundColor: "#2f2d51" }]}
+                style={[
+                  styles.actionButton,
+                  { backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51" },
+                ]}
               >
-                <Text style={[styles.actionText, { color: "white" }]}>
+                <Text
+                  style={[
+                    styles.actionText,
+                    { color: theme == "dark" ? "#121212" : "white" },
+                  ]}
+                >
                   Yes Notify
                 </Text>
                 <Ionicons
                   name="megaphone-outline"
                   size={24}
-                  color={theme == "dark" ? "#a5c9ff" : "white"}
+                  color={theme == "dark" ? "#121212" : "white"}
                 />
               </TouchableOpacity>
             </View>

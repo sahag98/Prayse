@@ -1,8 +1,6 @@
 import {
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,19 +8,16 @@ import {
 } from "react-native";
 import React from "react";
 import { Modal } from "react-native";
-import { PRAYSE_TEST_MESSAGE } from "@env";
+import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+import { ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
 import { Switch } from "react-native-paper";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CommunityModal = ({
   modalVisible,
@@ -83,11 +78,11 @@ const CommunityModal = ({
     } else {
       //prayers for production
       //prayers_test for testing
-      // const { data, error } = await supabase.from("prayers").insert({
-      //   prayer: prayer,
-      //   user_id: user?.id,
-      //   disable_response: isEnabled,
-      // });
+      const { data, error } = await supabase.from("prayers").insert({
+        prayer: prayer,
+        user_id: user?.id,
+        disable_response: isEnabled,
+      });
       showToast("success", "Prayer posted successfully.🙏🏼");
       const message = {
         title: "Community 🌐",
@@ -95,7 +90,7 @@ const CommunityModal = ({
         data: { screen: "PublicCommunity", verseTitle: "" },
       };
 
-      fetch(PRAYSE_TEST_MESSAGE.toString(), {
+      fetch(PRAYSE_MESSAGE.toString(), {
         method: "POST",
         headers: {
           Accept: "application/json",

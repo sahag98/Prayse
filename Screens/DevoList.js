@@ -55,7 +55,7 @@ const DevoList = ({ navigation }) => {
   }, [isFocused]);
 
   const createTwoButtonAlert = () =>
-    Alert.alert("Not Signed In", "You need to be signed in to like.", [
+    Alert.alert("Not Signed In", "You need to be signed in order to like.", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -95,7 +95,8 @@ const DevoList = ({ navigation }) => {
   });
 
   async function insertLike(title) {
-    if (!isLoggedIn && currentUser == null) {
+    console.log("logged in: ", isLoggedIn);
+    if (!isLoggedIn) {
       createTwoButtonAlert();
       return;
     }

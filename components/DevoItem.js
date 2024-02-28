@@ -129,26 +129,7 @@ const DevoItem = ({
       >
         {devo.description}
       </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View style={theme == "dark" ? styles.refreshDark : styles.refresh}>
-          <Text
-            style={{
-              fontFamily: "Inter-Regular",
-              fontSize: 13,
-              color: "#7a7a7a",
-            }}
-          >
-            Pull page down to refresh
-          </Text>
-        </View>
-      </View>
+
       <View>
         <TouchableOpacity
           onPress={() =>
@@ -211,7 +192,7 @@ const DevoItem = ({
             style={
               theme == "dark"
                 ? {
-                    color: "#d6d6d6",
+                    color: "#efefef",
                     lineHeight: 25,
                     fontFamily: "Inter-Regular",
                   }
@@ -226,25 +207,13 @@ const DevoItem = ({
           </Text>
         </View>
       </View>
-      {/* <Divider style={{ height: 1.1, marginVertical: 10 }} /> */}
+
       <Text style={theme == "dark" ? styles.dayDark : styles.day}>
         {devo.day}
       </Text>
       <Text style={theme == "dark" ? styles.contentDark : styles.content}>
         {devo.content}
       </Text>
-
-      {/* <View style={{ marginTop: 10, gap: 5, marginBottom: 20 }}>
-                <Text style={{ fontSize: 17, fontFamily: "Inter-Medium" }}>
-                  Reflections
-                </Text>
-                <TextInput
-                  value={thought}
-                  style={styles.input}
-                  onChangeText={(text) => setThought(text)}
-                  placeholder="Write a reflection"
-                />
-              </View> */}
     </ScrollView>
   );
 };
@@ -307,7 +276,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Bold",
   },
   dayDark: {
-    color: "#d6d6d6",
+    color: "white",
     letterSpacing: 1,
     fontSize: 20,
     fontFamily: "Inter-Bold",
@@ -319,7 +288,8 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Bold",
   },
   contentDark: {
-    color: "#d6d6d6",
+    color: "#f9f9f9",
+    textAlign: "justify",
     fontSize: 15,
     lineHeight: 35,
     fontFamily: "Inter-Regular",

@@ -219,7 +219,7 @@ const Devotional = ({ navigation }) => {
           style={{
             marginTop: 20,
             fontFamily: "Inter-Medium",
-            fontSize: 13,
+            fontSize: 12,
             color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
           }}
         >

@@ -60,7 +60,7 @@ const Relfection = ({ navigation, route }) => {
     ]);
 
   const checkSignIn = () => {
-    if (!isLoggedIn && currentUser == null) {
+    if (!isLoggedIn) {
       createTwoButtonAlert();
       return;
     } else {
@@ -249,49 +249,72 @@ const Relfection = ({ navigation, route }) => {
           )}
         </View>
       </Container>
-      <View style={theme == "dark" ? styles.inputFieldDark : styles.inputField}>
-        <TextInput
-          style={theme == "dark" ? styles.inputDark : styles.input}
-          placeholder="Add your reflection..."
-          onPressIn={checkSignIn}
-          autoFocus={false}
-          placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
-          selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-          value={reflection}
-          onChangeText={(text) => setReflection(text)}
-          onContentSizeChange={handleContentSizeChange}
-          onSubmitEditing={(e) => {
-            e.key === "Enter" && e.preventDefault();
-          }}
-          multiline={true}
-          // // ios fix for centering it at the top-left corner
-          // numberOfLines={5}
-        />
-        <TouchableOpacity
-          disabled={reflection.length == 0 ? true : false}
-          onPress={sendReflection}
-          style={{
-            backgroundColor:
-              theme == "dark"
-                ? reflection.length == 0
-                  ? "#212121"
-                  : "#a5c9ff"
-                : reflection.length == 0
-                ? "grey"
-                : "#2f2d51",
-            borderRadius: 100,
-            padding: 8,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+      {isLoggedIn ? (
+        <View
+          style={theme == "dark" ? styles.inputFieldDark : styles.inputField}
         >
-          <AntDesign
-            name="arrowup"
-            size={38}
-            color={theme == "dark" ? "#121212" : "white"}
+          <TextInput
+            style={theme == "dark" ? styles.inputDark : styles.input}
+            placeholder="Add your reflection..."
+            onPressIn={checkSignIn}
+            autoFocus={false}
+            placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
+            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            value={reflection}
+            onChangeText={(text) => setReflection(text)}
+            onContentSizeChange={handleContentSizeChange}
+            onSubmitEditing={(e) => {
+              e.key === "Enter" && e.preventDefault();
+            }}
+            multiline={true}
+            // // ios fix for centering it at the top-left corner
+            // numberOfLines={5}
           />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            disabled={reflection.length == 0 ? true : false}
+            onPress={sendReflection}
+            style={{
+              backgroundColor:
+                theme == "dark"
+                  ? reflection.length == 0
+                    ? "#212121"
+                    : "#a5c9ff"
+                  : reflection.length == 0
+                  ? "grey"
+                  : "#2f2d51",
+              borderRadius: 100,
+              padding: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <AntDesign
+              name="arrowup"
+              size={38}
+              color={theme == "dark" ? "#121212" : "white"}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View
+          style={
+            theme == "dark" ? styles.signInButtonDark : styles.signInButton
+          }
+        >
+          <Text
+            onPress={() => navigation.navigate("Community")}
+            style={
+              (styles.signIn,
+              {
+                color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                fontFamily: "Inter-Medium",
+              })
+            }
+          >
+            Press here to sign in.
+          </Text>
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -299,11 +322,38 @@ const Relfection = ({ navigation, route }) => {
 export default Relfection;
 
 const styles = StyleSheet.create({
-  inputFieldDark: {
+  signInButton: {
+    borderTopColor: "#d2d2d2",
+    borderTopWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
+  },
+  signInButtonDark: {
     borderTopColor: "#484848",
     borderTopWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 8,
+    backgroundColor: "#121212",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
+  },
+  signIn: {
+    fontSize: 15,
+  },
+  inputFieldDark: {
+    borderTopColor: "#484848",
+    borderTopWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     backgroundColor: "#121212",
     flexDirection: "row",
     justifyContent: "space-between",
