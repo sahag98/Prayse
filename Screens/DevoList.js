@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
+import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { Container, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import useIsReady from "../hooks/useIsReady";
@@ -95,7 +96,6 @@ const DevoList = ({ navigation }) => {
   });
 
   async function insertLike(title) {
-    console.log("logged in: ", isLoggedIn);
     if (!isLoggedIn) {
       createTwoButtonAlert();
       return;
@@ -134,6 +134,25 @@ const DevoList = ({ navigation }) => {
       user_id: currentUser?.id,
       devo_title: title,
     });
+
+    const message = {
+      title: title,
+      message: `${currentUser?.full_name} has liked the devotional!`,
+      data: { screen: "DevoList", verseTitle: "" },
+    };
+
+    console.log(PRAYSE_MESSAGE, message);
+
+    fetch(PRAYSE_MESSAGE.toString(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
     channel.send({
       type: "broadcast",
       event: "message",

@@ -94,6 +94,21 @@ const Relfection = ({ navigation, route }) => {
       console.log(error);
     }
 
+    const message = {
+      title: route?.params?.devoTitle,
+      message: `${currentUser?.full_name} has wrote a reflection! Check it out.`,
+      data: { screen: "DevoList", verseTitle: "" },
+    };
+    fetch(PRAYSE_MESSAGE.toString(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
     Keyboard.dismiss();
   };
 

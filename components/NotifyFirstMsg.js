@@ -138,20 +138,33 @@ const NotifyFirstMsg = ({
                   setIsNotifyVisible(false);
                   await AsyncStorage.removeItem("isNotify");
                 }}
-                style={styles.actionButton}
+                style={[
+                  styles.actionButton,
+                  { borderColor: theme == "dark" ? "#a5c9ff" : "#2f2d51" },
+                ]}
               >
-                <Text style={styles.actionText}>No Don't</Text>
+                <Text
+                  style={[
+                    styles.actionText,
+                    { color: theme == "dark" ? "white" : "#2f2d51" },
+                  ]}
+                >
+                  No Don't
+                </Text>
                 <MaterialCommunityIcons
                   name="cancel"
                   size={24}
-                  color="#2f2d51"
+                  color={theme == "dark" ? "white" : "#2f2d51"}
                 />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={sendAnnounceMent}
                 style={[
                   styles.actionButton,
-                  { backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51" },
+                  {
+                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    borderColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                  },
                 ]}
               >
                 <Text
