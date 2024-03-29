@@ -35,7 +35,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
           style={
             theme == "dark"
               ? { backgroundColor: "#212121", width: "80%" }
-              : { backgroundColor: "#93D8F8", width: "80%" }
+              : { backgroundColor: "#b7d3ff", width: "80%" }
           }
         >
           <ModalIcon>
@@ -43,7 +43,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
               style={
                 theme == "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
-                  : { fontSize: 20, fontFamily: "Inter-Bold" }
+                  : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
               }
             >
               An Update is Available

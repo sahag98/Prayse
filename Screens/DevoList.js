@@ -278,7 +278,7 @@ const DevoList = ({ navigation }) => {
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
         >
           {devotionals?.map((d, index) => (
-            <View key={d._id}>
+            <View style={{ flex: 1 }} key={d._id}>
               <DevoItem
                 theme={theme}
                 tbf={tbf}
@@ -302,7 +302,6 @@ const DevoList = ({ navigation }) => {
                         position: "absolute",
                         bottom: 10,
                         width: "75%",
-
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-around",
@@ -329,7 +328,7 @@ const DevoList = ({ navigation }) => {
                         alignSelf: "center",
                         padding: 10,
                         borderRadius: 20,
-                        backgroundColor: "white",
+                        backgroundColor: "#b7d3ff",
                       }
                 }
               >

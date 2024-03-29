@@ -476,7 +476,7 @@ const Settings = ({ navigation }) => {
                 style={
                   theme == "dark"
                     ? { backgroundColor: "#212121" }
-                    : { backgroundColor: "#93D8F8" }
+                    : { backgroundColor: "#b7d3ff" }
                 }
               >
                 <ModalIcon>
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#93d8f8",
+    backgroundColor: "#b7d3ff",
     borderRadius: 5,
   },
   reviewButtonDark: {

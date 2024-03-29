@@ -276,9 +276,24 @@ const Folder = ({ navigation, todos }) => {
         </ListView2>
       )}
       {folders.length == 0 && folderClicked && (
-        <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
-          Add a folder to write your prayers in!
-        </TodoText>
+        <View
+          style={{
+            flex: 1,
+
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 50,
+          }}
+        >
+          <AntDesign
+            name="folder1"
+            size={50}
+            color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
+          />
+          <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
+            No folders created yet!
+          </TodoText>
+        </View>
       )}
       {folderClicked && (
         <>
@@ -551,12 +566,14 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
     padding: 10,
     alignSelf: "center",
+    textAlign: "center",
     color: "#2F2D51",
     fontSize: 15,
   },
   pressDark: {
     fontFamily: "Inter-Medium",
     padding: 10,
+    textAlign: "center",
     alignSelf: "center",
     color: "white",
     fontSize: 15,

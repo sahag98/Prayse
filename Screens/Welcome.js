@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  SafeAreaView,
 } from "react-native";
 import prayer from "../assets/prayer-nobg.png";
 import {
@@ -31,6 +32,7 @@ import {
   ModalIcon,
   ModalView,
   StyledInput,
+  WelcomeContainer,
 } from "../styles/appStyles";
 import * as SplashScreen from "expo-splash-screen";
 import * as Device from "expo-device";
@@ -67,6 +69,9 @@ import { Dimensions } from "react-native";
 import { deleteReminder } from "../redux/remindersReducer";
 import axios from "axios";
 import ReminderModal from "../components/ReminderModal";
+import MerchComponent from "../components/MerchComponent";
+
+import noreminder from "../assets/noreminders.png";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -275,7 +280,6 @@ const Welcome = ({ navigation }) => {
       const body = lastNotificationResponse.notification.request.content.body;
       console.log("data of last noti: ", data);
       if (data && data.updateLink) {
-        console.log("in update");
         if (Platform.OS === "ios") {
           Linking.openURL(
             "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
@@ -285,6 +289,10 @@ const Welcome = ({ navigation }) => {
             "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
           );
         }
+      }
+
+      if (data && data.anyLink) {
+        Linking.openURL(data.anyLink);
       }
 
       if (data && data.screen) {
@@ -303,6 +311,10 @@ const Welcome = ({ navigation }) => {
           navigation.navigate(data.screen, {
             group: data.currGroup,
             allGroups: data.allGroups,
+          });
+        } else if (data.screen == "Reflection" && data.devoTitle) {
+          navigation.navigate(data.screen, {
+            devoTitle: data.devoTitle,
           });
         } else {
           navigation.navigate(data.screen);
@@ -514,27 +526,29 @@ const Welcome = ({ navigation }) => {
   }
 
   return (
-    <Container
+    <WelcomeContainer
+      contentContainerStyle={{ alignItems: "center" }}
       onLayout={onLayoutRootView}
       style={
         theme == "dark"
           ? {
               display: "flex",
               position: "relative",
-              alignItems: "center",
+              // alignItems: "center",
+
               backgroundColor: "#121212",
             }
           : theme == "BlackWhite"
           ? {
               display: "flex",
               position: "relative",
-              alignItems: "center",
+              // alignItems: "center",
               backgroundColor: "white",
             }
           : {
               display: "flex",
               position: "relative",
-              alignItems: "center",
+              // alignItems: "center",
               backgroundColor: "#F2F7FF",
             }
       }
@@ -542,7 +556,7 @@ const Welcome = ({ navigation }) => {
       <View
         style={{
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: 0,
           flexDirection: "row",
           justifyContent: "space-between",
           width: "100%",
@@ -618,6 +632,8 @@ const Welcome = ({ navigation }) => {
                   backgroundColor: "#212121",
                   flex: 1,
                   marginVertical: 5,
+                  borderWidth: 1,
+                  borderColor: "#474747",
                   gap: 10,
                   borderRadius: 10,
                   padding: 10,
@@ -633,6 +649,7 @@ const Welcome = ({ navigation }) => {
                   },
                   shadowOpacity: 0.2,
                   shadowRadius: 5.62,
+
                   elevation: 8,
                   flex: 1,
                   marginVertical: 5,
@@ -734,8 +751,17 @@ const Welcome = ({ navigation }) => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+                gap: 10,
               }}
             >
+              <Image
+                style={{
+                  tintColor: theme == "dark" ? "white" : "#2f2d51",
+                  width: 50,
+                  height: 50,
+                }}
+                source={noreminder}
+              />
               <Text
                 style={
                   theme == "dark"
@@ -757,260 +783,262 @@ const Welcome = ({ navigation }) => {
               </Text>
             </View>
           ) : (
-            <FlatList
-              pagingEnabled
-              snapToInterval={ITEM_WIDTH}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={reminders}
-              keyExtractor={(e, i) => i.toString()}
-              renderItem={({ item }) => {
-                const daysOfWeek = [
-                  "Sunday",
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                ];
+            <SafeAreaView style={{ flex: 1 }}>
+              <FlatList
+                pagingEnabled
+                snapToInterval={ITEM_WIDTH}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={reminders}
+                keyExtractor={(e, i) => i.toString()}
+                renderItem={({ item }) => {
+                  const daysOfWeek = [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                  ];
 
-                const timestamp = new Date(item.reminder.time);
-                let timeOptions;
+                  const timestamp = new Date(item.reminder.time);
+                  let timeOptions;
 
-                let dayOfWeekName;
+                  let dayOfWeekName;
 
-                if (item.ocurrence === "Daily") {
-                  const options = {
-                    hour: "numeric",
-                    minute: "numeric",
-                  };
-                  timeOptions = options;
-                } else if (item.ocurrence === "Weekly") {
-                  const dayOfWeekNumber = timestamp.getDay();
-                  dayOfWeekName = daysOfWeek[dayOfWeekNumber];
+                  if (item.ocurrence === "Daily") {
+                    const options = {
+                      hour: "numeric",
+                      minute: "numeric",
+                    };
+                    timeOptions = options;
+                  } else if (item.ocurrence === "Weekly") {
+                    const dayOfWeekNumber = timestamp.getDay();
+                    dayOfWeekName = daysOfWeek[dayOfWeekNumber];
 
-                  const options = {
-                    hour: "numeric",
-                    minute: "numeric",
-                  };
-                  timeOptions = options;
-                } else if (item.ocurrence === "None") {
-                  console.log("none");
-                  let options = {
-                    month: "numeric",
-                    day: "numeric",
-                    year: "2-digit",
-                    hour: "numeric",
-                    minute: "numeric",
-                  };
-                  timeOptions = options;
-                }
-                const formattedDate = timestamp.toLocaleString(
-                  "en-US",
-                  timeOptions
-                );
+                    const options = {
+                      hour: "numeric",
+                      minute: "numeric",
+                    };
+                    timeOptions = options;
+                  } else if (item.ocurrence === "None") {
+                    console.log("none");
+                    let options = {
+                      month: "numeric",
+                      day: "numeric",
+                      year: "2-digit",
+                      hour: "numeric",
+                      minute: "numeric",
+                    };
+                    timeOptions = options;
+                  }
+                  const formattedDate = timestamp.toLocaleString(
+                    "en-US",
+                    timeOptions
+                  );
 
-                return (
-                  <View
-                    style={
-                      theme == "dark"
-                        ? {
-                            padding: 10,
-                            marginRight: 15,
-                            gap: 5,
-                            borderRadius: 10,
-
-                            backgroundColor: "#121212",
-                            maxWidth: ITEM_WIDTH + 100,
-                          }
-                        : {
-                            marginRight: 15,
-                            gap: 5,
-                            justifyContent: "space-between",
-                            padding: 10,
-                            borderRadius: 10,
-                            backgroundColor: "#f2f7ff",
-                            maxWidth: ITEM_WIDTH + 100,
-                          }
-                    }
-                  >
+                  return (
                     <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
-                      <Ionicons
-                        name="time-outline"
-                        size={24}
-                        color={theme == "dark" ? "#f1d592" : "#dda41c"}
-                      />
-                      {item.ocurrence === "Daily" && (
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Medium",
-                                  color: "#f1d592",
-                                }
-                              : {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Medium",
-                                  color: "#dda41c",
-                                }
-                          }
-                        >
-                          {item.ocurrence} at {formattedDate}
-                        </Text>
-                      )}
-                      {item.ocurrence === "Weekly" && (
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Regular",
-                                  color: "#f1d592",
-                                }
-                              : {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Regular",
-                                  color: "#dda41c",
-                                }
-                          }
-                        >
-                          {item.ocurrence} on {dayOfWeekName}s at{" "}
-                          {formattedDate}
-                        </Text>
-                      )}
-                      {item.ocurrence === "None" && (
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Regular",
-                                  color: "#f1d592",
-                                }
-                              : {
-                                  fontSize: 14,
-                                  fontFamily: "Inter-Regular",
-                                  color: "#dda41c",
-                                }
-                          }
-                        >
-                          {formattedDate}
-                        </Text>
-                      )}
-                    </View>
-                    <View style={{ gap: 5 }}>
-                      <Text
-                        numberOfLines={1}
-                        lineBreakMode="tail"
-                        style={
-                          theme == "dark"
-                            ? {
-                                fontFamily: "Inter-Regular",
-                                fontSize: 15,
-                                color: "white",
-                              }
-                            : {
-                                fontFamily: "Inter-Regular",
-                                fontSize: 15,
-                                color: "#2f2d51",
-                              }
-                        }
-                      >
-                        {item.reminder.message}
-                      </Text>
+                      style={
+                        theme == "dark"
+                          ? {
+                              padding: 10,
+                              marginRight: 15,
+                              gap: 5,
+                              borderRadius: 10,
 
-                      <Text
-                        numberOfLines={2}
-                        lineBreakMode="tail"
+                              backgroundColor: "#121212",
+                              maxWidth: ITEM_WIDTH + 100,
+                            }
+                          : {
+                              marginRight: 15,
+                              gap: 5,
+                              justifyContent: "space-between",
+                              padding: 10,
+                              borderRadius: 10,
+                              backgroundColor: "#f2f7ff",
+                              maxWidth: ITEM_WIDTH + 100,
+                            }
+                      }
+                    >
+                      <View
                         style={{
-                          fontFamily: "Inter-Regular",
-                          fontSize: 13,
-                          color: "#bebebe",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 5,
                         }}
                       >
-                        {item.reminder.note}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        gap: 10,
-                        alignSelf: "flex-end",
-                        marginTop: "auto",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate("Test", {
-                            type: "Edit",
-                            reminderEditId: item.reminder.id,
-                            reminderIdentifier: item.identifier,
-                            ocurrence: item.ocurrence,
-                            reminderToEditTitle: item.reminder.message,
-                            reminderToEditNote: item.reminder.note,
-                            reminderToEditTime: item.reminder.time.toString(),
-                          })
-                        }
-                      >
+                        <Ionicons
+                          name="time-outline"
+                          size={24}
+                          color={theme == "dark" ? "#f1d592" : "#dda41c"}
+                        />
+                        {item.ocurrence === "Daily" && (
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Medium",
+                                    color: "#f1d592",
+                                  }
+                                : {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Medium",
+                                    color: "#dda41c",
+                                  }
+                            }
+                          >
+                            {item.ocurrence} at {formattedDate}
+                          </Text>
+                        )}
+                        {item.ocurrence === "Weekly" && (
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Regular",
+                                    color: "#f1d592",
+                                  }
+                                : {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Regular",
+                                    color: "#dda41c",
+                                  }
+                            }
+                          >
+                            {item.ocurrence} on {dayOfWeekName}s at{" "}
+                            {formattedDate}
+                          </Text>
+                        )}
+                        {item.ocurrence === "None" && (
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Regular",
+                                    color: "#f1d592",
+                                  }
+                                : {
+                                    fontSize: 14,
+                                    fontFamily: "Inter-Regular",
+                                    color: "#dda41c",
+                                  }
+                            }
+                          >
+                            {formattedDate}
+                          </Text>
+                        )}
+                      </View>
+                      <View style={{ gap: 5 }}>
                         <Text
+                          numberOfLines={1}
+                          lineBreakMode="tail"
                           style={
                             theme == "dark"
                               ? {
-                                  fontFamily: "Inter-Medium",
-                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  fontSize: 15,
                                   color: "white",
                                 }
                               : {
-                                  fontFamily: "Inter-Medium",
-                                  fontSize: 13,
+                                  fontFamily: "Inter-Regular",
+                                  fontSize: 15,
                                   color: "#2f2d51",
                                 }
                           }
                         >
-                          Edit
+                          {item.reminder.message}
                         </Text>
-                      </TouchableOpacity>
-                      <View
-                        style={
-                          theme == "dark"
-                            ? {
-                                width: 1.2,
-                                height: "100%",
-                                backgroundColor: "white",
-                              }
-                            : {
-                                width: 1.2,
-                                height: "100%",
-                                backgroundColor: "#2f2d51",
-                              }
-                        }
-                      />
-                      <TouchableOpacity
-                        onPress={() => dismissNotification(item)}
-                      >
+
                         <Text
+                          numberOfLines={2}
+                          lineBreakMode="tail"
                           style={{
-                            fontFamily: "Inter-Medium",
+                            fontFamily: "Inter-Regular",
                             fontSize: 13,
-                            color: "#ff3b3b",
+                            color: "#bebebe",
                           }}
                         >
-                          Delete
+                          {item.reminder.note}
                         </Text>
-                      </TouchableOpacity>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 10,
+                          alignSelf: "flex-end",
+                          marginTop: "auto",
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate("Test", {
+                              type: "Edit",
+                              reminderEditId: item.reminder.id,
+                              reminderIdentifier: item.identifier,
+                              ocurrence: item.ocurrence,
+                              reminderToEditTitle: item.reminder.message,
+                              reminderToEditNote: item.reminder.note,
+                              reminderToEditTime: item.reminder.time.toString(),
+                            })
+                          }
+                        >
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    fontFamily: "Inter-Medium",
+                                    fontSize: 13,
+                                    color: "white",
+                                  }
+                                : {
+                                    fontFamily: "Inter-Medium",
+                                    fontSize: 13,
+                                    color: "#2f2d51",
+                                  }
+                            }
+                          >
+                            Edit
+                          </Text>
+                        </TouchableOpacity>
+                        <View
+                          style={
+                            theme == "dark"
+                              ? {
+                                  width: 1.2,
+                                  height: "100%",
+                                  backgroundColor: "white",
+                                }
+                              : {
+                                  width: 1.2,
+                                  height: "100%",
+                                  backgroundColor: "#2f2d51",
+                                }
+                          }
+                        />
+                        <TouchableOpacity
+                          onPress={() => dismissNotification(item)}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: "Inter-Medium",
+                              fontSize: 13,
+                              color: "#ff3b3b",
+                            }}
+                          >
+                            Delete
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                );
-              }}
-            />
+                  );
+                }}
+              />
+            </SafeAreaView>
           )}
         </View>
         {notiVisible && (
@@ -1055,51 +1083,53 @@ const Welcome = ({ navigation }) => {
                 </Text>
               </View>
             ) : (
-              <FlatList
-                data={notis}
-                keyExtractor={(item) => item.noti_id}
-                onEndReachedThreshold={0}
-                initialNumToRender={4}
-                windowSize={8}
-                ListFooterComponent={() => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      dispatch(deleteAll());
-                      setNotiVisible(false);
-                    }}
-                    style={{ padding: 10, alignSelf: "flex-end" }}
-                  >
-                    <Text
+              <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                  data={notis}
+                  keyExtractor={(item) => item.noti_id}
+                  onEndReachedThreshold={0}
+                  initialNumToRender={4}
+                  windowSize={8}
+                  ListFooterComponent={() => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        dispatch(deleteAll());
+                        setNotiVisible(false);
+                      }}
+                      style={{ padding: 10, alignSelf: "flex-end" }}
+                    >
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? { fontFamily: "Inter-Bold", color: "#e24774" }
+                            : { fontFamily: "Inter-Bold", color: "#ff6262" }
+                        }
+                      >
+                        Clear all
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  ItemSeparatorComponent={() => (
+                    <Divider
                       style={
                         theme == "dark"
-                          ? { fontFamily: "Inter-Bold", color: "#e24774" }
-                          : { fontFamily: "Inter-Bold", color: "#ff6262" }
+                          ? { backgroundColor: "#525252" }
+                          : { backgroundColor: "#2f2d51" }
                       }
-                    >
-                      Clear all
-                    </Text>
-                  </TouchableOpacity>
-                )}
-                ItemSeparatorComponent={() => (
-                  <Divider
-                    style={
-                      theme == "dark"
-                        ? { backgroundColor: "#525252" }
-                        : { backgroundColor: "#2f2d51" }
-                    }
-                  />
-                )}
-                scrollEventThrottle={16}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <NotiItem
-                    theme={theme}
-                    navigation={navigation}
-                    setNotiVisible={setNotiVisible}
-                    item={item}
-                  />
-                )}
-              />
+                    />
+                  )}
+                  scrollEventThrottle={16}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <NotiItem
+                      theme={theme}
+                      navigation={navigation}
+                      setNotiVisible={setNotiVisible}
+                      item={item}
+                    />
+                  )}
+                />
+              </SafeAreaView>
             )}
           </Animated.View>
         )}
@@ -1109,6 +1139,7 @@ const Welcome = ({ navigation }) => {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
+      <MerchComponent theme={theme} />
       <View
         style={{
           width: "100%",
@@ -1187,7 +1218,7 @@ const Welcome = ({ navigation }) => {
                       }
                 }
               >
-                What's New in v9.1!
+                What's New in v9.2!
               </Text>
             </View>
             <AntDesign
@@ -1439,7 +1470,7 @@ const Welcome = ({ navigation }) => {
         </View>
         <View
           style={{
-            marginBottom: 15,
+            marginBottom: 40,
             flexDirection: "row",
             justifyContent: "space-around",
             width: "100%",
@@ -1487,7 +1518,7 @@ const Welcome = ({ navigation }) => {
                       borderWidth: 1,
                     },
                   ]
-                : [styles.button, { backgroundColor: "#93D8F8" }]
+                : [styles.button, { backgroundColor: "#b7d3ff" }]
             }
           >
             <Text
@@ -1538,7 +1569,7 @@ const Welcome = ({ navigation }) => {
               style={
                 theme == "dark"
                   ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#93D8F8" }
+                  : { backgroundColor: "#b7d3ff" }
               }
             >
               <ModalIcon>
@@ -1651,7 +1682,7 @@ const Welcome = ({ navigation }) => {
           </ModalContainer>
         </KeyboardAvoidingView>
       </Modal>
-    </Container>
+    </WelcomeContainer>
   );
 };
 

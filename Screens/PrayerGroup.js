@@ -481,7 +481,7 @@ const PrayerGroup = ({ route, navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 8,
-                backgroundColor: theme == "dark" ? "#212121" : "#abe1fa",
+                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
               }}
             >
               {hasAnnounced ? (
@@ -534,16 +534,20 @@ const PrayerGroup = ({ route, navigation }) => {
                       flexDirection: "row",
                       alignItems: "center",
                       alignSelf: "center",
-                      backgroundColor: "#2f2d51",
+                      backgroundColor: "#b7d3ff",
                       borderRadius: 10,
                       gap: 8,
                     }
               }
             >
-              <Feather name="copy" size={15} color="white" />
+              <Feather
+                name="copy"
+                size={15}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
               <Text
                 style={{
-                  color: "white",
+                  color: theme == "dark" ? "white" : "#2f2d51",
                   fontSize: 13,
                   fontFamily: "Inter-Medium",
                 }}

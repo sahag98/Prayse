@@ -75,7 +75,7 @@ const EditGroupModal = ({
             style={
               theme == "dark"
                 ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#93D8F8" }
+                : { backgroundColor: "#b7d3ff" }
             }
           >
             <ModalIcon>

@@ -68,7 +68,7 @@ const CommunityModal = ({
       }
     }
 
-    let truncatedString = truncateWords(prayer, 4);
+    let truncatedString = truncateWords(prayer, 5);
 
     console.log(truncatedString);
     if (prayer.length <= 0) {
@@ -87,10 +87,10 @@ const CommunityModal = ({
       const message = {
         title: "Community 🌐",
         message: `${user?.full_name} has posted a prayer: ${truncatedString} .Click here to pray for their request.`,
-        data: { screen: "PublicCommunity", verseTitle: "" },
+        data: { screen: "PublicCommunity", public: true, verseTitle: "" },
       };
 
-      fetch(PRAYSE_MESSAGE.toString(), {
+      fetch(PRAYSE_TEST_MESSAGE.toString(), {
         method: "POST",
         headers: {
           Accept: "application/json",

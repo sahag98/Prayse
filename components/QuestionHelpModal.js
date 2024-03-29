@@ -70,7 +70,7 @@ const QuestionHelpModal = ({
                   position: "relative",
                   padding: 15,
                   width: "100%",
-                  backgroundColor: "#93D8F8",
+                  backgroundColor: "#b7d3ff",
                 }
           }
         >
@@ -127,7 +127,7 @@ const QuestionHelpModal = ({
                         }
                       : {
                           width: "100%",
-                          backgroundColor: "#caecfc",
+                          backgroundColor: "#2f2d51",
                           padding: 15,
                           borderRadius: 10,
                           justifyContent: "center",
@@ -136,13 +136,7 @@ const QuestionHelpModal = ({
                   }
                   onPress={onNextPage}
                 >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? { color: "white", fontFamily: "Inter-Bold" }
-                        : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                    }
-                  >
+                  <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
                     Next
                   </Text>
                 </TouchableOpacity>
@@ -193,7 +187,7 @@ const QuestionHelpModal = ({
                         }
                       : {
                           width: "100%",
-                          backgroundColor: "#caecfc",
+                          backgroundColor: "#2f2d51",
                           padding: 15,
                           borderRadius: 10,
                           justifyContent: "center",
@@ -202,13 +196,7 @@ const QuestionHelpModal = ({
                   }
                   onPress={onNextPage}
                 >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? { color: "white", fontFamily: "Inter-Bold" }
-                        : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                    }
-                  >
+                  <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
                     Next
                   </Text>
                 </TouchableOpacity>

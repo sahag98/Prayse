@@ -14,7 +14,8 @@ import {
   TodoCategory,
 } from "../styles/appStyles";
 import { useFonts } from "expo-font";
-import { Entypo, AntDesign } from "@expo/vector-icons";
+
+import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Motion } from "@legendapp/motion";
 import CategoryTabs from "./CategoryTabs";
 import SearchBar from "./SearchBar";
@@ -97,7 +98,7 @@ const ListItems = ({
                 ? [{ backgroundColor: "#212121", position: "relative" }]
                 : [
                     {
-                      backgroundColor: "#93D8F8",
+                      backgroundColor: "#b7d3ff",
                       shadowColor: "#bdbdbd",
                       shadowOffset: {
                         width: 0,
@@ -498,9 +499,24 @@ const ListItems = ({
   return (
     <>
       {prayers.length == 0 && (
-        <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
-          Add a prayer to start off your prayer list!
-        </TodoText>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 60,
+            gap: 5,
+          }}
+        >
+          <FontAwesome
+            name="list-alt"
+            size={50}
+            color={theme == "dark" ? "white" : "#2f2d51"}
+          />
+          <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
+            No prayers added yet!
+          </TodoText>
+        </View>
       )}
       <CategoryTabs
         theme={theme}
@@ -620,11 +636,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   press: {
-    fontFamily: "Inter-Regular",
+    fontFamily: "Inter-Medium",
+    textAlign: "center",
     color: "#2F2D51",
   },
   pressDark: {
-    fontFamily: "Inter-Regular",
+    fontFamily: "Inter-Medium",
+    textAlign: "center",
     color: "white",
   },
 });

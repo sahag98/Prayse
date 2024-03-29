@@ -381,7 +381,7 @@ const CommentItem = ({
                   marginTop: 5,
                 }
               : {
-                  backgroundColor: "#93d8f8",
+                  backgroundColor: "#b7d3ff",
                   gap: 10,
                   padding: 10,
                   borderRadius: 5,

@@ -83,7 +83,7 @@ const GroupInfoMenu = ({
         style={
           theme === "dark"
             ? { ...styles.menuContent, backgroundColor: "#212121" }
-            : { ...styles.menuContent, backgroundColor: "#93d8f8" }
+            : { ...styles.menuContent, backgroundColor: "#b7d3ff" }
         }
       >
         <View
@@ -511,7 +511,7 @@ const GroupInfoModal = ({
                             padding: 12,
                           }
                         : {
-                            backgroundColor: "#93d8f8",
+                            backgroundColor: "#b7d3ff",
                             borderRadius: 10,
                             width: "100%",
                             padding: 12,
@@ -764,7 +764,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",
@@ -833,7 +833,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",
@@ -903,7 +903,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",

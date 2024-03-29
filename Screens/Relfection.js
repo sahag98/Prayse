@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container, HeaderView } from "../styles/appStyles";
+import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -87,19 +88,33 @@ const Relfection = ({ navigation, route }) => {
         devo_title: route?.params?.devoTitle,
         reflection: reflection,
       });
-
       setReflection("");
       fetchReflections();
     } catch (error) {
       console.log(error);
     }
+    function truncateWords(str, numWords) {
+      let words = str.split(" ");
+      if (words.length > numWords) {
+        return words.slice(0, numWords).join(" ") + " ...";
+      } else {
+        return str;
+      }
+    }
 
+    let truncatedString = truncateWords(reflection, 8);
     const message = {
-      title: route?.params?.devoTitle,
-      message: `${currentUser?.full_name} has wrote a reflection! Check it out.`,
-      data: { screen: "DevoList", verseTitle: "" },
+      title: ` Reflection on Devotional: ${route?.params?.devoTitle}`,
+      message: `${currentUser?.full_name} has wrote a reflection: ${truncatedString}`,
+      data: {
+        screen: "Reflection",
+        verseTitle: "",
+        devoTitle: route?.params?.devoTitle,
+      },
     };
-    fetch(PRAYSE_MESSAGE.toString(), {
+    console.log(message);
+    console.log(PRAYSE_TEST_MESSAGE.toString());
+    fetch(PRAYSE_TEST_MESSAGE.toString(), {
       method: "POST",
       headers: {
         Accept: "application/json",

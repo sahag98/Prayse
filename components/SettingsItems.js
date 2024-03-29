@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#b8e5fa",
+    backgroundColor: "#b7d3ff",
     shadowColor: "#bdbdbd",
     shadowOffset: {
       width: 0,

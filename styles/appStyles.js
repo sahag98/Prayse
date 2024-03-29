@@ -21,6 +21,14 @@ export const colors = {
 
 const statusBarHeight = Constants.statusBarHeight;
 
+export const WelcomeContainer = styled.ScrollView`
+  background-color: "${colors.primary}";
+  padding: 15px;
+  padding-bottom: 0px;
+  flex: 1;
+  padding-top: ${statusBarHeight}px;
+`;
+
 export const Container = styled.View`
   background-color: "${colors.primary}";
   padding: 15px;
@@ -242,10 +250,10 @@ export const StyledInput = styled.TextInput`
 export const AnswerInput = styled.TextInput`
   width: 100%;
   background-color: ${colors.tertiary};
-  padding: 5px;
+  padding: 8px;
   font-size: 14px;
   border-radius: 10px;
-  color: ${colors.alternative};
+  /* color: ${colors.alternative}; */
 `;
 
 export const StyledInput2 = styled.TextInput`

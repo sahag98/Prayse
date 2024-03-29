@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   favorites: {
     borderRadius: 10,
     width: "100%",
-    backgroundColor: "#93d8f8",
+    backgroundColor: "#b7d3ff",
     flexDirection: "row",
     alignItems: "center",
     shadowColor: "#bdbdbd",

@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
   },
   featherIcon: {
     position: "absolute",
-    backgroundColor: "#93d8f8",
+    backgroundColor: "#b7d3ff",
     borderRadius: 50,
     width: 30,
     alignItems: "center",

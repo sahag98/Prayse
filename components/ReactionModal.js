@@ -84,7 +84,7 @@ const ReactionModal = ({
                   isPressedLong?.user_id == currentUser.id
                     ? theme == "dark"
                       ? "#353535"
-                      : "#abe1fa"
+                      : "#b7d3ff"
                     : theme == "dark"
                     ? "#212121"
                     : "#dee4e7",
@@ -121,7 +121,7 @@ const ReactionModal = ({
                   isPressedLong?.user_id == currentUser.id
                     ? theme == "dark"
                       ? "#353535"
-                      : "#abe1fa"
+                      : "#b7d3ff"
                     : theme == "dark"
                     ? "#212121"
                     : "#dee4e7",
@@ -156,7 +156,7 @@ const ReactionModal = ({
               isPressedLong?.user_id == currentUser.id
                 ? theme == "dark"
                   ? "#353535"
-                  : "#abe1fa"
+                  : "#b7d3ff"
                 : theme == "light"
                 ? "#dee4e7"
                 : "#212121"

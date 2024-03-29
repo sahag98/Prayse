@@ -77,6 +77,7 @@ const FolderItem = ({
             display: "flex",
             position: "relative",
             height: "100%",
+
             justifyContent: "center",
           }}
         >
@@ -85,6 +86,7 @@ const FolderItem = ({
               display: "flex",
               width: "100%",
               flexDirection: "row",
+
               justifyContent: "space-between",
               alignItems: "center",
               position: "absolute",
@@ -93,8 +95,8 @@ const FolderItem = ({
           >
             <AntDesign
               name="folder1"
-              size={22}
-              color={theme == "BlackWhite" ? "white" : "#f1d592"}
+              size={28}
+              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
             />
 
             <Feather
@@ -105,17 +107,23 @@ const FolderItem = ({
               }}
               name="x"
               size={26}
-              color={theme == "BlackWhite" ? "white" : "#f1d592"}
+              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
             />
           </View>
           <TouchableOpacity
             onPress={() => setOpenEdit(true)}
-            style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            style={{
+              flexDirection: "row",
+
+              alignItems: "center",
+              marginBottom: 10,
+              gap: 10,
+            }}
           >
             <Text
               style={{
-                color: "white",
-                fontSize: 16,
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontSize: 18,
                 marginVertical: 5,
                 maxWidth: "90%",
                 fontFamily: "Inter-Bold",
@@ -123,7 +131,11 @@ const FolderItem = ({
             >
               {item.name}
             </Text>
-            <Feather name="edit-2" size={14} color="#b8b8b8" />
+            <Feather
+              name="edit-2"
+              size={16}
+              color={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -293,7 +305,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   container: {
-    backgroundColor: "#2f2d51",
+    backgroundColor: "#b7d3ff",
     padding: 8,
     width: width / 2 - 8,
     height: 135,
@@ -356,6 +368,6 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
     backgroundColor: "#423f72",
-    borderRadius: 5,
+    borderRadius: 10,
   },
 });

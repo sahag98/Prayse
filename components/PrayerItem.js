@@ -443,7 +443,7 @@ export default PrayerItem;
 
 const styles = StyleSheet.create({
   prayerContainer: {
-    backgroundColor: "#dee4e7",
+    backgroundColor: "#b7d3ff",
 
     borderRadius: 10,
     justifyContent: "space-between",

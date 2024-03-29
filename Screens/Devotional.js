@@ -131,7 +131,7 @@ const Devotional = ({ navigation }) => {
       >
         <View
           style={{
-            backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+            backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
