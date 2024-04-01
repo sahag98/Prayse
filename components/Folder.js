@@ -37,6 +37,7 @@ import AnsweredPrayer from "./AnsweredPrayer";
 import { SectionList } from "react-native";
 import FolderItem from "./FolderItem";
 import AddFolderModal from "./AddFolderModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null);
@@ -56,6 +57,26 @@ const Folder = ({ navigation, todos }) => {
   const [fabvisible, setFabvisible] = useState(true);
   const { current: velocity } = useRef(new Animated.Value(0));
   const sections = [];
+
+  const [showNewBadge, setShowNewBadge] = useState(false);
+
+  useEffect(() => {
+    const checkFirstTime = async () => {
+      // await AsyncStorage.removeItem("hasPressedPrayerTab");
+      try {
+        const value = await AsyncStorage.getItem("hasPressedChecklist");
+        if (value === null) {
+          // First time pressing the "Prayer" tab
+          setShowNewBadge(true);
+          AsyncStorage.setItem("hasPressedChecklist", "true");
+        }
+      } catch (error) {
+        console.error("Error retrieving data from AsyncStorage:", error);
+      }
+    };
+
+    checkFirstTime();
+  }, []);
 
   useEffect(() => {
     if (!isIOS) {
@@ -347,6 +368,42 @@ const Folder = ({ navigation, todos }) => {
                   : styles.fabStyle
               }
             />
+            <View>
+              {showNewBadge ? (
+                <Text
+                  style={{
+                    color: "red",
+                    alignSelf: "flex-start",
+                    position: "absolute",
+                    top: -20,
+                    fontFamily: "Inter-Medium",
+                    right: 5,
+                  }}
+                >
+                  New
+                </Text>
+              ) : null}
+
+              <AnimatedFAB
+                icon={"hands-pray"}
+                label={"Prayer Checklist"}
+                extended={isExtended}
+                onPress={() => {
+                  setAddVisible(true);
+                }}
+                visible={fabvisible}
+                animateFrom={"right"}
+                iconMode={"dynamic"}
+                color={theme == "dark" ? "#121212" : "#2f2d51"}
+                style={
+                  theme == "dark"
+                    ? [styles.fabStyleDark]
+                    : theme == "BlackWhite"
+                    ? styles.fabStyleBlack
+                    : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]
+                }
+              />
+            </View>
           </View>
         </>
       )}
@@ -425,27 +482,6 @@ const Folder = ({ navigation, todos }) => {
         </ModalContainer>
       </Modal>
 
-      {/* {addVisible && (
-        <View>
-          <TextInput
-            ref={folderInputRef}
-            style={theme == "dark" ? styles.inputDark : styles.input}
-            placeholder="Enter folder name"
-            placeholderTextColor={"white"}
-            selectionColor={"white"}
-            // autoFocus={true}
-            onChangeText={(text) => setFolderName(text)}
-            value={folderName}
-            onSubmitEditing={(e) => {
-              e.key === "Enter" && e.preventDefault();
-            }}
-            multiline={true}
-          />
-          <TouchableOpacity onPress={add}>
-            <Text>Add</Text>
-          </TouchableOpacity>
-        </View>
-      )} */}
       <AddFolderModal
         addVisible={addVisible}
         addNewFolder={addNewFolder}
@@ -455,84 +491,6 @@ const Folder = ({ navigation, todos }) => {
         handleCloseModal={handleCloseModal}
         setFolderName={setFolderName}
       />
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={addVisible}
-        // onRequestClose={handleCloseModal}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ModalContainer
-            style={
-              theme == "dark"
-                ? { backgroundColor: "#121212" }
-                : { backgroundColor: "#F2F7FF" }
-            }
-          >
-            <ModalView
-              style={
-                theme == "dark"
-                  ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#93D8F8" }
-              }
-            >
-              <ModalIcon>
-                <HeaderTitle
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          fontSize: 20,
-                          color: "white",
-                        }
-                      : { fontFamily: "Inter-Bold", fontSize: 20 }
-                  }
-                >
-                  Folder
-                </HeaderTitle>
-                <AntDesign
-                  style={{ marginTop: 10 }}
-                  name="edit"
-                  size={32}
-                  color={theme == "dark" ? "white" : "#2F2D51"}
-                />
-              </ModalIcon>
-              <TextInput
-                // ref={folderInputRef}
-                style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter folder name"
-                placeholderTextColor={"white"}
-                selectionColor={"white"}
-                // autoFocus={true}
-                onChangeText={(text) => setFolderName(text)}
-                value={folderName}
-                onSubmitEditing={(e) => {
-                  e.key === "Enter" && e.preventDefault();
-                }}
-                multiline={true}
-              />
-
-              <ModalActionGroup>
-                <ModalAction
-                  color={"white"}
-                  onPress={() => setAddVisible(false)}
-                >
-                  <AntDesign name="close" size={28} color={"#2F2D51"} />
-                </ModalAction>
-                <ModalAction
-                  color={theme == "dark" ? "#121212" : "#2F2D51"}
-                  onPress={addNewFolder}
-                >
-                  <AntDesign name="check" size={28} color={"white"} />
-                </ModalAction>
-              </ModalActionGroup>
-            </ModalView>
-          </ModalContainer>
-        </KeyboardAvoidingView>
-      </Modal> */}
     </View>
   );
 };
@@ -557,6 +515,8 @@ const styles = StyleSheet.create({
   fabStyle: {
     position: "relative",
     alignSelf: "center",
+    elevation: 0,
+    shadowColor: "#f2f7ff",
     borderRadius: 20,
     justifyContent: "center",
     backgroundColor: "#36345e",
@@ -585,6 +545,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   fabStyle3: {
