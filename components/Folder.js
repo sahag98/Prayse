@@ -389,7 +389,7 @@ const Folder = ({ navigation, todos }) => {
                 label={"Prayer Checklist"}
                 extended={isExtended}
                 onPress={() => {
-                  setAddVisible(true);
+                  navigation.navigate("Checklist");
                 }}
                 visible={fabvisible}
                 animateFrom={"right"}

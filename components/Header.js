@@ -36,7 +36,7 @@ const Header = ({ navigation, folderName, theme }) => {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity
               style={{ marginRight: 10 }}
-              onPress={() => navigation.navigate("Folders")}
+              onPress={() => navigation.navigate("Prayer")}
             >
               <Ionicons
                 name="chevron-back"

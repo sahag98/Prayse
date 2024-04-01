@@ -36,6 +36,7 @@ import PrayerGroup from "./Screens/PrayerGroup";
 import OnboardingScreen from "./Screens/Onboarding";
 import Relfection from "./Screens/Relfection";
 import DevoList from "./Screens/DevoList";
+import Checklist from "./Screens/Checklist";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -288,6 +289,14 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={Test}
+          />
+          <Tab.Screen
+            name="Checklist"
+            options={() => ({
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Checklist}
           />
           <Tab.Screen
             name="PublicCommunity"
