@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   NavigationContainer,
   DarkTheme,
@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import PrayerPage from "./Screens/PrayerPage";
 import OldPrayerPage from "./Screens/oldPrayerPage";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Devotional from "./Screens/Devotional";
 import { useFonts } from "expo-font";
 import { View, ActivityIndicator } from "react-native";
@@ -22,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import More from "./Screens/More";
 import VerseOfTheDay from "./Screens/VerseOfTheDay";
 import Favorites from "./Screens/Favorites";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSupabase } from "./context/useSupabase";
 import CommunityHome from "./Screens/CommunityHome";
 import Login from "./Screens/Login";
@@ -40,6 +42,25 @@ const Navigation = () => {
   const insets = useSafeAreaInsets();
   const theme = useSelector((state) => state.user.theme);
   const { isLoggedIn, currentUser } = useSupabase();
+  const [showNewBadge, setShowNewBadge] = useState(false);
+
+  useEffect(() => {
+    const checkFirstTime = async () => {
+      // await AsyncStorage.removeItem("hasPressedPrayerTab");
+      try {
+        const value = await AsyncStorage.getItem("hasPressedPrayerTab");
+        if (value === null) {
+          // First time pressing the "Prayer" tab
+          setShowNewBadge(true);
+          AsyncStorage.setItem("hasPressedPrayerTab", "true");
+        }
+      } catch (error) {
+        console.error("Error retrieving data from AsyncStorage:", error);
+      }
+    };
+
+    checkFirstTime();
+  }, []);
 
   const prefix = Linking.createURL("/");
   const linking = {
@@ -110,12 +131,18 @@ const Navigation = () => {
                 iconName = focused ? "home" : "home-outline";
               } else if (route.name === "More") {
                 iconName = focused ? "ios-list" : "ios-list-outline";
-              } else if (route.name === "Folders") {
-                iconName = focused ? "folder-open" : "folder-outline";
+              } else if (route.name === "Prayer") {
+                iconName = focused ? "hands-pray" : "hands-pray";
               } else if (route.name === "Devotional") {
                 iconName = focused ? "ios-bookmarks" : "ios-bookmarks-outline";
               } else if (route.name === "Community") {
                 iconName = focused ? "ios-globe" : "ios-globe-outline";
+              }
+
+              if (route.name === "Prayer") {
+                return (
+                  <MaterialIcons name={iconName} size={size} color={color} />
+                );
               }
 
               return <Ionicons name={iconName} size={size} color={color} />;
@@ -139,10 +166,12 @@ const Navigation = () => {
             component={Welcome}
           />
           <Tab.Screen
-            name="Folders"
+            name="Prayer"
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+              tabBarBadge: showNewBadge ? "New" : null,
+              tabBarBadgeStyle: { paddingHorizontal: 5, fontSize: 10 },
             })}
             component={Main}
           />

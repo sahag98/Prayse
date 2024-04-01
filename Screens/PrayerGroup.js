@@ -36,10 +36,13 @@ import GroupPrayerItem from "../components/GroupPrayerItem";
 import ToolTip from "../components/ToolTip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotifyFirstMsg from "../components/NotifyFirstMsg";
+import VideoCall from "../components/VideoCall";
+import Chat from "../components/Chat";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const msgs = useSelector((state) => state.message.messages);
+  const [toggle, setToggle] = useState("chat");
   const [messages, setMessages] = useState([]);
   const [groupMessages, setGroupMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -558,7 +561,53 @@ const PrayerGroup = ({ route, navigation }) => {
           </HeaderView>
         )}
 
-        <View
+        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+          <Text
+            onPress={() => setToggle("chat")}
+            style={{
+              textDecorationLine: "underline",
+              fontFamily: toggle == "chat" ? "Inter-Bold" : "Inter-Medium",
+            }}
+          >
+            Chat
+          </Text>
+          <Text
+            onPress={() => setToggle("video")}
+            style={{
+              textDecorationLine: "underline",
+              fontFamily: toggle == "video" ? "Inter-Bold" : "Inter-Medium",
+            }}
+          >
+            Video
+          </Text>
+        </View>
+
+        {toggle == "chat" ? (
+          <Chat
+            theme={theme}
+            currentUser={currentUser}
+            onlineUsers={onlineUsers}
+            areMessagesLoading={areMessagesLoading}
+            groupMessages={groupMessages}
+            setGroupMessages={setGroupMessages}
+            flatListRef={flatListRef}
+            handleScroll={handleScroll}
+            supabase={supabase}
+            currGroup={currGroup}
+            setRefreshMsgLikes={setRefreshMsgLikes}
+            refreshMsgLikes={refreshMsgLikes}
+            allGroups={allGroups}
+            showToast={showToast}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+            handleContentSizeChange={handleContentSizeChange}
+            sendMessage={sendMessage}
+          />
+        ) : (
+          <VideoCall />
+        )}
+
+        {/* <View
           style={{
             flexDirection: "row",
             backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
@@ -742,33 +791,10 @@ const PrayerGroup = ({ route, navigation }) => {
               color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </PrayerContainer>
     </KeyboardAvoidingView>
   );
 };
 
 export default PrayerGroup;
-
-const styles = StyleSheet.create({
-  inputField: {
-    flexDirection: "row",
-    padding: 15,
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    alignSelf: "center",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    paddingBottom: 5,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "85%",
-    paddingBottom: 5,
-  },
-});
