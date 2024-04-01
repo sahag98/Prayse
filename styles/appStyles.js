@@ -37,6 +37,14 @@ export const Container = styled.View`
   padding-top: ${statusBarHeight}px;
 `;
 
+export const RoomContainer = styled.View`
+  background-color: "${colors.primary}";
+  padding: 0px;
+  padding-bottom: 0px;
+  flex: 1;
+  padding-top: ${statusBarHeight}px;
+`;
+
 export const PrayerContainer = styled.View`
   background-color: "${colors.primary}";
   padding: 0px;
