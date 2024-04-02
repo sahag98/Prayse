@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { Video, ResizeMode, Audio } from "expo-av";
 import gradient from "../assets/video/gradient.mp4";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import Gpad from "../assets/audio/Gpad.mp3";
 import Bpad from "../assets/audio/Bpad.mp3";
 import Cpad from "../assets/audio/Cpad.mp3";
@@ -14,7 +14,7 @@ import Constants from "expo-constants";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
-const PrayerRoom = ({ navigation }) => {
+const PrayerRoom = ({ navigation, route }) => {
   const statusBarHeight = Constants.statusBarHeight;
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
@@ -22,10 +22,8 @@ const PrayerRoom = ({ navigation }) => {
   const [status, setStatus] = useState({});
   const isFocused = useIsFocused();
   const [sound, setSound] = useState();
-  const [isPlayingSound, setIsPlayingSound] = useState(true);
+  const [isPlayingSound, setIsPlayingSound] = useState(false);
   const [permissionResponse, requestPermission] = Audio.usePermissions();
-
-  const insets = useSafeAreaInsets();
 
   async function playSound(soundFile) {
     const { sound } = await Audio.Sound.createAsync(soundFile);
@@ -33,7 +31,7 @@ const PrayerRoom = ({ navigation }) => {
       playsInSilentModeIOS: true,
     });
     setSound(sound);
-
+    setIsPlayingSound(true);
     await sound.playAsync();
   }
 
@@ -58,26 +56,51 @@ const PrayerRoom = ({ navigation }) => {
 
   async function checkAudioPermission() {
     const { status, granted } = await requestPermission();
-    console.log(status, granted);
   }
 
   useEffect(() => {
-    console.log("sound");
     checkAudioPermission();
+
     return sound
       ? () => {
+          console.log("unloading sound");
           sound.unloadAsync();
         }
       : undefined;
-  }, [sound, isFocused]);
+  }, [sound]);
+
+  async function loadVideo() {
+    await video.current.loadAsync(gradient);
+    await video.current.playAsync();
+  }
 
   useEffect(() => {
-    console.log("in use effect");
-    if (video.current) {
-      video.current.playAsync();
-      loadAndPlayRandomAudio();
-    }
+    video.current.playAsync();
+    // loadAndPlayRandomAudio();
   }, [isFocused]);
+
+  if (!route.params.prayer) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text
+          style={{
+            fontFamily: "Inter-Medium",
+            color: theme == "dark" ? "white" : "#2f2d51",
+          }}
+        >
+          Something went wrong...
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Inter-Medium",
+            color: theme == "dark" ? "white" : "#2f2d51",
+          }}
+        >
+          Restart your app.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <RoomContainer
@@ -103,7 +126,7 @@ const PrayerRoom = ({ navigation }) => {
         source={gradient}
         useNativeControls={false}
         resizeMode={ResizeMode.COVER}
-        isLooping
+        isLooping={true}
         onPlaybackStatusUpdate={(status) => setStatus(() => status)}
       >
         <View
@@ -128,7 +151,9 @@ const PrayerRoom = ({ navigation }) => {
               style={{ marginRight: 10 }}
               onPress={() => {
                 navigation.navigate("Checklist");
-                pauseSound();
+                sound?.pauseAsync();
+                setIsPlayingSound(false);
+                // video.current.pauseAsync();
               }}
             >
               <Ionicons
@@ -147,24 +172,74 @@ const PrayerRoom = ({ navigation }) => {
               Prayer Room
             </Text>
           </View>
-          <View style={{ alignItems: "center" }}>
+          <View style={{ alignItems: "center", gap: 5 }}>
             <TouchableOpacity
-              onPress={pauseSound}
+              onPress={isPlayingSound ? pauseSound : loadAndPlayRandomAudio}
               style={{
-                backgroundColor: "#b7d3ff",
-                padding: 5,
+                backgroundColor: "#2f2d51",
+                padding: 10,
                 borderRadius: 100,
               }}
             >
-              <MaterialCommunityIcons name="music" size={50} color="#2f2d51" />
+              <MaterialCommunityIcons
+                name={isPlayingSound ? "volume-high" : "volume-off"}
+                size={40}
+                color="#b7d3ff"
+              />
             </TouchableOpacity>
-            <MaterialCommunityIcons
-              // style={{ paddingTop: 10 }}
-              name={isPlayingSound ? "volume-high" : "volume-off"}
-              size={24}
-              color="black"
-            />
+            <Text style={{ fontFamily: "Inter-Bold", color: "#2f2d51" }}>
+              {isPlayingSound ? "Disable" : "Enable"} sound
+            </Text>
           </View>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            padding: 15,
+            justifyContent: "center",
+            gap: 20,
+
+            zIndex: 99,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={
+              theme == "dark"
+                ? [styles.title, { color: "white", fontFamily: "Inter-Bold" }]
+                : [styles.title, { fontFamily: "Inter-Bold" }]
+            }
+          >
+            Get Ready to Pray
+          </Text>
+          <Text
+            style={
+              theme == "dark"
+                ? [styles.title, { color: "white" }]
+                : styles.title
+            }
+          >
+            {route?.params?.prayer?.prayer}
+          </Text>
+
+          <TouchableOpacity
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#2f2d51",
+              borderRadius: 10,
+              flexDirection: "row",
+              gap: 10,
+              padding: 15,
+            }}
+          >
+            <Text
+              style={{ color: "white", fontFamily: "Inter-Bold", fontSize: 17 }}
+            >
+              Amen
+            </Text>
+            <MaterialCommunityIcons name="hands-pray" size={30} color="white" />
+          </TouchableOpacity>
         </View>
       </Video>
       <StatusBar hidden />
@@ -175,6 +250,13 @@ const PrayerRoom = ({ navigation }) => {
 export default PrayerRoom;
 
 const styles = StyleSheet.create({
+  title: {
+    color: "#2f2d51",
+    fontSize: 20,
+    fontFamily: "Inter-Medium",
+    letterSpacing: 1.3,
+    marginVertical: 5,
+  },
   video: {
     alignSelf: "center",
     width: "100%",
