@@ -113,8 +113,8 @@ const Relfection = ({ navigation, route }) => {
       },
     };
     console.log(message);
-    console.log(PRAYSE_TEST_MESSAGE.toString());
-    fetch(PRAYSE_TEST_MESSAGE.toString(), {
+    console.log(PRAYSE_MESSAGE.toString());
+    fetch(PRAYSE_MESSAGE.toString(), {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Container } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
@@ -17,21 +17,141 @@ import Animated, {
   SlideOutLeft,
   BounceOutLeft,
   SlideInRight,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+  withSequence,
+  withDelay,
 } from "react-native-reanimated";
+import Gpad from "../assets/audio/Gpad.mp3";
+import Bpad from "../assets/audio/Bpad.mp3";
+import Cpad from "../assets/audio/Cpad.mp3";
+import Ebpad from "../assets/audio/Ebpad.mp3";
+
 import {
   GestureDetector,
   Gesture,
   Directions,
 } from "react-native-gesture-handler";
+import AnimatedLottieView from "lottie-react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { Video, ResizeMode, Audio } from "expo-av";
+
+const duration = 2000;
+const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
 const Checklist = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
+  const [isPraying, setIsPraying] = useState(false);
   const data = prayers[screenIndex];
 
-  console.log(data);
+  const pulse = useSharedValue(1);
+  const opacityValue = useSharedValue(1);
+  const fadeIn = useSharedValue(0);
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
+  const isFocused = useIsFocused();
+  const [sound, setSound] = useState();
+  const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const [permissionResponse, requestPermission] = Audio.usePermissions();
+
+  async function playSound(soundFile) {
+    const { sound } = await Audio.Sound.createAsync(soundFile);
+    await Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+    });
+    setSound(sound);
+    setIsPlayingSound(true);
+    // await sound.loadAsync(soundFile);
+    await sound.playAsync();
+  }
+
+  async function pauseSound() {
+    await sound.pauseAsync();
+    await sound.unloadAsync();
+  }
+
+  const loadAndPlayRandomAudio = () => {
+    const audioFiles = [Gpad, Bpad, Cpad, Ebpad];
+    const randomIndex = Math.floor(Math.random() * audioFiles.length);
+    const randomAudioFile = audioFiles[randomIndex];
+
+    console.log(randomAudioFile);
+    playSound(randomAudioFile);
+  };
+
+  async function checkAudioPermission() {
+    const { status, granted } = await requestPermission();
+  }
+
+  useEffect(() => {
+    doFadeInAnimation();
+    pulse.value = withRepeat(
+      withSequence(
+        withTiming(1.1, { duration: 3000, easing: Easing.ease }),
+        // withTiming(0.8, { duration: 2000, easing: Easing.ease }),
+        withTiming(0.8, { duration: 3000, easing: Easing.ease }),
+        withTiming(1.1, { duration: 3000, easing: Easing.ease })
+        // withTiming(0, { duration: 2000, easing: Easing.in })
+      ),
+      2,
+      true
+    );
+    opacityValue.value = withDelay(
+      9000,
+      withTiming(0, {
+        duration: 1500,
+        easing: Easing.ease,
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    checkAudioPermission();
+
+    return sound
+      ? () => {
+          console.log("unloading sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulse.value * 1.08 }],
+  }));
+
+  const animatedOpacityStyle = useAnimatedStyle(() => ({
+    opacity: opacityValue.value * 1,
+  }));
+
+  const animatedFadeInStyle = useAnimatedStyle(() => ({
+    opacity: fadeIn.value * 1,
+  }));
+
+  const doFadeInAnimation = () => {
+    fadeIn.value = withTiming(1, {
+      duration: 2000,
+      easing: Easing.ease,
+    });
+  };
+
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
+  async function loadVideo() {
+    await video.current.loadAsync(gradient);
+    await video.current.playAsync();
+  }
+
+  // useEffect(() => {
+  //   // video.current.playAsync();
+  //   // loadAndPlayRandomAudio();
+  // }, [isFocused]);
 
   const onContinue = () => {
     const isLastScreen = screenIndex === prayers.length - 1;
@@ -54,6 +174,8 @@ const Checklist = ({ navigation }) => {
   const endChecklist = () => {
     setScreenIndex(0);
     navigation.navigate("Prayer");
+    setIsPraying(false);
+    pauseSound();
     // router.push("/");
   };
 
@@ -88,7 +210,11 @@ const Checklist = ({ navigation }) => {
       >
         <TouchableOpacity
           style={{ marginRight: 10 }}
-          onPress={() => navigation.navigate("Prayer")}
+          onPress={() => {
+            navigation.navigate("Prayer");
+            pauseSound();
+            setIsPraying(false);
+          }}
         >
           <Ionicons
             name="chevron-back"
@@ -147,6 +273,11 @@ const Checklist = ({ navigation }) => {
               {data.prayer}
             </Animated.Text>
           </View>
+          <Animated.Text
+            style={[styles.swipeText, animatedStyle, animatedOpacityStyle]}
+          >
+            Swipe right to go to the next prayer
+          </Animated.Text>
         </View>
       </GestureDetector>
 
@@ -156,37 +287,41 @@ const Checklist = ({ navigation }) => {
           flexDirection: "row",
 
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: isPraying ? "center" : "center",
           bottom: 20,
           width: "100%",
         }}
       >
-        <TouchableOpacity
-          onPress={onBack}
-          style={{ backgroundColor: "#b7d3ff", padding: 10, borderRadius: 100 }}
-        >
-          <MaterialCommunityIcons name="arrow-left" size={40} color="#2f2d51" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("PrayerRoom", {
-              prayer: data,
-            })
-          }
-          style={{ backgroundColor: "#2f2d51", padding: 15, borderRadius: 100 }}
-        >
-          <MaterialCommunityIcons name="hands-pray" size={55} color="#b7d3ff" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={onContinue}
-          style={{ backgroundColor: "#b7d3ff", padding: 10, borderRadius: 100 }}
-        >
-          <MaterialCommunityIcons
-            name="arrow-right"
-            size={40}
-            color="#2f2d51"
+        {!isPraying ? (
+          <AnimatedTouchable
+            onPress={() => {
+              setIsPraying(true);
+              loadAndPlayRandomAudio();
+            }}
+            style={[
+              {
+                backgroundColor: "#2f2d51",
+                padding: 15,
+                borderRadius: 100,
+              },
+              animatedFadeInStyle,
+            ]}
+          >
+            <MaterialCommunityIcons
+              name="hands-pray"
+              size={55}
+              color="#b7d3ff"
+            />
+          </AnimatedTouchable>
+        ) : (
+          <AnimatedLottieView
+            speed={0.5}
+            source={require("../assets/animations/praying-animation.json")}
+            style={styles.animation}
+            autoPlay
+            resizeMode="none"
           />
-        </TouchableOpacity>
+        )}
       </View>
       {/* <StatusBar hidden /> */}
     </Container>
@@ -196,6 +331,18 @@ const Checklist = ({ navigation }) => {
 export default Checklist;
 
 const styles = StyleSheet.create({
+  swipeText: {
+    fontSize: 12,
+    fontFamily: "Inter-Regular",
+    color: "#2f2d51",
+  },
+  animation: {
+    width: 130,
+    height: 130,
+    alignSelf: "center",
+    textAlign: "center",
+    justifyContent: "center",
+  },
   title: {
     color: "#2f2d51",
     fontSize: 22,
@@ -233,7 +380,7 @@ const styles = StyleSheet.create({
   },
   pageContent: {
     padding: 20,
-
+    gap: 20,
     justifyContent: "center",
     alignItems: "center",
     flex: 1,

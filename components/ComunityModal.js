@@ -90,7 +90,7 @@ const CommunityModal = ({
         data: { screen: "PublicCommunity", public: true, verseTitle: "" },
       };
 
-      fetch(PRAYSE_TEST_MESSAGE.toString(), {
+      fetch(PRAYSE_MESSAGE.toString(), {
         method: "POST",
         headers: {
           Accept: "application/json",
