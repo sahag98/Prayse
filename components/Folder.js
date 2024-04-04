@@ -38,6 +38,10 @@ import { SectionList } from "react-native";
 import FolderItem from "./FolderItem";
 import AddFolderModal from "./AddFolderModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  clearPrayerData,
+  deletePrayerByFolderId,
+} from "../redux/prayerReducer";
 
 const Folder = ({ navigation, todos }) => {
   const folderInputRef = useRef(null);
@@ -148,7 +152,9 @@ const Folder = ({ navigation, todos }) => {
       dispatch(deleteQuickFolder(idToDelete));
       setOpen(false);
     } else {
+      console.log("id of folder to delete: ", idToDelete);
       dispatch(deleteFolder(idToDelete));
+      dispatch(deletePrayerByFolderId(idToDelete));
       setOpen(false);
     }
   }
@@ -386,18 +392,18 @@ const Folder = ({ navigation, todos }) => {
 
               <AnimatedFAB
                 icon={"hands-pray"}
-                label={"Prayer Checklist"}
+                label={"Prayer Room"}
                 extended={isExtended}
                 onPress={() => {
-                  navigation.navigate("Checklist");
+                  navigation.navigate("PrayerRoom");
                 }}
                 visible={fabvisible}
                 animateFrom={"right"}
                 iconMode={"dynamic"}
-                color={theme == "dark" ? "#121212" : "#2f2d51"}
+                color={theme == "dark" ? "white" : "#2f2d51"}
                 style={
                   theme == "dark"
-                    ? [styles.fabStyleDark]
+                    ? [styles.fabStyleDark, { backgroundColor: "#212121" }]
                     : theme == "BlackWhite"
                     ? styles.fabStyleBlack
                     : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]

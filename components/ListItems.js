@@ -64,6 +64,8 @@ const ListItems = ({
 
   const [status, setStatus] = useState(selected[0]);
 
+  console.log("list: ", prayers);
+
   const filteredList = prayers
     .filter((item) => item.category === status)
     .filter((item) => (search !== "" ? item.prayer.includes(search) : true));

@@ -3,45 +3,59 @@ import { createGlobalStyle } from "styled-components";
 
 const initialState = {
   prayer: [],
-}
+};
 
 export const prayerSlice = createSlice({
-  name: 'prayer',
+  name: "prayer",
   initialState,
   reducers: {
     clearPrayerData: (state) => {
-      state.prayer = []
+      state.prayer = [];
     },
     deleteFavorites: (state, action) => {
-      state.favoriteVerses = []
+      state.favoriteVerses = [];
     },
     deleteFavoriteVerse: (state, action) => {
-      state.favoriteVerses = state.favoriteVerses.filter((verse) => verse.id !== action.payload)
+      state.favoriteVerses = state.favoriteVerses.filter(
+        (verse) => verse.id !== action.payload
+      );
     },
     addPrayer: (state, action) => {
-      const Prayers = [action.payload, ...state.prayer]
-      state.prayer = Prayers
+      const Prayers = [action.payload, ...state.prayer];
+      state.prayer = Prayers;
     },
     addNoteToPrayer: (state, action) => {
-      state.answeredPrayers = state.answeredPrayers.map(obj => obj.id === action.payload.id ? { ...obj, answerNoted: action.payload.answerNote } : obj)
+      state.answeredPrayers = state.answeredPrayers.map((obj) =>
+        obj.id === action.payload.id
+          ? { ...obj, answerNoted: action.payload.answerNote }
+          : obj
+      );
     },
     deletePrayer: (state, action) => {
-      state.prayer = state.prayer.filter((prayer) => prayer.id !== action.payload)
+      state.prayer = state.prayer.filter(
+        (prayer) => prayer.id !== action.payload
+      );
+    },
+    deletePrayerByFolderId: (state, action) => {
+      state.prayer = state.prayer.filter(
+        (prayer) => prayer.folderId !== action.payload
+      );
     },
     editPrayer: (state, action) => {
-      const newPrayers = [...state.prayer]
-      const prayerIndex = state.prayer.findIndex((prayer) => prayer.id === action.payload.id)
-      newPrayers.splice(prayerIndex, 1, action.payload)
-      state.prayer = newPrayers
+      const newPrayers = [...state.prayer];
+      const prayerIndex = state.prayer.findIndex(
+        (prayer) => prayer.id === action.payload.id
+      );
+      newPrayers.splice(prayerIndex, 1, action.payload);
+      state.prayer = newPrayers;
     },
-  }
-},
-
-)
+  },
+});
 
 export const {
   addPrayer,
   deletePrayer,
+  deletePrayerByFolderId,
   editPrayer,
   addAnswer,
   setVerse,
@@ -49,7 +63,7 @@ export const {
   addToFavorites,
   deleteFavorites,
   clearPrayerData,
-  deleteFavoriteVerse
-} = prayerSlice.actions
+  deleteFavoriteVerse,
+} = prayerSlice.actions;
 
-export default prayerSlice.reducer
+export default prayerSlice.reducer;
