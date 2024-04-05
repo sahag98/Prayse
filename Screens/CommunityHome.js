@@ -78,8 +78,6 @@ const CommunityHome = ({ route }) => {
     supabase,
   } = useSupabase();
 
-  console.log("session: ", session.access_token);
-
   const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
@@ -100,7 +98,7 @@ const CommunityHome = ({ route }) => {
   const [isViewingGroups, setIsViewingGroups] = useState(false);
   const isReady = communityReady();
   const [hasConnection, setHasConnection] = useState(true);
-
+  const [isFetchingUserGroups, setIsFetchingUserGroups] = useState(false);
   const rotation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -186,12 +184,18 @@ const CommunityHome = ({ route }) => {
   }
 
   async function getUserGroups() {
-    let { data: groups, error } = await supabase
-      .from("members")
-      .select("*,groups(*), profiles(*)")
-      .eq("user_id", currentUser?.id)
-      .order("id", { ascending: false });
-    setUserGroups(groups);
+    try {
+      setIsFetchingUserGroups(true);
+      let { data: groups, error } = await supabase
+        .from("members")
+        .select("*,groups(*), profiles(*)")
+        .eq("user_id", currentUser?.id)
+        .order("id", { ascending: false });
+      setUserGroups(groups);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsFetchingUserGroups(false);
   }
 
   async function getGroupUsers() {
@@ -298,8 +302,7 @@ const CommunityHome = ({ route }) => {
   return (
     <>
       {!isViewingGroups ? (
-        <ScrollView
-          contentContainerStyle={{ justifyContent: "center", gap: 10 }}
+        <View
           style={
             theme == "dark"
               ? {
@@ -307,6 +310,8 @@ const CommunityHome = ({ route }) => {
                   padding: 15,
                   flex: 1,
                   paddingTop: statusBarHeight,
+                  justifyContent: "center",
+                  gap: 10,
                   paddingBottom: 10,
                   position: "relative",
                 }
@@ -315,6 +320,8 @@ const CommunityHome = ({ route }) => {
                   padding: 15,
                   flex: 1,
                   paddingTop: statusBarHeight,
+                  justifyContent: "center",
+                  gap: 10,
                   paddingBottom: 10,
                   // justifyContent: "center",
 
@@ -683,7 +690,6 @@ const CommunityHome = ({ route }) => {
                 onPress={() => setJoinVisible(true)}
                 style={{
                   flexDirection: "row",
-
                   alignItems: "center",
                   gap: 5,
                   padding: 5,
@@ -722,7 +728,56 @@ const CommunityHome = ({ route }) => {
               </TouchableOpacity>
             </View>
           </View>
-
+          {/* {userGroups?.length != 0 && isFetchingUserGroups && (
+            <View
+              style={{
+                flex: 1,
+                gap: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome
+                name="group"
+                size={30}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+              <Text
+                style={{
+                  fontFamily: "Inter-Medium",
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontSize: 13,
+                }}
+              >
+                Loading...
+              </Text>
+            </View>
+          )} */}
+          {userGroups?.length == 0 && !isFetchingUserGroups && (
+            <View
+              style={{
+                flex: 1,
+                gap: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome
+                name="group"
+                size={30}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+              <Text
+                style={{
+                  fontFamily: "Inter-Medium",
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontSize: 13,
+                }}
+              >
+                No groups created or joined.
+              </Text>
+            </View>
+          )}
           {userGroups?.length == 0 && (
             <View
               style={{
@@ -732,8 +787,18 @@ const CommunityHome = ({ route }) => {
                 alignItems: "center",
               }}
             >
-              <FontAwesome name="group" size={30} color="#2f2d51" />
-              <Text style={{ fontFamily: "Inter-Medium", fontSize: 13 }}>
+              <FontAwesome
+                name="group"
+                size={30}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+              <Text
+                style={{
+                  fontFamily: "Inter-Medium",
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontSize: 13,
+                }}
+              >
                 No groups created or joined.
               </Text>
             </View>
@@ -783,7 +848,7 @@ const CommunityHome = ({ route }) => {
                             padding: 8,
                             width: "100%",
                             flexDirection: "row",
-                            marginBottom: 15,
+                            marginBottom: 10,
                             gap: 10,
                             borderRadius: 10,
                             justifyContent: "space-between",
@@ -793,33 +858,39 @@ const CommunityHome = ({ route }) => {
                             backgroundColor: "#b7d3ff",
                             padding: 8,
                             width: "100%",
-
-                            marginBottom: 15,
+                            flexDirection: "row",
+                            marginBottom: 10,
+                            gap: 10,
                             borderRadius: 10,
                             justifyContent: "space-between",
                           }
                     }
                   >
-                    <View
-                      style={{
-                        borderWidth: 1,
-                        borderRadius: 10,
-                        backgroundColor: "#353535",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 10,
-                      }}
-                    >
-                      <Image
-                        source={groupBg}
-                        style={{
-                          tintColor: theme == "dark" ? "white" : "#d1e3ff",
-
-                          width: 50,
-                          height: 50,
-                        }}
-                      />
-                    </View>
+                    <Image
+                      source={
+                        item.groups.group_img
+                          ? {
+                              uri: item.groups.group_img,
+                            }
+                          : groupBg
+                      }
+                      style={
+                        item.groups.group_img
+                          ? {
+                              width: 70,
+                              height: 70,
+                              borderRadius: 10,
+                            }
+                          : {
+                              tintColor: theme == "dark" ? "white" : "#d1e3ff",
+                              backgroundColor:
+                                theme == "dark" ? "#121212" : "white",
+                              borderRadius: 10,
+                              width: 70,
+                              height: 70,
+                            }
+                      }
+                    />
                     <View style={{ flex: 1, justifyContent: "space-between" }}>
                       <View
                         style={{
@@ -867,7 +938,7 @@ const CommunityHome = ({ route }) => {
                                   padding: 7,
                                   flexDirection: "row",
                                   alignItems: "center",
-                                  backgroundColor: "#b7d3ff",
+                                  backgroundColor: "#f2f7ff",
                                   borderRadius: 10,
                                   gap: 8,
                                 }
@@ -897,7 +968,7 @@ const CommunityHome = ({ route }) => {
                           </Text>
                         </TouchableOpacity>
                       </View>
-                      <Text
+                      {/* <Text
                         style={{
                           fontFamily: "Inter-Regular",
                           fontSize: 13,
@@ -905,12 +976,11 @@ const CommunityHome = ({ route }) => {
                         }}
                       >
                         {item.groups.description}
-                      </Text>
+                      </Text> */}
                       <View
                         style={{
                           flexDirection: "row",
                           paddingHorizontal: 10,
-
                           width: "100%",
                           alignItems: "center",
                         }}
@@ -1087,7 +1157,7 @@ const CommunityHome = ({ route }) => {
             modalVisible={joinVisible}
             setModalVisible={setJoinVisible}
           />
-        </ScrollView>
+        </View>
       ) : (
         <Animated.View
           entering={FadeIn.duration(500)}
@@ -1280,18 +1350,6 @@ const CommunityHome = ({ route }) => {
                       >
                         {item.groups.name}
                       </Text>
-                      {item.groups.description && (
-                        <Text
-                          style={{
-                            fontFamily: "Inter-Regular",
-                            fontSize: 13,
-                            color: "grey",
-                          }}
-                        >
-                          {item.groups.description}
-                        </Text>
-                      )}
-
                       <View
                         style={{
                           flexDirection: "row",

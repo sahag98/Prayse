@@ -13,6 +13,7 @@ import {
   MaterialCommunityIcons,
   Ionicons,
   FontAwesome5,
+  Feather,
 } from "@expo/vector-icons";
 import Animated, {
   FadeIn,
@@ -38,6 +39,7 @@ import OrganicB from "../assets/audio/OrganicB.mp3";
 import OrganicC from "../assets/audio/OrganicC.mp3";
 import OrganicG from "../assets/audio/OrganicG.mp3";
 import gradient from "../assets/video/gradient.mp4";
+import darkGradient from "../assets/video/dark-gradient.mp4";
 
 import {
   GestureDetector,
@@ -60,8 +62,8 @@ const PrayerRoom = ({ navigation }) => {
   const [isPraying, setIsPraying] = useState(false);
   const data = prayers[screenIndex];
 
-  const pulse = useSharedValue(1);
-  const opacityValue = useSharedValue(1);
+  const pulse = useSharedValue(0);
+  const opacityValue = useSharedValue(0);
   const fadeIn = useSharedValue(0);
   const prayerFadeIn = useSharedValue(0);
   const momentFadeIn = useSharedValue(0);
@@ -87,8 +89,19 @@ const PrayerRoom = ({ navigation }) => {
   }
 
   async function pauseSound() {
+    setIsPlayingSound(false);
     await sound.pauseAsync();
     await sound.unloadAsync();
+  }
+
+  async function checkSound() {
+    if (isPlayingSound) {
+      setIsPlayingSound(false);
+      await sound.pauseAsync();
+    } else {
+      setIsPlayingSound(true);
+      await sound.playAsync();
+    }
   }
 
   const loadAndPlayRandomAudio = () => {
@@ -115,24 +128,6 @@ const PrayerRoom = ({ navigation }) => {
 
   useEffect(() => {
     doFadeInAnimation();
-    pulse.value = withRepeat(
-      withSequence(
-        withTiming(1.1, { duration: 3000, easing: Easing.ease }),
-        // withTiming(0.8, { duration: 2000, easing: Easing.ease }),
-        withTiming(0.8, { duration: 3000, easing: Easing.ease }),
-        withTiming(1.1, { duration: 3000, easing: Easing.ease })
-        // withTiming(0, { duration: 2000, easing: Easing.in })
-      ),
-      2,
-      true
-    );
-    opacityValue.value = withDelay(
-      9000,
-      withTiming(0, {
-        duration: 1500,
-        easing: Easing.ease,
-      })
-    );
   }, []);
 
   useEffect(() => {
@@ -224,6 +219,33 @@ const PrayerRoom = ({ navigation }) => {
 
   useEffect(() => {
     if (isPraying) {
+      // pulse.value = withRepeat(
+      //   withSequence(
+      //     withTiming(1.1, { duration: 3000, easing: Easing.ease }),
+      //     // withTiming(0.8, { duration: 2000, easing: Easing.ease }),
+      //     withTiming(0.9, { duration: 3000, easing: Easing.ease }),
+      //     withTiming(1.1, { duration: 3000, easing: Easing.ease })
+      //     // withTiming(0, { duration: 2000, easing: Easing.in })
+      //   ),
+      //   1,
+      //   true
+      // );
+      opacityValue.value = withSequence(
+        withDelay(
+          9000,
+          withTiming(1, {
+            duration: 2000,
+            easing: Easing.ease,
+          })
+        ),
+        withDelay(
+          5000,
+          withTiming(0, {
+            duration: 2000,
+            easing: Easing.ease,
+          })
+        )
+      );
       loadVideo();
       doRoomFadeIn();
       doMomentFadeIn();
@@ -373,7 +395,7 @@ const PrayerRoom = ({ navigation }) => {
           <Video
             ref={video}
             style={styles.video}
-            source={gradient}
+            source={theme == "dark" ? darkGradient : darkGradient}
             useNativeControls={false}
             resizeMode={ResizeMode.COVER}
             isLooping={true}
@@ -433,7 +455,23 @@ const PrayerRoom = ({ navigation }) => {
                   />
                 ))}
               </View>
-
+              <TouchableOpacity
+                onPress={checkSound}
+                style={{
+                  alignSelf: "flex-end",
+                  marginTop: 10,
+                  backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                  padding: 15,
+                  marginRight: 15,
+                  borderRadius: 100,
+                }}
+              >
+                <Feather
+                  name={isPlayingSound ? "volume-2" : "volume-x"}
+                  size={24}
+                  color={theme == "dark" ? "#121212" : "white"}
+                />
+              </TouchableOpacity>
               <GestureDetector gesture={swipes}>
                 <View style={styles.pageContent} key={screenIndex}>
                   <Animated.Text
@@ -498,7 +536,7 @@ const PrayerRoom = ({ navigation }) => {
                     style={[
                       styles.swipeText,
                       theme == "dark" && { color: "white" },
-                      animatedStyle,
+                      // animatedStyle,
                       animatedOpacityStyle,
                     ]}
                   >
@@ -646,7 +684,7 @@ const PrayerRoom = ({ navigation }) => {
                 style={[
                   styles.swipeText,
                   theme == "dark" && { color: "white" },
-                  animatedStyle,
+                  // animatedStyle,
                   animatedOpacityStyle,
                 ]}
               >
@@ -757,6 +795,7 @@ const styles = StyleSheet.create({
   },
   pageContent: {
     padding: 20,
+    marginBottom: 50,
     gap: 20,
     justifyContent: "center",
     alignItems: "center",

@@ -4,6 +4,7 @@ const initialState = {
   userImg: "",
   tooltip: true,
   checkmarkVisible: false,
+  userGroups: [],
   theme: Appearance.getColorScheme(),
   expoToken: "",
   prayers: [],
@@ -39,6 +40,11 @@ export const userSlice = createSlice({
     darkMode: (state, action) => {
       state.theme = action.payload;
     },
+    checkUserGroups: (state, action) => {
+      const UserGroups = [action.payload, ...state.userGroups];
+      state.userGroups = UserGroups;
+    },
+
     systemTheme: (state) => {
       console.log(Appearance.getColorScheme());
       state.theme = Appearance.getColorScheme();
@@ -49,6 +55,7 @@ export const userSlice = createSlice({
 export const {
   addUser,
   setToken,
+  checkUserGroups,
   closeTool,
   addFolder,
   regular,

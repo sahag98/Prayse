@@ -6,7 +6,7 @@ import { deleteNoti } from "../redux/notiReducer";
 import { useSupabase } from "../context/useSupabase";
 import * as Notifications from "expo-notifications";
 
-const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
+const NotiItem = ({ item, theme, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
 
@@ -14,7 +14,7 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
     if (!screen) {
       dismissNotification(item);
       dispatch(deleteNoti(item.noti_id));
-      setNotiVisible(false);
+
       return;
     }
     if (screen == "Question" && !isLoggedIn) {
@@ -22,7 +22,6 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
       navigation.navigate(screen);
     }
 
-    setNotiVisible(false);
     dismissNotification(item);
     navigation.navigate(screen);
     dispatch(deleteNoti(item.noti_id));
@@ -35,9 +34,13 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
   return (
     <View
       style={{
-        zIndex: 99,
+        width: "100%",
         flexDirection: "row",
+        backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+        borderRadius: 10,
         alignItems: "center",
+        marginBottom: 15,
+        padding: 10,
         justifyContent: "space-between",
         gap: 10,
       }}
@@ -86,8 +89,8 @@ const NotiItem = ({ item, theme, setNotiVisible, navigation }) => {
         <Text
           style={
             theme == "dark"
-              ? { fontFamily: "Inter-Medium", color: "#A5C9FF" }
-              : { fontFamily: "Inter-Medium", color: "#2f2d51" }
+              ? { fontFamily: "Inter-Bold", color: "#A5C9FF" }
+              : { fontFamily: "Inter-Bold", color: "#2f2d51" }
           }
         >
           View

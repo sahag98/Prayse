@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Modal, Animated } from "react-native";
-
+import groupBg from "../assets/group-bg.png";
 import {
   AntDesign,
   Feather,
@@ -21,7 +21,7 @@ import {
   Octicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-
+import Toast from "react-native-toast-message";
 import uuid from "react-native-uuid";
 import {
   HeaderTitle,
@@ -41,7 +41,7 @@ import {
 } from "react-native-safe-area-context";
 import EditGroupModal from "./EditGroupModal";
 import { useNavigation } from "@react-navigation/native";
-
+import * as ImagePicker from "expo-image-picker";
 // import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const GroupInfoMenu = ({
@@ -239,13 +239,15 @@ const GroupInfoModal = ({
   const navigation = useNavigation();
   const [groupName, setGroupName] = useState(group.groups.name);
   const [openEdit, setOpenEdit] = useState(false);
+
   const insets = useSafeAreaInsets();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showLeaveConfirmation, setShowLeaveConfirmation] = useState(false);
   const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-
+  const [groupImage, setGroupImage] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
@@ -324,6 +326,89 @@ const GroupInfoModal = ({
     setGroupInfoVisible(false);
   };
 
+  const showToast = (type, content) => {
+    Toast.show({
+      type,
+      text1: content,
+      visibilityTime: 3000,
+    });
+  };
+
+  const photoPermission = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        showToast(
+          "error",
+          "We need camera roll permissions to make this work!"
+        );
+      } else {
+        pickImage();
+      }
+    }
+  };
+
+  console.log(group.groups.group_img);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setGroupImage(result.assets[0].uri);
+      const ext = result.assets[0].uri.substring(
+        result.assets[0].uri.lastIndexOf(".") + 1
+      );
+
+      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
+
+      const filePath = `${fileName}`;
+      const formData = new FormData();
+      formData.append("files", {
+        uri: result.assets[0].uri,
+        name: fileName,
+        type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
+      });
+
+      let { error: uploadError } = await supabase.storage
+        .from("group")
+        .upload(filePath, formData);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: imageData, error: getUrlError } = await supabase.storage
+        .from("group")
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
+
+      setImgUrl(imageData.signedUrl);
+      if (getUrlError) {
+        throw getUrlError;
+      }
+
+      const { data, error } = await supabase
+        .from("groups")
+        .update({
+          group_img: imageData.signedUrl,
+        })
+        .eq("id", group.group_id);
+      // navigation.navigate("Community");
+      // setGroupInfoVisible(false);
+      if (error) {
+        throw error;
+      }
+      // getProfile();
+      // getPrayers();
+    }
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -381,6 +466,35 @@ const GroupInfoModal = ({
           </HeaderView>
           {group.user_id == currentUser.id && group.is_admin == true ? (
             <>
+              <View style={styles.iconContainer}>
+                <Image
+                  style={[
+                    styles.profileImg,
+                    { backgroundColor: group.groups.group_img ? null : "grey" },
+                  ]}
+                  source={
+                    imgUrl
+                      ? { uri: imgUrl }
+                      : {
+                          uri: group.groups.group_img,
+                        }
+                  }
+                />
+                <TouchableOpacity
+                  onPress={photoPermission}
+                  style={
+                    theme == "dark"
+                      ? styles.featherIconDark
+                      : styles.featherIcon
+                  }
+                >
+                  <Entypo
+                    name="swap"
+                    size={20}
+                    color={theme == "dark" ? "white" : "black"}
+                  />
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
                 onPress={() => setOpenEdit(true)}
                 style={{

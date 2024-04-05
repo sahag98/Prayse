@@ -11,7 +11,7 @@ import Welcome from "./Screens/Welcome";
 import Gospel from "./Screens/Gospel";
 import Community from "./Screens/Community";
 import Settings from "./Screens/Settings";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PrayerPage from "./Screens/PrayerPage";
 import OldPrayerPage from "./Screens/oldPrayerPage";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -38,15 +38,21 @@ import Relfection from "./Screens/Relfection";
 import DevoList from "./Screens/DevoList";
 import Checklist from "./Screens/Checklist";
 import PrayerRoom from "./Screens/PrayerRoom";
+import Notifications from "./Screens/Notifications";
+import { checkUserGroups } from "./redux/userReducer";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
   const insets = useSafeAreaInsets();
   const theme = useSelector((state) => state.user.theme);
-  const { isLoggedIn, currentUser } = useSupabase();
+
+  const { isLoggedIn, currentUser, supabase } = useSupabase();
   const [showNewBadge, setShowNewBadge] = useState(false);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    // getUserGroups();
     const checkFirstTime = async () => {
       // await AsyncStorage.removeItem("hasPressedPrayerTab");
       try {
@@ -298,6 +304,14 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={Checklist}
+          />
+          <Tab.Screen
+            name="Notifications"
+            options={() => ({
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={Notifications}
           />
           <Tab.Screen
             name="PrayerRoom"

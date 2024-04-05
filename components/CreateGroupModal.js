@@ -1,4 +1,5 @@
 import {
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -10,9 +11,9 @@ import {
 } from "react-native";
 import React from "react";
 import { Modal } from "react-native";
-
+import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
-
+import groupBg from "../assets/group-bg.png";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -35,14 +36,15 @@ const CreateGroupModal = ({
 }) => {
   const [groupName, setGroupName] = useState("");
   const [color, setColor] = useState("");
-  const [description, setDescription] = useState("");
+
+  const [groupImage, setGroupImage] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
   const [inputHeight, setInputHeight] = useState(60);
   const [isEnabled, setIsEnabled] = useState(false);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setModalVisible(false);
     setGroupName("");
-    setDescription("");
   };
 
   const handleContentSizeChange = (event) => {
@@ -74,13 +76,14 @@ const CreateGroupModal = ({
       //prayers for production
       //prayers_test for testing
       const pin = Math.floor(Math.random() * 900000) + 100000;
-
+      console.log(imgUrl);
       const { data, error } = await supabase.from("groups").insert({
         name: groupName,
-        description: description,
+
         color: "grey",
         admin_id: user.id,
         code: pin,
+        group_img: imgUrl,
       });
 
       // generateGroupMembers()
@@ -110,7 +113,9 @@ const CreateGroupModal = ({
       setModalVisible(false);
       setIsEnabled(false);
       setGroupName("");
-      setDescription("");
+      setGroupImage(null);
+      // setImgUrl(null);
+
       setColor("");
     }
   };
@@ -140,7 +145,7 @@ const CreateGroupModal = ({
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setGroupImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
         result.assets[0].uri.lastIndexOf(".") + 1
       );
@@ -156,7 +161,7 @@ const CreateGroupModal = ({
       });
 
       let { error: uploadError } = await supabase.storage
-        .from("avatars")
+        .from("group")
         .upload(filePath, formData);
 
       if (uploadError) {
@@ -164,25 +169,26 @@ const CreateGroupModal = ({
       }
 
       const { data: imageData, error: getUrlError } = await supabase.storage
-        .from("avatars")
+        .from("group")
         .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
 
+      setImgUrl(imageData.signedUrl);
       if (getUrlError) {
         throw getUrlError;
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          avatar_url: imageData.signedUrl,
-        })
-        .eq("id", user.id);
+      // const { data, error } = await supabase
+      //   .from("groups")
+      //   .update({
+      //     avatar_url: imageData.signedUrl,
+      //   })
+      //   .eq("id", user.id);
 
       if (error) {
         throw error;
       }
-      getProfile();
-      getPrayers();
+      // getProfile();
+      // getPrayers();
     }
   };
 
@@ -272,6 +278,40 @@ const CreateGroupModal = ({
             </TouchableOpacity>
           </HeaderView>
 
+          <View style={styles.iconContainer}>
+            <Image
+              style={[
+                styles.profileImg,
+                {
+                  backgroundColor: groupImage
+                    ? null
+                    : theme == "dark"
+                    ? "grey"
+                    : "#deebff",
+                },
+              ]}
+              source={
+                groupImage
+                  ? {
+                      uri: groupImage,
+                    }
+                  : groupBg
+              }
+            />
+            <TouchableOpacity
+              onPress={photoPermission}
+              style={
+                theme == "dark" ? styles.featherIconDark : styles.featherIcon
+              }
+            >
+              <AntDesign
+                name="plus"
+                size={20}
+                color={theme == "dark" ? "white" : "black"}
+              />
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.inputField}>
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
@@ -282,48 +322,7 @@ const CreateGroupModal = ({
               value={groupName}
               onChangeText={(text) => setGroupName(text)}
             />
-            <View style={{ width: "100%", marginTop: 10, gap: 10 }}>
-              <TextInput
-                style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter group description: (optional)"
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-                value={description}
-                onChangeText={(text) => setDescription(text)}
-              />
-              {/* <TextInput
-                style={theme == "dark" ? styles.inputDark : styles.input}
-                placeholder="Enter group border color: (optional)"
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-                value={color}
-                onChangeText={(text) => setColor(text)}
-              /> */}
-            </View>
-            <TouchableOpacity
-              style={{ alignSelf: "flex-end", marginTop: 5 }}
-              onPress={() => Keyboard.dismiss()}
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        marginTop: 5,
-                        color: "#ff6262",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                    : {
-                        marginTop: 5,
-                        color: "#ff6262",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                }
-              >
-                Dismiss Keyboard
-              </Text>
-            </TouchableOpacity>
+
             <View style={{ marginTop: 10, width: "100%" }}>
               <Text
                 style={
@@ -373,6 +372,16 @@ const CreateGroupModal = ({
 export default CreateGroupModal;
 
 const styles = StyleSheet.create({
+  profileImg: {
+    width: 120,
+    height: 120,
+    borderRadius: 100,
+  },
+  iconContainer: {
+    position: "relative",
+    alignSelf: "center",
+    padding: 8,
+  },
   nameDark: {
     backgroundColor: "#212121",
     color: "white",
@@ -386,7 +395,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   inputField: {
-    marginTop: 50,
+    marginTop: 20,
+    gap: 10,
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 10,

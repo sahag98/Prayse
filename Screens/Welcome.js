@@ -45,6 +45,9 @@ import Animated, {
   FadeIn,
   Transition,
   Transitioning,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
 } from "react-native-reanimated";
 import { PROJECT_ID, NOTIFICATION_API } from "@env";
 import moment from "moment";
@@ -57,7 +60,7 @@ import { addPrayer } from "../redux/prayerReducer";
 import * as Updates from "expo-updates";
 import { Badge } from "react-native-paper";
 import { addNoti, deleteAll } from "../redux/notiReducer";
-import NotiItem from "../components/NotiItem";
+
 import NewFeaturesModal from "../components/NewFeaturesModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DonationModal from "../components/DonationModal";
@@ -72,6 +75,7 @@ import ReminderModal from "../components/ReminderModal";
 import MerchComponent from "../components/MerchComponent";
 
 import noreminder from "../assets/noreminders.png";
+import { checkUserGroups } from "../redux/userReducer";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -155,7 +159,7 @@ const Welcome = ({ navigation }) => {
   const [greeting, setGreeting] = useState("");
   const [featureVisible, setFeatureVisible] = useState(false);
   const [icon, setIcon] = useState(null);
-  const { supabase } = useSupabase();
+  const { supabase, currentUser } = useSupabase();
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
@@ -166,6 +170,8 @@ const Welcome = ({ navigation }) => {
     (state) => state.folder.quickFolderExists
   );
   const offset = useSharedValue(initialOffset);
+
+  const welcomeFadeIn = useSharedValue(0);
   // const fadeAnim = useRef(new Animated.Value(0)).current;
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
@@ -182,6 +188,17 @@ const Welcome = ({ navigation }) => {
   const [notiVisible, setNotiVisible] = useState(false);
   const [reminderVisible, setReminderVisible] = useState(false);
   const [image, setImage] = useState(null);
+
+  const doFadeInAnimation = () => {
+    welcomeFadeIn.value = withTiming(1, {
+      duration: 2000,
+      easing: Easing.ease,
+    });
+  };
+
+  const animatedWelcomeFadeInStyle = useAnimatedStyle(() => ({
+    opacity: welcomeFadeIn.value * 1,
+  }));
 
   async function fetchUpdate() {
     try {
@@ -324,6 +341,7 @@ const Welcome = ({ navigation }) => {
   }, [lastNotificationResponse]);
 
   useEffect(() => {
+    doFadeInAnimation();
     // AsyncStorage.getItem("modalShown").then((value) => {
     //   if (value === null) {
     //     // If the modal hasn't been shown before, show it and set the flag
@@ -563,8 +581,10 @@ const Welcome = ({ navigation }) => {
         }}
       >
         <Animated.View
-          entering={FadeIn.duration(2000)}
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={[
+            { flexDirection: "row", alignItems: "center" },
+            animatedWelcomeFadeInStyle,
+          ]}
         >
           <Animated.Text
             style={
@@ -593,7 +613,7 @@ const Welcome = ({ navigation }) => {
             setIsReminderOn={setIsReminderOff}
           />
           <TouchableOpacity
-            onPress={() => setNotiVisible((prev) => !prev)}
+            onPress={() => navigation.navigate("Notifications")}
             style={
               theme == "dark"
                 ? {
@@ -1041,98 +1061,6 @@ const Welcome = ({ navigation }) => {
             </SafeAreaView>
           )}
         </View>
-        {notiVisible && (
-          <Animated.View
-            entering={FadeIn.duration(300)}
-            style={
-              theme == "dark"
-                ? {
-                    backgroundColor: "#212121",
-                    borderColor: "#A5C9FF",
-                    borderWidth: 1,
-                    zIndex: 99,
-                    position: "absolute",
-                    borderRadius: 10,
-                    overflow: "hidden",
-                    top: -5,
-                    right: 0,
-                  }
-                : {
-                    backgroundColor: "#93d8f8",
-                    borderColor: "#2f2d51",
-                    borderWidth: 1,
-                    zIndex: 99,
-                    position: "absolute",
-                    borderRadius: 10,
-                    overflow: "hidden",
-                    top: -5,
-                    right: 0,
-                  }
-            }
-          >
-            {notis.length == 0 ? (
-              <View style={{ padding: 12 }}>
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { color: "white", fontFamily: "Inter-Medium" }
-                      : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-                  }
-                >
-                  No new notifications yet!
-                </Text>
-              </View>
-            ) : (
-              <SafeAreaView style={{ flex: 1 }}>
-                <FlatList
-                  data={notis}
-                  keyExtractor={(item) => item.noti_id}
-                  onEndReachedThreshold={0}
-                  initialNumToRender={4}
-                  windowSize={8}
-                  ListFooterComponent={() => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        dispatch(deleteAll());
-                        setNotiVisible(false);
-                      }}
-                      style={{ padding: 10, alignSelf: "flex-end" }}
-                    >
-                      <Text
-                        style={
-                          theme == "dark"
-                            ? { fontFamily: "Inter-Bold", color: "#e24774" }
-                            : { fontFamily: "Inter-Bold", color: "#ff6262" }
-                        }
-                      >
-                        Clear all
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                  ItemSeparatorComponent={() => (
-                    <Divider
-                      style={
-                        theme == "dark"
-                          ? { backgroundColor: "#525252" }
-                          : { backgroundColor: "#2f2d51" }
-                      }
-                    />
-                  )}
-                  scrollEventThrottle={16}
-                  showsVerticalScrollIndicator={false}
-                  renderItem={({ item }) => (
-                    <NotiItem
-                      theme={theme}
-                      navigation={navigation}
-                      setNotiVisible={setNotiVisible}
-                      item={item}
-                    />
-                  )}
-                />
-              </SafeAreaView>
-            )}
-          </Animated.View>
-        )}
       </View>
       <NewFeaturesModal
         theme={theme}

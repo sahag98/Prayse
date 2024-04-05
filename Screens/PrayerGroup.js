@@ -561,7 +561,7 @@ const PrayerGroup = ({ route, navigation }) => {
           </HeaderView>
         )}
 
-        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        {/* <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <Text
             onPress={() => setToggle("chat")}
             style={{
@@ -580,32 +580,32 @@ const PrayerGroup = ({ route, navigation }) => {
           >
             Video
           </Text>
-        </View>
+        </View> */}
 
-        {toggle == "chat" ? (
-          <Chat
-            theme={theme}
-            currentUser={currentUser}
-            onlineUsers={onlineUsers}
-            areMessagesLoading={areMessagesLoading}
-            groupMessages={groupMessages}
-            setGroupMessages={setGroupMessages}
-            flatListRef={flatListRef}
-            handleScroll={handleScroll}
-            supabase={supabase}
-            currGroup={currGroup}
-            setRefreshMsgLikes={setRefreshMsgLikes}
-            refreshMsgLikes={refreshMsgLikes}
-            allGroups={allGroups}
-            showToast={showToast}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            handleContentSizeChange={handleContentSizeChange}
-            sendMessage={sendMessage}
-          />
-        ) : (
+        {/* {toggle == "chat" ? ( */}
+        <Chat
+          theme={theme}
+          currentUser={currentUser}
+          onlineUsers={onlineUsers}
+          areMessagesLoading={areMessagesLoading}
+          groupMessages={groupMessages}
+          setGroupMessages={setGroupMessages}
+          flatListRef={flatListRef}
+          handleScroll={handleScroll}
+          supabase={supabase}
+          currGroup={currGroup}
+          setRefreshMsgLikes={setRefreshMsgLikes}
+          refreshMsgLikes={refreshMsgLikes}
+          allGroups={allGroups}
+          showToast={showToast}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          handleContentSizeChange={handleContentSizeChange}
+          sendMessage={sendMessage}
+        />
+        {/* ) : (
           <VideoCall />
-        )}
+        )} */}
 
         {/* <View
           style={{
