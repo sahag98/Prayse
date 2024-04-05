@@ -52,6 +52,10 @@ import Constants from "expo-constants";
 import * as Network from "expo-network";
 import Toast from "react-native-toast-message";
 
+import globeBg from "../assets/globe-bg.png";
+import groupBg from "../assets/group-bg.png";
+import questionBg from "../assets/question-bg.png";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -245,6 +249,8 @@ const CommunityHome = ({ route }) => {
     searchName !== "" ? item.groups.name.includes(searchName) : true
   );
 
+  const width = Dimensions.get("window").width - 30;
+
   // if (route.params !== undefined) {
   //   navigation.navigate("PrayerGroup", {
   //     group: route.params.group,
@@ -414,16 +420,20 @@ const CommunityHome = ({ route }) => {
                 theme == "dark"
                   ? {
                       flex: 1,
-                      height: 130,
+                      // minHeight: 130,
+                      // maxHeightheight: 150,
                       justifyContent: "space-between",
                       padding: 10,
+                      gap: 20,
                       borderRadius: 10,
-
                       backgroundColor: "#212121",
+                      position: "relative",
                     }
                   : {
                       flex: 1,
-                      height: 130,
+                      position: "relative",
+                      // minHeight: 130,
+                      gap: 20,
                       justifyContent: "space-between",
                       shadowColor: "#bdbdbd",
                       shadowOffset: {
@@ -439,10 +449,23 @@ const CommunityHome = ({ route }) => {
                     }
               }
             >
+              <Image
+                source={globeBg}
+                style={{
+                  position: "absolute",
+                  tintColor: theme == "dark" ? "#5c5c5c" : "#9693c3",
+                  bottom: 0,
+                  right: 0,
+                  width: 100,
+                  height: 100,
+                }}
+              />
               <View
                 style={{
                   flexDirection: "row",
                   gap: 10,
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <Text
@@ -468,8 +491,14 @@ const CommunityHome = ({ route }) => {
                   color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
                 />
               </View>
-              <View style={{ gap: 5 }}>
-                <Text style={{ fontFamily: "Inter-Regular", fontSize: 13 }}>
+              <View style={{ gap: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Regular",
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                    fontSize: 13,
+                  }}
+                >
                   Public prayers posted by our users.
                 </Text>
                 <TouchableOpacity
@@ -482,12 +511,12 @@ const CommunityHome = ({ route }) => {
                     paddingHorizontal: 10,
                     paddingVertical: 5,
                     width: "100%",
-                    backgroundColor: "#2f2d51",
+                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                   }}
                 >
                   <Text
                     style={{
-                      color: theme == "dark" ? "white" : "white",
+                      color: theme == "dark" ? "#121212" : "white",
                       fontFamily: "Inter-Medium",
                     }}
                   >
@@ -496,7 +525,7 @@ const CommunityHome = ({ route }) => {
                   <AntDesign
                     name="right"
                     size={24}
-                    color={theme == "dark" ? "#a5c9ff" : "white"}
+                    color={theme == "dark" ? "#121212" : "white"}
                   />
                 </TouchableOpacity>
               </View>
@@ -507,19 +536,21 @@ const CommunityHome = ({ route }) => {
                 theme == "dark"
                   ? {
                       width: "50%",
+                      position: "relative",
                       flex: 1,
-
-                      height: 130,
-                      alignItems: "center",
-                      padding: 15,
+                      // height: 130,
+                      gap: 20,
+                      padding: 10,
                       borderRadius: 10,
                       justifyContent: "space-between",
                       backgroundColor: "#212121",
                     }
                   : {
                       width: "50%",
+                      position: "relative",
                       flex: 1,
-                      height: 130,
+                      // height: 130,
+                      gap: 20,
                       padding: 10,
                       shadowColor: "#bdbdbd",
                       shadowOffset: {
@@ -535,10 +566,22 @@ const CommunityHome = ({ route }) => {
                     }
               }
             >
+              <Image
+                source={questionBg}
+                style={{
+                  position: "absolute",
+                  tintColor: theme == "dark" ? "#353535" : "#ffd59f",
+                  bottom: 0,
+                  right: 0,
+                  width: 100,
+                  height: 100,
+                }}
+              />
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 10,
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
                 <Text
@@ -546,7 +589,7 @@ const CommunityHome = ({ route }) => {
                     theme == "dark"
                       ? {
                           fontFamily: "Inter-Bold",
-                          color: "#a5c9ff",
+                          color: "#e8bb4e",
                           fontSize: 15,
                         }
                       : {
@@ -556,19 +599,26 @@ const CommunityHome = ({ route }) => {
                         }
                   }
                 >
-                  Weekly Questions
+                  Questions
                 </Text>
-                {/* <Entypo
-                  name="globe"
+                <MaterialCommunityIcons
+                  name="frequently-asked-questions"
                   size={24}
-                  color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-                /> */}
+                  color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
+                />
               </View>
-              <View style={{ gap: 5 }}>
-                <Text style={{ fontFamily: "Inter-Regular", fontSize: 13 }}>
+              <View style={{ gap: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Regular",
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                    fontSize: 13,
+                  }}
+                >
                   Weekly questions to reflect on.
                 </Text>
                 <TouchableOpacity
+                  onPress={() => navigation.navigate("Question")}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -577,12 +627,12 @@ const CommunityHome = ({ route }) => {
                     paddingHorizontal: 10,
                     paddingVertical: 5,
                     width: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: theme == "dark" ? "#e8bb4e" : "white",
                   }}
                 >
                   <Text
                     style={{
-                      color: theme == "dark" ? "white" : "#2f2d51",
+                      color: theme == "dark" ? "#121212" : "#2f2d51",
                       fontFamily: "Inter-Medium",
                     }}
                   >
@@ -591,7 +641,7 @@ const CommunityHome = ({ route }) => {
                   <AntDesign
                     name="right"
                     size={24}
-                    color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                    color={theme == "dark" ? "#121212" : "#2f2d51"}
                   />
                 </TouchableOpacity>
               </View>
@@ -625,11 +675,6 @@ const CommunityHome = ({ route }) => {
               >
                 Prayer Groups
               </Text>
-              {/* <MaterialIcons
-                name="groups"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              /> */}
             </View>
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
@@ -647,6 +692,7 @@ const CommunityHome = ({ route }) => {
                 <Text
                   style={{
                     fontFamily: "Inter-Bold",
+                    color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                     fontSize: 16,
                     textDecorationLine: "underline",
                   }}
@@ -667,6 +713,7 @@ const CommunityHome = ({ route }) => {
                   style={{
                     fontFamily: "Inter-Bold",
                     textDecorationLine: "underline",
+                    color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                     fontSize: 16,
                   }}
                 >
@@ -695,7 +742,25 @@ const CommunityHome = ({ route }) => {
             <FlatList
               pagingEnabled
               snapToInterval={ITEM_WIDTH}
-              horizontal
+              numColumns={1}
+              windowSize={8}
+              ListFooterComponent={() => (
+                <View
+                  style={
+                    theme == "dark"
+                      ? {
+                          height: 30,
+                        }
+                      : {
+                          height: 30,
+                        }
+                  }
+                />
+              )}
+              // columnWrapperStyle={{
+              //   justifyContent: "space-between",
+              //   columnGap: 8,
+              // }}
               showsHorizontalScrollIndicator={false}
               data={userGroups}
               keyExtractor={(e, i) => i.toString()}
@@ -713,171 +778,190 @@ const CommunityHome = ({ route }) => {
                     style={
                       theme == "dark"
                         ? {
-                            borderWidth: 1,
-                            padding: 10,
-                            paddingBottom: 20,
-                            gap: 5,
-                            marginRight: 15,
+                            position: "relative",
+                            backgroundColor: "#212121",
+                            padding: 8,
+                            width: "100%",
+                            flexDirection: "row",
+                            marginBottom: 15,
+                            gap: 10,
                             borderRadius: 10,
                             justifyContent: "space-between",
-                            borderColor: item.groups.color.toLowerCase(),
-                            backgroundColor: "#212121",
-                            maxWidth: ITEM_WIDTH + 100,
-                            height: "auto",
                           }
                         : {
-                            borderWidth: 1,
-                            marginRight: 15,
-                            gap: 5,
-                            justifyContent: "space-between",
-                            padding: 10,
-                            paddingBottom: 20,
+                            position: "relative",
+                            backgroundColor: "#b7d3ff",
+                            padding: 8,
+                            width: "100%",
+
+                            marginBottom: 15,
                             borderRadius: 10,
-                            borderColor: item.groups.color.toLowerCase(),
-                            backgroundColor: "white",
-                            maxWidth: ITEM_WIDTH + 100,
-                            height: "auto",
+                            justifyContent: "space-between",
                           }
                     }
                   >
                     <View
                       style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        backgroundColor: "#353535",
+                        justifyContent: "center",
                         alignItems: "center",
-                        gap: 10,
+                        padding: 10,
                       }}
                     >
-                      <Text
-                        style={
-                          theme == "dark"
-                            ? {
-                                fontFamily: "Inter-Medium",
-                                fontSize: 17,
-                                color: "white",
-                              }
-                            : {
-                                fontFamily: "Inter-Medium",
-                                fontSize: 17,
-                                color: "#2f2d51",
-                              }
-                        }
-                      >
-                        {item.groups.name}
-                      </Text>
+                      <Image
+                        source={groupBg}
+                        style={{
+                          tintColor: theme == "dark" ? "white" : "#d1e3ff",
 
-                      <TouchableOpacity
-                        onPress={() =>
-                          copyToClipboard(item.groups.code.toString())
-                        }
-                        style={
-                          theme == "dark"
-                            ? {
-                                padding: 5,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#121212",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                            : {
-                                padding: 5,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#b7d3ff",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                        }
+                          width: 50,
+                          height: 50,
+                        }}
+                      />
+                    </View>
+                    <View style={{ flex: 1, justifyContent: "space-between" }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+
+                          alignItems: "flex-start",
+                          gap: 10,
+                        }}
                       >
-                        <Feather
-                          name="copy"
-                          size={15}
-                          color={theme == "dark" ? "white" : "#2f2d51"}
-                        />
                         <Text
                           style={
                             theme == "dark"
                               ? {
-                                  color: "white",
-                                  fontSize: 13,
+                                  flex: 1,
                                   fontFamily: "Inter-Medium",
+                                  fontSize: 17,
+                                  color: "white",
                                 }
                               : {
-                                  color: "#2f2d51",
-                                  fontSize: 13,
+                                  flex: 1,
                                   fontFamily: "Inter-Medium",
+                                  fontSize: 17,
+                                  color: "#2f2d51",
                                 }
                           }
                         >
-                          {item.groups.code}
+                          {item.groups.name}
                         </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                        color: "grey",
-                      }}
-                    >
-                      {item.groups.description}
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        paddingHorizontal: 10,
-
-                        width: "100%",
-                        alignItems: "center",
-                      }}
-                    >
-                      {groups
-                        .filter((g) => g.group_id === item.group_id)
-                        .slice(0, 3) // Show only the first three joined users
-                        .map((g, index) => (
-                          <View
-                            key={index}
-                            style={{
-                              position: "relative",
-                              marginLeft: index > 0 ? -10 : 0,
-                            }}
+                        <TouchableOpacity
+                          onPress={() =>
+                            copyToClipboard(item.groups.code.toString())
+                          }
+                          style={
+                            theme == "dark"
+                              ? {
+                                  padding: 7,
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  backgroundColor: "#121212",
+                                  borderRadius: 10,
+                                  gap: 8,
+                                }
+                              : {
+                                  padding: 7,
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  backgroundColor: "#b7d3ff",
+                                  borderRadius: 10,
+                                  gap: 8,
+                                }
+                          }
+                        >
+                          <Feather
+                            name="copy"
+                            size={12}
+                            color={theme == "dark" ? "white" : "#2f2d51"}
+                          />
+                          <Text
+                            style={
+                              theme == "dark"
+                                ? {
+                                    color: "white",
+                                    fontSize: 13,
+                                    fontFamily: "Inter-Medium",
+                                  }
+                                : {
+                                    color: "#2f2d51",
+                                    fontSize: 13,
+                                    fontFamily: "Inter-Medium",
+                                  }
+                            }
                           >
-                            <Image
-                              style={styles.joinedUserImg}
-                              source={{
-                                uri: g.profiles?.avatar_url
-                                  ? g.profiles?.avatar_url
-                                  : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                            {item.groups.code}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Text
+                        style={{
+                          fontFamily: "Inter-Regular",
+                          fontSize: 13,
+                          color: "grey",
+                        }}
+                      >
+                        {item.groups.description}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          paddingHorizontal: 10,
+
+                          width: "100%",
+                          alignItems: "center",
+                        }}
+                      >
+                        {groups
+                          .filter((g) => g.group_id === item.group_id)
+                          .slice(0, 3) // Show only the first three joined users
+                          .map((g, index) => (
+                            <View
+                              key={index}
+                              style={{
+                                position: "relative",
+                                marginLeft: index > 0 ? -10 : 0,
                               }}
-                            />
-                          </View>
-                        ))}
-                      <View>
-                        {groups?.length > 3 &&
-                          groups.filter((g) => g.group_id === item.group_id)
-                            ?.length > 3 && (
-                            <Text
-                              style={
-                                theme == "dark"
-                                  ? {
-                                      marginLeft: 5,
-                                      fontFamily: "Inter-Regular",
-                                      color: "grey",
-                                    }
-                                  : {
-                                      marginLeft: 5,
-                                      fontFamily: "Inter-Regular",
-                                      color: "#2f2d51",
-                                    }
-                              }
                             >
-                              +
-                              {groups.filter(
-                                (g) => g.group_id === item.group_id
-                              )?.length - 3}
-                            </Text>
-                          )}
+                              <Image
+                                style={styles.joinedUserImg}
+                                source={{
+                                  uri: g.profiles?.avatar_url
+                                    ? g.profiles?.avatar_url
+                                    : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                                }}
+                              />
+                            </View>
+                          ))}
+                        <View>
+                          {groups?.length > 3 &&
+                            groups.filter((g) => g.group_id === item.group_id)
+                              ?.length > 3 && (
+                              <Text
+                                style={
+                                  theme == "dark"
+                                    ? {
+                                        marginLeft: 5,
+                                        fontFamily: "Inter-Regular",
+                                        color: "grey",
+                                      }
+                                    : {
+                                        marginLeft: 5,
+                                        fontFamily: "Inter-Regular",
+                                        color: "#2f2d51",
+                                      }
+                                }
+                              >
+                                +
+                                {groups.filter(
+                                  (g) => g.group_id === item.group_id
+                                )?.length - 3}
+                              </Text>
+                            )}
+                        </View>
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -886,7 +970,7 @@ const CommunityHome = ({ route }) => {
             />
           )}
 
-          {userGroups?.length >= 3 && (
+          {/* {userGroups?.length >= 3 && (
             <TouchableOpacity
               onPress={() => setIsViewingGroups(true)}
               style={{
@@ -911,8 +995,8 @@ const CommunityHome = ({ route }) => {
                 color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
-          )}
-          <View
+          )} */}
+          {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
@@ -940,11 +1024,6 @@ const CommunityHome = ({ route }) => {
               >
                 Prayer Session
               </Text>
-              {/* <MaterialIcons
-                name="groups"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              /> */}
             </View>
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
@@ -989,7 +1068,7 @@ const CommunityHome = ({ route }) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
           <CreateGroupModal
             getUserGroups={getUserGroups}
             getGroupUsers={getGroupUsers}
