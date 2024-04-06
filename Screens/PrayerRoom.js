@@ -67,6 +67,7 @@ const PrayerRoom = ({ navigation }) => {
   const fadeIn = useSharedValue(0);
   const prayerFadeIn = useSharedValue(0);
   const momentFadeIn = useSharedValue(0);
+  const pressFadeIn = useSharedValue(0);
   const roomFadeIn = useSharedValue(0);
   const video = useRef(null);
   const [status, setStatus] = useState({});
@@ -128,6 +129,7 @@ const PrayerRoom = ({ navigation }) => {
 
   useEffect(() => {
     doFadeInAnimation();
+    doPressFadeInAnimation();
   }, []);
 
   useEffect(() => {
@@ -156,6 +158,10 @@ const PrayerRoom = ({ navigation }) => {
     opacity: prayerFadeIn.value * 1,
   }));
 
+  const animatedPressFadeInStyle = useAnimatedStyle(() => ({
+    opacity: pressFadeIn.value * 1,
+  }));
+
   const animatedMomentFadeInStyle = useAnimatedStyle(() => ({
     opacity: momentFadeIn.value * 1,
   }));
@@ -166,6 +172,20 @@ const PrayerRoom = ({ navigation }) => {
 
   const doFadeInAnimation = () => {
     fadeIn.value = withTiming(1, {
+      duration: 2000,
+      easing: Easing.ease,
+    });
+  };
+
+  const doPressFadeInAnimation = () => {
+    pressFadeIn.value = withTiming(1, {
+      duration: 2000,
+      easing: Easing.ease,
+    });
+  };
+
+  const doPressFadeOutAnimation = () => {
+    pressFadeIn.value = withTiming(0, {
       duration: 2000,
       easing: Easing.ease,
     });
@@ -240,7 +260,7 @@ const PrayerRoom = ({ navigation }) => {
         ),
         withDelay(
           5000,
-          withTiming(0, {
+          withTiming(0.5, {
             duration: 2000,
             easing: Easing.ease,
           })
@@ -275,7 +295,11 @@ const PrayerRoom = ({ navigation }) => {
     setScreenIndex(0);
     navigation.navigate("Checklist");
     setIsPraying(false);
-    pauseSound();
+
+    if (sound) {
+      pauseSound();
+    }
+
     // router.push("/");
   };
 
@@ -319,6 +343,7 @@ const PrayerRoom = ({ navigation }) => {
                 pauseSound();
               }
               setIsPraying(false);
+              prayerFadeIn.value = 0;
             }}
           >
             <Ionicons
@@ -395,7 +420,7 @@ const PrayerRoom = ({ navigation }) => {
           <Video
             ref={video}
             style={styles.video}
-            source={theme == "dark" ? darkGradient : darkGradient}
+            source={theme == "dark" ? darkGradient : gradient}
             useNativeControls={false}
             resizeMode={ResizeMode.COVER}
             isLooping={true}
@@ -492,15 +517,6 @@ const PrayerRoom = ({ navigation }) => {
                     Take a moment and Pray
                   </Animated.Text>
                   <View>
-                    {/* <Animated.Text
-                    style={
-                      theme == "dark"
-                        ? [styles.title, { color: "white" }]
-                        : [styles.title, animatedPrayerFadeInStyle]
-                    }
-                  >
-                    Have a moment and Pray
-                  </Animated.Text> */}
                     <Animated.Text
                       entering={SlideInRight}
                       exiting={SlideOutLeft}
@@ -508,7 +524,7 @@ const PrayerRoom = ({ navigation }) => {
                         theme == "dark"
                           ? [
                               styles.description,
-                              { color: "white" },
+                              { color: "grey" },
                               animatedPrayerFadeInStyle,
                             ]
                           : [styles.description, animatedPrayerFadeInStyle]
@@ -540,7 +556,9 @@ const PrayerRoom = ({ navigation }) => {
                       animatedOpacityStyle,
                     ]}
                   >
-                    Swipe right to go to the next prayer.
+                    {screenIndex === prayers.length - 1
+                      ? "Swipe right to go to checklist"
+                      : "Swipe right to go to the next prayer."}
                   </Animated.Text>
                 </View>
               </GestureDetector>
@@ -662,7 +680,7 @@ const PrayerRoom = ({ navigation }) => {
                   exiting={SlideOutLeft}
                   style={
                     theme == "dark"
-                      ? [styles.description, { color: "white" }]
+                      ? [styles.description, { color: "grey" }]
                       : styles.description
                   }
                 >
@@ -705,28 +723,48 @@ const PrayerRoom = ({ navigation }) => {
             }}
           >
             {!isPraying ? (
-              <AnimatedTouchable
-                onPress={() => {
-                  setIsPraying(true);
-                  loadAndPlayRandomAudio();
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 15,
                 }}
-                style={[
-                  {
-                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
-                    borderWidth: theme == "dark" ? 1 : 0,
-                    borderColor: "#a5c9ff",
-                    padding: 15,
-                    borderRadius: 100,
-                  },
-                  animatedFadeInStyle,
-                ]}
               >
-                <MaterialCommunityIcons
-                  name="hands-pray"
-                  size={55}
-                  color={theme == "dark" ? "#a5c9ff" : "#b7d3ff"}
-                />
-              </AnimatedTouchable>
+                <Animated.Text
+                  style={[
+                    {
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontFamily: "Inter-Medium",
+                    },
+                    animatedPressFadeInStyle,
+                  ]}
+                >
+                  Press to start prayer
+                </Animated.Text>
+                <AnimatedTouchable
+                  onPress={() => {
+                    setIsPraying(true);
+                    // doPressFadeOutAnimation();
+                    loadAndPlayRandomAudio();
+                  }}
+                  style={[
+                    {
+                      backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                      borderWidth: theme == "dark" ? 1 : 0,
+                      borderColor: "#a5c9ff",
+                      padding: 15,
+                      borderRadius: 100,
+                    },
+                    animatedFadeInStyle,
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="hands-pray"
+                    size={55}
+                    color={theme == "dark" ? "#a5c9ff" : "#b7d3ff"}
+                  />
+                </AnimatedTouchable>
+              </View>
             ) : (
               <AnimatedLottieView
                 speed={0.5}
@@ -760,7 +798,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#2f2d51",
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "Inter-Medium",
     letterSpacing: 1.3,
     marginVertical: 5,
@@ -796,7 +834,7 @@ const styles = StyleSheet.create({
   pageContent: {
     padding: 20,
     marginBottom: 50,
-    gap: 20,
+    gap: 10,
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
