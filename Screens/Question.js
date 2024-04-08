@@ -13,38 +13,30 @@ import { client } from "../lib/client";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { TextInput } from "react-native";
+
 import AnswerItem from "../components/AnswerItem";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
-import Toast from "react-native-toast-message";
-import { AnimatedFAB, Divider } from "react-native-paper";
-import { Touchable } from "react-native";
+
+import { AnimatedFAB } from "react-native-paper";
+
 import QuestionModal from "../components/QuestionModal";
 import moment from "moment";
 import { ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import QuestionHelpModal from "../components/QuestionHelpModal";
-import MaskedView from "@react-native-masked-view/masked-view";
-import LinearGradient from "react-native-linear-gradient";
+
 import Animated, { FadeIn } from "react-native-reanimated";
 
-const Question = ({ navigation }) => {
-  const { currentUser, supabase, newAnswer, setNewAnswer } = useSupabase();
-  const theme = useSelector((state) => state.user.theme);
-  const [weeklyQuestion, setWeeklyquestion] = useState([]);
+const Question = ({ navigation, route }) => {
+  const { answers, currentUser, supabase, newAnswer } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
-  const [answer, setAnswer] = useState("");
-  const [answersArray, setAnswersArray] = useState([]);
+  const item = route?.params.item;
+  const theme = useSelector((state) => state.user.theme);
   const isFocused = useIsFocused();
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
-
-  useEffect(() => {
-    loadQuestion();
-    fetchAnswers();
-  }, [isFocused]);
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -53,81 +45,6 @@ const Question = ({ navigation }) => {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
-
-  async function fetchAnswers() {
-    const { data: answers, error: answersError } = await supabase
-      .from("answers")
-      .select("*, profiles(*)")
-      .order("id", { ascending: false });
-    setAnswersArray(answers);
-
-    if (answersError) {
-      console.log(answersError);
-    }
-  }
-
-  const loadQuestion = () => {
-    const query = '*[_type=="question"]';
-    client
-      .fetch(query)
-      .then((data) => {
-        setWeeklyquestion(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    fetchAnswers();
-    setNewAnswer(false);
-  };
-
-  const dateObject = new Date(weeklyQuestion[0]?.date);
-
-  const endDate = moment(dateObject).add(7, "days").toDate();
-
-  function convertDigitIn(str) {
-    let newDate;
-    if (str) {
-      let newStr = str.replace(/-/g, "/");
-      newDate = newStr.split("/").reverse().join("/");
-    }
-    const parsedDate = moment(newDate, "MM/DD/YYYY");
-    const formattedDate = parsedDate.format("M/D/YYYY");
-    return formattedDate;
-  }
-
-  const BusyIndicator = () => {
-    return (
-      <View
-        style={
-          theme == "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
-      >
-        <ActivityIndicator
-          size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      </View>
-    );
-  };
-
-  if (weeklyQuestion.length == 0) {
-    return <BusyIndicator />;
-  }
-
-  async function removeAnswers(admin) {
-    if (admin === true) {
-      const { error } = await supabase
-        .from("answers")
-        .delete()
-        .neq("question_id", "342");
-      console.log(error);
-    }
-    setAnswersArray([]);
-    fetchAnswers();
-    loadQuestion();
-  }
 
   return (
     <Container
@@ -145,7 +62,7 @@ const Question = ({ navigation }) => {
             gap: 10,
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+          <TouchableOpacity onPress={() => navigation.navigate("QuestionList")}>
             <AntDesign
               name="left"
               size={24}
@@ -162,110 +79,30 @@ const Question = ({ navigation }) => {
                   }
             }
           >
-            <Text>Question of the Week</Text>
+            <Text>Question</Text>
           </HeaderTitle>
         </View>
-        {currentUser.admin === true ? (
-          <>
-            <TouchableOpacity onPress={() => removeAnswers(currentUser.admin)}>
-              <Text style={{ fontFamily: "Inter-Regular", color: "#ff4e4e" }}>
-                Clear
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => loadQuestion()}>
-              <Text style={{ fontFamily: "Inter-Regular", color: "#ff4e4e" }}>
-                Refresh
-              </Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <TouchableOpacity onPress={() => loadQuestion()}>
-            <Ionicons name="refresh" size={24} color="#ff4e4e" />
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
-          <FontAwesome5
-            name="question-circle"
-            size={28}
-            color={theme == "dark" ? "#c8c8c8" : "#2f2d51"}
-          />
-        </TouchableOpacity>
-
-        <QuestionHelpModal
-          theme={theme}
-          questionHelpModal={questionHelpModal}
-          setQuestionHelpModal={setQuestionHelpModal}
-        />
       </HeaderView>
       <View style={theme == "dark" ? styles.questionDark : styles.question}>
         <Text
           style={
             theme == "dark"
-              ? { fontSize: 20, color: "white", fontFamily: "Inter-Bold" }
-              : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
+              ? {
+                  fontSize: 23,
+                  marginBottom: 10,
+                  color: "white",
+                  fontFamily: "Inter-Bold",
+                }
+              : {
+                  fontSize: 23,
+                  marginBottom: 10,
+                  color: "#2f2d51",
+                  fontFamily: "Inter-Bold",
+                }
           }
         >
-          {weeklyQuestion[0]?.title}
+          {item.question.title}
         </Text>
-        <View
-          style={{
-            marginTop: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    color: "#A5C9FF",
-                    fontSize: 14,
-                    fontFamily: "Inter-Medium",
-                  }
-                : {
-                    color: "#2f2d51",
-                    fontSize: 14,
-                    fontFamily: "Inter-Medium",
-                  }
-            }
-          >
-            {answersArray.length} answers
-          </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <Ionicons
-              name="time-outline"
-              size={24}
-              color={theme == "dark" ? "#ff6262" : "#ff4e4e"}
-            />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#ff6262",
-                      fontSize: 13,
-                      fontFamily: "Inter-Medium",
-                    }
-                  : {
-                      color: "#ff4e4e",
-                      fontSize: 13,
-                      fontFamily: "Inter-Medium",
-                    }
-              }
-            >
-              Ends on {endDate?.toLocaleDateString()}
-            </Text>
-          </View>
-        </View>
       </View>
       {newAnswer && (
         <Animated.View
@@ -348,7 +185,7 @@ const Question = ({ navigation }) => {
         }}
       >
         <View style={{ flex: 1, width: "100%" }}>
-          {answersArray.length == 0 ? (
+          {item.answers.length == 0 ? (
             <View
               style={{
                 flex: 1,
@@ -381,7 +218,7 @@ const Question = ({ navigation }) => {
             </View>
           ) : (
             <FlatList
-              data={answersArray}
+              data={item.answers}
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
@@ -420,11 +257,11 @@ const Question = ({ navigation }) => {
         />
       </View>
       <QuestionModal
-        answersLength={answersArray.length}
+        answersLength={answers.length}
         user={currentUser}
-        question={weeklyQuestion[0]}
-        fetchAnswers={fetchAnswers}
-        answersArray={answersArray}
+        question={item.question}
+        // fetchAnswers={fetchAnswers}
+        answersArray={item.answers}
         theme={theme}
         supabase={supabase}
         setAnswersVisible={setAnswersVisible}
@@ -438,12 +275,14 @@ export default Question;
 
 const styles = StyleSheet.create({
   questionDark: {
-    marginTop: 10,
-    borderRadius: 15,
-    padding: 10,
-    borderColor: "white",
-    borderWidth: 1,
     marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+  },
+  question: {
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2f2d51",
   },
   actionButtons: {
     position: "absolute",
@@ -463,13 +302,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     backgroundColor: "#2f2d51",
   },
-  question: {
-    marginTop: 10,
-    backgroundColor: "#ffcd8b",
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 20,
-  },
+
   inputField: {
     marginVertical: 10,
     height: 50,

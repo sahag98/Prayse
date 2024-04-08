@@ -481,12 +481,12 @@ const CommunityHome = ({ route }) => {
                       ? {
                           fontFamily: "Inter-Bold",
                           color: "#a5c9ff",
-                          fontSize: 15,
+                          fontSize: 16,
                         }
                       : {
                           fontFamily: "Inter-Bold",
                           color: "#2f2d51",
-                          fontSize: 15,
+                          fontSize: 16,
                         }
                   }
                 >
@@ -538,7 +538,7 @@ const CommunityHome = ({ route }) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Question")}
+              onPress={() => navigation.navigate("QuestionList")}
               style={
                 theme == "dark"
                   ? {
@@ -597,12 +597,12 @@ const CommunityHome = ({ route }) => {
                       ? {
                           fontFamily: "Inter-Bold",
                           color: "#e8bb4e",
-                          fontSize: 15,
+                          fontSize: 16,
                         }
                       : {
                           fontFamily: "Inter-Bold",
                           color: "#2f2d51",
-                          fontSize: 15,
+                          fontSize: 16,
                         }
                   }
                 >
@@ -625,7 +625,7 @@ const CommunityHome = ({ route }) => {
                   Weekly questions to reflect on.
                 </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Question")}
+                  onPress={() => navigation.navigate("QuestionList")}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",

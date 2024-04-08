@@ -40,6 +40,8 @@ import Checklist from "./Screens/Checklist";
 import PrayerRoom from "./Screens/PrayerRoom";
 import Notifications from "./Screens/Notifications";
 import { checkUserGroups } from "./redux/userReducer";
+
+import QuestionList from "./Screens/QuestionList";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -226,6 +228,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={Reminder}
+          />
+          <Tab.Screen
+            name="QuestionList"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={isLoggedIn ? QuestionList : Login}
           />
           <Tab.Screen
             name="Question"

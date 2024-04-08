@@ -108,7 +108,7 @@ const DevoItem = ({
                 fontFamily: "Inter-Black",
                 marginTop: 0,
                 letterSpacing: 1,
-                marginBottom: 5,
+                marginBottom: 15,
                 fontSize: 24,
                 color: "white",
               }
@@ -117,7 +117,7 @@ const DevoItem = ({
                 letterSpacing: 1,
                 marginTop: 0,
                 fontSize: 24,
-                marginBottom: 5,
+                marginBottom: 15,
                 color: "#2F2D51",
               }
         }
@@ -261,11 +261,13 @@ const styles = StyleSheet.create({
     color: "#d6d6d6",
     fontFamily: "Inter-Medium",
     fontSize: 16,
+    marginBottom: 15,
   },
   description: {
     color: "#2F2D51",
     fontFamily: "Inter-Medium",
     fontSize: 16,
+    marginBottom: 15,
   },
   ownerDark: {
     color: "#d6d6d6",

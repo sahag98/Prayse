@@ -375,7 +375,7 @@ const GroupPrayerItem = ({
               ? "#353535"
               : "#b7d3ff"
             : theme == "light"
-            ? "#dee4e7"
+            ? "#d9e7ff"
             : "#212121"
         }
         style={

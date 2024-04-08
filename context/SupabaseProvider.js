@@ -5,6 +5,8 @@ import * as SecureStore from "expo-secure-store";
 import { SupabaseContext } from "./SupabaseContext";
 import Toast from "react-native-toast-message";
 import { SUPABASE_URL, SUPABASE_ANON } from "@env";
+import { client } from "../lib/client";
+
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
   getItem: async (key) => {
@@ -25,6 +27,8 @@ export const SupabaseProvider = (props) => {
   const [session, setSession] = useState(null);
   const [newPost, setNewPost] = useState(false);
   const [newAnswer, setNewAnswer] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
   const [isNavigationReady, setNavigationReady] = useState(false);
   const [refreshLikes, setRefreshLikes] = useState(false);
   const [isNewMessage, setIsNewMessage] = useState(false);
@@ -123,6 +127,55 @@ export const SupabaseProvider = (props) => {
     setSession(null);
   };
 
+  const fetchQuestions = () => {
+    console.log("fetching questions now");
+    const query = '*[_type=="question"]';
+    client
+      .fetch(query)
+      .then((data) => {
+        // setQuestions(data);
+        console.log("data from fetch: ", data);
+        data.map(async (item) => {
+          const fetchedAnswers = await fetchAnswers(item);
+          console.log(fetchedAnswers);
+          if (fetchedAnswers) {
+            console.log("here");
+            // if (questions.some((question) => console.log(question))) {
+            setQuestions((prev) => [
+              { question: item, answers: fetchedAnswers },
+              ...prev,
+            ]);
+            // }
+          }
+        });
+
+        // data.map((item)=>{
+        //   setQuestions((prev)=> [...prev, {question: data, answers: fetchedAnswers}])
+        // })
+        // fetchAnswers();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    // setNewAnswer(false);
+  };
+
+  async function fetchAnswers(item) {
+    console.log("fetching answers now");
+    const { data: answers, error: answersError } = await supabase
+      .from("answers")
+      .select("*, profiles(*)")
+      .eq("question_id", item._id)
+      .order("id", { ascending: false });
+
+    if (answersError) {
+      console.log(answersError);
+    }
+
+    return answers;
+  }
+
   const checkIfUserIsLoggedIn = async () => {
     console.log("checking user");
     const result = await supabase.auth.getSession();
@@ -145,6 +198,7 @@ export const SupabaseProvider = (props) => {
   };
 
   useEffect(() => {
+    fetchQuestions();
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
 
@@ -308,6 +362,8 @@ export const SupabaseProvider = (props) => {
         newPost,
         setNewPost,
         newAnswer,
+        questions,
+        answers,
         setNewAnswer,
         isNewMessage,
         setRefreshMsgLikes,

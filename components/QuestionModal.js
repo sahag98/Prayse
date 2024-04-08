@@ -22,7 +22,6 @@ import { PRAYSE_MESSAGE } from "@env";
 const QuestionModal = ({
   theme,
   fetchAnswers,
-  answersLength,
   question,
   user,
   supabase,
@@ -75,7 +74,7 @@ const QuestionModal = ({
       const message = {
         title: "Question of the Week",
         message: `${user?.full_name} has posted a answer: ${truncatedString}`,
-        data: { screen: "Question", verseTitle: "" },
+        data: { screen: "Question", question: question, verseTitle: "" },
       };
 
       fetch(PRAYSE_MESSAGE.toString(), {
