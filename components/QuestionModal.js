@@ -18,19 +18,22 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { PRAYSE_MESSAGE } from "@env";
+import { useSupabase } from "../context/useSupabase";
 
 const QuestionModal = ({
   theme,
-  fetchAnswers,
+  fetchQuestions,
   question,
+  setQuestions,
   user,
+  answersArray,
   supabase,
   setAnswersVisible,
   answersVisible,
 }) => {
   const [answer, setAnswer] = useState("");
   const [inputHeight, setInputHeight] = useState(100);
-
+  const { questions, currentUser } = useSupabase();
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 100) {
       setInputHeight(100);
@@ -47,19 +50,37 @@ const QuestionModal = ({
     });
   };
 
+  async function updateAnswers() {
+    const copyofQuestions = [...questions];
+    const foundQuestion = copyofQuestions.find((q) => q.id === question._id);
+
+    foundQuestion.answers.push({
+      answer: answer,
+      created_at: new Date(),
+      profiles: {
+        avatar_url: currentUser.avatar_url,
+        full_name: currentUser.full_name,
+      },
+    });
+    setQuestions(copyofQuestions);
+  }
+
   const addAnswer = async () => {
+    // updateAnswers();
     if (answer.length <= 0) {
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
       return;
     } else {
-      const { data, error } = await supabase.from("answers").insert({
+      const { data, error } = await supabase.from("answers_test").insert({
         user_id: user.id,
         answer,
         question_id: question._id,
       });
       handleCloseModal();
-      fetchAnswers();
+      updateAnswers();
+      // fetchAnswerforQuestion(question._id);
+      // fetchAnswers();
       function truncateWords(str, numWords) {
         let words = str.split(" ");
         if (words.length > numWords) {
@@ -77,15 +98,15 @@ const QuestionModal = ({
         data: { screen: "Question", question: question, verseTitle: "" },
       };
 
-      fetch(PRAYSE_MESSAGE.toString(), {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
+      // fetch(PRAYSE_MESSAGE.toString(), {
+      //   method: "POST",
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Accept-encoding": "gzip, deflate",
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(message),
+      // });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }

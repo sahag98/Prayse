@@ -132,23 +132,28 @@ export const SupabaseProvider = (props) => {
     const query = '*[_type=="question"]';
     client
       .fetch(query)
-      .then((data) => {
+      .then(async (data) => {
         // setQuestions(data);
+        const existingQuestionIds = questions.map((question) => question.id);
+
         console.log("data from fetch: ", data);
         data.map(async (item) => {
+          console.log("id: ", item._id);
           const fetchedAnswers = await fetchAnswers(item);
-          console.log(fetchedAnswers);
           if (fetchedAnswers) {
-            console.log("here");
+            if (existingQuestionIds.includes(item._id)) {
+              return;
+            } else {
+              setQuestions((prev) => [
+                ...prev,
+                { id: item._id, question: item, answers: fetchedAnswers },
+              ]);
+            }
             // if (questions.some((question) => console.log(question))) {
-            setQuestions((prev) => [
-              { question: item, answers: fetchedAnswers },
-              ...prev,
-            ]);
+
             // }
           }
         });
-
         // data.map((item)=>{
         //   setQuestions((prev)=> [...prev, {question: data, answers: fetchedAnswers}])
         // })
@@ -161,11 +166,29 @@ export const SupabaseProvider = (props) => {
     // setNewAnswer(false);
   };
 
+  async function fetchUpdatedAnswers(id) {
+    const { data: answers, error: answersError } = await supabase
+      .from("answers_test")
+      .select("*, profiles(avatar_url,full_name)")
+      .eq("question_id", id)
+      .order("id", { ascending: false });
+
+    const copyofQuestions = [...questions];
+    const foundQuestion = copyofQuestions.find((q) => q.id === id);
+
+    foundQuestion.answers = answers;
+    setQuestions(copyofQuestions);
+    setNewAnswer(false);
+    if (answersError) {
+      console.log(answersError);
+    }
+  }
+
   async function fetchAnswers(item) {
     console.log("fetching answers now");
     const { data: answers, error: answersError } = await supabase
-      .from("answers")
-      .select("*, profiles(*)")
+      .from("answers_test")
+      .select("*, profiles(avatar_url,full_name)")
       .eq("question_id", item._id)
       .order("id", { ascending: false });
 
@@ -229,7 +252,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "answers",
+              table: "answers_test",
             },
             (payload) => {
               if (
@@ -362,7 +385,9 @@ export const SupabaseProvider = (props) => {
         newPost,
         setNewPost,
         newAnswer,
+        fetchUpdatedAnswers,
         questions,
+        setQuestions,
         answers,
         setNewAnswer,
         isNewMessage,

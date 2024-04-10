@@ -8,7 +8,7 @@ const AnswerItem = ({ item, theme }) => {
     <View
       style={[
         styles.commentContainer,
-        { borderColor: theme == "dark" ? "#3e3e3e" : "#ffcd8b" },
+        { backgroundColor: theme == "dark" ? "#212121" : "#ffd8a5" },
       ]}
     >
       <View style={styles.content}>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     padding: 10,
-    borderWidth: 1,
+
     borderRadius: 10,
     gap: 10,
     justifyContent: "space-between",
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   profileImg: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderColor: "#A5C9FF",
     borderWidth: 1,
     marginRight: 10,

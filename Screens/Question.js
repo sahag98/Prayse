@@ -30,7 +30,14 @@ import QuestionHelpModal from "../components/QuestionHelpModal";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 const Question = ({ navigation, route }) => {
-  const { answers, currentUser, supabase, newAnswer } = useSupabase();
+  const {
+    answers,
+    currentUser,
+    setQuestions,
+    fetchUpdatedAnswers,
+    supabase,
+    newAnswer,
+  } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
   const item = route?.params.item;
   const theme = useSelector((state) => state.user.theme);
@@ -45,6 +52,16 @@ const Question = ({ navigation, route }) => {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
+
+  useEffect(() => {
+    fetchUpdatedAnswers(item.question._id);
+  }, [newAnswer]);
+
+  item.answers.sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+    return dateB - dateA;
+  });
 
   return (
     <Container
@@ -89,13 +106,13 @@ const Question = ({ navigation, route }) => {
             theme == "dark"
               ? {
                   fontSize: 23,
-                  marginBottom: 10,
+                  marginBottom: 15,
                   color: "white",
                   fontFamily: "Inter-Bold",
                 }
               : {
                   fontSize: 23,
-                  marginBottom: 10,
+                  marginBottom: 15,
                   color: "#2f2d51",
                   fontFamily: "Inter-Bold",
                 }
@@ -104,78 +121,6 @@ const Question = ({ navigation, route }) => {
           {item.question.title}
         </Text>
       </View>
-      {newAnswer && (
-        <Animated.View
-          entering={FadeIn.duration(300)}
-          style={
-            theme == "dark"
-              ? {
-                  position: "absolute",
-                  zIndex: 99,
-                  width: "65%",
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#121212",
-                  borderRadius: 50, // Set your desired border radius
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: theme == "dark" ? "#A5C9FF" : "#2f2d51",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }
-              : {
-                  position: "absolute",
-                  zIndex: 99,
-                  width: "70%",
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "white",
-                  borderRadius: 50, // Set your desired border radius
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: "#2f2d51",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }
-          }
-        >
-          <Animated.Text
-            style={
-              theme == "dark"
-                ? {
-                    fontFamily: "Inter-Bold",
-                    paddingVertical: 15,
-                    paddingHorizontal: 5,
-                    color: "#A5C9FF",
-                    textAlign: "center",
-                    fontSize: 13,
-                  }
-                : {
-                    fontFamily: "Inter-Bold",
-                    paddingVertical: 15,
-                    paddingHorizontal: 5,
-                    color: "#2f2d51",
-                    textAlign: "center",
-                    fontSize: 13,
-                  }
-            }
-          >
-            New Answers! Pull down to refresh
-          </Animated.Text>
-        </Animated.View>
-      )}
       <View
         style={{
           flex: 1,
@@ -222,6 +167,7 @@ const Question = ({ navigation, route }) => {
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
+              contentContainerStyle={{ gap: 5 }}
               showsVerticalScrollIndicator={false}
               ListFooterComponent={() => (
                 <View
@@ -260,6 +206,7 @@ const Question = ({ navigation, route }) => {
         answersLength={answers.length}
         user={currentUser}
         question={item.question}
+        setQuestions={setQuestions}
         // fetchAnswers={fetchAnswers}
         answersArray={item.answers}
         theme={theme}

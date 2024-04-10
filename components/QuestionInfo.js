@@ -5,8 +5,12 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 const QuestionInfo = ({ item, theme }) => {
   const navigation = useNavigation();
-  console.log(item.question._createdAt.toLocaleString());
-  const { currentUser, supabase, answers, setNewAnswer } = useSupabase();
+
+  const { fetchUpdatedAnswers, newAnswer } = useSupabase();
+
+  useEffect(() => {
+    fetchUpdatedAnswers(item.question._id);
+  }, [newAnswer]);
 
   return (
     <TouchableOpacity

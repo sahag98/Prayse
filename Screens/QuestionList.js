@@ -5,39 +5,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import QuestionHelpModal from "../components/QuestionHelpModal";
 import QuestionInfo from "../components/QuestionInfo";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
-import { client } from "../lib/client";
+
 import { useSupabase } from "../context/useSupabase";
 const QuestionList = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
-  // const [questions, setQuestions] = useState([]);
-  const isFocused = useIsFocused();
-  const { questions, supabase } = useSupabase();
-  console.log("all questions: ", questions);
-  // useEffect(() => {
-  //   fetchQuestions();
-  // }, [isFocused]);
 
-  // const fetchQuestions = () => {
-  //   const query = '*[_type=="question"]';
-  //   client
-  //     .fetch(query)
-  //     .then((data) => {
-  //       setQuestions(data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  //   // fetchAnswers();
-  //   // setNewAnswer(false);
-  // };
+  const { questions, answers } = useSupabase();
+
+  questions.sort((a, b) => {
+    const dateA = new Date(a.question._createdAt);
+    const dateB = new Date(b.question._createdAt);
+    return dateB - dateA;
+  });
 
   return (
     <Container
@@ -47,7 +33,9 @@ const QuestionList = ({ navigation }) => {
           : { backgroundColor: "#F2F7FF", position: "relative" }
       }
     >
-      <HeaderView style={{ marginTop: 10, alignItems: "center" }}>
+      <HeaderView
+        style={{ marginTop: 10, marginBottom: 20, alignItems: "center" }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -92,8 +80,15 @@ const QuestionList = ({ navigation }) => {
 
       <FlatList
         data={questions}
-        keyExtractor={(item) => item.question._id}
-        renderItem={({ item }) => <QuestionInfo item={item} theme={theme} />}
+        keyExtractor={(e, i) => i.toString()}
+        renderItem={({ item }) => (
+          <QuestionInfo
+            key={item._id}
+            item={item}
+            answers={answers}
+            theme={theme}
+          />
+        )}
       />
     </Container>
   );
