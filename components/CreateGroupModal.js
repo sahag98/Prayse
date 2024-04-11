@@ -1,9 +1,6 @@
 import {
   Image,
-  Keyboard,
-  KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,18 +9,17 @@ import {
 import React from "react";
 import { Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import groupBg from "../assets/group-bg.png";
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
-import { useSelector } from "react-redux";
+import { HeaderView, ModalContainer } from "../styles/appStyles";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { TextInput } from "react-native";
-import { Switch } from "react-native-paper";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import TemplatesModal from "./TemplatesModal";
 
 const CreateGroupModal = ({
   modalVisible,
@@ -35,28 +31,13 @@ const CreateGroupModal = ({
   theme,
 }) => {
   const [groupName, setGroupName] = useState("");
-  const [color, setColor] = useState("");
-
   const [groupImage, setGroupImage] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
-  const [inputHeight, setInputHeight] = useState(60);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isShowingTemplates, setIsShowingTemplates] = useState(false);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setModalVisible(false);
     setGroupName("");
-  };
-
-  const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 60) {
-      setInputHeight(60);
-    } else {
-      setInputHeight(event.nativeEvent.contentSize.height);
-    }
-  };
-
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
   };
 
   const showToast = (type, content) => {
@@ -79,14 +60,11 @@ const CreateGroupModal = ({
       console.log(imgUrl);
       const { data, error } = await supabase.from("groups").insert({
         name: groupName,
-
         color: "grey",
         admin_id: user.id,
         code: pin,
         group_img: imgUrl,
       });
-
-      // generateGroupMembers()
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
@@ -104,9 +82,7 @@ const CreateGroupModal = ({
           user_id: user.id,
           is_admin: true,
         });
-        // Do something with the inserted group ID
       }
-
       showToast("success", "Prayer group was created successfully.");
       getUserGroups();
       getGroupUsers();
@@ -114,9 +90,6 @@ const CreateGroupModal = ({
       setIsEnabled(false);
       setGroupName("");
       setGroupImage(null);
-      // setImgUrl(null);
-
-      setColor("");
     }
   };
 
@@ -191,10 +164,6 @@ const CreateGroupModal = ({
       // getPrayers();
     }
   };
-
-  // const generateGroupMembers=async ()=>{
-  //   const { data, error } = await supabase.from("groups").select()
-  // }
 
   return (
     <SafeAreaProvider>
@@ -298,18 +267,72 @@ const CreateGroupModal = ({
                   : groupBg
               }
             />
-            <TouchableOpacity
-              onPress={photoPermission}
-              style={
-                theme == "dark" ? styles.featherIconDark : styles.featherIcon
-              }
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                color: theme == "dark" ? "white" : "#2f2d51",
+              }}
             >
-              <AntDesign
-                name="plus"
-                size={20}
-                color={theme == "dark" ? "white" : "black"}
-              />
-            </TouchableOpacity>
+              Choose group image from:
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#deebff",
+                  flexDirection: "row",
+                  padding: 10,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "#2f2d51",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+                onPress={() => setIsShowingTemplates(true)}
+              >
+                <Ionicons
+                  name="images-outline"
+                  size={20}
+                  color={theme == "dark" ? "white" : "black"}
+                />
+
+                <Text>Templates</Text>
+                <TemplatesModal
+                  theme={theme}
+                  setIsShowingTemplates={setIsShowingTemplates}
+                  isShowingTemplates={isShowingTemplates}
+                  setImgUrl={setImgUrl}
+                  setGroupImage={setGroupImage}
+                  supabase={supabase}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#deebff",
+                  flexDirection: "row",
+                  padding: 10,
+                  borderRadius: 10,
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: "#2f2d51",
+                  gap: 10,
+                }}
+                onPress={photoPermission}
+              >
+                <AntDesign
+                  name="plus"
+                  size={20}
+                  color={theme == "dark" ? "white" : "black"}
+                />
+                <Text>Photo Library</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.inputField}>
@@ -323,7 +346,7 @@ const CreateGroupModal = ({
               onChangeText={(text) => setGroupName(text)}
             />
 
-            <View style={{ marginTop: 10, width: "100%" }}>
+            <View style={{ width: "100%" }}>
               <Text
                 style={
                   theme == "dark"
@@ -379,20 +402,23 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "relative",
-    alignSelf: "center",
-    padding: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
   },
   nameDark: {
     backgroundColor: "#212121",
     color: "white",
     borderRadius: 10,
     padding: 15,
+    width: "100%",
   },
   name: {
     color: "#2f2d51",
     backgroundColor: "#deebff",
     borderRadius: 10,
     padding: 15,
+    width: "100%",
   },
   inputField: {
     marginTop: 20,
@@ -447,11 +473,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 100,
   },
-  iconContainer: {
-    position: "relative",
-    alignSelf: "center",
-    padding: 8,
-  },
+
   featherIconDark: {
     position: "absolute",
     backgroundColor: "#3e3e3e",

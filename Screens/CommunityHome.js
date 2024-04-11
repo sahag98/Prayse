@@ -753,31 +753,7 @@ const CommunityHome = ({ route }) => {
               </Text>
             </View>
           )} */}
-          {userGroups?.length == 0 && !isFetchingUserGroups && (
-            <View
-              style={{
-                flex: 1,
-                gap: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <FontAwesome
-                name="group"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-              <Text
-                style={{
-                  fontFamily: "Inter-Medium",
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontSize: 13,
-                }}
-              >
-                No groups created or joined.
-              </Text>
-            </View>
-          )}
+
           {userGroups?.length == 0 && (
             <View
               style={{
