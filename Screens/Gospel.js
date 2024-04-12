@@ -113,7 +113,7 @@ const Gospel = ({ navigation }) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
-        { text: "WILL DO", onPress: () => navigation.navigate("Community") },
+        { text: "Sure!", onPress: () => navigation.navigate("Community") },
       ]
     );
   };

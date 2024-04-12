@@ -29,7 +29,7 @@ const DonationModal = ({
     setDonationModal(false);
     await AsyncStorage.removeItem("AppOpenings");
     const reminder = await AsyncStorage.setItem("ReminderOn", "false");
-    setIsReminderOff(reminder);
+    setIsReminderOff(false);
   };
 
   return (

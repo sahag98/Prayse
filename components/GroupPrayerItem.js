@@ -114,6 +114,8 @@ const GroupPrayerItem = ({
   }, [currGroup.group_id, currentUser.id, isFocused]);
 
   const notifyLike = async (expoToken, item) => {
+    console.log("token: ", expoToken);
+    console.log("item: ", item);
     const message = {
       to: expoToken,
       sound: "default",
@@ -306,6 +308,7 @@ const GroupPrayerItem = ({
     setLoadingPraises(false);
   }
   const sendUrgentAnnouncement = async (urgentMessage, user) => {
+    console.log("sending urgent...");
     let { data: members, error } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
@@ -383,10 +386,10 @@ const GroupPrayerItem = ({
             ? [
                 {
                   borderRadius: 10,
-                  marginBottom: 15,
+                  marginBottom: 10,
                   padding: 30,
                   gap: 5,
-                  minWidth: 130,
+                  minWidth: 140,
                   maxWidth: 300,
                 },
               ]
@@ -395,7 +398,7 @@ const GroupPrayerItem = ({
                 marginBottom: 10,
                 padding: 10,
                 gap: 15,
-                minWidth: 130,
+                minWidth: 140,
                 maxWidth: 300,
               }
         }

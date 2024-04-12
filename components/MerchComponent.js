@@ -38,7 +38,7 @@ const MerchComponent = ({ theme }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme == "dark" ? "#bebebe" : "#2f2d51",
               fontFamily: "Inter-Regular",
             }}
           >

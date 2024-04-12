@@ -139,9 +139,8 @@ const TemplatesModal = ({
               ? {
                   borderRadius: 10,
                   position: "relative",
-
                   padding: 15,
-                  width: "80%",
+                  width: "100%",
                   justifyContent: "center",
                   gap: 10,
                   backgroundColor: "#212121",
@@ -172,13 +171,13 @@ const TemplatesModal = ({
                 style={{
                   flex: 1,
                   padding: 10,
-                  backgroundColor: "white",
+                  backgroundColor: theme == "dark" ? "#121212" : "white",
                   borderWidth: 2,
                   borderColor:
                     theme == "dark"
                       ? selectedImg === item.image
                         ? "#a5c9ff"
-                        : "white"
+                        : "#121212"
                       : selectedImg === item.image
                       ? "#2f2d51"
                       : "white",
@@ -189,10 +188,15 @@ const TemplatesModal = ({
                 }}
               >
                 <Image
-                  style={{ width: 100, height: 100, objectFit: "contain" }}
+                  style={{ width: 80, height: 80, objectFit: "contain" }}
                   source={item.image}
                 />
-                <Text style={{ color: "#2f2d51", fontFamily: "Inter-Medium" }}>
+                <Text
+                  style={{
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                    fontFamily: "Inter-Medium",
+                  }}
+                >
                   {item.title}
                 </Text>
               </TouchableOpacity>
@@ -212,14 +216,19 @@ const TemplatesModal = ({
               }}
               style={{
                 width: "48%",
-                backgroundColor: "white",
+                backgroundColor: theme == "dark" ? "#121212" : "white",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#2f2d51", fontFamily: "Inter-Bold" }}>
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Bold",
+                }}
+              >
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -227,14 +236,19 @@ const TemplatesModal = ({
               onPress={selectImage}
               style={{
                 width: "48%",
-                backgroundColor: "#2f2d51",
+                backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+              <Text
+                style={{
+                  color: theme == "dark" ? "#212121" : "white",
+                  fontFamily: "Inter-Bold",
+                }}
+              >
                 Select
               </Text>
             </TouchableOpacity>

@@ -20,8 +20,8 @@ const QuestionList = ({ navigation }) => {
   const { questions, answers } = useSupabase();
 
   questions.sort((a, b) => {
-    const dateA = new Date(a.question._createdAt);
-    const dateB = new Date(b.question._createdAt);
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
     return dateB - dateA;
   });
 
@@ -83,7 +83,7 @@ const QuestionList = ({ navigation }) => {
         keyExtractor={(e, i) => i.toString()}
         renderItem={({ item }) => (
           <QuestionInfo
-            key={item._id}
+            key={item.id}
             item={item}
             answers={answers}
             theme={theme}

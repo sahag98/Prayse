@@ -2,18 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  KeyboardAvoidingView,
   StyleSheet,
   Platform,
   FlatList,
   Dimensions,
-  TextInput,
 } from "react-native";
 import {
   HeaderTitle,
   ModalContainer,
   ModalView,
-  StyledInput,
   ModalAction,
   ModalActionGroup,
   ModalIcon,
@@ -22,7 +19,7 @@ import {
 } from "../styles/appStyles";
 import { useDispatch, useSelector } from "react-redux";
 import { TouchableOpacity, Animated } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { Modal } from "react-native";
 import {
@@ -38,13 +35,9 @@ import { SectionList } from "react-native";
 import FolderItem from "./FolderItem";
 import AddFolderModal from "./AddFolderModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  clearPrayerData,
-  deletePrayerByFolderId,
-} from "../redux/prayerReducer";
+import { deletePrayerByFolderId } from "../redux/prayerReducer";
 
 const Folder = ({ navigation, todos }) => {
-  const folderInputRef = useRef(null);
   const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
   const answeredPrayers = useSelector(
@@ -423,8 +416,14 @@ const Folder = ({ navigation, todos }) => {
       )}
       {!folderClicked && answeredPrayers.length == 0 && (
         <View
-          style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 10,
+            flex: 1,
+          }}
         >
+          <FontAwesome name="check-circle-o" size={70} color="#00b400" />
           <Text
             style={
               theme == "dark"

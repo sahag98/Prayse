@@ -87,7 +87,6 @@ const CreateGroupModal = ({
       getUserGroups();
       getGroupUsers();
       setModalVisible(false);
-      setIsEnabled(false);
       setGroupName("");
       setGroupImage(null);
     }
@@ -285,12 +284,12 @@ const CreateGroupModal = ({
             >
               <TouchableOpacity
                 style={{
-                  backgroundColor: "#deebff",
+                  backgroundColor: theme == "dark" ? "#212121" : "#deebff",
                   flexDirection: "row",
                   padding: 10,
                   borderRadius: 10,
                   borderWidth: 1,
-                  borderColor: "#2f2d51",
+                  borderColor: theme == "dark" ? "#212121" : "#2f2d51",
                   alignItems: "center",
                   gap: 10,
                 }}
@@ -302,7 +301,14 @@ const CreateGroupModal = ({
                   color={theme == "dark" ? "white" : "black"}
                 />
 
-                <Text>Templates</Text>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                  }}
+                >
+                  Templates
+                </Text>
                 <TemplatesModal
                   theme={theme}
                   setIsShowingTemplates={setIsShowingTemplates}
@@ -314,13 +320,13 @@ const CreateGroupModal = ({
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: "#deebff",
+                  backgroundColor: theme == "dark" ? "#212121" : "#deebff",
                   flexDirection: "row",
                   padding: 10,
                   borderRadius: 10,
                   alignItems: "center",
                   borderWidth: 1,
-                  borderColor: "#2f2d51",
+                  borderColor: theme == "dark" ? "#212121" : "#2f2d51",
                   gap: 10,
                 }}
                 onPress={photoPermission}
@@ -330,7 +336,14 @@ const CreateGroupModal = ({
                   size={20}
                   color={theme == "dark" ? "white" : "black"}
                 />
-                <Text>Photo Library</Text>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                  }}
+                >
+                  Photo Library
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -338,7 +351,7 @@ const CreateGroupModal = ({
           <View style={styles.inputField}>
             <TextInput
               style={theme == "dark" ? styles.nameDark : styles.name}
-              autoFocus={modalVisible}
+              autoFocus={false}
               placeholder="Prayer group name"
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
               selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}

@@ -5,13 +5,12 @@ import {
   Platform,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Modal, Animated } from "react-native";
-import groupBg from "../assets/group-bg.png";
+
 import {
   AntDesign,
   Feather,
@@ -22,27 +21,16 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-import uuid from "react-native-uuid";
-import {
-  HeaderTitle,
-  HeaderView,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
 
-import { useSelector } from "react-redux";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import EditGroupModal from "./EditGroupModal";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-// import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
+import groupBg from "../assets/group-bg.png";
+import TemplatesModal from "./TemplatesModal";
 
 const GroupInfoMenu = ({
   theme,
@@ -247,6 +235,7 @@ const GroupInfoModal = ({
   const [userToEdit, setUserToEdit] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const [groupImage, setGroupImage] = useState(null);
+  const [isShowingTemplates, setIsShowingTemplates] = useState(false);
   const [imgUrl, setImgUrl] = useState(null);
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
@@ -473,27 +462,95 @@ const GroupInfoModal = ({
                     { backgroundColor: group.groups.group_img ? null : "grey" },
                   ]}
                   source={
-                    imgUrl
-                      ? { uri: imgUrl }
+                    groupImage
+                      ? groupImage
+                      : !groupImage && !group.groups.group_img
+                      ? groupBg
                       : {
                           uri: group.groups.group_img,
                         }
                   }
                 />
-                <TouchableOpacity
-                  onPress={photoPermission}
-                  style={
-                    theme == "dark"
-                      ? styles.featherIconDark
-                      : styles.featherIcon
-                  }
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                  }}
                 >
-                  <Entypo
-                    name="swap"
-                    size={20}
-                    color={theme == "dark" ? "white" : "black"}
-                  />
-                </TouchableOpacity>
+                  Choose group image from:
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: theme == "dark" ? "#212121" : "#deebff",
+                      flexDirection: "row",
+                      padding: 10,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: theme == "dark" ? "#212121" : "#2f2d51",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                    onPress={() => setIsShowingTemplates(true)}
+                  >
+                    <Ionicons
+                      name="images-outline"
+                      size={20}
+                      color={theme == "dark" ? "white" : "black"}
+                    />
+
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Medium",
+                        color: theme == "dark" ? "white" : "#2f2d51",
+                      }}
+                    >
+                      Templates
+                    </Text>
+                    <TemplatesModal
+                      theme={theme}
+                      setIsShowingTemplates={setIsShowingTemplates}
+                      isShowingTemplates={isShowingTemplates}
+                      setImgUrl={setImgUrl}
+                      setGroupImage={setGroupImage}
+                      supabase={supabase}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: theme == "dark" ? "#212121" : "#deebff",
+                      flexDirection: "row",
+                      padding: 10,
+                      borderRadius: 10,
+                      alignItems: "center",
+                      borderWidth: 1,
+                      borderColor: theme == "dark" ? "#212121" : "#2f2d51",
+                      gap: 10,
+                    }}
+                    onPress={photoPermission}
+                  >
+                    <AntDesign
+                      name="plus"
+                      size={20}
+                      color={theme == "dark" ? "white" : "black"}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Medium",
+                        color: theme == "dark" ? "white" : "#2f2d51",
+                      }}
+                    >
+                      Photo Library
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
               <TouchableOpacity
                 onPress={() => setOpenEdit(true)}
@@ -502,7 +559,7 @@ const GroupInfoModal = ({
                   justifyContent: "center",
                   width: "100%",
                   gap: 5,
-                  marginBottom: 10,
+                  marginBottom: 5,
                   alignItems: "center",
                 }}
               >
@@ -512,14 +569,14 @@ const GroupInfoModal = ({
                       ? {
                           color: "white",
                           fontFamily: "Inter-Bold",
-                          marginBottom: 10,
+                          marginBottom: 5,
                           fontSize: 22,
                           textAlign: "center",
                         }
                       : {
                           color: "#2f2d51",
                           fontFamily: "Inter-Bold",
-                          marginBottom: 10,
+                          marginBottom: 5,
                           fontSize: 22,
                           textAlign: "center",
                         }
@@ -528,7 +585,7 @@ const GroupInfoModal = ({
                   {group.groups.name}
                 </Text>
                 <Feather
-                  style={{ marginBottom: 10 }}
+                  style={{ marginBottom: 5 }}
                   name="edit-2"
                   size={22}
                   color={theme == "dark" ? "white" : "#2f2d51"}
@@ -546,45 +603,59 @@ const GroupInfoModal = ({
               />
             </>
           ) : (
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "white",
-                      fontFamily: "Inter-Bold",
-                      marginBottom: 15,
-                      fontSize: 20,
-                      textAlign: "center",
-                      width: "100%",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Bold",
-                      marginBottom: 10,
-                      fontSize: 20,
-                      textAlign: "center",
-                      width: "100%",
-                    }
-              }
-            >
-              {group.groups.name}
-            </Text>
+            <>
+              <View style={styles.iconContainer}>
+                <Image
+                  style={[
+                    styles.profileImg,
+                    { backgroundColor: group.groups.group_img ? null : "grey" },
+                  ]}
+                  source={
+                    groupImage
+                      ? groupImage
+                      : !groupImage && !group.groups.group_img
+                      ? groupBg
+                      : {
+                          uri: group.groups.group_img,
+                        }
+                  }
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  width: "100%",
+                  gap: 5,
+                  marginBottom: 5,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Bold",
+                          marginBottom: 5,
+                          fontSize: 22,
+                          textAlign: "center",
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Bold",
+                          marginBottom: 5,
+                          fontSize: 22,
+                          textAlign: "center",
+                        }
+                  }
+                >
+                  {group.groups.name}
+                </Text>
+              </View>
+            </>
           )}
 
-          {group.groups.description && (
-            <Text
-              style={{
-                color: "grey",
-                fontFamily: "Inter-Regular",
-                marginBottom: 20,
-                fontSize: 18,
-                textAlign: "center",
-                width: "100%",
-              }}
-            >
-              {group.groups.description}
-            </Text>
-          )}
           <View style={{ width: "100%", flex: 1 }}>
             <FlatList
               data={allUsers}
@@ -1155,6 +1226,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "relative",
+    alignItems: "center",
+    gap: 10,
     alignSelf: "center",
     padding: 8,
   },

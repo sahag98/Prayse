@@ -1,11 +1,7 @@
 import {
-  ActivityIndicator,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
-  StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Platform,
@@ -13,26 +9,16 @@ import {
 import React, { useEffect, useState, useRef } from "react";
 import * as Clipboard from "expo-clipboard";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  Entypo,
-  Octicons,
-  Ionicons,
-} from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
-import Moment from "moment";
-import { FlashList } from "@shopify/flash-list";
-import axios from "axios";
 
 import GroupInfoModal from "../components/GroupInfoModal";
 import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useIsFocused } from "@react-navigation/native";
 import AnnounceMeeting from "../components/AnnounceMeeting";
 import Toast from "react-native-toast-message";
-import GroupPrayerItem from "../components/GroupPrayerItem";
+
 import ToolTip from "../components/ToolTip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotifyFirstMsg from "../components/NotifyFirstMsg";
@@ -62,13 +48,11 @@ const PrayerGroup = ({ route, navigation }) => {
   const [isNotifyVisible, setIsNotifyVisible] = useState(false);
   const [isShowingHeader, setIsShowingHeader] = useState(true);
 
-  const dispatch = useDispatch();
   const {
     currentUser,
-    isNewMessage,
-    setIsNewMessage,
+
     setRefreshGroup,
-    refreshGroup,
+
     setRefreshMsgLikes,
     refreshMsgLikes,
     supabase,
@@ -606,192 +590,6 @@ const PrayerGroup = ({ route, navigation }) => {
         {/* ) : (
           <VideoCall />
         )} */}
-
-        {/* <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
-            alignItems: "center",
-            alignSelf: "center",
-            paddingHorizontal: 2,
-            paddingVertical: 4,
-            justifyContent: "center",
-            borderRadius: 50,
-            marginBottom: 10,
-            shadowColor: "#2bc035",
-            shadowOffset: {
-              width: 0,
-              height: 3,
-            },
-            shadowOpacity: 0.17,
-            shadowRadius: 3.05,
-            elevation: 4,
-            width: "35%",
-            gap: 5,
-          }}
-        >
-          <Octicons name="dot-fill" size={24} color="green" />
-          <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Regular",
-              fontSize: 13,
-            }}
-          >
-            {onlineUsers.length} User{onlineUsers.length > 1 ? "'s " : " "}
-            Online
-          </Text>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: 15,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {areMessagesLoading ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </View>
-          ) : (
-            <>
-              {groupMessages.length == 0 ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? { fontFamily: "Inter-Regular", color: "#bebebe" }
-                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                    }
-                  >
-                    No messages yet.
-                  </Text>
-                </View>
-              ) : (
-                <FlashList
-                  showsVerticalScrollIndicator={false}
-                  estimatedItemSize={120}
-                  ref={flatListRef}
-                  inverted
-                  estimatedListSize={{ height: 800, width: 450 }}
-                  data={groupMessages}
-                  ListHeaderComponent={() => (
-                    <View
-                      style={
-                        theme == "dark"
-                          ? {
-                              height: 30,
-                            }
-                          : {
-                              height: 30,
-                            }
-                      }
-                    />
-                  )}
-                  onScroll={handleScroll}
-                  keyExtractor={(e, i) => i.toString()}
-                  initialNumToRender={30}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <GroupPrayerItem
-                        theme={theme}
-                        currentUser={currentUser}
-                        groupMessages={groupMessages}
-                        setGroupMessages={setGroupMessages}
-                        supabase={supabase}
-                        currGroup={currGroup}
-                        item={item}
-                        setRefreshMsgLikes={setRefreshMsgLikes}
-                        refreshMsgLikes={refreshMsgLikes}
-                        allGroups={allGroups}
-                        showToast={showToast}
-                      />
-                    );
-                  }}
-                />
-              )}
-            </>
-          )}
-        </View>
-        <View
-          style={[
-            styles.inputField,
-            {
-              borderTopWidth: 1,
-              borderTopColor: currGroup.groups.color.toLowerCase(),
-            },
-          ]}
-        >
-          <View
-            style={{
-              flex: 1,
-              minHeight: 35,
-              maxHeight: 200,
-              width: "85%",
-              backgroundColor: theme == "dark" ? "#212121" : "white",
-              borderWidth: theme == "dark" ? 0 : 1,
-              borderColor: "#2f2d51",
-              borderRadius: 10,
-              padding: 10,
-              justifyContent: "center",
-            }}
-          >
-            <TextInput
-              style={
-                theme == "dark"
-                  ? [
-                      styles.inputDark,
-                      { paddingBottom: Platform.OS == "android" ? 0 : 5 },
-                    ]
-                  : [
-                      styles.input,
-                      { paddingBottom: Platform.OS == "android" ? 0 : 5 },
-                    ]
-              }
-              placeholder="Write a prayer..."
-              placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
-              value={newMessage}
-              textAlignVertical="center"
-              onChangeText={(text) => setNewMessage(text)}
-              onContentSizeChange={handleContentSizeChange}
-              onSubmitEditing={(e) => {
-                e.key === "Enter" && e.preventDefault();
-              }}
-              multiline={true}
-            />
-          </View>
-          <TouchableOpacity
-            disabled={newMessage.length == 0 ? true : false}
-            style={{
-              width: "15%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={sendMessage}
-          >
-            <FontAwesome
-              name="send"
-              size={28}
-              color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-            />
-          </TouchableOpacity>
-        </View> */}
       </PrayerContainer>
     </KeyboardAvoidingView>
   );

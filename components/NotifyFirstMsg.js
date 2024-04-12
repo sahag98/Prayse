@@ -45,7 +45,7 @@ const NotifyFirstMsg = ({
           to: m.profiles.expoToken,
           sound: "default",
           title: `${currGroup.groups.name} 📢`,
-          body: `${currentUser}: ${messagetoNotify}`,
+          body: `${currentUser.full_name}: ${messagetoNotify}`,
           data: {
             screen: "Community",
             currGroup: currGroup,

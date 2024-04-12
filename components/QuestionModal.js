@@ -21,6 +21,7 @@ import { PRAYSE_MESSAGE } from "@env";
 import { useSupabase } from "../context/useSupabase";
 
 const QuestionModal = ({
+  item,
   theme,
   fetchQuestions,
   question,
@@ -50,20 +51,20 @@ const QuestionModal = ({
     });
   };
 
-  async function updateAnswers() {
-    const copyofQuestions = [...questions];
-    const foundQuestion = copyofQuestions.find((q) => q.id === question._id);
+  // async function updateAnswers() {
+  //   const copyofQuestions = [...questions];
+  //   const foundQuestion = copyofQuestions.find((q) => q.id === question.id);
 
-    foundQuestion.answers.push({
-      answer: answer,
-      created_at: new Date(),
-      profiles: {
-        avatar_url: currentUser.avatar_url,
-        full_name: currentUser.full_name,
-      },
-    });
-    setQuestions(copyofQuestions);
-  }
+  //   foundQuestion.answers.push({
+  //     answer: answer,
+  //     created_at: new Date(),
+  //     profiles: {
+  //       avatar_url: currentUser.avatar_url,
+  //       full_name: currentUser.full_name,
+  //     },
+  //   });
+  //   setQuestions(copyofQuestions);
+  // }
 
   const addAnswer = async () => {
     // updateAnswers();
@@ -75,10 +76,10 @@ const QuestionModal = ({
       const { data, error } = await supabase.from("answers_test").insert({
         user_id: user.id,
         answer,
-        question_id: question._id,
+        question_id: item.id,
       });
       handleCloseModal();
-      updateAnswers();
+      // updateAnswers();
       // fetchAnswerforQuestion(question._id);
       // fetchAnswers();
       function truncateWords(str, numWords) {
@@ -95,7 +96,12 @@ const QuestionModal = ({
       const message = {
         title: "Question of the Week",
         message: `${user?.full_name} has posted a answer: ${truncatedString}`,
-        data: { screen: "Question", question: question, verseTitle: "" },
+        data: {
+          screen: "Question",
+          question: item.title,
+          verseTitle: "",
+          item: item,
+        },
       };
 
       // fetch(PRAYSE_MESSAGE.toString(), {

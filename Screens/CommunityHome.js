@@ -882,13 +882,13 @@ const CommunityHome = ({ route }) => {
                             theme == "dark"
                               ? {
                                   flex: 1,
-                                  fontFamily: "Inter-Medium",
+                                  fontFamily: "Inter-Bold",
                                   fontSize: 17,
                                   color: "white",
                                 }
                               : {
                                   flex: 1,
-                                  fontFamily: "Inter-Medium",
+                                  fontFamily: "Inter-Bold",
                                   fontSize: 17,
                                   color: "#2f2d51",
                                 }

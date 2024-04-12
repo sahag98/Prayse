@@ -4,7 +4,11 @@ import { Modal } from "react-native";
 import { ModalContainer } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native";
 import { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 import Animated, {
   FadeIn,
   Transition,
@@ -47,8 +51,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
       <ModalContainer
         style={
           theme == "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.5)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.5)" }
+            ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <Animated.View
@@ -69,7 +73,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   padding: 15,
                   width: "100%",
                   justifyContent: "space-between",
-                  backgroundColor: "#93D8F8",
+                  backgroundColor: "#b7d3ff",
                 }
           }
         >
@@ -98,10 +102,10 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
           <View ref={ref}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <Animated.Image
-                  entering={FadeIn.duration(500)}
-                  style={[styles.img]}
-                  source={theme == "dark" ? merch : merch}
+                <MaterialCommunityIcons
+                  name="hands-pray"
+                  size={100}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
                 />
 
                 <Text
@@ -119,7 +123,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Prayse Merch
+                  Prayer Room
                 </Text>
                 <Text
                   style={
@@ -136,7 +140,129 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Check out our merch we just released!
+                  Be able to go through all your prayers, and pray for each one!
+                </Text>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: 10,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            borderColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#caecfc",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={StartOver}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "white", fontFamily: "Inter-Bold" }
+                          : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Exit
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            backgroundColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#2f2d51",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={onNextPage}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "#212121", fontFamily: "Inter-Bold" }
+                          : { color: "white", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Continue
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {page === 1 && (
+              <View style={{ alignItems: "center", gap: 10 }}>
+                <Ionicons
+                  name="images-outline"
+                  size={100}
+                  color={theme == "dark" ? "white" : "black"}
+                />
+
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Group Images
+                </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Regular",
+                          fontSize: 15,
+                          color: "#dbdbdb",
+                        }
+                      : {
+                          fontFamily: "Inter-Regular",
+                          fontSize: 15,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Pick an image for your prayer group using our templates or
+                  your own images!
                 </Text>
 
                 <View
@@ -218,11 +344,11 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               </View>
             )}
 
-            {page === 1 && (
+            {page === 2 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <MaterialIcons
                   name="published-with-changes"
-                  size={150}
+                  size={100}
                   color="white"
                 />
                 <Text
@@ -250,7 +376,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Added notification for new reflections and public prayers.
+                    - Major Community Design & UI improvements.
                   </Text>
                   <Text
                     style={
@@ -259,7 +385,18 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Adjusted styling for light mode theme.
+                    - Changed "Question of the Week" to "Questions" to have
+                    multiple questions to answer and reflect on.
+                  </Text>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
+                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+                    }
+                  >
+                    - Switched notification box to its own screen for better
+                    visibility on all notifications.
                   </Text>
                 </View>
                 <View
@@ -300,7 +437,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
                     >
-                      Continue
+                      Got It
                     </Text>
                   </TouchableOpacity>
                 </View>

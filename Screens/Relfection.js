@@ -216,7 +216,7 @@ const Relfection = ({ navigation, route }) => {
               <FontAwesome5
                 name="comments"
                 size={80}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
               />
 
               <Text

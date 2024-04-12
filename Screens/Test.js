@@ -508,7 +508,7 @@ export default function Reminder({ route, navigation }) {
                   gap: 10,
                 }
               : {
-                  backgroundColor: "#93d8f8",
+                  backgroundColor: "#b7d3ff",
                   width: "100%",
                   padding: 10,
                   borderRadius: 8,
@@ -562,7 +562,7 @@ export default function Reminder({ route, navigation }) {
                   borderRadius: 8,
                 }
               : {
-                  backgroundColor: "#93d8f8",
+                  backgroundColor: "#b7d3ff",
                   padding: 10,
                   gap: 5,
                   borderRadius: 8,
@@ -696,7 +696,7 @@ export default function Reminder({ route, navigation }) {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  backgroundColor: "#93d8f8",
+                  backgroundColor: "#b7d3ff",
                   borderRadius: 8,
                   padding: 8,
                 }

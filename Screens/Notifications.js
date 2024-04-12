@@ -170,7 +170,7 @@ const Notifications = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => {
             dispatch(deleteAll());
-            navigation.navigate("Home");
+            // navigation.navigate("Home");
           }}
           style={{ padding: 10, alignSelf: "flex-end" }}
         >
@@ -181,7 +181,7 @@ const Notifications = ({ navigation }) => {
                 : { fontFamily: "Inter-Bold", fontSize: 17, color: "#ff6262" }
             }
           >
-            Clear all
+            Clear All
           </Text>
         </TouchableOpacity>
       </View>

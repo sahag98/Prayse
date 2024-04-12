@@ -93,7 +93,7 @@ const QuestionHelpModal = ({
                   }
             }
           >
-            Welcome to Question of the Week!
+            Welcome to Questions!
           </Text>
           <View ref={ref}>
             {page === 0 && (
@@ -142,67 +142,8 @@ const QuestionHelpModal = ({
                 </TouchableOpacity>
               </View>
             )}
-            {page === 1 && (
-              <View style={{ alignItems: "center", gap: 10 }}>
-                <Image style={styles.img} source={expire} />
 
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Regular", color: "white" }
-                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                  }
-                >
-                  Each question will expire at the start of each week and be
-                  replaced with a new one.
-                </Text>
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 13,
-                          color: "#ff8989",
-                        }
-                      : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 13,
-                          color: "#ff6262",
-                        }
-                  }
-                >
-                  Refresh app if question is not updated.
-                </Text>
-                <TouchableOpacity
-                  style={
-                    theme == "dark"
-                      ? {
-                          width: "100%",
-                          borderColor: "#A5C9FF",
-                          borderWidth: 1,
-                          padding: 15,
-                          borderRadius: 10,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }
-                      : {
-                          width: "100%",
-                          backgroundColor: "#2f2d51",
-                          padding: 15,
-                          borderRadius: 10,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }
-                  }
-                  onPress={onNextPage}
-                >
-                  <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
-                    Next
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            {page === 2 && (
+            {page === 1 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Image style={styles.img} source={insta} />
                 <View style={{ alignItems: "center", gap: 10 }}>

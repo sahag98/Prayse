@@ -127,43 +127,36 @@ export const SupabaseProvider = (props) => {
     setSession(null);
   };
 
-  const fetchQuestions = () => {
-    console.log("fetching questions now");
-    const query = '*[_type=="question"]';
-    client
-      .fetch(query)
-      .then(async (data) => {
-        // setQuestions(data);
-        const existingQuestionIds = questions.map((question) => question.id);
+  const fetchQuestions = async () => {
+    const { data: allQuestions, error: answersError } = await supabase
+      .from("questions")
+      .select("*");
 
-        console.log("data from fetch: ", data);
-        data.map(async (item) => {
-          console.log("id: ", item._id);
-          const fetchedAnswers = await fetchAnswers(item);
-          if (fetchedAnswers) {
-            if (existingQuestionIds.includes(item._id)) {
-              return;
-            } else {
-              setQuestions((prev) => [
-                ...prev,
-                { id: item._id, question: item, answers: fetchedAnswers },
-              ]);
-            }
-            // if (questions.some((question) => console.log(question))) {
+    setQuestions(allQuestions);
 
-            // }
-          }
-        });
-        // data.map((item)=>{
-        //   setQuestions((prev)=> [...prev, {question: data, answers: fetchedAnswers}])
-        // })
-        // fetchAnswers();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // allQuestions.map(async (item) => {
+    //   const fetchedAnswers = await fetchAnswers(item);
+    //   console.log(fetchedAnswers);
+    //   setAnswers(fetchedAnswers);
+    // });
 
-    // setNewAnswer(false);
+    // setQuestions(allQuestions);
+
+    // const existingQuestionIds = questions.map((question) => question.id);
+    // console.log("existing ids:");
+    // allQuestions.map(async (item) => {
+    //   const fetchedAnswers = await fetchAnswers(item);
+    //   if (fetchedAnswers) {
+    //     if (existingQuestionIds.includes(item.id)) {
+    //       return;
+    //     } else {
+    //       setQuestions((prev) => [
+    //         ...prev,
+    //         { id: item.id, question: item, answers: fetchedAnswers },
+    //       ]);
+    //     }
+    //   }
+    // });
   };
 
   async function fetchUpdatedAnswers(id) {
@@ -184,19 +177,17 @@ export const SupabaseProvider = (props) => {
     }
   }
 
-  async function fetchAnswers(item) {
-    console.log("fetching answers now");
+  async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
       .from("answers_test")
       .select("*, profiles(avatar_url,full_name)")
-      .eq("question_id", item._id)
       .order("id", { ascending: false });
 
     if (answersError) {
       console.log(answersError);
     }
 
-    return answers;
+    setAnswers(answers);
   }
 
   const checkIfUserIsLoggedIn = async () => {
@@ -222,6 +213,7 @@ export const SupabaseProvider = (props) => {
 
   useEffect(() => {
     fetchQuestions();
+    fetchAnswers();
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
 
@@ -330,6 +322,38 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
+              table: "questions",
+            },
+            (payload) => {
+              if (
+                payload.eventType == "INSERT" ||
+                payload.eventType == "DELETE" ||
+                payload.eventType == "UPDATE"
+              ) {
+                console.log("refresh questions");
+                fetchQuestions();
+              }
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "answers_test",
+            },
+            (payload) => {
+              if (payload.eventType == "INSERT") {
+                console.log("refresh answers");
+                fetchAnswers();
+              }
+            }
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
               table: "likes",
             },
             (payload) => {
@@ -389,6 +413,7 @@ export const SupabaseProvider = (props) => {
         questions,
         setQuestions,
         answers,
+        setAnswers,
         setNewAnswer,
         isNewMessage,
         setRefreshMsgLikes,

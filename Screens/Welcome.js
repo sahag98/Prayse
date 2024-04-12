@@ -12,7 +12,7 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
-import prayer from "../assets/prayer-nobg.png";
+
 import {
   Ionicons,
   AntDesign,
@@ -20,11 +20,10 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-// import Unorderedlist from "react-native-unordered-list";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider } from "react-native-paper";
 import {
-  Container,
   HeaderTitle,
   ModalAction,
   ModalActionGroup,
@@ -39,43 +38,36 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useIsFocused } from "@react-navigation/native";
 import Animated, {
-  useAnimatedRef,
-  useAnimatedScrollHandler,
   useSharedValue,
-  FadeIn,
-  Transition,
-  Transitioning,
   useAnimatedStyle,
   withTiming,
   Easing,
 } from "react-native-reanimated";
 import { PROJECT_ID, NOTIFICATION_API } from "@env";
-import moment from "moment";
+
 import { addQuickFolder } from "../redux/folderReducer";
 import uuid from "react-native-uuid";
 import { KeyboardAvoidingView } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Keyboard } from "react-native";
 import { addPrayer } from "../redux/prayerReducer";
-import * as Updates from "expo-updates";
+
 import { Badge } from "react-native-paper";
-import { addNoti, deleteAll } from "../redux/notiReducer";
+import { addNoti } from "../redux/notiReducer";
 
 import NewFeaturesModal from "../components/NewFeaturesModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DonationModal from "../components/DonationModal";
-import { client } from "../lib/client";
+
 import { nativeApplicationVersion } from "expo-application";
 import UpdateModal from "../components/UpdateModal";
 import { useSupabase } from "../context/useSupabase";
 import { Dimensions } from "react-native";
 import { deleteReminder } from "../redux/remindersReducer";
-import axios from "axios";
-import ReminderModal from "../components/ReminderModal";
+
 import MerchComponent from "../components/MerchComponent";
 
 import noreminder from "../assets/noreminders.png";
-import { checkUserGroups } from "../redux/userReducer";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -158,18 +150,17 @@ const Welcome = ({ navigation }) => {
   const [donationModal, setDonationModal] = useState(false);
   const [greeting, setGreeting] = useState("");
   const [featureVisible, setFeatureVisible] = useState(false);
+
   const [icon, setIcon] = useState(null);
-  const { supabase, currentUser } = useSupabase();
+  const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState(true);
-  const handlePress = () => setExpanded(!expanded);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const reminders = useSelector((state) => state.reminder.reminders);
   const notis = useSelector((state) => state.noti.notifications);
-  const folders = useSelector((state) => state.folder.folders);
+
   const quickFolderExists = useSelector(
     (state) => state.folder.quickFolderExists
   );
-  const offset = useSharedValue(initialOffset);
 
   const welcomeFadeIn = useSharedValue(0);
   // const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -333,6 +324,10 @@ const Welcome = ({ navigation }) => {
           navigation.navigate(data.screen, {
             devoTitle: data.devoTitle,
           });
+        } else if (data.screen == "Question" && data.item && data.question) {
+          navigation.navigate(data.screen, {
+            item: data.item,
+          });
         } else {
           navigation.navigate(data.screen);
         }
@@ -489,6 +484,7 @@ const Welcome = ({ navigation }) => {
         const res = response.notification.request.content.data;
       });
     fetchUpdate();
+
     return () => {
       Notifications.removeNotificationSubscription(
         notificationListener.current
@@ -777,8 +773,8 @@ const Welcome = ({ navigation }) => {
               <Image
                 style={{
                   tintColor: theme == "dark" ? "white" : "#2f2d51",
-                  width: 50,
-                  height: 50,
+                  width: 40,
+                  height: 40,
                 }}
                 source={noreminder}
               />
@@ -788,13 +784,11 @@ const Welcome = ({ navigation }) => {
                     ? {
                         color: "#d2d2d2",
                         alignSelf: "center",
-                        fontSize: 15,
                         fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#2f2d51",
                         alignSelf: "center",
-                        fontSize: 15,
                         fontFamily: "Inter-Medium",
                       }
                 }
@@ -1131,22 +1125,22 @@ const Welcome = ({ navigation }) => {
                     ? {
                         color: "#f1d592",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : theme == "BlackWhite"
                     ? {
                         color: "black",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#bb8b18",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                 }
               >
-                What's New in v9.2!
+                What's New in v9.3!
               </Text>
             </View>
             <AntDesign
@@ -1189,18 +1183,18 @@ const Welcome = ({ navigation }) => {
                     ? {
                         color: "#A5C9FF",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : theme == "BlackWhite"
                     ? {
                         color: "black",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#738cb2",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                 }
               >
@@ -1249,18 +1243,18 @@ const Welcome = ({ navigation }) => {
                     ? {
                         color: "#e24774",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : theme == "BlackWhite"
                     ? {
                         color: "black",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                     : {
                         color: "#cb3f68",
                         marginLeft: 10,
-                        fontFamily: "Inter-Regular",
+                        fontFamily: "Inter-Medium",
                       }
                 }
               >
@@ -1317,18 +1311,18 @@ const Welcome = ({ navigation }) => {
                     theme == "dark"
                       ? {
                           color: "#f0f0f0",
-                          fontFamily: "Inter-Regular",
+                          fontFamily: "Inter-Medium",
                           marginLeft: 10,
                         }
                       : theme == "BlackWhite"
                       ? {
                           color: "black",
-                          fontFamily: "Inter-Regular",
+                          fontFamily: "Inter-Medium",
                           marginLeft: 10,
                         }
                       : {
                           color: "#606060",
-                          fontFamily: "Inter-Regular",
+                          fontFamily: "Inter-Medium",
                           marginLeft: 10,
                         }
                   }
@@ -1375,12 +1369,12 @@ const Welcome = ({ navigation }) => {
                     theme == "dark"
                       ? {
                           color: "#f0f0f0",
-                          fontFamily: "Inter-Regular",
+                          fontFamily: "Inter-Medium",
                           marginLeft: 10,
                         }
                       : {
                           color: "#606060",
-                          fontFamily: "Inter-Regular",
+                          fontFamily: "Inter-Medium",
                           marginLeft: 10,
                         }
                   }
@@ -1405,7 +1399,7 @@ const Welcome = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            onPress={() => navigation.navigate("Folders")}
+            onPress={() => navigation.navigate("Prayer")}
             style={
               theme == "dark"
                 ? [styles.buttonDark, { backgroundColor: "#212121" }]

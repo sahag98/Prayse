@@ -6,16 +6,31 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 const QuestionInfo = ({ item, theme }) => {
   const navigation = useNavigation();
 
-  const { fetchUpdatedAnswers, newAnswer } = useSupabase();
+  const { fetchUpdatedAnswers, answers, newAnswer } = useSupabase();
 
-  useEffect(() => {
-    fetchUpdatedAnswers(item.question._id);
-  }, [newAnswer]);
+  const existingAnswers = answers.filter(
+    (answer) => answer.question_id === item.id
+  );
+
+  // useEffect(() => {
+  //   fetchUpdatedAnswers(item.id);
+  // }, [newAnswer]);
 
   return (
     <TouchableOpacity
       style={theme == "dark" ? styles.questionDark : styles.question}
     >
+      {item.isNew && (
+        <Text
+          style={
+            theme == "dark"
+              ? { color: "red", fontFamily: "Inter-Regular" }
+              : { color: "red", fontFamily: "Inter-Regular" }
+          }
+        >
+          {item.isNew == true ? "New" : null}
+        </Text>
+      )}
       <Text
         style={
           theme == "dark"
@@ -23,7 +38,7 @@ const QuestionInfo = ({ item, theme }) => {
             : { fontSize: 16, color: "#2f2d51", fontFamily: "Inter-Medium" }
         }
       >
-        {item.question.title}
+        {item.title}
       </Text>
       <View
         style={{
@@ -41,8 +56,15 @@ const QuestionInfo = ({ item, theme }) => {
               : { fontSize: 13, color: "#2f2d51", fontFamily: "Inter-Regular" }
           }
         >
-          Added on: {new Date(item.question._createdAt).toLocaleDateString()}
+          Added on: {new Date(item.created_at).toLocaleDateString()}
         </Text>
+        <Text
+          style={
+            theme == "dark"
+              ? { fontSize: 13, color: "grey", fontFamily: "Inter-Regular" }
+              : { fontSize: 13, color: "#2f2d51", fontFamily: "Inter-Regular" }
+          }
+        ></Text>
         <View
           style={{
             flexDirection: "row",
@@ -72,7 +94,7 @@ const QuestionInfo = ({ item, theme }) => {
                   }
             }
           >
-            {item.answers.length} answers
+            {existingAnswers.length} answers
           </Text>
         </View>
       </View>

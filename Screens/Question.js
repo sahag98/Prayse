@@ -53,15 +53,20 @@ const Question = ({ navigation, route }) => {
     }
   };
 
-  useEffect(() => {
-    fetchUpdatedAnswers(item.question._id);
-  }, [newAnswer]);
+  const existingAnswers = answers.filter(
+    (answer) => answer.question_id === item.id
+  );
 
-  item.answers.sort((a, b) => {
-    const dateA = new Date(a.created_at);
-    const dateB = new Date(b.created_at);
-    return dateB - dateA;
-  });
+  console.log("current answers: ", existingAnswers);
+  // useEffect(() => {
+  //   fetchUpdatedAnswers(item.question._id);
+  // }, [newAnswer]);
+
+  // item.answers.sort((a, b) => {
+  //   const dateA = new Date(a.created_at);
+  //   const dateB = new Date(b.created_at);
+  //   return dateB - dateA;
+  // });
 
   return (
     <Container
@@ -118,7 +123,7 @@ const Question = ({ navigation, route }) => {
                 }
           }
         >
-          {item.question.title}
+          {item.title}
         </Text>
       </View>
       <View
@@ -130,7 +135,7 @@ const Question = ({ navigation, route }) => {
         }}
       >
         <View style={{ flex: 1, width: "100%" }}>
-          {item.answers.length == 0 ? (
+          {existingAnswers.length == 0 ? (
             <View
               style={{
                 flex: 1,
@@ -163,7 +168,7 @@ const Question = ({ navigation, route }) => {
             </View>
           ) : (
             <FlatList
-              data={item.answers}
+              data={existingAnswers}
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
@@ -203,12 +208,13 @@ const Question = ({ navigation, route }) => {
         />
       </View>
       <QuestionModal
-        answersLength={answers.length}
+        answersLength={existingAnswers.length}
         user={currentUser}
-        question={item.question}
+        question={item}
         setQuestions={setQuestions}
         // fetchAnswers={fetchAnswers}
-        answersArray={item.answers}
+        item={item}
+        answersArray={existingAnswers}
         theme={theme}
         supabase={supabase}
         setAnswersVisible={setAnswersVisible}

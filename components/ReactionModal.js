@@ -28,6 +28,7 @@ const ReactionModal = ({
   isPressedLong,
   theme,
 }) => {
+  console.log(isPressedLong);
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => {
     return {
