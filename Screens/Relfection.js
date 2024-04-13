@@ -104,7 +104,7 @@ const Relfection = ({ navigation, route }) => {
 
     let truncatedString = truncateWords(reflection, 8);
     const message = {
-      title: ` Reflection on Devotional: ${route?.params?.devoTitle}`,
+      title: `Reflection on Devotional: ${route?.params?.devoTitle}`,
       message: `${currentUser?.full_name} has wrote a reflection: ${truncatedString}`,
       data: {
         screen: "Reflection",
@@ -112,8 +112,7 @@ const Relfection = ({ navigation, route }) => {
         devoTitle: route?.params?.devoTitle,
       },
     };
-    console.log(message);
-    console.log(PRAYSE_MESSAGE.toString());
+
     fetch(PRAYSE_MESSAGE.toString(), {
       method: "POST",
       headers: {

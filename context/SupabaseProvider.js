@@ -161,7 +161,7 @@ export const SupabaseProvider = (props) => {
 
   async function fetchUpdatedAnswers(id) {
     const { data: answers, error: answersError } = await supabase
-      .from("answers_test")
+      .from("answers")
       .select("*, profiles(avatar_url,full_name)")
       .eq("question_id", id)
       .order("id", { ascending: false });
@@ -179,7 +179,7 @@ export const SupabaseProvider = (props) => {
 
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
-      .from("answers_test")
+      .from("answers")
       .select("*, profiles(avatar_url,full_name)")
       .order("id", { ascending: false });
 
@@ -244,7 +244,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "answers_test",
+              table: "answers",
             },
             (payload) => {
               if (
@@ -340,7 +340,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "answers_test",
+              table: "answers",
             },
             (payload) => {
               if (payload.eventType == "INSERT") {

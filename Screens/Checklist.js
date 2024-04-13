@@ -9,7 +9,6 @@ import React, { useState } from "react";
 import { Container } from "../styles/appStyles";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  MaterialCommunityIcons,
   AntDesign,
   FontAwesome,
   Ionicons,
@@ -242,7 +241,7 @@ const Checklist = ({ navigation }) => {
             >
               {item.prayer}
             </Text>
-            {(selectKeepAction == item.id && selectedItems.includes(item.id)) ||
+            {selectedItems.includes(item.id) ||
             (selectAnswerAction == item.id &&
               selectedItems.includes(item.id)) ? (
               <View

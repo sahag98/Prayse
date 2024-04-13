@@ -71,7 +71,6 @@ const AnnounceMeeting = ({
       visible={isAnnouncingMeeting}
       onRequestClose={handleCloseModal}
       statusBarTranslucent={true}
-      // onShow={() => inputRef.current?.focus()}
     >
       <ModalContainer
         style={

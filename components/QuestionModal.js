@@ -73,7 +73,7 @@ const QuestionModal = ({
       setAnswersVisible(false);
       return;
     } else {
-      const { data, error } = await supabase.from("answers_test").insert({
+      const { data, error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: item.id,
@@ -104,15 +104,15 @@ const QuestionModal = ({
         },
       };
 
-      // fetch(PRAYSE_MESSAGE.toString(), {
-      //   method: "POST",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Accept-encoding": "gzip, deflate",
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(message),
-      // });
+      fetch(PRAYSE_MESSAGE.toString(), {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }

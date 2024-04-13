@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Container } from "../styles/appStyles";
@@ -413,201 +414,412 @@ const PrayerRoom = ({ navigation }) => {
       {isPraying ? (
         <Animated.View
           style={[
-            { flex: 1, backgroundColor: "#f2f7ff", width: "100%" },
+            {
+              flex: 1,
+              backgroundColor: "#f2f7ff",
+              // justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            },
             animatedRoomFadeInStyle,
           ]}
         >
-          <Video
-            ref={video}
-            style={styles.video}
-            source={theme == "dark" ? darkGradient : gradient}
-            useNativeControls={false}
-            resizeMode={ResizeMode.COVER}
-            isLooping={true}
-            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-          >
-            <StatusBar hidden />
-            <View style={{ flex: 1, paddingTop: statusBarHeight, zIndex: 88 }}>
+          {Platform.OS === "android" ? (
+            <>
+              <Video
+                ref={video}
+                style={styles.video}
+                source={theme == "dark" ? darkGradient : gradient}
+                useNativeControls={false}
+                resizeMode={ResizeMode.COVER}
+                isLooping={true}
+                onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              />
+              <StatusBar hidden />
               <View
                 style={{
-                  flexDirection: "row",
+                  flex: 1,
+                  paddingTop: statusBarHeight,
+                  position: "absolute",
 
-                  width: "100%",
-                  alignItems: "center",
+                  height: "100%",
+                  zIndex: 99,
                 }}
               >
-                <TouchableOpacity
-                  style={{ marginRight: 10 }}
-                  onPress={() => {
-                    navigation.navigate("Prayer");
-                    if (sound) {
-                      pauseSound();
-                    }
-                    setIsPraying(false);
+                <View
+                  style={{
+                    flexDirection: "row",
+                    zIndex: 99,
+                    width: "100%",
+                    alignItems: "center",
                   }}
                 >
-                  <Ionicons
-                    name="chevron-back"
-                    size={35}
-                    color={theme == "light" ? "#2f2d51" : "white"}
+                  <TouchableOpacity
+                    style={{ marginRight: 10 }}
+                    onPress={() => {
+                      navigation.navigate("Prayer");
+                      if (sound) {
+                        pauseSound();
+                      }
+                      setIsPraying(false);
+                    }}
+                  >
+                    <Ionicons
+                      name="chevron-back"
+                      size={35}
+                      color={theme == "light" ? "#2f2d51" : "white"}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 20,
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                    }}
+                  >
+                    Prayer Room
+                  </Text>
+                </View>
+                <View style={styles.stepIndicatorContainer}>
+                  {prayers.map((step, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.stepIndicator,
+                        {
+                          backgroundColor:
+                            index === screenIndex
+                              ? theme == "dark"
+                                ? "white"
+                                : "#2f2d51"
+                              : "#acacac",
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+                <TouchableOpacity
+                  onPress={checkSound}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginTop: 10,
+                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    padding: 15,
+                    marginRight: 15,
+                    borderRadius: 100,
+                  }}
+                >
+                  <Feather
+                    name={isPlayingSound ? "volume-2" : "volume-x"}
+                    size={24}
+                    color={theme == "dark" ? "#121212" : "white"}
                   />
                 </TouchableOpacity>
-                <Text
-                  style={{
-                    fontFamily: "Inter-Bold",
-                    fontSize: 20,
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                  }}
-                >
-                  Prayer Room
-                </Text>
-              </View>
-              <View style={styles.stepIndicatorContainer}>
-                {prayers.map((step, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.stepIndicator,
-                      {
-                        backgroundColor:
-                          index === screenIndex
-                            ? theme == "dark"
-                              ? "white"
-                              : "#2f2d51"
-                            : "#acacac",
-                      },
-                    ]}
-                  />
-                ))}
-              </View>
-              <TouchableOpacity
-                onPress={checkSound}
-                style={{
-                  alignSelf: "flex-end",
-                  marginTop: 10,
-                  backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                  padding: 15,
-                  marginRight: 15,
-                  borderRadius: 100,
-                }}
-              >
-                <Feather
-                  name={isPlayingSound ? "volume-2" : "volume-x"}
-                  size={24}
-                  color={theme == "dark" ? "#121212" : "white"}
-                />
-              </TouchableOpacity>
-              <GestureDetector gesture={swipes}>
-                <View style={styles.pageContent} key={screenIndex}>
-                  <Animated.Text
-                    style={
-                      theme == "dark"
-                        ? [
-                            styles.title,
-                            { color: "white", fontFamily: "Inter-Bold" },
-                            animatedMomentFadeInStyle,
-                          ]
-                        : [
-                            styles.title,
-                            { fontFamily: "Inter-Bold" },
-                            animatedMomentFadeInStyle,
-                          ]
-                    }
-                  >
-                    Take a moment and Pray
-                  </Animated.Text>
-                  <View>
+                <GestureDetector gesture={swipes}>
+                  <View style={styles.pageContent} key={screenIndex}>
                     <Animated.Text
-                      entering={SlideInRight}
-                      exiting={SlideOutLeft}
-                      style={
-                        theme == "dark"
-                          ? [
-                              styles.description,
-                              { color: "grey" },
-                              animatedPrayerFadeInStyle,
-                            ]
-                          : [styles.description, animatedPrayerFadeInStyle]
-                      }
-                    >
-                      Added on {data.date.split(",")[0]}
-                    </Animated.Text>
-                    <Animated.Text
-                      entering={SlideInRight}
-                      exiting={SlideOutLeft}
                       style={
                         theme == "dark"
                           ? [
                               styles.title,
-                              { color: "white" },
-                              animatedPrayerFadeInStyle,
+                              { color: "white", fontFamily: "Inter-Bold" },
+                              animatedMomentFadeInStyle,
                             ]
-                          : [styles.title, animatedPrayerFadeInStyle]
+                          : [
+                              styles.title,
+                              { fontFamily: "Inter-Bold" },
+                              animatedMomentFadeInStyle,
+                            ]
                       }
                     >
-                      {data.prayer}
+                      Take a moment and Pray
+                    </Animated.Text>
+                    <View>
+                      <Animated.Text
+                        entering={SlideInRight}
+                        exiting={SlideOutLeft}
+                        style={
+                          theme == "dark"
+                            ? [
+                                styles.description,
+                                { color: "grey" },
+                                animatedPrayerFadeInStyle,
+                              ]
+                            : [styles.description, animatedPrayerFadeInStyle]
+                        }
+                      >
+                        Added on {data.date.split(",")[0]}
+                      </Animated.Text>
+                      <Animated.Text
+                        entering={SlideInRight}
+                        exiting={SlideOutLeft}
+                        style={
+                          theme == "dark"
+                            ? [
+                                styles.title,
+                                { color: "white" },
+                                animatedPrayerFadeInStyle,
+                              ]
+                            : [styles.title, animatedPrayerFadeInStyle]
+                        }
+                      >
+                        {data.prayer}
+                      </Animated.Text>
+                    </View>
+                    <Animated.Text
+                      style={[
+                        styles.swipeText,
+                        theme == "dark" && { color: "white" },
+                        // animatedStyle,
+                        animatedOpacityStyle,
+                      ]}
+                    >
+                      {screenIndex === prayers.length - 1
+                        ? "Swipe right to go to checklist"
+                        : "Swipe right to go to the next prayer."}
                     </Animated.Text>
                   </View>
-                  <Animated.Text
-                    style={[
-                      styles.swipeText,
-                      theme == "dark" && { color: "white" },
-                      // animatedStyle,
-                      animatedOpacityStyle,
-                    ]}
-                  >
-                    {screenIndex === prayers.length - 1
-                      ? "Swipe right to go to checklist"
-                      : "Swipe right to go to the next prayer."}
-                  </Animated.Text>
-                </View>
-              </GestureDetector>
+                </GestureDetector>
 
-              <View
-                style={{
-                  position: "absolute",
-                  flexDirection: "row",
+                <View
+                  style={{
+                    position: "absolute",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: isPraying ? "center" : "center",
+                    bottom: 20,
+                    width: "100%",
+                  }}
+                >
+                  {!isPraying ? (
+                    <AnimatedTouchable
+                      onPress={async () => {
+                        setIsPraying(true);
 
-                  alignItems: "center",
-                  justifyContent: isPraying ? "center" : "center",
-                  bottom: 20,
-                  width: "100%",
-                }}
-              >
-                {!isPraying ? (
-                  <AnimatedTouchable
-                    onPress={async () => {
-                      setIsPraying(true);
-
-                      loadAndPlayRandomAudio();
-                    }}
-                    style={[
-                      {
-                        backgroundColor: "#2f2d51",
-                        padding: 15,
-                        borderRadius: 100,
-                      },
-                      animatedFadeInStyle,
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name="hands-pray"
-                      size={55}
-                      color="#b7d3ff"
+                        loadAndPlayRandomAudio();
+                      }}
+                      style={[
+                        {
+                          backgroundColor: "#2f2d51",
+                          padding: 15,
+                          borderRadius: 100,
+                        },
+                        animatedFadeInStyle,
+                      ]}
+                    >
+                      <MaterialCommunityIcons
+                        name="hands-pray"
+                        size={55}
+                        color="#b7d3ff"
+                      />
+                    </AnimatedTouchable>
+                  ) : (
+                    <AnimatedLottieView
+                      speed={0.5}
+                      source={require("../assets/animations/praying-animation.json")}
+                      style={styles.animation}
+                      autoPlay
+                      resizeMode="none"
                     />
-                  </AnimatedTouchable>
-                ) : (
-                  <AnimatedLottieView
-                    speed={0.5}
-                    source={require("../assets/animations/praying-animation.json")}
-                    style={styles.animation}
-                    autoPlay
-                    resizeMode="none"
-                  />
-                )}
+                  )}
+                </View>
               </View>
-            </View>
-          </Video>
+            </>
+          ) : (
+            <Video
+              ref={video}
+              style={styles.video}
+              source={theme == "dark" ? darkGradient : gradient}
+              useNativeControls={false}
+              resizeMode={ResizeMode.COVER}
+              isLooping={true}
+              onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+            >
+              <StatusBar hidden />
+              <View
+                style={{ flex: 1, paddingTop: statusBarHeight, zIndex: 99 }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    zIndex: 99,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{ marginRight: 10 }}
+                    onPress={() => {
+                      navigation.navigate("Prayer");
+                      if (sound) {
+                        pauseSound();
+                      }
+                      setIsPraying(false);
+                    }}
+                  >
+                    <Ionicons
+                      name="chevron-back"
+                      size={35}
+                      color={theme == "light" ? "#2f2d51" : "white"}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Bold",
+                      fontSize: 20,
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                    }}
+                  >
+                    Prayer Room
+                  </Text>
+                </View>
+                <View style={styles.stepIndicatorContainer}>
+                  {prayers.map((step, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.stepIndicator,
+                        {
+                          backgroundColor:
+                            index === screenIndex
+                              ? theme == "dark"
+                                ? "white"
+                                : "#2f2d51"
+                              : "#acacac",
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+                <TouchableOpacity
+                  onPress={checkSound}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginTop: 10,
+                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    padding: 15,
+                    marginRight: 15,
+                    borderRadius: 100,
+                  }}
+                >
+                  <Feather
+                    name={isPlayingSound ? "volume-2" : "volume-x"}
+                    size={24}
+                    color={theme == "dark" ? "#121212" : "white"}
+                  />
+                </TouchableOpacity>
+                <GestureDetector gesture={swipes}>
+                  <View style={styles.pageContent} key={screenIndex}>
+                    <Animated.Text
+                      style={
+                        theme == "dark"
+                          ? [
+                              styles.title,
+                              { color: "white", fontFamily: "Inter-Bold" },
+                              animatedMomentFadeInStyle,
+                            ]
+                          : [
+                              styles.title,
+                              { fontFamily: "Inter-Bold" },
+                              animatedMomentFadeInStyle,
+                            ]
+                      }
+                    >
+                      Take a moment and Pray
+                    </Animated.Text>
+                    <View>
+                      <Animated.Text
+                        entering={SlideInRight}
+                        exiting={SlideOutLeft}
+                        style={
+                          theme == "dark"
+                            ? [
+                                styles.description,
+                                { color: "grey" },
+                                animatedPrayerFadeInStyle,
+                              ]
+                            : [styles.description, animatedPrayerFadeInStyle]
+                        }
+                      >
+                        Added on {data.date.split(",")[0]}
+                      </Animated.Text>
+                      <Animated.Text
+                        entering={SlideInRight}
+                        exiting={SlideOutLeft}
+                        style={
+                          theme == "dark"
+                            ? [
+                                styles.title,
+                                { color: "white" },
+                                animatedPrayerFadeInStyle,
+                              ]
+                            : [styles.title, animatedPrayerFadeInStyle]
+                        }
+                      >
+                        {data.prayer}
+                      </Animated.Text>
+                    </View>
+                    <Animated.Text
+                      style={[
+                        styles.swipeText,
+                        theme == "dark" && { color: "white" },
+                        // animatedStyle,
+                        animatedOpacityStyle,
+                      ]}
+                    >
+                      {screenIndex === prayers.length - 1
+                        ? "Swipe right to go to checklist"
+                        : "Swipe right to go to the next prayer."}
+                    </Animated.Text>
+                  </View>
+                </GestureDetector>
+
+                <View
+                  style={{
+                    position: "absolute",
+                    flexDirection: "row",
+
+                    alignItems: "center",
+                    justifyContent: isPraying ? "center" : "center",
+                    bottom: 20,
+                    width: "100%",
+                  }}
+                >
+                  {!isPraying ? (
+                    <AnimatedTouchable
+                      onPress={async () => {
+                        setIsPraying(true);
+
+                        loadAndPlayRandomAudio();
+                      }}
+                      style={[
+                        {
+                          backgroundColor: "#2f2d51",
+                          padding: 15,
+                          borderRadius: 100,
+                        },
+                        animatedFadeInStyle,
+                      ]}
+                    >
+                      <MaterialCommunityIcons
+                        name="hands-pray"
+                        size={55}
+                        color="#b7d3ff"
+                      />
+                    </AnimatedTouchable>
+                  ) : (
+                    <AnimatedLottieView
+                      speed={0.5}
+                      source={require("../assets/animations/praying-animation.json")}
+                      style={styles.animation}
+                      autoPlay
+                      resizeMode="none"
+                    />
+                  )}
+                </View>
+              </View>
+            </Video>
+          )}
         </Animated.View>
       ) : (
         <View
@@ -799,6 +1011,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#2f2d51",
     fontSize: 24,
+    zIndex: 80,
     fontFamily: "Inter-Medium",
     letterSpacing: 1.3,
     marginVertical: 5,

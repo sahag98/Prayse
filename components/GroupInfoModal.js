@@ -17,7 +17,6 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   Entypo,
-  Octicons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
@@ -30,7 +29,8 @@ import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 
 import groupBg from "../assets/group-bg.png";
-import TemplatesModal from "./TemplatesModal";
+
+import GroupTemplateModal from "./GroupTemplateModal";
 
 const GroupInfoMenu = ({
   theme,
@@ -143,44 +143,12 @@ const GroupInfoMenu = ({
                 flex: 1,
               }}
             >
-              {/* <TouchableOpacity
-                style={{
-                  paddingHorizontal: 15,
-                  paddingVertical: 18,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-                onPress={() =>
-                  handleRemoveConfirmation(userToEdit.id, userToEdit.full_name)
-                }
-              >
-                <Text
-                  style={
-                    theme === "dark"
-                      ? { ...styles.menuItem, color: "#a5c9ff" }
-                      : styles.menuItem
-                  }
-                >
-                  Make Admin
-                </Text>
-                <Octicons name="shield-check" size={24} color="#a5c9ff" />
-              </TouchableOpacity> */}
               <View
                 style={{
                   width: "100%",
                   paddingHorizontal: 15,
                 }}
-              >
-                {/* <View
-                  style={{
-                    width: "100%",
-
-                    height: 1,
-                    backgroundColor: "#2e2e2e",
-                  }}
-                /> */}
-              </View>
+              ></View>
               <TouchableOpacity
                 style={{
                   paddingHorizontal: 15,
@@ -235,7 +203,8 @@ const GroupInfoModal = ({
   const [userToEdit, setUserToEdit] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const [groupImage, setGroupImage] = useState(null);
-  const [isShowingTemplates, setIsShowingTemplates] = useState(false);
+  const [isShowingGroupTemplates, setIsShowingGroupTemplates] = useState(false);
+
   const [imgUrl, setImgUrl] = useState(null);
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
@@ -459,12 +428,16 @@ const GroupInfoModal = ({
                 <Image
                   style={[
                     styles.profileImg,
-                    { backgroundColor: group.groups.group_img ? null : "grey" },
+                    {
+                      backgroundColor: group.groups.group_img ? null : "grey",
+                      borderWidth: 1,
+                      borderColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                    },
                   ]}
                   source={
-                    groupImage
-                      ? groupImage
-                      : !groupImage && !group.groups.group_img
+                    imgUrl
+                      ? { uri: imgUrl }
+                      : !imgUrl && !group.groups.group_img
                       ? groupBg
                       : {
                           uri: group.groups.group_img,
@@ -498,7 +471,7 @@ const GroupInfoModal = ({
                       alignItems: "center",
                       gap: 10,
                     }}
-                    onPress={() => setIsShowingTemplates(true)}
+                    onPress={() => setIsShowingGroupTemplates(true)}
                   >
                     <Ionicons
                       name="images-outline"
@@ -514,10 +487,11 @@ const GroupInfoModal = ({
                     >
                       Templates
                     </Text>
-                    <TemplatesModal
+                    <GroupTemplateModal
                       theme={theme}
-                      setIsShowingTemplates={setIsShowingTemplates}
-                      isShowingTemplates={isShowingTemplates}
+                      group={group}
+                      isShowingGroupTemplates={isShowingGroupTemplates}
+                      setIsShowingGroupTemplates={setIsShowingGroupTemplates}
                       setImgUrl={setImgUrl}
                       setGroupImage={setGroupImage}
                       supabase={supabase}

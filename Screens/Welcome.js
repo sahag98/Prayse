@@ -140,8 +140,6 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-const initialOffset = 200;
-
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const dispatch = useDispatch();
@@ -198,7 +196,7 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        // setIsUpdateAvailable(true);
+        setIsUpdateAvailable(true);
       } else {
         console.log("update is not available");
         setIsUpdateAvailable(false);

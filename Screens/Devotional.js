@@ -190,7 +190,6 @@ const Devotional = ({ navigation }) => {
           >
             {devotionals[0]?.description}
           </Text>
-
           <TouchableOpacity
             onPress={() => navigation.navigate("DevoList")}
             style={{

@@ -83,11 +83,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 5,
-    // justifyContent: "center",
   },
   commentContainer: {
     padding: 10,
-
     borderRadius: 10,
     gap: 10,
     justifyContent: "space-between",
