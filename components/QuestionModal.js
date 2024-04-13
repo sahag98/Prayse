@@ -17,7 +17,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
-import { PRAYSE_MESSAGE } from "@env";
+
 import { useSupabase } from "../context/useSupabase";
 
 const QuestionModal = ({
@@ -104,7 +104,7 @@ const QuestionModal = ({
         },
       };
 
-      fetch(PRAYSE_MESSAGE.toString(), {
+      fetch(process.env.PRAYSE_MESSAGE, {
         method: "POST",
         headers: {
           Accept: "application/json",

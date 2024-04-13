@@ -1,16 +1,14 @@
 import {
   Dimensions,
   Keyboard,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-import { PROJECT_ID } from "@env";
+import { HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { useState } from "react";
@@ -28,20 +26,16 @@ import {
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { useRef } from "react";
 import Animated, {
   Easing,
   FadeIn,
-  FadeInUp,
   useAnimatedStyle,
   useSharedValue,
-  withRepeat,
   withSequence,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import WelcomeModal from "../components/WelcomeModal";
-import cm2 from "../assets/cm2.png";
+
 import CreateGroupModal from "../components/CreateGroupModal";
 import { FlatList } from "react-native";
 import JoinModal from "../components/JoinModal";
@@ -239,7 +233,9 @@ const CommunityHome = ({ route }) => {
       }
 
       token = (
-        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+        await Notifications.getExpoPushTokenAsync({
+          projectId: process.env.PROJECT_ID,
+        })
       ).data;
     } else {
       console.log("Must use physical device for Push Notifications");
@@ -329,21 +325,6 @@ const CommunityHome = ({ route }) => {
                 }
           }
         >
-          {/* <View
-            style={{
-              // flex: 1,
-              gap: 10,
-              justifyContent: "center",
-            }}
-          > */}
-          {/* <Image
-            style={
-              theme == "dark"
-                ? [styles.img, { tintColor: "white" }]
-                : styles.img
-            }
-            source={cm2}
-          /> */}
           <Animated.View
             entering={FadeIn.duration(500)}
             style={{

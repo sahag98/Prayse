@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import React from "react";
 import { Modal } from "react-native";
-import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { AntDesign } from "@expo/vector-icons";
 
 import { ModalContainer } from "../styles/appStyles";
@@ -90,7 +89,7 @@ const CommunityModal = ({
         data: { screen: "PublicCommunity", public: true, verseTitle: "" },
       };
 
-      fetch(PRAYSE_MESSAGE.toString(), {
+      fetch(process.env.PRAYSE_MESSAGE, {
         method: "POST",
         headers: {
           Accept: "application/json",

@@ -50,7 +50,7 @@
       "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "47",
+      "buildNumber": "48",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -68,7 +68,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 48
+      "versionCode": 49
     },
     "web": {
       "favicon": "./assets/favicon.png"

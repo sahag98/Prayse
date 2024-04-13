@@ -31,13 +31,7 @@ import Animated, {
   withSequence,
   withDelay,
 } from "react-native-reanimated";
-import Gpad from "../assets/audio/Gpad.mp3";
-import Bpad from "../assets/audio/Bpad.mp3";
-import Cpad from "../assets/audio/Cpad.mp3";
 import Ebpad from "../assets/audio/Ebpad.mp3";
-import OrganicA from "../assets/audio/OrganicA.mp3";
-import OrganicB from "../assets/audio/OrganicB.mp3";
-import OrganicC from "../assets/audio/OrganicC.mp3";
 import OrganicG from "../assets/audio/OrganicG.mp3";
 import gradient from "../assets/video/gradient.mp4";
 import darkGradient from "../assets/video/dark-gradient.mp4";
@@ -109,16 +103,7 @@ const PrayerRoom = ({ navigation }) => {
   const loadAndPlayRandomAudio = () => {
     console.log("loading...");
 
-    const audioFiles = [
-      Gpad,
-      OrganicA,
-      Bpad,
-      OrganicB,
-      Cpad,
-      OrganicC,
-      Ebpad,
-      OrganicG,
-    ];
+    const audioFiles = [Ebpad, OrganicG];
     const randomIndex = Math.floor(Math.random() * audioFiles.length);
     const randomAudioFile = audioFiles[randomIndex];
     playSound(randomAudioFile);

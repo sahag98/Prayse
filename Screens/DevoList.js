@@ -4,11 +4,6 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  ScrollView,
-  Image,
-  RefreshControl,
-  Linking,
-  TextInput,
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -16,7 +11,6 @@ import {
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
-import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { Container, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import useIsReady from "../hooks/useIsReady";
@@ -141,9 +135,9 @@ const DevoList = ({ navigation }) => {
       data: { screen: "DevoList", verseTitle: "" },
     };
 
-    console.log(PRAYSE_MESSAGE, message);
+    console.log(process.env.PRAYSE_MESSAGE, message);
 
-    fetch(PRAYSE_MESSAGE.toString(), {
+    fetch(process.env.PRAYSE_MESSAGE, {
       method: "POST",
       headers: {
         Accept: "application/json",

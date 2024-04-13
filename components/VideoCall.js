@@ -10,7 +10,7 @@ const VideoCall = () => {
   async function playSound() {
     console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
-      require("../assets/audio/pad1.mp3")
+      require("../assets/audio/Ebpad.mp3")
     );
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,

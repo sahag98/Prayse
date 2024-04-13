@@ -30,7 +30,6 @@ import {
 import { deleteAllFolders } from "../redux/folderReducer";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { PROJECT_ID, NOTIFICATION_API } from "@env";
 import { clearPrayerData } from "../redux/prayerReducer";
 import { useEffect } from "react";
 import { deleteAnsweredPrayers } from "../redux/answeredReducer";
@@ -58,7 +57,7 @@ const Settings = ({ navigation }) => {
       data: { someData: "goes here" },
     };
     console.log("about to fetch");
-    await fetch(NOTIFICATION_API, {
+    await fetch(process.env.NOTIFICATION_API, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -87,7 +86,9 @@ const Settings = ({ navigation }) => {
       }
       console.log("permission granted");
       token = (
-        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+        await Notifications.getExpoPushTokenAsync({
+          projectId: process.env.PROJECT_ID,
+        })
       ).data;
       setIsEnabled(true);
       console.log(token);

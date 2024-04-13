@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SupabaseContext } from "./SupabaseContext";
 import Toast from "react-native-toast-message";
-import { SUPABASE_URL, SUPABASE_ANON } from "@env";
-import { client } from "../lib/client";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -23,13 +21,12 @@ const ExpoSecureStoreAdapter = {
 export const SupabaseProvider = (props) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [prayers, setPrayers] = useState(null);
   const [session, setSession] = useState(null);
   const [newPost, setNewPost] = useState(false);
   const [newAnswer, setNewAnswer] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
-  const [isNavigationReady, setNavigationReady] = useState(false);
+
   const [refreshLikes, setRefreshLikes] = useState(false);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [refreshMembers, setRefreshMembers] = useState(false);
@@ -41,15 +38,19 @@ export const SupabaseProvider = (props) => {
   const [refreshGroup, setRefreshGroup] = useState(false);
 
   const [refreshReflections, setRefreshReflections] = useState(false);
-  // const [isTyping, setIsTyping] = useState(false);
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
-    auth: {
-      storage: ExpoSecureStoreAdapter,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: false,
-    },
-  });
+
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON,
+    {
+      auth: {
+        storage: ExpoSecureStoreAdapter,
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: false,
+      },
+    }
+  );
 
   // const getGoogleOAuthUrl = async () => {
   //   const result = await supabase.auth.signInWithOAuth({

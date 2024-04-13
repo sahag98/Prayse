@@ -6,23 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { PROJECT_ID } from "@env";
-import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 import uuid from "react-native-uuid";
-import {
-  HeaderTitle,
-  HeaderView,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
+import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -31,7 +19,7 @@ import { TextInput } from "react-native";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { Keyboard } from "react-native";
 import { useSupabase } from "../context/useSupabase";
 
@@ -228,7 +216,9 @@ const WelcomeModal = ({
       }
       console.log("permission granted");
       token = (
-        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+        await Notifications.getExpoPushTokenAsync({
+          projectId: process.env.PROJECT_ID,
+        })
       ).data;
     } else {
       console.log("Must use physical device for Push Notifications");

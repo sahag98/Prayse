@@ -43,7 +43,6 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { PROJECT_ID, NOTIFICATION_API } from "@env";
 
 import { addQuickFolder } from "../redux/folderReducer";
 import uuid from "react-native-uuid";
@@ -94,7 +93,7 @@ async function sendToken(expoPushToken) {
     body: "And here is the body!",
     data: { someData: "goes here" },
   };
-  await fetch(NOTIFICATION_API, {
+  await fetch(process.env.NOTIFICATION_API, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -132,7 +131,9 @@ async function registerForPushNotificationsAsync() {
     }
 
     token = (
-      await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+      await Notifications.getExpoPushTokenAsync({
+        projectId: process.env.PROJECT_ID,
+      })
     ).data;
   } else {
     console.log("Must use physical device for Push Notifications");

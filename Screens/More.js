@@ -16,9 +16,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { firebase } from "../firebase";
 import { Platform } from "react-native";
-import { IOS_ITEM_ID, ANDROID_PACKAGE_NAME } from "@env";
 import { Linking } from "react-native";
 
 import SettingsItems from "../components/SettingsItems";
@@ -29,71 +27,15 @@ const More = ({ navigation }) => {
   function giveFeedback(market) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${ANDROID_PACKAGE_NAME}&showAllReviews=true`
+        `market://details?id=${process.env.ANDROID_PACKAGE_NAME}&showAllReviews=true`
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${IOS_ITEM_ID}?action=write-review`
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.IOS_ITEM_ID}?action=write-review`
       );
     }
   }
-
-  const handleVote = () => {
-    if (selectedOption) {
-      // Store the vote in Firestore
-      firebase
-        .firestore()
-        .collection("votes")
-        .add({
-          suggestion: selectedOption,
-        })
-        .then(() => {
-          console.log("Vote added successfully!");
-          setSnackbarVisible(true);
-          setSelectedOption("");
-          setAddedSuggestion("");
-          setOpen(false);
-        })
-        .catch((error) => {
-          console.error("Error adding vote: ", error);
-        });
-    }
-
-    if (addedSuggestion) {
-      firebase
-        .firestore()
-        .collection("votes")
-        .add({
-          suggestion: addedSuggestion,
-        })
-        .then(() => {
-          setSnackbarVisible(true);
-
-          setAddedSuggestion("");
-          setSelectedOption("");
-          setOpen(false);
-        })
-        .catch((error) => {
-          console.error("Error adding vote: ", error);
-        });
-    }
-  };
-
-  const handleOptionPress = (option) => {
-    setSelectedOption((prevArray) => [...prevArray, option]);
-    setSubmitDisabled(false);
-  };
-
-  const handleInputChange = (text) => {
-    setAddedSuggestion(text);
-    setSubmitDisabled(false);
-  };
-
-  const handleCloseModal = () => {
-    setOpen(false);
-    setSelectedOption([]);
-  };
 
   const options = [
     {

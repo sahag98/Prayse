@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container, HeaderView } from "../styles/appStyles";
-import { PRAYSE_MESSAGE, PRAYSE_TEST_MESSAGE } from "@env";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -113,7 +112,7 @@ const Relfection = ({ navigation, route }) => {
       },
     };
 
-    fetch(PRAYSE_MESSAGE.toString(), {
+    fetch(process.env.PRAYSE_MESSAGE, {
       method: "POST",
       headers: {
         Accept: "application/json",

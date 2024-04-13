@@ -2,14 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-import { PROJECT_ID } from "@env";
 import { useSelector } from "react-redux";
-import { Image } from "react-native";
 import { useState } from "react";
-import { MaterialCommunityIcons, Entypo, AntDesign } from "@expo/vector-icons";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity, Platform } from "react-native";
-import ProfileModal from "../components/ProfileModal";
-import { Ionicons } from "@expo/vector-icons";
+
 import { AnimatedFAB } from "react-native-paper";
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
@@ -24,7 +21,6 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-import WelcomeModal from "../components/WelcomeModal";
 
 const PublicCommunity = ({ route }) => {
   const navigation = useNavigation();
@@ -135,7 +131,9 @@ const PublicCommunity = ({ route }) => {
       }
       console.log("permission granted");
       token = (
-        await Notifications.getExpoPushTokenAsync({ projectId: PROJECT_ID })
+        await Notifications.getExpoPushTokenAsync({
+          projectId: process.env.PROJECT_ID,
+        })
       ).data;
     } else {
       console.log("Must use physical device for Push Notifications");

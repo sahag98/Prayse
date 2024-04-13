@@ -9,7 +9,6 @@ import Main from "./Screens/Main";
 import { StatusBar } from "expo-status-bar";
 import Welcome from "./Screens/Welcome";
 import Gospel from "./Screens/Gospel";
-import Community from "./Screens/Community";
 import Settings from "./Screens/Settings";
 import { useDispatch, useSelector } from "react-redux";
 import PrayerPage from "./Screens/PrayerPage";
