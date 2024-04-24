@@ -67,6 +67,7 @@ import { deleteReminder } from "../redux/remindersReducer";
 import MerchComponent from "../components/MerchComponent";
 
 import noreminder from "../assets/noreminders.png";
+import DailyReflection from "../components/DailyReflection";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -86,6 +87,7 @@ Notifications.setNotificationHandler({
 });
 
 async function sendToken(expoPushToken) {
+  console.log("token: ", expoPushToken);
   const message = {
     to: expoPushToken,
     sound: "default",
@@ -93,7 +95,7 @@ async function sendToken(expoPushToken) {
     body: "And here is the body!",
     data: { someData: "goes here" },
   };
-  await fetch(process.env.NOTIFICATION_API, {
+  await fetch(process.env.EXPO_PUBLIC_NOTIFICATION_API, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -132,7 +134,7 @@ async function registerForPushNotificationsAsync() {
 
     token = (
       await Notifications.getExpoPushTokenAsync({
-        projectId: process.env.PROJECT_ID,
+        projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
       })
     ).data;
   } else {
@@ -197,7 +199,7 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        setIsUpdateAvailable(true);
+        // setIsUpdateAvailable(true);
       } else {
         console.log("update is not available");
         setIsUpdateAvailable(false);
@@ -361,12 +363,6 @@ const Welcome = ({ navigation }) => {
       }
     };
     loadOpenings();
-
-    // Animated.timing(fadeAnim, {
-    //   toValue: 1,
-    //   duration: 3000,
-    //   useNativeDriver: true,
-    // }).start();
 
     getHour();
     function getHour() {
@@ -540,13 +536,14 @@ const Welcome = ({ navigation }) => {
 
   return (
     <WelcomeContainer
-      contentContainerStyle={{ alignItems: "center" }}
+      contentContainerStyle={{ alignItems: "flex-start" }}
       onLayout={onLayoutRootView}
       style={
         theme == "dark"
           ? {
               display: "flex",
               position: "relative",
+
               // alignItems: "center",
 
               backgroundColor: "#121212",
@@ -652,7 +649,7 @@ const Welcome = ({ navigation }) => {
                   gap: 10,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 20,
+                  marginBottom: 15,
                 }
               : {
                   backgroundColor: "#ffcd8b",
@@ -670,7 +667,7 @@ const Welcome = ({ navigation }) => {
                   marginVertical: 5,
                   borderRadius: 10,
                   padding: 10,
-                  marginBottom: 20,
+                  marginBottom: 15,
                 }
           }
         >
@@ -692,7 +689,7 @@ const Welcome = ({ navigation }) => {
                     }
               }
             >
-              Prayer Reminders
+              Reminders
             </Text>
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
@@ -1060,6 +1057,8 @@ const Welcome = ({ navigation }) => {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
+
+      <DailyReflection theme={theme} />
       <MerchComponent theme={theme} />
       <View
         style={{

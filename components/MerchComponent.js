@@ -20,18 +20,26 @@ const MerchComponent = ({ theme }) => {
       <View
         style={{
           width: "100%",
-          flexDirection: "row",
+          flexDirection: "column",
           justifyContent: "space-between",
-
+          alignItems: "center",
+          gap: 5,
           flex: 1,
         }}
       >
-        <View style={{ width: "50%", justifyContent: "space-between" }}>
+        <View
+          style={{
+            // width: "50%",
+            // height: "100%",
+            gap: 10,
+            // justifyContent: "space-between",
+          }}
+        >
           <Text
             style={{
               color: theme == "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Bold",
-              fontSize: 17,
+              fontSize: 18,
             }}
           >
             Prayse Merch
@@ -42,14 +50,13 @@ const MerchComponent = ({ theme }) => {
               fontFamily: "Inter-Regular",
             }}
           >
-            Praise the Lord, we just launched our merch! Check them out.
-            {/* <AntDesign name="rocket1" size={24} color="black" /> */}
+            Check out our merch! We have shirts, tank tops and more!
           </Text>
 
           <TouchableOpacity
             onPress={() => Linking.openURL("https://shop.prayse.app/")}
             style={{
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+              backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
@@ -59,13 +66,25 @@ const MerchComponent = ({ theme }) => {
               borderRadius: 20,
             }}
           >
-            <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
+            <Text
+              style={{
+                color: theme == "dark" ? "#121212" : "white",
+                fontFamily: "Inter-Bold",
+              }}
+            >
               Shop Now
             </Text>
-            <AntDesign name="shoppingcart" size={22} color="white" />
+            <AntDesign
+              name="shoppingcart"
+              size={22}
+              color={theme == "dark" ? "#121212" : "white"}
+            />
           </TouchableOpacity>
         </View>
-        <Image source={merch} style={styles.merchImg} />
+        <Image
+          source={merch}
+          style={[styles.merchImg, { aspectRatio: 16 / 9 }]}
+        />
       </View>
     </View>
   );
@@ -101,8 +120,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   merchImg: {
-    width: 150,
+    width: "100%",
     objectFit: "contain",
-    height: 150,
+    height: 350,
+    maxHeight: 350,
   },
 });

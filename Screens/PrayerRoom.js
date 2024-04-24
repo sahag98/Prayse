@@ -50,6 +50,7 @@ const duration = 2000;
 const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
 const PrayerRoom = ({ navigation }) => {
+  // console.log("navigation: ", navigation.canGoBack());
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [screenIndex, setScreenIndex] = useState(0);
@@ -109,18 +110,12 @@ const PrayerRoom = ({ navigation }) => {
     playSound(randomAudioFile);
   };
 
-  async function checkAudioPermission() {
-    const { status, granted } = await requestPermission();
-  }
-
   useEffect(() => {
     doFadeInAnimation();
     doPressFadeInAnimation();
   }, []);
 
   useEffect(() => {
-    checkAudioPermission();
-
     return sound
       ? () => {
           sound.unloadAsync();
@@ -324,7 +319,7 @@ const PrayerRoom = ({ navigation }) => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              navigation.navigate("Prayer");
+              navigation.goBack();
               if (sound) {
                 pauseSound();
               }

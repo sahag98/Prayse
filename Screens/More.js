@@ -27,12 +27,12 @@ const More = ({ navigation }) => {
   function giveFeedback(market) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${process.env.ANDROID_PACKAGE_NAME}&showAllReviews=true`
+        `market://details?id=${process.env.EXPO_PUBLIC_ANDROID_PACKAGE_NAME}&showAllReviews=true`
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.IOS_ITEM_ID}?action=write-review`
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.EXPO_PUBLIC_IOS_ITEM_ID}?action=write-review`
       );
     }
   }

@@ -25,15 +25,15 @@
       "distribution": "internal",
       "channel": "preview",
       "env":{
-        "IOS_ITEM_ID": "6443480347",
-        "ANDROID_PACKAGE_NAME":"com.sahag98.prayerListApp",
-        "SANITY_TOKEN":"skVKAh6R6yJtHi8pYi7NchfcGoIE3tEDlleaFZwBXNc8N7GaGSwpLo20dwf6TVyCmm8XIZaaUYompm1s0WQgbwDKT29wzJDVZmRu3aDNLfvcnGrZWkAh1kHCpODxdSLbx02KTn9N4W5U5XkPmyYuSjvhtdc1xsgsBe9UjRYr8fkWcGvzx497",
-        "PROJECT_ID":"baaf16f2-e4cf-467c-87f4-0abb7a76c040",
-        "NOTIFICATION_API":"https://prayse.herokuapp.com/api/tokens",
-        "SUPABASE_URL":"https://fxvbndmsewyihmcahklw.supabase.co",
-        "PRAYSE_MESSAGE":"https://prayse.herokuapp.com/message",
-        "PRAYSE_TEST_MESSAGE":"http://192.168.1.110:8800/message",
-        "SUPABASE_ANON":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dmJuZG1zZXd5aWhtY2Foa2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE3Nzg3ODMsImV4cCI6MjAwNzM1NDc4M30.PTfRa-CLv2TY6nqIDrTtEHXKMlj-RLHMsCWS36UerH4",
+        "EXPO_PUBLIC_IOS_ITEM_ID": "6443480347",
+        "EXPO_PUBLIC_ANDROID_PACKAGE_NAME":"com.sahag98.prayerListApp",
+        "EXPO_PUBLIC_SANITY_TOKEN":"skVKAh6R6yJtHi8pYi7NchfcGoIE3tEDlleaFZwBXNc8N7GaGSwpLo20dwf6TVyCmm8XIZaaUYompm1s0WQgbwDKT29wzJDVZmRu3aDNLfvcnGrZWkAh1kHCpODxdSLbx02KTn9N4W5U5XkPmyYuSjvhtdc1xsgsBe9UjRYr8fkWcGvzx497",
+        "EXPO_PUBLIC_PROJECT_ID":"baaf16f2-e4cf-467c-87f4-0abb7a76c040",
+        "EXPO_PUBLIC_NOTIFICATION_API":"https://prayse.herokuapp.com/api/tokens",
+        "EXPO_PUBLIC_SUPABASE_URL":"https://fxvbndmsewyihmcahklw.supabase.co",
+        "EXPO_PUBLIC_PRAYSE_MESSAGE":"https://prayse.herokuapp.com/message",
+        "EXPO_PUBLIC_PRAYSE_TEST_MESSAGE":"http://192.168.1.110:8800/message",
+        "EXPO_PUBLIC_SUPABASE_ANON":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dmJuZG1zZXd5aWhtY2Foa2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE3Nzg3ODMsImV4cCI6MjAwNzM1NDc4M30.PTfRa-CLv2TY6nqIDrTtEHXKMlj-RLHMsCWS36UerH4",
         "SCHEME":"prayseapp://google-auth"
       }
     },
@@ -41,7 +41,19 @@
       "android": {
         "buildType": "apk"
       },
-      "channel": "preview2"
+      "channel": "preview2",
+      "env":{
+        "EXPO_PUBLIC_IOS_ITEM_ID": "6443480347",
+        "EXPO_PUBLIC_ANDROID_PACKAGE_NAME":"com.sahag98.prayerListApp",
+        "EXPO_PUBLIC_SANITY_TOKEN":"skVKAh6R6yJtHi8pYi7NchfcGoIE3tEDlleaFZwBXNc8N7GaGSwpLo20dwf6TVyCmm8XIZaaUYompm1s0WQgbwDKT29wzJDVZmRu3aDNLfvcnGrZWkAh1kHCpODxdSLbx02KTn9N4W5U5XkPmyYuSjvhtdc1xsgsBe9UjRYr8fkWcGvzx497",
+        "EXPO_PUBLIC_PROJECT_ID":"baaf16f2-e4cf-467c-87f4-0abb7a76c040",
+        "EXPO_PUBLIC_NOTIFICATION_API":"https://prayse.herokuapp.com/api/tokens",
+        "EXPO_PUBLIC_SUPABASE_URL":"https://fxvbndmsewyihmcahklw.supabase.co",
+        "EXPO_PUBLIC_PRAYSE_MESSAGE":"https://prayse.herokuapp.com/message",
+        "EXPO_PUBLIC_PRAYSE_TEST_MESSAGE":"http://192.168.1.110:8800/message",
+        "EXPO_PUBLIC_SUPABASE_ANON":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dmJuZG1zZXd5aWhtY2Foa2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE3Nzg3ODMsImV4cCI6MjAwNzM1NDc4M30.PTfRa-CLv2TY6nqIDrTtEHXKMlj-RLHMsCWS36UerH4",
+        "EXPO_PUBLIC_SCHEME":"prayseapp://google-auth"
+      }
     },
     "production": {
       "channel": "production",
@@ -49,16 +61,16 @@
         "image": "latest"
       },
       "env":{
-        "IOS_ITEM_ID": "6443480347",
-        "ANDROID_PACKAGE_NAME":"com.sahag98.prayerListApp",
-        "SANITY_TOKEN":"skVKAh6R6yJtHi8pYi7NchfcGoIE3tEDlleaFZwBXNc8N7GaGSwpLo20dwf6TVyCmm8XIZaaUYompm1s0WQgbwDKT29wzJDVZmRu3aDNLfvcnGrZWkAh1kHCpODxdSLbx02KTn9N4W5U5XkPmyYuSjvhtdc1xsgsBe9UjRYr8fkWcGvzx497",
-        "PROJECT_ID":"baaf16f2-e4cf-467c-87f4-0abb7a76c040",
-        "NOTIFICATION_API":"https://prayse.herokuapp.com/api/tokens",
-        "SUPABASE_URL":"https://fxvbndmsewyihmcahklw.supabase.co",
-        "PRAYSE_MESSAGE":"https://prayse.herokuapp.com/message",
-        "PRAYSE_TEST_MESSAGE":"http://192.168.1.110:8800/message",
-        "SUPABASE_ANON":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dmJuZG1zZXd5aWhtY2Foa2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE3Nzg3ODMsImV4cCI6MjAwNzM1NDc4M30.PTfRa-CLv2TY6nqIDrTtEHXKMlj-RLHMsCWS36UerH4",
-        "SCHEME":"prayseapp://google-auth"
+        "EXPO_PUBLIC_IOS_ITEM_ID": "6443480347",
+        "EXPO_PUBLIC_ANDROID_PACKAGE_NAME":"com.sahag98.prayerListApp",
+        "EXPO_PUBLIC_SANITY_TOKEN":"skVKAh6R6yJtHi8pYi7NchfcGoIE3tEDlleaFZwBXNc8N7GaGSwpLo20dwf6TVyCmm8XIZaaUYompm1s0WQgbwDKT29wzJDVZmRu3aDNLfvcnGrZWkAh1kHCpODxdSLbx02KTn9N4W5U5XkPmyYuSjvhtdc1xsgsBe9UjRYr8fkWcGvzx497",
+        "EXPO_PUBLIC_PROJECT_ID":"baaf16f2-e4cf-467c-87f4-0abb7a76c040",
+        "EXPO_PUBLIC_NOTIFICATION_API":"https://prayse.herokuapp.com/api/tokens",
+        "EXPO_PUBLIC_SUPABASE_URL":"https://fxvbndmsewyihmcahklw.supabase.co",
+        "EXPO_PUBLIC_PRAYSE_MESSAGE":"https://prayse.herokuapp.com/message",
+        "EXPO_PUBLIC_PRAYSE_TEST_MESSAGE":"http://192.168.1.110:8800/message",
+        "EXPO_PUBLIC_SUPABASE_ANON":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dmJuZG1zZXd5aWhtY2Foa2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE3Nzg3ODMsImV4cCI6MjAwNzM1NDc4M30.PTfRa-CLv2TY6nqIDrTtEHXKMlj-RLHMsCWS36UerH4",
+        "EXPO_PUBLIC_SCHEME":"prayseapp://google-auth"
       }
     }
   },

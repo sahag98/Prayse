@@ -20,7 +20,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 import { useSelector } from "react-redux";
-import globe from "../assets/globe.png";
+import googleIcon from "../assets/google-icon.png";
 import Toast from "react-native-toast-message";
 import { useEffect } from "react";
 import { Modal } from "react-native";
@@ -31,7 +31,13 @@ const Login = () => {
   const [forgotModal, setForgotModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { register, login, forgotPassword } = useSupabase();
+  const {
+    register,
+    login,
+    forgotPassword,
+    getGoogleOAuthUrl,
+    setOAuthSession,
+  } = useSupabase();
   const [passVisible, setPassVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   useEffect(() => {
@@ -66,56 +72,53 @@ const Login = () => {
     Linking.openURL("mailto:arzsahag@gmail.com");
   };
 
-  // const onSignInWithGoogle = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const url = await getGoogleOAuthUrl();
-  //     if (!url) return;
-  //     const result = await WebBrowser.openAuthSessionAsync(
-  //       url,
-  //       "prayseapp://google-auth",
-  //       //exp://192.168.1.110:19000
-  //       //prayseapp://google-auth
-  //       {
-  //         showInRecents: true,
-  //       }
-  //     );
+  const onSignInWithGoogle = async () => {
+    try {
+      const url = await getGoogleOAuthUrl();
+      if (!url) return;
+      const result = await WebBrowser.openAuthSessionAsync(
+        url,
+        "prayseapp://google-auth",
+        //exp://192.168.1.110:19000
+        //prayseapp://google-auth
+        {
+          showInRecents: true,
+        }
+      );
 
-  //     if (result.type === "success") {
-  //       const data = extractParamsFromUrl(result.url);
+      if (result.type === "success") {
+        const data = extractParamsFromUrl(result.url);
 
-  //       if (!data.access_token || !data.refresh_token) return;
-  //       setOAuthSession({
-  //         access_token: data.access_token,
-  //         refresh_token: data.refresh_token,
-  //       });
+        if (!data.access_token || !data.refresh_token) return;
+        setOAuthSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
+        });
 
-  //       // You can optionally store Google's access token if you need it later
-  //       SecureStore.setItemAsync(
-  //         "google-access-token",
-  //         JSON.stringify(data.provider_token)
-  //       );
-  //     }
-  //   } catch (error) {
-  //     // Handle error here
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+        // // You can optionally store Google's access token if you need it later
+        // SecureStore.setItemAsync(
+        //   "google-access-token",
+        //   JSON.stringify(data.provider_token)
+        // );
+      }
+    } catch (error) {
+      // Handle error here
+      console.log(error);
+    }
+  };
 
-  // const extractParamsFromUrl = (url) => {
-  //   const params = new URLSearchParams(url.split("#")[1]);
-  //   const data = {
-  //     access_token: params.get("access_token"),
-  //     expires_in: parseInt(params.get("expires_in") || "0"),
-  //     refresh_token: params.get("refresh_token"),
-  //     token_type: params.get("token_type"),
-  //     provider_token: params.get("provider_token"),
-  //   };
+  const extractParamsFromUrl = (url) => {
+    const params = new URLSearchParams(url.split("#")[1]);
+    const data = {
+      access_token: params.get("access_token"),
+      expires_in: parseInt(params.get("expires_in") || "0"),
+      refresh_token: params.get("refresh_token"),
+      token_type: params.get("token_type"),
+      provider_token: params.get("provider_token"),
+    };
 
-  //   return data;
-  // };
+    return data;
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -136,71 +139,22 @@ const Login = () => {
               }
         }
       >
-        <View style={styles.imgContainer}>
-          <Image style={styles.img} source={globe} />
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.freepik.com/")}
+        <View style={{ alignItems: "center", gap: 5, marginBottom: 15 }}>
+          <Text
+            style={{
+              color: theme == "dark" ? "white" : "#2f2d51",
+              fontFamily: "Inter-Bold",
+              fontSize: 30,
+            }}
           >
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontSize: 10,
-                      fontFamily: "Inter-Regular",
-                      color: "white",
-                    }
-                  : { fontSize: 10, fontFamily: "Inter-Regular" }
-              }
-            >
-              Designed by{" "}
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: "#3b3bff",
-                  fontFamily: "Inter-Bold",
-                }}
-              >
-                freepik
-              </Text>
-            </Text>
-          </TouchableOpacity>
-          <Text style={theme == "dark" ? styles.welcomeDark : styles.welcome}>
-            Welcome to Community
+            {isLoggingIn ? "Sign In" : "Sign Up"}
           </Text>
           <Text style={theme == "dark" ? styles.introDark : styles.intro}>
-            A place to connect and pray for one another.
+            Connect and pray for one another.
           </Text>
         </View>
         {isLoggingIn && (
           <>
-            <TextInput
-              onChangeText={(text) => setEmail(text)}
-              autoCapitalize="none"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
-              value={email}
-              blurOnSubmit={true}
-              style={
-                theme == "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      color: "white",
-                      padding: 15,
-                      width: "100%",
-                      marginBottom: 10,
-                      fontFamily: "Inter-Regular",
-                      borderRadius: 10,
-                    }
-                  : {
-                      backgroundColor: "#caecfc",
-                      padding: 15,
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 10,
-                      borderRadius: 10,
-                    }
-              }
-              placeholder="Enter Email"
-            />
             <View
               style={
                 theme == "dark"
@@ -209,6 +163,56 @@ const Login = () => {
                       backgroundColor: "#212121",
                       flexDirection: "row",
                       padding: 15,
+                      marginBottom: 10,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+                  : {
+                      width: "100%",
+                      backgroundColor: "#b7d3ff",
+                      flexDirection: "row",
+                      padding: 15,
+                      marginBottom: 10,
+                      borderRadius: 10,
+                      position: "relative",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+              }
+            >
+              <TextInput
+                onChangeText={(text) => setEmail(text)}
+                autoCapitalize="none"
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
+                value={email}
+                blurOnSubmit={true}
+                style={
+                  theme == "dark"
+                    ? {
+                        color: "white",
+                        width: "75%",
+
+                        fontFamily: "Inter-Regular",
+                      }
+                    : {
+                        color: "#2f2d51",
+                        width: "75%",
+                        fontFamily: "Inter-Regular",
+                      }
+                }
+                placeholder="Enter email"
+              />
+            </View>
+            <View
+              style={
+                theme == "dark"
+                  ? {
+                      width: "100%",
+                      backgroundColor: "#212121",
+                      flexDirection: "row",
+                      padding: 13,
                       marginBottom: 5,
                       borderRadius: 10,
                       position: "relative",
@@ -217,9 +221,9 @@ const Login = () => {
                     }
                   : {
                       width: "100%",
-                      backgroundColor: "#caecfc",
+                      backgroundColor: "#b7d3ff",
                       flexDirection: "row",
-                      padding: 15,
+                      padding: 13,
                       marginBottom: 5,
                       borderRadius: 10,
                       position: "relative",
@@ -235,7 +239,7 @@ const Login = () => {
                 autoCapitalize="none"
                 blurOnSubmit={true}
                 secureTextEntry={!passVisible}
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
                 style={
                   theme == "dark"
                     ? {
@@ -250,7 +254,7 @@ const Login = () => {
                         fontFamily: "Inter-Regular",
                       }
                 }
-                placeholder="Enter Password"
+                placeholder="Enter password"
               />
               <TouchableOpacity
                 onPress={() => setPassVisible(!passVisible)}
@@ -304,7 +308,7 @@ const Login = () => {
                   style={
                     theme == "dark"
                       ? { backgroundColor: "#121212", width: "100%" }
-                      : { backgroundColor: "#93D8F8" }
+                      : { backgroundColor: "#b7d3ff" }
                   }
                 >
                   <Text
@@ -360,8 +364,16 @@ const Login = () => {
                       <Text
                         style={
                           theme == "dark"
-                            ? { color: "#121212", fontFamily: "Inter-Bold" }
-                            : { color: "white", fontFamily: "Inter-Bold" }
+                            ? {
+                                color: "#121212",
+                                fontSize: 15,
+                                fontFamily: "Inter-Bold",
+                              }
+                            : {
+                                color: "white",
+                                fontSize: 15,
+                                fontFamily: "Inter-Bold",
+                              }
                         }
                       >
                         Contact Developer
@@ -371,6 +383,7 @@ const Login = () => {
                 </ModalView>
               </ModalContainer>
             </Modal>
+
             <TouchableOpacity
               onPress={() => {
                 login(email, password);
@@ -385,12 +398,84 @@ const Login = () => {
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "#212121", fontFamily: "Inter-Bold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                    ? {
+                        color: "#212121",
+                        fontSize: 15,
+                        fontFamily: "Inter-Bold",
+                      }
+                    : { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
                 }
               >
-                Sign In
+                Log In
               </Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 1,
+                  position: "absolute",
+                  alignSelf: "center",
+                  backgroundColor: theme == "dark" ? "#474747" : "#423f72",
+                }}
+              />
+              <Text
+                style={{
+                  marginVertical: 10,
+                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  padding: 8,
+                  backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
+                  fontFamily: "Inter-Regular",
+                }}
+              >
+                Or
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                onSignInWithGoogle();
+                Keyboard.dismiss();
+              }}
+              style={
+                theme == "dark"
+                  ? [
+                      styles.signInButtonDark,
+                      {
+                        backgroundColor: "#212121",
+                        marginBottom: 10,
+                        paddingVertical: 10,
+                      },
+                    ]
+                  : [
+                      styles.signInButton,
+                      {
+                        backgroundColor: "#b7d3ff",
+                        marginBottom: 10,
+                        paddingVertical: 10,
+                      },
+                    ]
+              }
+            >
+              <Text
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
+                    : {
+                        color: "#2f2d51",
+                        fontSize: 15,
+                        fontFamily: "Inter-Bold",
+                      }
+                }
+              >
+                Log In with Google
+              </Text>
+              <Image style={styles.img} source={googleIcon} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setIsLoggingIn(false)}
@@ -424,7 +509,7 @@ const Login = () => {
           <>
             <TextInput
               onChangeText={(text) => setEmail(text)}
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
               value={email}
               autoCapitalize="none"
               blurOnSubmit={true}
@@ -440,7 +525,7 @@ const Login = () => {
                       borderRadius: 10,
                     }
                   : {
-                      backgroundColor: "#caecfc",
+                      backgroundColor: "#b7d3ff",
                       padding: 15,
                       color: "#2f2d51",
                       width: "100%",
@@ -449,7 +534,7 @@ const Login = () => {
                       borderRadius: 10,
                     }
               }
-              placeholder="Enter Email"
+              placeholder="Enter email"
             />
             <View
               style={
@@ -458,7 +543,7 @@ const Login = () => {
                       width: "100%",
                       backgroundColor: "#212121",
                       flexDirection: "row",
-                      padding: 15,
+                      padding: 13,
                       marginBottom: 5,
                       borderRadius: 10,
                       position: "relative",
@@ -467,9 +552,9 @@ const Login = () => {
                     }
                   : {
                       width: "100%",
-                      backgroundColor: "#caecfc",
+                      backgroundColor: "#b7d3ff",
                       flexDirection: "row",
-                      padding: 15,
+                      padding: 13,
                       marginBottom: 5,
                       borderRadius: 10,
                       position: "relative",
@@ -485,7 +570,7 @@ const Login = () => {
                 autoCapitalize="none"
                 blurOnSubmit={true}
                 secureTextEntry={passVisible ? false : true}
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#a3a3a3"}
+                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
                 style={
                   theme == "dark"
                     ? {
@@ -499,7 +584,7 @@ const Login = () => {
                         fontFamily: "Inter-Regular",
                       }
                 }
-                placeholder="Enter Password"
+                placeholder="Enter password"
               />
               <TouchableOpacity
                 onPress={() => setPassVisible(!passVisible)}
@@ -529,19 +614,23 @@ const Login = () => {
                 theme == "dark"
                   ? [
                       styles.signInButtonDark,
-                      { backgroundColor: "#f1d592", marginTop: 5 },
+                      { backgroundColor: "#f1d592", marginTop: 15 },
                     ]
                   : [
                       styles.signInButton,
-                      { backgroundColor: "#2f2d51", marginTop: 5 },
+                      { backgroundColor: "#2f2d51", marginTop: 15 },
                     ]
               }
             >
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "#212121", fontFamily: "Inter-Bold" }
-                    : { color: "white", fontFamily: "Inter-Bold" }
+                    ? {
+                        color: "#212121",
+                        fontSize: 15,
+                        fontFamily: "Inter-Bold",
+                      }
+                    : { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
                 }
               >
                 Sign Up
@@ -570,15 +659,17 @@ const Login = () => {
                       }
                 }
               >
-                Already have an account? Sign in.
+                Already have an account? Log in.
               </Text>
             </TouchableOpacity>
           </>
         )}
-        <Text style={theme == "dark" ? styles.anonDark : styles.anon}>
-          You can ensure anonymity by enabling it upon signing in on the profile
-          settings page.
-        </Text>
+        <View>
+          <Text style={theme == "dark" ? styles.anonDark : styles.anon}>
+            For where two or three are gathered together in my name, there am I
+            in the midst of them. - Matthew 18:20
+          </Text>
+        </View>
       </Container>
       {/* <CheckInboxModal checkInbox={checkInbox} setCheckInbox={setCheckInbox} /> */}
     </KeyboardAvoidingView>
@@ -591,6 +682,7 @@ const styles = StyleSheet.create({
   anonDark: {
     marginTop: 15,
     fontSize: 12,
+    lineHeight: 22,
     fontFamily: "Inter-Regular",
     color: "#cccccc",
   },
@@ -607,7 +699,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     backgroundColor: "#A5C9FF",
-    paddingVertical: 15,
+    paddingVertical: 17,
     paddingHorizontal: 15,
     borderRadius: 10,
   },
@@ -625,8 +717,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#93d8f8",
-    paddingVertical: 15,
+    gap: 10,
+    backgroundColor: "#2f2d51",
+    paddingVertical: 17,
     width: "100%",
     paddingHorizontal: 15,
     borderRadius: 10,
@@ -662,8 +755,8 @@ const styles = StyleSheet.create({
     color: "white",
   },
   img: {
-    width: 200,
-    height: 200,
+    width: 30,
+    height: 30,
   },
 
   imgContainer: {

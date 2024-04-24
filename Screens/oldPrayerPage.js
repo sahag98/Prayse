@@ -13,7 +13,7 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-import AppLoading from "expo-app-loading";
+
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import * as Clipboard from "expo-clipboard";
@@ -22,11 +22,12 @@ import { useEffect } from "react";
 const OldPrayerPage = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [todos, setTodos] = useState([]);
-  const [ready, setReady] = useState(false);
+
   const [openClearModal, setOpenClearModal] = useState(false);
   const [isCopied, setisCopied] = useState("");
-  const [selectedEdit, setSelectedEdit] = useState("");
+
   useEffect(() => {
+    loadTodos();
     setisCopied("");
   }, []);
   const loadTodos = () => {
@@ -57,16 +58,6 @@ const OldPrayerPage = ({ navigation }) => {
   const handleCloseModal = () => {
     setOpenClearModal(false);
   };
-
-  if (!ready) {
-    return (
-      <AppLoading
-        startAsync={loadTodos}
-        onFinish={() => setReady(true)}
-        onError={console.warn}
-      />
-    );
-  }
 
   const renderItem = ({ item }) => {
     return (

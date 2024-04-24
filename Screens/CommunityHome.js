@@ -234,7 +234,7 @@ const CommunityHome = ({ route }) => {
 
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.PROJECT_ID,
+          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
         })
       ).data;
     } else {

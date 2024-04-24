@@ -58,7 +58,7 @@ const Reminder = ({ navigation }) => {
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
           >
-            Prayer Reminders
+            Reminders
           </HeaderTitle>
         </View>
       </HeaderView>

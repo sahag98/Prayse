@@ -57,7 +57,7 @@ const Settings = ({ navigation }) => {
       data: { someData: "goes here" },
     };
     console.log("about to fetch");
-    await fetch(process.env.NOTIFICATION_API, {
+    await fetch(process.env.EXPO_PUBLIC_NOTIFICATION_API, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -87,7 +87,7 @@ const Settings = ({ navigation }) => {
       console.log("permission granted");
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.PROJECT_ID,
+          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
         })
       ).data;
       setIsEnabled(true);

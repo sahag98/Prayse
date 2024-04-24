@@ -40,8 +40,8 @@ export const SupabaseProvider = (props) => {
   const [refreshReflections, setRefreshReflections] = useState(false);
 
   const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON,
+    process.env.EXPO_PUBLIC_SUPABASE_URL,
+    process.env.EXPO_PUBLIC_SUPABASE_ANON,
     {
       auth: {
         storage: ExpoSecureStoreAdapter,
@@ -52,37 +52,37 @@ export const SupabaseProvider = (props) => {
     }
   );
 
-  // const getGoogleOAuthUrl = async () => {
-  //   const result = await supabase.auth.signInWithOAuth({
-  //     provider: "google",
-  //     options: {
-  //       redirectTo: "prayseapp://google-auth",
-  //       // prayseapp://google-auth
-  //       // exp://192.168.1.110:19000
-  //     },
-  //   });
+  const getGoogleOAuthUrl = async () => {
+    const result = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "prayseapp://google-auth",
+        // prayseapp://google-auth
+        // exp://192.168.1.110:19000
+      },
+    });
 
-  //   return result.data.url;
-  // };
+    return result.data.url;
+  };
 
-  // const setOAuthSession = async (tokens) => {
-  //   const { data, error } = await supabase.auth.setSession({
-  //     access_token: tokens.access_token,
-  //     refresh_token: tokens.refresh_token,
-  //   });
+  const setOAuthSession = async (tokens) => {
+    const { data, error } = await supabase.auth.setSession({
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+    });
 
-  //   if (error) throw error;
-  //   console.log("in auth session: ", data.session.user.id);
-  //   setLoggedIn(data.session !== null);
+    if (error) throw error;
+    console.log("in auth session: ", data.session.user.id);
+    setLoggedIn(data.session !== null);
 
-  //   let { data: profiles, error: profileError } = await supabase
-  //     .from("profiles")
-  //     .select("*")
-  //     .eq("id", data.session.user.id);
+    let { data: profiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", data.session.user.id);
 
-  //   setCurrentUser(profiles[0]);
-  //   setLoggedIn(true);
-  // };
+    setCurrentUser(profiles[0]);
+    setLoggedIn(true);
+  };
 
   const showToast = (type, content) => {
     Toast.show({
@@ -134,30 +134,6 @@ export const SupabaseProvider = (props) => {
       .select("*");
 
     setQuestions(allQuestions);
-
-    // allQuestions.map(async (item) => {
-    //   const fetchedAnswers = await fetchAnswers(item);
-    //   console.log(fetchedAnswers);
-    //   setAnswers(fetchedAnswers);
-    // });
-
-    // setQuestions(allQuestions);
-
-    // const existingQuestionIds = questions.map((question) => question.id);
-    // console.log("existing ids:");
-    // allQuestions.map(async (item) => {
-    //   const fetchedAnswers = await fetchAnswers(item);
-    //   if (fetchedAnswers) {
-    //     if (existingQuestionIds.includes(item.id)) {
-    //       return;
-    //     } else {
-    //       setQuestions((prev) => [
-    //         ...prev,
-    //         { id: item.id, question: item, answers: fetchedAnswers },
-    //       ]);
-    //     }
-    //   }
-    // });
   };
 
   async function fetchUpdatedAnswers(id) {
@@ -411,6 +387,8 @@ export const SupabaseProvider = (props) => {
         setNewPost,
         newAnswer,
         fetchUpdatedAnswers,
+        getGoogleOAuthUrl,
+        setOAuthSession,
         questions,
         setQuestions,
         answers,

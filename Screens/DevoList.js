@@ -135,9 +135,9 @@ const DevoList = ({ navigation }) => {
       data: { screen: "DevoList", verseTitle: "" },
     };
 
-    console.log(process.env.PRAYSE_MESSAGE, message);
+    console.log(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, message);
 
-    fetch(process.env.PRAYSE_MESSAGE, {
+    fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -208,7 +208,14 @@ const Folder = ({ navigation, todos }) => {
         }}
       >
         {folderClicked ? (
-          <TouchableOpacity onPress={() => setFolderClicked(true)}>
+          <TouchableOpacity
+            style={{
+              width: "50%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setFolderClicked(true)}
+          >
             <HeaderTitle
               style={
                 theme == "dark"
@@ -216,11 +223,18 @@ const Folder = ({ navigation, todos }) => {
                   : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
               }
             >
-              Your Folders
+              Prayer Folders
             </HeaderTitle>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={() => setFolderClicked(true)}>
+          <TouchableOpacity
+            style={{
+              width: "50%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setFolderClicked(true)}
+          >
             <HeaderTitle
               style={
                 theme == "dark"
@@ -228,7 +242,7 @@ const Folder = ({ navigation, todos }) => {
                   : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
               }
             >
-              Your Folders
+              Prayer Folders
             </HeaderTitle>
           </TouchableOpacity>
         )}
@@ -242,7 +256,14 @@ const Folder = ({ navigation, todos }) => {
           }
         />
         {folderClicked ? (
-          <TouchableOpacity onPress={() => setFolderClicked(false)}>
+          <TouchableOpacity
+            style={{
+              width: "50%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setFolderClicked(false)}
+          >
             <HeaderTitle
               style={
                 theme == "dark"
@@ -250,19 +271,30 @@ const Folder = ({ navigation, todos }) => {
                   : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
               }
             >
-              Answered Prayers
+              Answered
             </HeaderTitle>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={() => setFolderClicked(false)}>
+          <TouchableOpacity
+            style={{
+              width: "50%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setFolderClicked(false)}
+          >
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
+                  ? {
+                      fontFamily: "Inter-Bold",
+                      fontSize: 20,
+                      color: "white",
+                    }
                   : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
               }
             >
-              Answered Prayers
+              Answered
             </HeaderTitle>
           </TouchableOpacity>
         )}
@@ -302,17 +334,26 @@ const Folder = ({ navigation, todos }) => {
 
             justifyContent: "center",
             alignItems: "center",
-            marginTop: 50,
+            marginTop: 90,
           }}
         >
           <AntDesign
             name="folder1"
-            size={50}
+            size={60}
             color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
           />
           <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
-            No folders created yet!
+            Create a folder to write your prayers in!
           </TodoText>
+          <Text
+            style={{
+              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              fontSize: 13,
+              fontFamily: "Inter-Regular",
+            }}
+          >
+            (These prayers are only visible to you)
+          </Text>
         </View>
       )}
       {folderClicked && (
@@ -533,7 +574,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textAlign: "center",
     color: "#2F2D51",
-    fontSize: 15,
+    fontSize: 17,
   },
   pressDark: {
     fontFamily: "Inter-Medium",
@@ -541,7 +582,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
     color: "white",
-    fontSize: 15,
+    fontSize: 17,
   },
   actionButtons: {
     position: "absolute",

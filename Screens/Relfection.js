@@ -112,7 +112,7 @@ const Relfection = ({ navigation, route }) => {
       },
     };
 
-    fetch(process.env.PRAYSE_MESSAGE, {
+    fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
       method: "POST",
       headers: {
         Accept: "application/json",

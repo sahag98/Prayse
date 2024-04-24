@@ -109,7 +109,7 @@ const VerseOfTheDay = ({ route }) => {
       >
         <TouchableOpacity
           style={{ marginRight: 5 }}
-          onPress={() => navigation.navigate("More")}
+          onPress={() => navigation.goBack()}
         >
           <Ionicons
             name="chevron-back"
