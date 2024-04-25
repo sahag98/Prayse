@@ -68,6 +68,7 @@ import MerchComponent from "../components/MerchComponent";
 
 import noreminder from "../assets/noreminders.png";
 import DailyReflection from "../components/DailyReflection";
+import GospelofJesus from "../components/GospelofJesus";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -636,6 +637,7 @@ const Welcome = ({ navigation }) => {
           </Badge>
         </View>
       </View>
+      <DailyReflection theme={theme} />
       <View style={{ width: "100%", flex: 1 }}>
         <View
           style={
@@ -1058,8 +1060,8 @@ const Welcome = ({ navigation }) => {
         featureVisible={featureVisible}
       />
 
-      <DailyReflection theme={theme} />
       <MerchComponent theme={theme} />
+      <GospelofJesus theme={theme} />
       <View
         style={{
           width: "100%",
@@ -1153,7 +1155,7 @@ const Welcome = ({ navigation }) => {
               }
             />
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate("Gospel")}
             style={
               theme == "dark"
@@ -1210,7 +1212,7 @@ const Welcome = ({ navigation }) => {
                   : "#738cb2"
               }
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={() =>
               Linking.openURL("https://www.buymeacoffee.com/prayse")

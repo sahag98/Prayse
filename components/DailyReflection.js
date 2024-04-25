@@ -128,7 +128,7 @@ const DailyReflection = ({ theme }) => {
         justifyContent: "flex-start",
         alignItems: "flex-start",
         width: "100%",
-        marginBottom: 20,
+        marginBottom: 10,
         gap: 10,
       }}
     >
@@ -137,28 +137,18 @@ const DailyReflection = ({ theme }) => {
         showModal={showModal}
         setShowModal={setShowModal}
       />
-      <View
+      {/* <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
           width: "100%",
           alignItems: "center",
         }}
-      >
-        <Text
-          style={{
-            fontFamily: "Inter-Bold",
-            fontSize: 19,
-            color: theme == "dark" ? "white" : "#2f2d51",
-          }}
-        >
-          Start Here
-        </Text>
-      </View>
+      ></View> */}
       <View style={{ gap: 15, width: "100%" }}>
-        <Pressable onPress={clearTodaysCompletion}>
+        {/* <Pressable onPress={clearTodaysCompletion}>
           <Text style={{ color: "red" }}>Reset</Text>
-        </Pressable>
+        </Pressable> */}
         <TouchableOpacity
           onPress={() => handleComplete("PrayerRoom")}
           style={{
@@ -189,11 +179,11 @@ const DailyReflection = ({ theme }) => {
           <TouchableOpacity
             onPress={() => handleComplete("PrayerRoom")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+              backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
               flex: 1,
               borderRadius: 10,
-              gap: 5,
+              gap: 10,
             }}
           >
             <View
@@ -256,11 +246,11 @@ const DailyReflection = ({ theme }) => {
           <TouchableOpacity
             onPress={() => handleComplete("VerseOfTheDay")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+              backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
               flex: 1,
               borderRadius: 10,
-              gap: 5,
+              gap: 10,
             }}
           >
             <View
@@ -323,11 +313,11 @@ const DailyReflection = ({ theme }) => {
           <TouchableOpacity
             onPress={() => handleComplete("DevoList")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+              backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
               flex: 1,
               borderRadius: 10,
-              gap: 5,
+              gap: 10,
             }}
           >
             <View
