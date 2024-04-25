@@ -239,7 +239,7 @@ const DevoList = ({ navigation }) => {
             justifyContent: "flex-start",
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Devotional")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign
               name="left"
               size={30}

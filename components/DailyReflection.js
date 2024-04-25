@@ -10,12 +10,13 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CompletedModal from "./CompletedModal";
 
 const DailyReflection = ({ theme }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isCompleteArray, setIsCompleteArray] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
   const [todaysItems, setTodaysItems] = useState([]);
 
   useEffect(() => {
@@ -83,6 +84,23 @@ const DailyReflection = ({ theme }) => {
   async function getTodaysItems() {
     const items = await getCompletionStatusForToday();
     setTodaysItems(items);
+
+    const completedItems = items.filter((item) => item.status === "completed");
+    console.log(completedItems);
+
+    const currentDate = new Date().toISOString().split("T")[0];
+    const modalShownKey = `modal_shown_${currentDate}`;
+    const modalShown = await AsyncStorage.getItem(modalShownKey);
+
+    if (completedItems.length === 3 && !modalShown) {
+      console.log("should show modal now!");
+      setShowModal(true);
+
+      // Update AsyncStorage to indicate that the modal has been shown for today
+      AsyncStorage.setItem(modalShownKey, "true").catch((error) => {
+        console.error("Error saving modal shown status:", error);
+      });
+    }
   }
 
   async function clearTodaysCompletion() {
@@ -114,6 +132,11 @@ const DailyReflection = ({ theme }) => {
         gap: 10,
       }}
     >
+      <CompletedModal
+        theme={theme}
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -137,7 +160,7 @@ const DailyReflection = ({ theme }) => {
           <Text style={{ color: "red" }}>Reset</Text>
         </Pressable>
         <TouchableOpacity
-          onPress={() => handleComplete("Prayer")}
+          onPress={() => handleComplete("PrayerRoom")}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -149,7 +172,7 @@ const DailyReflection = ({ theme }) => {
             style={{
               width: 25,
               backgroundColor: todaysItems.find(
-                (item) => item.reflectionItem === "Prayer"
+                (item) => item.reflectionItem === "PrayerRoom"
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -158,13 +181,13 @@ const DailyReflection = ({ theme }) => {
                 ? "#212121"
                 : "white",
               borderWidth: 4,
-              borderColor: "#474747",
+              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
           />
           <TouchableOpacity
-            onPress={() => handleComplete("Prayer")}
+            onPress={() => handleComplete("PrayerRoom")}
             style={{
               backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
               padding: 15,
@@ -199,7 +222,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Get started by creating a folder to add your prayers in.
+              Go through and pray for all your prayers.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -225,7 +248,7 @@ const DailyReflection = ({ theme }) => {
                 ? "#212121"
                 : "white",
               borderWidth: 4,
-              borderColor: "#474747",
+              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
@@ -271,7 +294,7 @@ const DailyReflection = ({ theme }) => {
           </TouchableOpacity>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleComplete("Devotional")}
+          onPress={() => handleComplete("DevoList")}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -292,7 +315,7 @@ const DailyReflection = ({ theme }) => {
                 ? "#212121"
                 : "white",
               borderWidth: 4,
-              borderColor: "#474747",
+              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
