@@ -211,8 +211,6 @@ const GroupInfoModal = ({
   };
 
   const removeUser = async (user) => {
-    console.log("removing: ", user);
-
     let { data: groupMessages, error } = await supabase
       .from("messages")
       .delete()
@@ -258,7 +256,6 @@ const GroupInfoModal = ({
   };
 
   handleEditUser = (user) => {
-    console.log("user to edit: ", user);
     setUserToEdit(user);
     setShowMenu(true);
   };
@@ -275,7 +272,6 @@ const GroupInfoModal = ({
       .delete()
       .eq("id", group.group_id)
       .eq("admin_id", currentUser.id);
-    console.log("deleting whole group");
 
     if (error) {
       console.log(error);
@@ -306,8 +302,6 @@ const GroupInfoModal = ({
       }
     }
   };
-
-  console.log(group.groups.group_img);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library

@@ -145,7 +145,6 @@ const Folder = ({ navigation, todos }) => {
       dispatch(deleteQuickFolder(idToDelete));
       setOpen(false);
     } else {
-      console.log("id of folder to delete: ", idToDelete);
       dispatch(deleteFolder(idToDelete));
       dispatch(deletePrayerByFolderId(idToDelete));
       setOpen(false);

@@ -48,7 +48,6 @@ export default function Reminder({ route, navigation }) {
 
   useEffect(() => {
     if (route.params.reminder != undefined && route.params.type == "Add") {
-      console.log("reminder: ", route?.params?.reminder);
       setReminderDate("");
       setRepeatOption("");
       setIsRepeat(false);
@@ -84,7 +83,6 @@ export default function Reminder({ route, navigation }) {
       setReminderTime(time);
 
       if (route.params.ocurrence != "None") {
-        console.log("here");
         setIsRepeat(true);
         setRepeatOption(route.params.ocurrence.toLowerCase());
       }
@@ -134,7 +132,6 @@ export default function Reminder({ route, navigation }) {
     );
 
     if (repeatOption == "daily" && isRepeat) {
-      console.log("daily reminder notification");
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
@@ -197,7 +194,6 @@ export default function Reminder({ route, navigation }) {
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "android") {
-      console.log("hey android");
       const newDate = new Date(
         combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
       );
@@ -244,7 +240,6 @@ export default function Reminder({ route, navigation }) {
       });
 
       if (type == "edit") {
-        console.log("dispatch edit");
         dispatch(
           editReminder({
             reminder: reminder,
@@ -279,8 +274,6 @@ export default function Reminder({ route, navigation }) {
       note: newNote,
       time: combinedDate,
     };
-
-    console.log(route.params.reminderIdentifier);
 
     await Notifications.cancelScheduledNotificationAsync(
       route.params.reminderIdentifier
@@ -363,11 +356,10 @@ export default function Reminder({ route, navigation }) {
 
   const showTimePicker = () => {
     Keyboard.dismiss();
-    console.log("date :", reminderDate.length);
+
     if (reminderDate.length == 0) {
       let today = new Date();
       setReminderDate(today);
-      console.log(today);
     }
     setReminderTime(Date.now());
     setTimePickerVisibility(true);

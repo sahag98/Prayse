@@ -46,7 +46,7 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
           style={
             theme == "dark"
               ? { backgroundColor: "#212121", width: "100%" }
-              : { backgroundColor: "#93D8F8", width: "100%" }
+              : { backgroundColor: "#b7d3ff", width: "100%" }
           }
         >
           <ModalIcon>
@@ -98,5 +98,3 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
 };
 
 export default CheckInboxModal;
-
-const styles = StyleSheet.create({});

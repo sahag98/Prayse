@@ -70,10 +70,8 @@ const Home = ({
           item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
       )
     ) {
-      console.log("exists");
       setAnsweredAlready(prayer.id);
     } else {
-      console.log("doesnt exist");
       setAnsweredAlready("");
     }
   }

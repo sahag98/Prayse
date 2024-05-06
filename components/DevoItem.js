@@ -59,7 +59,6 @@ const DevoItem = ({
      * Listen to broadcast messages with a `message` event
      */
     channel.on("broadcast", { event: "message" }, ({ payload }) => {
-      console.log("payload", payload);
       fetchLikes(payload.devo_title);
     });
 

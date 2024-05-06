@@ -7,7 +7,7 @@ import {
   View,
   Platform,
 } from "react-native";
-import { FontAwesome, Octicons } from "@expo/vector-icons";
+import { FontAwesome, Entypo, Octicons } from "@expo/vector-icons";
 
 import { FlashList } from "@shopify/flash-list";
 
@@ -21,7 +21,7 @@ const Chat = ({
   groupMessages,
   setGroupMessages,
   flatListRef,
-  handleScroll,
+
   supabase,
   currGroup,
   setRefreshMsgLikes,
@@ -41,8 +41,8 @@ const Chat = ({
           backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
           alignItems: "center",
           alignSelf: "center",
-          paddingHorizontal: 2,
-          paddingVertical: 4,
+          paddingHorizontal: 10,
+          paddingVertical: 3,
           justifyContent: "center",
           borderRadius: 50,
           marginBottom: 10,
@@ -54,7 +54,7 @@ const Chat = ({
           shadowOpacity: 0.17,
           shadowRadius: 3.05,
           elevation: 4,
-          width: "35%",
+          // width: "30%",
           gap: 5,
         }}
       >
@@ -66,7 +66,7 @@ const Chat = ({
             fontSize: 13,
           }}
         >
-          {onlineUsers.length} User{onlineUsers.length > 1 ? "'s " : " "}
+          {onlineUsers.length} User{onlineUsers.length > 1 ? "s " : " "}
           Online
         </Text>
       </View>
@@ -129,24 +129,47 @@ const Chat = ({
                     }
                   />
                 )}
-                onScroll={handleScroll}
                 keyExtractor={(e, i) => i.toString()}
                 initialNumToRender={30}
                 renderItem={({ item, index }) => {
                   return (
-                    <GroupPrayerItem
-                      theme={theme}
-                      currentUser={currentUser}
-                      groupMessages={groupMessages}
-                      setGroupMessages={setGroupMessages}
-                      supabase={supabase}
-                      currGroup={currGroup}
-                      item={item}
-                      setRefreshMsgLikes={setRefreshMsgLikes}
-                      refreshMsgLikes={refreshMsgLikes}
-                      allGroups={allGroups}
-                      showToast={showToast}
-                    />
+                    <View style={{ gap: 5 }}>
+                      <GroupPrayerItem
+                        theme={theme}
+                        currentUser={currentUser}
+                        groupMessages={groupMessages}
+                        setGroupMessages={setGroupMessages}
+                        supabase={supabase}
+                        currGroup={currGroup}
+                        item={item}
+                        setRefreshMsgLikes={setRefreshMsgLikes}
+                        refreshMsgLikes={refreshMsgLikes}
+                        allGroups={allGroups}
+                        showToast={showToast}
+                      />
+                      {item.user_id != currentUser.id && (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 5,
+                            marginBottom: 5,
+                            gap: 5,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: theme == "dark" ? "#707070" : "#acacac",
+
+                              fontFamily: "Inter-Regular",
+                              fontSize: 11,
+                            }}
+                          >
+                            Press and hold to pray or praise.
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                   );
                 }}
               />

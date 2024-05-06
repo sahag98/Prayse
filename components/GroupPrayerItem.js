@@ -39,7 +39,6 @@ const GroupPrayerItem = ({
   const animationRef = useRef(null);
   const [loadingLikes, setLoadingLikes] = useState(false);
   const [loadingPraises, setLoadingPraises] = useState(false);
-  // console.log("item: ", item.message, item.id);
   useEffect(() => {
     fetchLikes(item.id);
     fetchPraises(item.id);
@@ -50,7 +49,7 @@ const GroupPrayerItem = ({
     //   setIsShowingHeader(false);
     // }, 5000);
     /** only create the channel if we have a roomCode and username */
-    if (currGroup.group_id && currentUser.id) {
+    if (currGroup?.group_id && currentUser.id) {
       // dispatch(clearMessages());
       /**
        * Step 1:
@@ -111,11 +110,9 @@ const GroupPrayerItem = ({
         setChannel(undefined);
       };
     }
-  }, [currGroup.group_id, currentUser.id, isFocused]);
+  }, [currGroup?.group_id, currentUser.id, isFocused]);
 
   const notifyLike = async (expoToken, item) => {
-    console.log("token: ", expoToken);
-    console.log("item: ", item);
     const message = {
       to: expoToken,
       sound: "default",
@@ -307,38 +304,37 @@ const GroupPrayerItem = ({
     }
     setLoadingPraises(false);
   }
-  const sendUrgentAnnouncement = async (urgentMessage, user) => {
-    console.log("sending urgent...");
-    let { data: members, error } = await supabase
-      .from("members")
-      .select("*, profiles(id, expoToken)")
-      .eq("group_id", currGroup.groups?.id)
-      .order("id", { ascending: false });
+  // const sendUrgentAnnouncement = async (urgentMessage, user) => {
+  //   let { data: members, error } = await supabase
+  //     .from("members")
+  //     .select("*, profiles(id, expoToken)")
+  //     .eq("group_id", currGroup?.groups?.id)
+  //     .order("id", { ascending: false });
 
-    members.map(async (m) => {
-      if (m.profiles.expoToken != currentUser.expoToken) {
-        const message = {
-          to: m.profiles.expoToken,
-          sound: "default",
-          title: `${currGroup.groups.name} 📢`,
-          body: `${user}: ${urgentMessage}`,
-          data: {
-            screen: "Community",
-            currGroup: currGroup,
-            allGroups: allGroups,
-          },
-        };
-        await axios.post("https://exp.host/--/api/v2/push/send", message, {
-          headers: {
-            Accept: "application/json",
-            "Accept-encoding": "gzip, deflate",
-            "Content-Type": "application/json",
-          },
-        });
-      }
-    });
-    showToast("success", "Members are notified.");
-  };
+  //   members.map(async (m) => {
+  //     if (m.profiles.expoToken != currentUser.expoToken) {
+  //       const message = {
+  //         to: m.profiles.expoToken,
+  //         sound: "default",
+  //         title: `${currGroup.groups.name} 📢`,
+  //         body: `${user}: ${urgentMessage}`,
+  //         data: {
+  //           screen: "Community",
+  //           currGroup: currGroup,
+  //           allGroups: allGroups,
+  //         },
+  //       };
+  //       await axios.post("https://exp.host/--/api/v2/push/send", message, {
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Accept-encoding": "gzip, deflate",
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
+  //     }
+  //   });
+  //   showToast("success", "Members are notified.");
+  // };
 
   const openReactionModal = (item) => {
     setIsPressedLong(item);
@@ -355,7 +351,7 @@ const GroupPrayerItem = ({
   );
   return (
     <TouchableOpacity
-      style={{ marginBottom: 5 }}
+      style={{ marginVertical: 5 }}
       onLongPress={() => openReactionModal(item)}
     >
       <ReactionModal
@@ -370,7 +366,6 @@ const GroupPrayerItem = ({
         theme={theme}
       />
       <ChatBubble
-        onLongPress={() => console.log("press")}
         isOwnMessage={item.user_id == currentUser.id ? true : false}
         bubbleColor={
           item.user_id == currentUser.id
@@ -387,18 +382,18 @@ const GroupPrayerItem = ({
                 {
                   borderRadius: 10,
                   marginBottom: 10,
-                  padding: 30,
-                  gap: 5,
-                  minWidth: 140,
+
+                  gap: 10,
+                  minWidth: 170,
                   maxWidth: 300,
                 },
               ]
             : {
                 borderRadius: 10,
                 marginBottom: 10,
-                padding: 10,
-                gap: 15,
-                minWidth: 140,
+
+                gap: 10,
+                minWidth: 170,
                 maxWidth: 300,
               }
         }
@@ -407,6 +402,7 @@ const GroupPrayerItem = ({
           <View
             style={{
               flexDirection: "row",
+              paddingVertical: 5,
               alignItems: "center",
               gap: 10,
             }}
@@ -447,11 +443,13 @@ const GroupPrayerItem = ({
                   color: "white",
                   fontFamily: "Inter-Regular",
                   fontSize: 15,
+                  paddingVertical: 5,
                   lineHeight: 23,
                   marginBottom: 10,
                 }
               : {
                   color: "#2f2d51",
+                  paddingVertical: 5,
                   fontFamily: "Inter-Regular",
                   fontSize: 15,
                   marginBottom: 10,
@@ -465,22 +463,11 @@ const GroupPrayerItem = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              padding: 3,
               gap: 10,
               justifyContent: "space-between",
             }}
           >
-            <TouchableOpacity
-              style={{ padding: 2 }}
-              onPress={() =>
-                sendUrgentAnnouncement(item.message, item.profiles.full_name)
-              }
-            >
-              <Ionicons
-                name="megaphone-outline"
-                size={24}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              />
-            </TouchableOpacity>
             <Text
               style={
                 theme == "dark"
@@ -563,6 +550,7 @@ const GroupPrayerItem = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              padding: 3,
               gap: 10,
               justifyContent: "space-between",
             }}
@@ -645,6 +633,16 @@ const GroupPrayerItem = ({
             )}
           </View>
         )}
+        {/* <Text
+          style={{
+            color: "#d2d2d2",
+            marginLeft: 5,
+            fontFamily: "Inter-Medium",
+            fontSize: 11,
+          }}
+        >
+          Press and hold to pray or praise.
+        </Text> */}
       </ChatBubble>
     </TouchableOpacity>
   );

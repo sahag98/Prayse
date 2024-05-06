@@ -39,7 +39,9 @@ const Question = ({ navigation, route }) => {
     newAnswer,
   } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
-  const item = route?.params.item;
+  const itemTitle = route?.params?.title;
+  const itemId = route.params?.question_id;
+
   const theme = useSelector((state) => state.user.theme);
   const isFocused = useIsFocused();
   const [inputHeight, setInputHeight] = useState(60);
@@ -54,19 +56,8 @@ const Question = ({ navigation, route }) => {
   };
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === item.id
+    (answer) => answer.question_id === itemId
   );
-
-  console.log("current answers: ", existingAnswers);
-  // useEffect(() => {
-  //   fetchUpdatedAnswers(item.question._id);
-  // }, [newAnswer]);
-
-  // item.answers.sort((a, b) => {
-  //   const dateA = new Date(a.created_at);
-  //   const dateB = new Date(b.created_at);
-  //   return dateB - dateA;
-  // });
 
   return (
     <Container
@@ -123,7 +114,7 @@ const Question = ({ navigation, route }) => {
                 }
           }
         >
-          {item.title}
+          {itemTitle}
         </Text>
       </View>
       <View
@@ -210,10 +201,11 @@ const Question = ({ navigation, route }) => {
       <QuestionModal
         answersLength={existingAnswers.length}
         user={currentUser}
-        question={item}
+        // question={item}
         setQuestions={setQuestions}
         // fetchAnswers={fetchAnswers}
-        item={item}
+        itemTitle={itemTitle}
+        itemId={itemId}
         answersArray={existingAnswers}
         theme={theme}
         supabase={supabase}

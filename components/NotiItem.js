@@ -18,8 +18,16 @@ const NotiItem = ({ item, theme, navigation }) => {
       return;
     }
     if (screen == "Question" && !isLoggedIn) {
-      console.log("not logged in");
       navigation.navigate(screen);
+    }
+
+    if (screen == "Question" && isLoggedIn && item.question_id) {
+      navigation.navigate(screen, {
+        title: item.title,
+        question_id: item.question_id,
+      });
+      dispatch(deleteNoti(item.noti_id));
+      return;
     }
 
     dismissNotification(item);

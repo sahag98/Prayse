@@ -63,7 +63,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   borderRadius: 5,
                   position: "relative",
                   padding: 15,
-                  width: "100%",
+                  width: "90%",
                   justifyContent: "space-between",
                   backgroundColor: "#212121",
                 }
@@ -71,7 +71,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   borderRadius: 5,
                   position: "relative",
                   padding: 15,
-                  width: "100%",
+                  width: "90%",
                   justifyContent: "space-between",
                   backgroundColor: "#b7d3ff",
                 }

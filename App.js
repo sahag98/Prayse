@@ -12,7 +12,7 @@ import Navigation from "./Navigation";
 import "react-native-url-polyfill/auto";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SupabaseProvider } from "./context/SupabaseProvider";
-// import 'expo-dev-client';
+import "expo-dev-client";
 let persistor = persistStore(store);
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
@@ -95,6 +95,7 @@ export default function App() {
 
   return (
     <>
+      {/* <NotiTest /> */}
       <AnimatedSplash
         translucent={true}
         isLoaded={loading}

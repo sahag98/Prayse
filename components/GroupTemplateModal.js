@@ -74,7 +74,6 @@ const GroupTemplateModal = ({
   ];
 
   const selectImage = async () => {
-    console.log("in select image");
     const filePath = `${selectedItem.title}_${Date.now()}.png`;
     const fileName = selectedItem.title;
     const exampleImageUri = Image.resolveAssetSource(selectedImg).uri;
@@ -116,8 +115,6 @@ const GroupTemplateModal = ({
     if (getUrlError) {
       throw getUrlError;
     }
-
-    console.log("group id: ", group.group_id);
 
     const { data, error } = await supabase
       .from("groups")
@@ -175,7 +172,6 @@ const GroupTemplateModal = ({
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
-                  console.log(item.image);
                   setSelectedImg(item.image);
                   setSelectedItem(item);
                 }}

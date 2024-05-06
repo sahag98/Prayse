@@ -43,11 +43,12 @@ const Settings = ({ navigation }) => {
   const [deleteAllModal, setDeleteAllModal] = useState(false);
   const size = useSelector((state) => state.user.fontSize);
   const dispatch = useDispatch();
-  // console.log(Application.applicationName);
+
   useEffect(() => {
     getlastUpdate();
     getPermission();
   }, []);
+
   async function sendToken(expoPushToken) {
     const message = {
       to: expoPushToken,
@@ -56,7 +57,6 @@ const Settings = ({ navigation }) => {
       body: "And here is the body!",
       data: { someData: "goes here" },
     };
-    console.log("about to fetch");
     await fetch(process.env.EXPO_PUBLIC_NOTIFICATION_API, {
       method: "POST",
       headers: {

@@ -57,7 +57,6 @@ const CommunityModal = ({
   };
 
   const addPrayer = async () => {
-    console.log("adding prayer");
     function truncateWords(str, numWords) {
       let words = str.split(" ");
       if (words.length > numWords) {
@@ -69,7 +68,6 @@ const CommunityModal = ({
 
     let truncatedString = truncateWords(prayer, 5);
 
-    console.log(truncatedString);
     if (prayer.length <= 0) {
       showToast("error", "The prayer field can't be left empty.");
       setModalVisible(false);

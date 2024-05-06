@@ -13,6 +13,7 @@
       "color": "#349eeb"
     },
     "plugins": [
+      ["expo-privacy-manifest-polyfill-plugin"],
       [
         "expo-image-picker",
         {
@@ -51,28 +52,28 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
       "buildNumber": "50",
-      "config": {
-        "usesNonExemptEncryption": false
-      },
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
-            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
-          },
-          {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPITypeReasons": ["3B52.1"]
-          },
-          {
-            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
-            "NSPrivacyAccessedAPITypeReasons": ["85F4.1"]
+            "NSPrivacyAccessedAPITypeReasons": ["DDA9.1","C617.1","3B52.1"]
           },
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
-            "NSPrivacyAccessedAPITypeReasons": ["35F9.1"]
+            "NSPrivacyAccessedAPITypeReasons": ["35F9.1","8FFB.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": ["E174.1","85F4.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1","1C8F.1","C56D.1"]
           }
         ]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -97,9 +98,6 @@
       "eas": {
         "projectId": "baaf16f2-e4cf-467c-87f4-0abb7a76c040"
       }
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
     }
   }
 }

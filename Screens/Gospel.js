@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  FlatList,
+  Linking,
 } from "react-native";
 import {
   ModalView,
@@ -16,51 +18,90 @@ import {
   ModalIcon,
   ModalContainer,
   Container1,
+  Container,
+  HeaderView,
 } from "../styles/appStyles";
 import { useFonts } from "expo-font";
 import { useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
-
-const Message = [
-  {
-    id: 1,
-    title: "GOD LOVES YOU",
-    verse:
-      "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
-    chapter: "John 3:16",
-  },
-  {
-    id: 2,
-    title: "EVERYONE NEEDS A SAVIOR",
-    verse: "For all have sinned, and come short of the glory of God.",
-    chapter: "Romans 3:23",
-  },
-  {
-    id: 3,
-    title: "SIN HAS A PRICE THAT MUST BE PAID",
-    verse:
-      "For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.",
-    chapter: "Romans 6:23",
-  },
-  {
-    id: 4,
-    title: "JESUS DIED TO PAY FOR YOUR SIN",
-    verse:
-      "But God commendeth his love towards us, in that, while we were yet sinners, Christ died for us.",
-    chapter: "Romans 5:8",
-  },
-  {
-    id: 5,
-    title: "RECEIVE JESUS AS YOUR SAVIOUR",
-    verse: "For whosoever shall call upon the name of the Lord shall be saved.",
-    chapter: "Romans 10:13",
-  },
-];
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 
 const Gospel = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const Message = [
+    {
+      id: 1,
+      title: "GOD LOVES YOU",
+      content:
+        "Friend, God loves you so much that He sent His only Son for you.",
+      verse:
+        "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+      chapter: "John 3:16",
+    },
+    {
+      id: 2,
+      title: "EVERYONE NEEDS A SAVIOR",
+      content: "We all sin and are in need of a savior from our sins.",
+      verse: "For all have sinned, and come short of the glory of God.",
+      chapter: "Romans 3:23",
+    },
+    {
+      id: 3,
+      title: "SIN HAS A PRICE THAT MUST BE PAID",
+      content:
+        "The penalty for sin is death but God promises us eternal life through Jesus!",
+      verse:
+        "For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.",
+      chapter: "Romans 6:23",
+    },
+    {
+      id: 4,
+      title: "JESUS DIED TO PAY FOR YOUR SIN",
+      content:
+        "Instead of having every single one of us pay for our sins, Jesus died on the cross for us so that our sins can be forgiven!",
+      verse:
+        "But God commendeth his love towards us, in that, while we were yet sinners, Christ died for us.",
+      chapter: "Romans 5:8",
+    },
+    {
+      id: 5,
+      title: "RECEIVE JESUS AS YOUR SAVIOR",
+      content:
+        "Simply take the next step by asking God to forgive you from your sins and receive Jesus as your personal Savior.",
+      verse:
+        "For whosoever shall call upon the name of the Lord shall be saved.",
+      chapter: "Romans 10:13",
+    },
+  ];
+
+  const Item = ({ title, verse, chapter, content }) => (
+    <View style={styles.item}>
+      <View>
+        <Text style={theme == "dark" ? styles.titleDark : styles.title}>
+          {title}
+        </Text>
+        <Text style={theme == "dark" ? styles.contentDark : styles.content}>
+          {content}
+        </Text>
+      </View>
+      <Text style={theme == "dark" ? styles.verseDark : styles.verse}>
+        "{verse}"
+      </Text>
+      <Text style={theme == "dark" ? styles.chapterDark : styles.chapter}>
+        - {chapter}
+      </Text>
+    </View>
+  );
+  const renderItem = ({ item }) => (
+    <Item
+      title={item.title}
+      verse={item.verse}
+      chapter={item.chapter}
+      content={item.content}
+    />
+  );
 
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
@@ -70,23 +111,6 @@ const Gospel = ({ navigation }) => {
     }).start();
   };
   fadeIn();
-
-  const Item = ({ title, verse, chapter }) => (
-    <View style={styles.item}>
-      <Text style={theme == "dark" ? styles.titleDark : styles.title}>
-        {title}
-      </Text>
-      <Text style={theme == "dark" ? styles.verseDark : styles.verse}>
-        "{verse}"
-      </Text>
-      <Text style={theme == "dark" ? styles.chapterDark : styles.chapter}>
-        -{chapter}
-      </Text>
-    </View>
-  );
-  const renderItem = ({ item }) => (
-    <Item title={item.title} verse={item.verse} chapter={item.chapter} />
-  );
 
   const [clearModalVisible, setClearModalVisible] = useState(false);
 
@@ -105,15 +129,18 @@ const Gospel = ({ navigation }) => {
   const handleSubmit = () => {
     setClearModalVisible(false);
     Alert.alert(
-      "Congratulations!",
-      "Let us know on the community page that you have accepted Jesus so that we can celebrate with you!",
+      "Amen!! ",
+      "Accepting Jesus as our Savior is the best decision we can make! Please contact us on Instagram @prayse.app so that we can celebrate this amazing decision with you.",
       [
         {
           text: "Cancel",
           onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
         },
-        { text: "Sure!", onPress: () => navigation.navigate("Community") },
+        {
+          text: "Okay!",
+          onPress: () =>
+            Linking.openURL("https://www.instagram.com/prayse.app/"),
+        },
       ]
     );
   };
@@ -130,7 +157,7 @@ const Gospel = ({ navigation }) => {
     return <BusyIndicator />;
   }
   return (
-    <Container1
+    <Container
       style={
         theme == "dark"
           ? { backgroundColor: "#121212" }
@@ -138,45 +165,58 @@ const Gospel = ({ navigation }) => {
       }
     >
       <View
-        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Ionicons
-            name="chevron-back"
-            size={30}
-            color={theme == "light" ? "#2f2d51" : "grey"}
-          />
-        </TouchableOpacity>
-        <Text style={theme == "dark" ? styles.headingDark : styles.heading}>
-          The Gospel of Jesus
-        </Text>
-      </View>
-
-      <Animated.FlatList
-        style={{ opacity: fadeAnim }}
-        data={Message}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-      <View
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <TouchableOpacity
-          style={theme == "dark" ? styles.buttonDark : styles.button}
-          title="Create a prayer list"
-          onPress={() => {
-            setClearModalVisible(true);
-          }}
+        <HeaderView
+          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
         >
-          <Text style={theme == "dark" ? styles.startedDark : styles.started}>
-            Take Next Step
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Ionicons
+              name="chevron-back"
+              size={30}
+              color={theme == "light" ? "#2f2d51" : "white"}
+            />
+          </TouchableOpacity>
+          <Text style={theme == "dark" ? styles.headingDark : styles.heading}>
+            Gospel
           </Text>
-        </TouchableOpacity>
+        </HeaderView>
       </View>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={Message}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListFooterComponent={() => (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              marginBottom: 10,
+            }}
+          >
+            <TouchableOpacity
+              style={theme == "dark" ? styles.buttonDark : styles.button}
+              title="Create a prayer list"
+              onPress={() => {
+                setClearModalVisible(true);
+              }}
+            >
+              <Text
+                style={theme == "dark" ? styles.startedDark : styles.started}
+              >
+                Take Next Step
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
       <Modal
         animationType="slide"
         transparent={true}
@@ -193,41 +233,59 @@ const Gospel = ({ navigation }) => {
           <ModalView
             style={
               theme == "dark"
-                ? { backgroundColor: "#FFDAA5" }
-                : { backgroundColor: "#2F2D51" }
+                ? { backgroundColor: "#212121", gap: 5, width: "95%" }
+                : { backgroundColor: "#b7d3ff", gap: 5, width: "95%" }
             }
           >
-            <ModalIcon>
+            <ModalIcon style={{ gap: 5 }}>
               <Text
                 style={
                   theme == "dark" ? styles.prayTitleDark : styles.prayTitle
                 }
               >
-                Make the best decision of your life and pray the following:
+                Pray this Short Prayer
               </Text>
               <Text style={theme == "dark" ? styles.prayDark : styles.pray}>
                 Dear God, I recognize that I am a sinner and have been seperated
-                from you. From this point on I accept you Jesus as my Lord and
-                Saviour. Forgive me from my sins and help me to follow you in
-                all areas of my life. In Jesus name I pray, Amen.
+                from you. From this point on, I accept you Jesus as my Lord and
+                Savior. Please forgive me from my sins and I surrender all areas
+                my life to You.
+              </Text>
+              <Text
+                style={
+                  theme == "dark"
+                    ? [styles.prayDark, { fontFamily: "Inter-Medium" }]
+                    : [styles.pray, { fontFamily: "Inter-Medium" }]
+                }
+              >
+                In Jesus' name I pray, Amen.
               </Text>
             </ModalIcon>
             <ModalActionGroup2>
-              <ModalAction2
-                color={theme == "dark" ? "#6D5D46" : "#9E9DB9"}
+              {/* <ModalAction2
+                color={theme == "dark" ? "#121212" : ""}
                 onPress={handleCloseModal}
               >
-                <Text style={{ color: "black" }}>Not ready yet</Text>
-              </ModalAction2>
+                <Text style={{ color: "white" }}>Not ready yet</Text>
+              </ModalAction2> */}
               <ModalAction2
-                color={theme == "dark" ? "#212121" : "#E3E3EB"}
+                style={{ width: "100%" }}
+                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
                 onPress={handleSubmit}
               >
                 <Text
                   style={
                     theme == "dark"
-                      ? { color: "white", fontFamily: "Inter-Bold" }
-                      : { color: "black", fontFamily: "Inter-Bold" }
+                      ? {
+                          color: "#121212",
+                          fontSize: 15,
+                          fontFamily: "Inter-Bold",
+                        }
+                      : {
+                          color: "white",
+                          fontSize: 15,
+                          fontFamily: "Inter-Bold",
+                        }
                   }
                 >
                   Just prayed that!
@@ -237,7 +295,7 @@ const Gospel = ({ navigation }) => {
           </ModalView>
         </ModalContainer>
       </Modal>
-    </Container1>
+    </Container>
   );
 };
 
@@ -246,7 +304,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#2F2D51",
     textAlign: "center",
-    padding: 10,
+
     fontFamily: "Inter-Bold",
   },
 
@@ -255,7 +313,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Bold",
     color: "white",
     textAlign: "center",
-    padding: 10,
   },
 
   fabStyle3: {
@@ -277,12 +334,10 @@ const styles = StyleSheet.create({
 
   button: {
     alignSelf: "center",
-    marginVertical: 10,
-    marginLeft: 10,
     backgroundColor: "#2F2D51",
-    padding: 12,
-    width: 150,
-    borderRadius: 35,
+    padding: 15,
+    width: "100%",
+    borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -291,11 +346,10 @@ const styles = StyleSheet.create({
 
   buttonDark: {
     alignSelf: "center",
-    marginVertical: 10,
     backgroundColor: "#A5C9FF",
     padding: 15,
-    width: 150,
-    borderRadius: 35,
+    width: "100%",
+    borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -341,61 +395,75 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    padding: 10,
-    borderRadius: 5,
+    gap: 10,
+    marginBottom: 20,
   },
 
   title: {
-    color: "#384FFF",
+    color: "#2f2d51",
     fontSize: 23,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Bold",
   },
 
   titleDark: {
-    color: "#A5C9FF",
-    textAlign: "center",
+    color: "white",
     fontSize: 23,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Bold",
   },
 
   prayTitle: {
-    color: "white",
+    color: "#2f2d51",
     fontSize: 20,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Bold",
     paddingBottom: 5,
   },
 
   prayTitleDark: {
-    color: "black",
+    color: "white",
     fontSize: 20,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     paddingBottom: 5,
   },
 
   verse: {
     color: "#2f2d51",
-    marginTop: 5,
-    fontSize: 18,
+
+    fontSize: 15,
     fontFamily: "Inter-Regular",
   },
 
   verseDark: {
+    color: "#b4b4b4",
+
+    fontSize: 15,
+    fontFamily: "Inter-Regular",
+  },
+  content: {
+    color: "#2f2d51",
+    marginTop: 5,
+    fontSize: 18,
+    fontFamily: "Inter-Medium",
+  },
+
+  contentDark: {
     color: "white",
     marginTop: 5,
     fontSize: 18,
-    fontFamily: "Inter-Regular",
+    fontFamily: "Inter-Medium",
   },
 
   pray: {
-    color: "white",
-    fontSize: 18,
+    color: "#2f2d51",
+    lineHeight: 24,
+    fontSize: 16,
     fontFamily: "Inter-Regular",
   },
 
   prayDark: {
-    color: "black",
-    fontSize: 18,
+    color: "white",
+    lineHeight: 24,
+    fontSize: 16,
     fontFamily: "Inter-Regular",
   },
 
@@ -408,7 +476,7 @@ const styles = StyleSheet.create({
 
   chapterDark: {
     alignSelf: "flex-end",
-    color: "#FFDAA5",
+    color: "white",
     fontSize: 15,
     fontFamily: "Inter-Medium",
   },

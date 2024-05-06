@@ -9,7 +9,7 @@ const GospelofJesus = ({ theme }) => {
       onPress={() => navigation.navigate("Gospel")}
       style={{
         backgroundColor: theme == "dark" ? "#212121" : "white",
-        marginBottom: 10,
+        marginBottom: 15,
         width: "100%",
         padding: 15,
         borderRadius: 10,
@@ -32,21 +32,21 @@ const GospelofJesus = ({ theme }) => {
           fontSize: 18,
         }}
       >
-        How can we share His gospel with those around us? Explore this page to
-        see how we present it!
+        How can someone receive Jesus and get saved?
       </Text>
       <Text
         style={{
-          color: theme == "dark" ? "white" : "#2f2d51",
+          color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
           fontFamily: "Inter-Bold",
+          textDecorationLine: "underline",
           lineHeight: 24,
-          fontSize: 18,
+          fontSize: 14,
         }}
       >
-        And create your own unique gospel invitation.
+        Click here to learn more.
       </Text>
 
-      <Text
+      {/* <Text
         style={{
           alignSelf: "flex-end",
           textDecorationLine: "underline",
@@ -56,7 +56,7 @@ const GospelofJesus = ({ theme }) => {
         }}
       >
         Check it out!
-      </Text>
+      </Text> */}
     </TouchableOpacity>
   );
 };

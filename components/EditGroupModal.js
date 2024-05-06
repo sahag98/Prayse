@@ -32,8 +32,6 @@ const EditGroupModal = ({
   const navigation = useNavigation();
 
   const editGroup = async () => {
-    console.log("new name: ", groupName);
-    console.log("id: ", group.group_id);
     const { data, error } = await supabase
       .from("groups")
       .update({ name: groupName })

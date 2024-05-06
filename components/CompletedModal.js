@@ -23,7 +23,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
         <ModalView
           style={{
             backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-            width: "90%",
+            width: "95%",
             marginHorizontal: 20,
             justifyContent: "center",
             alignItems: "center",
@@ -56,13 +56,13 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
               textAlign: "center",
             }}
           >
-            If we can pray for you, please contact us on Instagram @prayse.app
-            or use the public prayers section on the community screen.
+            If we can pray for you, please use the public prayers section on the
+            community screen and let us know how can pray for you.
           </Text>
           <Text
             style={{
               color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Regular",
+              fontFamily: "Inter-Medium",
               textAlign: "center",
             }}
           >
@@ -87,7 +87,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
                 textAlign: "center",
               }}
             >
-              Thank You
+              Thank you
             </Text>
           </TouchableOpacity>
         </ModalView>

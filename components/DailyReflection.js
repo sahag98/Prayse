@@ -86,14 +86,12 @@ const DailyReflection = ({ theme }) => {
     setTodaysItems(items);
 
     const completedItems = items.filter((item) => item.status === "completed");
-    console.log(completedItems);
 
     const currentDate = new Date().toISOString().split("T")[0];
     const modalShownKey = `modal_shown_${currentDate}`;
     const modalShown = await AsyncStorage.getItem(modalShownKey);
 
     if (completedItems.length === 3 && !modalShown) {
-      console.log("should show modal now!");
       setShowModal(true);
 
       // Update AsyncStorage to indicate that the modal has been shown for today
@@ -346,7 +344,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Dive into today's devotional reading and reflect on it.
+              Dive into today's devotional and reflect on it.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>

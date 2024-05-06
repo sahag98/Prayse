@@ -12,7 +12,7 @@ import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
-
+import axios from "axios";
 import GroupInfoModal from "../components/GroupInfoModal";
 import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useIsFocused } from "@react-navigation/native";
@@ -44,9 +44,7 @@ const PrayerGroup = ({ route, navigation }) => {
   const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const [channel, setChannel] = useState();
-  const [tooltipVisible, setTooltipVisible] = useState(false);
   const [isNotifyVisible, setIsNotifyVisible] = useState(false);
-  const [isShowingHeader, setIsShowingHeader] = useState(true);
 
   const {
     currentUser,
@@ -61,70 +59,6 @@ const PrayerGroup = ({ route, navigation }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    async function checkToolTip() {
-      // await AsyncStorage.removeItem("isChecked");
-      try {
-        const isChecked = await AsyncStorage.getItem("isChecked");
-
-        if (isChecked == null) {
-          console.log("it is the first time");
-          setTooltipVisible(true);
-          await AsyncStorage.setItem("isChecked", "true");
-        } else if (isChecked != null) {
-          setTooltipVisible(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    checkToolTip();
-  }, []);
-
-  useEffect(() => {
-    const headerTimeout = setTimeout(() => {
-      if (groupMessages.length < 5 || groupMessages.length == 0) {
-        setIsShowingHeader(true);
-      } else {
-        setIsShowingHeader(false);
-      }
-    }, 2000);
-
-    return () => {
-      clearTimeout(headerTimeout);
-    };
-  }, [isFocused]);
-
-  const handleScroll = (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-
-    // Check if the user is scrolling up
-    if (offsetY > 0 && !isShowingHeader) {
-      setIsShowingHeader(true);
-    }
-
-    if (offsetY < 0 && isShowingHeader) {
-      setIsShowingHeader(false);
-    }
-  };
-
-  async function getGroupMessagesForLikes() {
-    try {
-      let { data, error } = await supabase
-        .from("messages")
-        .select("*, profiles(full_name, avatar_url, expoToken)")
-        .eq("group_id", currGroup.group_id)
-        .order("id", { ascending: false });
-
-      setGroupMessages(data);
-    } catch (error) {
-      console.log("fetching error: ", error);
-    }
-  }
-
-  useEffect(() => {
-    // setTimeout(() => {
-    //   setIsShowingHeader(false);
-    // }, 5000);
     /** only create the channel if we have a roomCode and username */
     if (currGroup.group_id && currentUser?.id) {
       // dispatch(clearMessages());
@@ -286,7 +220,6 @@ const PrayerGroup = ({ route, navigation }) => {
 
     const groups = await getSingleGroup();
     if (groups.length == 0) {
-      console.log("this group has been removed");
       setNewMessage("");
       Keyboard.dismiss();
       setIsGroupRemoved(true);
@@ -316,6 +249,35 @@ const PrayerGroup = ({ route, navigation }) => {
         user_id: currentUser.id,
         profiles: currentUser,
       },
+    });
+
+    let { data: members, error: membersError } = await supabase
+      .from("members")
+      .select("*, profiles(id, expoToken)")
+      .eq("group_id", currGroup.groups?.id)
+      .order("id", { ascending: false });
+
+    members.map(async (m) => {
+      if (m.profiles.expoToken != currentUser.expoToken) {
+        const message = {
+          to: m.profiles.expoToken,
+          sound: "default",
+          title: `${currGroup?.groups.name} 📢`,
+          body: `${currentUser?.full_name}: ${newMessage}`,
+          data: {
+            screen: "PrayerGroup",
+            group: currGroup,
+            allGroups: allGroups,
+          },
+        };
+        await axios.post("https://exp.host/--/api/v2/push/send", message, {
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+        });
+      }
     });
 
     if (error) {
@@ -372,183 +334,126 @@ const PrayerGroup = ({ route, navigation }) => {
               }
         }
       >
-        <ToolTip
-          tooltipVisible={tooltipVisible}
-          setTooltipVisible={setTooltipVisible}
-          theme={theme}
-        />
+        <HeaderView
+          style={{
+            justifyContent: "space-between",
+            borderBottomWidth: 1,
 
-        <NotifyFirstMsg
-          messagetoNotify={newMessage}
-          allGroups={allGroups}
-          currGroup={currGroup}
-          currentUser={currentUser}
-          showToast={showToast}
-          supabase={supabase}
-          messages={messages}
-          isNotifyVisible={isNotifyVisible}
-          setIsNotifyVisible={setIsNotifyVisible}
-          theme={theme}
-        />
-        {isShowingHeader && (
-          <HeaderView
-            style={{
-              justifyContent: "space-between",
-              borderBottomWidth: 1,
-
-              borderBottomColor: currGroup.groups.color.toLowerCase(),
-              padding: 5,
-              alignItems: "flex-start",
-              width: "100%",
-            }}
+            borderBottomColor: currGroup.groups.color.toLowerCase(),
+            padding: 5,
+            alignItems: "flex-start",
+            width: "100%",
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
           >
-            <View
-              style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
-            >
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Community")}
-              >
-                <AntDesign
-                  name="left"
-                  size={24}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={openGroupInfo}
-                style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
-              >
-                <HeaderTitle
-                  style={
-                    theme == "dark"
-                      ? { color: "white", fontFamily: "Inter-Bold" }
-                      : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                  }
-                >
-                  {currGroup.groups.name}
-                </HeaderTitle>
-                <Text
-                  style={{
-                    color: theme == "dark" ? "#bebebe" : "#9a9a9a",
-                    fontSize: 13,
-                    textDecorationLine: "underline",
-                    fontFamily: "Inter-Medium",
-                  }}
-                >
-                  Click here for group info
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {groupInfoVisible && (
-              <GroupInfoModal
-                group={currGroup}
-                theme={theme}
-                supabase={supabase}
-                allUsers={allGroups}
-                currentUser={currentUser}
-                groupInfoVisible={groupInfoVisible}
-                setGroupInfoVisible={setGroupInfoVisible}
-              />
-            )}
-            {isGroupRemoved && (
-              <RemovedGroupModal
-                isGroupRemoved={isGroupRemoved}
-                setRefreshGroup={setRefreshGroup}
-                setIsGroupRemoved={setIsGroupRemoved}
-                theme={theme}
-              />
-            )}
-            <TouchableOpacity
-              disabled={hasAnnounced}
-              onPress={() => setIsAnnouncingMeeting(true)}
-              style={{
-                borderRadius: 50,
-
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 8,
-                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-              }}
-            >
-              {hasAnnounced ? (
-                <Text
-                  style={{
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                    fontFamily: "Inter-Regular",
-                  }}
-                >
-                  {formatTime(countdown)}
-                </Text>
-              ) : (
-                <Ionicons
-                  name="megaphone-outline"
-                  size={26}
-                  color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-                />
-              )}
-            </TouchableOpacity>
-
-            {isAnnouncingMeeting && (
-              <AnnounceMeeting
-                hasAnnounced={hasAnnounced}
-                setHasAnnounced={setHasAnnounced}
-                allGroups={allGroups}
-                currGroup={currGroup}
-                currentUser={currentUser}
-                theme={theme}
-                supabase={supabase}
-                isAnnouncingMeeting={isAnnouncingMeeting}
-                messages={messages}
-                setIsAnnouncingMeeting={setIsAnnouncingMeeting}
-              />
-            )}
-            <TouchableOpacity
-              onPress={copyCode}
-              style={
-                theme == "dark"
-                  ? {
-                      padding: 8,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignSelf: "center",
-                      backgroundColor: "#212121",
-                      borderRadius: 10,
-                      gap: 8,
-                    }
-                  : {
-                      padding: 8,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignSelf: "center",
-                      backgroundColor: "#b7d3ff",
-                      borderRadius: 10,
-                      gap: 8,
-                    }
-              }
-            >
-              <Feather
-                name="copy"
-                size={15}
+            <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+              <AntDesign
+                name="left"
+                size={24}
                 color={theme == "dark" ? "white" : "#2f2d51"}
               />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={openGroupInfo}
+              style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
+            >
+              <HeaderTitle
+                style={
+                  theme == "dark"
+                    ? { color: "white", fontFamily: "Inter-Bold" }
+                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                }
+              >
+                {currGroup.groups.name}
+              </HeaderTitle>
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontSize: 13,
+                  color: theme == "dark" ? "#bebebe" : "#9a9a9a",
+                  fontSize: 12,
+                  textDecorationLine: "underline",
                   fontFamily: "Inter-Medium",
                 }}
               >
-                {currGroup.groups.code}
+                Click here for group info
               </Text>
             </TouchableOpacity>
-          </HeaderView>
-        )}
+          </View>
+          {groupInfoVisible && (
+            <GroupInfoModal
+              group={currGroup}
+              theme={theme}
+              supabase={supabase}
+              allUsers={allGroups}
+              currentUser={currentUser}
+              groupInfoVisible={groupInfoVisible}
+              setGroupInfoVisible={setGroupInfoVisible}
+            />
+          )}
+          {isGroupRemoved && (
+            <RemovedGroupModal
+              isGroupRemoved={isGroupRemoved}
+              setRefreshGroup={setRefreshGroup}
+              setIsGroupRemoved={setIsGroupRemoved}
+              theme={theme}
+            />
+          )}
 
-        {/* <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+          <TouchableOpacity
+            onPress={copyCode}
+            style={
+              theme == "dark"
+                ? {
+                    padding: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignSelf: "center",
+                    backgroundColor: "#212121",
+                    borderRadius: 10,
+                    gap: 8,
+                  }
+                : {
+                    padding: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignSelf: "center",
+                    backgroundColor: "#b7d3ff",
+                    borderRadius: 10,
+                    gap: 8,
+                  }
+            }
+          >
+            <Feather
+              name="copy"
+              size={15}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+            <Text
+              style={{
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontSize: 13,
+                fontFamily: "Inter-Medium",
+              }}
+            >
+              {currGroup.groups.code}
+            </Text>
+          </TouchableOpacity>
+        </HeaderView>
+
+        {/* <View
+          style={{
+            flexDirection: "row",
+            // backgroundColor: "#212121",
+            paddingBottom: 10,
+            justifyContent: "space-evenly",
+          }}
+        >
           <Text
             onPress={() => setToggle("chat")}
             style={{
+              color: toggle == "chat" ? "white" : "#d2d2d2",
               textDecorationLine: "underline",
               fontFamily: toggle == "chat" ? "Inter-Bold" : "Inter-Medium",
             }}
@@ -558,11 +463,12 @@ const PrayerGroup = ({ route, navigation }) => {
           <Text
             onPress={() => setToggle("video")}
             style={{
+              color: toggle == "video" ? "white" : "#d2d2d2",
               textDecorationLine: "underline",
               fontFamily: toggle == "video" ? "Inter-Bold" : "Inter-Medium",
             }}
           >
-            Video
+            Prayer List
           </Text>
         </View> */}
 
@@ -575,7 +481,6 @@ const PrayerGroup = ({ route, navigation }) => {
           groupMessages={groupMessages}
           setGroupMessages={setGroupMessages}
           flatListRef={flatListRef}
-          handleScroll={handleScroll}
           supabase={supabase}
           currGroup={currGroup}
           setRefreshMsgLikes={setRefreshMsgLikes}

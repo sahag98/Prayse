@@ -28,7 +28,6 @@ const ReactionModal = ({
   isPressedLong,
   theme,
 }) => {
-  console.log(isPressedLong);
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -104,7 +103,7 @@ const ReactionModal = ({
                     isLikedByMe
                       ? { width: 25, height: 25, tintColor: "#ff4e4e" }
                       : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "white" }
+                      ? { width: 25, height: 25, tintColor: "#a5c9ff" }
                       : { width: 25, height: 25, tintColor: "#2f2d51" }
                   }
                   source={{
@@ -141,7 +140,7 @@ const ReactionModal = ({
                     isPraisedByMe
                       ? { width: 25, height: 25, tintColor: "#ff4e4e" }
                       : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "white" }
+                      ? { width: 25, height: 25, tintColor: "#a5c9ff" }
                       : { width: 25, height: 25, tintColor: "#2f2d51" }
                   }
                   source={praise}

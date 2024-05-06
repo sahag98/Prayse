@@ -215,12 +215,9 @@ const ProfileModal = ({
       // showToast("error", "The name field can't be left empty.");
       // handleCloseModal();
     }
-    console.log("Is unique before checking :", isUnique);
 
     // Wait for checkIfUnique to complete and get the result
     const isUniqueName = await checkIfUnique();
-
-    console.log("Is unique after checking :", isUnique);
 
     if (!isUniqueName) {
       setIsUnique(false);

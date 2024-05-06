@@ -36,7 +36,7 @@ export const SupabaseProvider = (props) => {
   const [userofSentMessage, setUserofSentMessage] = useState("");
   const [refreshComments, setRefreshComments] = useState(false);
   const [refreshGroup, setRefreshGroup] = useState(false);
-
+  const [refreshAnswers, setRefreshAnswers] = useState(false);
   const [refreshReflections, setRefreshReflections] = useState(false);
 
   const supabase = createClient(
@@ -72,7 +72,6 @@ export const SupabaseProvider = (props) => {
     });
 
     if (error) throw error;
-    console.log("in auth session: ", data.session.user.id);
     setLoggedIn(data.session !== null);
 
     let { data: profiles, error: profileError } = await supabase
@@ -116,7 +115,6 @@ export const SupabaseProvider = (props) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: "https://www.prayse.app/password",
     });
-    console.log("password reset link sent");
     if (error) throw error;
   };
 
@@ -156,7 +154,7 @@ export const SupabaseProvider = (props) => {
 
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
-      .from("answers")
+      .from("answers_test")
       .select("*, profiles(avatar_url,full_name)")
       .order("id", { ascending: false });
 
@@ -317,11 +315,16 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "answers",
+              table: "answers_test",
             },
             (payload) => {
-              if (payload.eventType == "INSERT") {
-                console.log("refresh answers");
+              console.log("payload: ", payload.new.question_id);
+              if (
+                payload.eventType == "INSERT" ||
+                payload.eventType == "DELETE"
+              ) {
+                console.log("refreshing answers");
+                setRefreshAnswers(true);
                 fetchAnswers();
               }
             }
@@ -386,6 +389,8 @@ export const SupabaseProvider = (props) => {
         newPost,
         setNewPost,
         newAnswer,
+        setRefreshAnswers,
+        refreshAnswers,
         fetchUpdatedAnswers,
         getGoogleOAuthUrl,
         setOAuthSession,

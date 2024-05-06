@@ -29,18 +29,21 @@ import Login from "./Screens/Login";
 import Question from "./Screens/Question";
 import PublicCommunity from "./Screens/PublicCommunity";
 import Test from "./Screens/Test";
-import * as Linking from "expo-linking";
+import { Linking } from "react-native";
+// import * as Linking from "expo-linking";
 import Reminder from "./Screens/Reminder";
 import PrayerGroup from "./Screens/PrayerGroup";
 import OnboardingScreen from "./Screens/Onboarding";
 import Relfection from "./Screens/Relfection";
 import DevoList from "./Screens/DevoList";
+import * as Notifications from "expo-notifications";
 import Checklist from "./Screens/Checklist";
 import PrayerRoom from "./Screens/PrayerRoom";
-import Notifications from "./Screens/Notifications";
+import NotificationScreen from "./Screens/NotificationsScreen";
 import { checkUserGroups } from "./redux/userReducer";
 
 import QuestionList from "./Screens/QuestionList";
+import OurPresentation from "./Screens/OurPresentation";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -71,16 +74,16 @@ const Navigation = () => {
     checkFirstTime();
   }, []);
 
-  const prefix = Linking.createURL("/");
-  const linking = {
-    prefixes: [prefix],
-    config: {
-      screens: {
-        Home: "home",
-        Settings: "settings",
-      },
-    },
-  };
+  // const prefix = Linking.createURL("/");
+  // const linking = {
+  //   prefixes: [prefix],
+  //   config: {
+  //     screens: {
+  //       Home: "home",
+  //       Settings: "settings",
+  //     },
+  //   },
+  // };
 
   const BusyIndicator = () => {
     return (
@@ -127,7 +130,55 @@ const Navigation = () => {
       <StatusBar style={theme == "dark" ? "light" : "dark"} />
 
       <NavigationContainer
-        linking={linking}
+        linking={{
+          config: {
+            // Configuration for linking
+          },
+          async getInitialURL() {
+            // First, you may want to do the default deep link handling
+            // Check if app was opened from a deep link
+            const url = await Linking.getInitialURL();
+
+            if (url != null) {
+              return url;
+            }
+
+            // Handle URL from expo push notifications
+            const response =
+              await Notifications.getLastNotificationResponseAsync();
+            return response?.notification.request.content.data.url;
+          },
+          subscribe(listener) {
+            const onReceiveURL = ({ url }) => listener(url);
+
+            // Listen to incoming links from deep linking
+            const eventListenerSubscription = Linking.addEventListener(
+              "url",
+              onReceiveURL
+            );
+
+            // Listen to expo push notifications
+            const subscription =
+              Notifications.addNotificationResponseReceivedListener(
+                (response) => {
+                  const url = response.notification.request.content.data.url;
+
+                  // Any custom logic to see whether the URL needs to be handled
+                  //...
+
+                  // Let React Navigation handle the URL
+                  listener(url);
+                }
+              );
+
+            return () => {
+              // Clean up the event listeners
+              eventListenerSubscription.remove();
+
+              subscription.remove();
+            };
+          },
+        }}
         theme={theme === "dark" ? DarkTheme : DefaultTheme}
       >
         <Tab.Navigator
@@ -292,6 +343,15 @@ const Navigation = () => {
             component={Gospel}
           />
           <Tab.Screen
+            name="OurPresentation"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={OurPresentation}
+          />
+          <Tab.Screen
             name="PrayerPage"
             options={() => ({
               tabBarStyle: { display: "none" },
@@ -316,12 +376,12 @@ const Navigation = () => {
             component={Checklist}
           />
           <Tab.Screen
-            name="Notifications"
+            name="NotificationScreen"
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Notifications}
+            component={NotificationScreen}
           />
           <Tab.Screen
             name="PrayerRoom"

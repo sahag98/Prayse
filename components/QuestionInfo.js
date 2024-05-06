@@ -12,10 +12,6 @@ const QuestionInfo = ({ item, theme }) => {
     (answer) => answer.question_id === item.id
   );
 
-  // useEffect(() => {
-  //   fetchUpdatedAnswers(item.id);
-  // }, [newAnswer]);
-
   return (
     <TouchableOpacity
       style={theme == "dark" ? styles.questionDark : styles.question}
@@ -101,7 +97,8 @@ const QuestionInfo = ({ item, theme }) => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("Question", {
-            item: item,
+            title: item.title,
+            question_id: item.id,
           })
         }
         style={{

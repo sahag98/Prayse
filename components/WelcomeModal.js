@@ -226,27 +226,6 @@ const WelcomeModal = ({
     sendToken(token);
   }
 
-  const updateProfile = async () => {
-    console.log(name);
-    if (name.length <= 1) {
-      showToast("error", "The name field can't be left empty.");
-      handleCloseModal();
-      return;
-    }
-    const isUniqueName = await checkIfUnique();
-    if (isUniqueName) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({ full_name: name })
-        .eq("id", user.id)
-        .select();
-      showToast("success", "Profile created successfully. ✔️");
-    }
-    getProfile();
-    // getPrayers();
-    setModalVisible(false);
-  };
-
   return (
     <Modal
       onShow={getPermission}

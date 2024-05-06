@@ -46,11 +46,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { Video, ResizeMode, Audio } from "expo-av";
 import Constants from "expo-constants";
 
-const duration = 2000;
-const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
-
 const PrayerRoom = ({ navigation }) => {
-  // console.log("navigation: ", navigation.canGoBack());
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [screenIndex, setScreenIndex] = useState(0);
@@ -173,7 +169,6 @@ const PrayerRoom = ({ navigation }) => {
   };
 
   const doPrayerFadeIn = () => {
-    console.log("doing fade In");
     prayerFadeIn.value = withDelay(
       3000,
       withTiming(1, {
@@ -184,7 +179,6 @@ const PrayerRoom = ({ navigation }) => {
   };
 
   const doRoomFadeIn = () => {
-    console.log("doing fade In");
     roomFadeIn.value = withTiming(1, {
       duration: 3000,
       easing: Easing.ease,
@@ -192,7 +186,6 @@ const PrayerRoom = ({ navigation }) => {
   };
 
   const doMomentFadeIn = () => {
-    console.log("doing fade In");
     momentFadeIn.value = withSequence(
       withTiming(1, {
         duration: 4000,
@@ -211,7 +204,6 @@ const PrayerRoom = ({ navigation }) => {
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
   async function loadVideo() {
-    console.log("loading video in...");
     // await video.current.loadAsync(gradient);
     await video.current.playAsync();
 

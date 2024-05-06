@@ -202,7 +202,6 @@ export default function OnboardingScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   page: {
-    // alignItems: 'center',
     justifyContent: "center",
     flex: 1,
     backgroundColor: "#f2f7ff",

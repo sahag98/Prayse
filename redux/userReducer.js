@@ -46,7 +46,6 @@ export const userSlice = createSlice({
     },
 
     systemTheme: (state) => {
-      console.log(Appearance.getColorScheme());
       state.theme = Appearance.getColorScheme();
     },
   },

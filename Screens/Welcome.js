@@ -20,7 +20,6 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider } from "react-native-paper";
 import {
@@ -70,15 +69,10 @@ import noreminder from "../assets/noreminders.png";
 import DailyReflection from "../components/DailyReflection";
 import GospelofJesus from "../components/GospelofJesus";
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
-  handleNotification: async (notification) => {
-    const data = notification.request.content.data;
-    // if (data && data.screen) {
-    //   // navigate to the screen specified in the data object
-    //   navigation.navigate(data.screen);
-    // }
+  handleNotification: async () => {
     return {
       shouldShowAlert: true,
       shouldPlaySound: false,
@@ -88,7 +82,6 @@ Notifications.setNotificationHandler({
 });
 
 async function sendToken(expoPushToken) {
-  console.log("token: ", expoPushToken);
   const message = {
     to: expoPushToken,
     sound: "default",
@@ -123,7 +116,7 @@ async function registerForPushNotificationsAsync() {
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
-      console.log(status);
+
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
@@ -202,7 +195,6 @@ const Welcome = ({ navigation }) => {
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
         // setIsUpdateAvailable(true);
       } else {
-        console.log("update is not available");
         setIsUpdateAvailable(false);
       }
     } catch (error) {
@@ -236,7 +228,7 @@ const Welcome = ({ navigation }) => {
       } catch (error) {
         console.log(error);
       }
-      console.log("folder created");
+
       handleSubmit();
     } else if (quickFolderExists === true) {
       console.log("folder already exists, adding prayer to it");
@@ -285,10 +277,9 @@ const Welcome = ({ navigation }) => {
       lastNotificationResponse &&
       lastNotificationResponse.notification.request.content.data
     ) {
-      console.log("last noti: ", lastNotificationResponse.notification);
       const data = lastNotificationResponse.notification.request.content.data;
       const body = lastNotificationResponse.notification.request.content.body;
-      console.log("data of last noti: ", data);
+
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
@@ -306,7 +297,7 @@ const Welcome = ({ navigation }) => {
       }
 
       if (data && data.screen) {
-        console.log("in screen");
+        console.log("has screen");
         //navigate to the screen specified in the data object
         if (data.screen == "VerseOfTheDay") {
           navigation.navigate(data.screen, {
@@ -314,21 +305,26 @@ const Welcome = ({ navigation }) => {
             title: data.verseTitle,
           });
         } else if (
-          data.screen == "Community" &&
-          data.currGroup &&
+          data.screen == "PrayerGroup" &&
+          data.group &&
           data.allGroups
         ) {
           navigation.navigate(data.screen, {
-            group: data.currGroup,
+            group: data.group,
             allGroups: data.allGroups,
           });
         } else if (data.screen == "Reflection" && data.devoTitle) {
           navigation.navigate(data.screen, {
             devoTitle: data.devoTitle,
           });
-        } else if (data.screen == "Question" && data.item && data.question) {
+        } else if (
+          data.screen == "Question" &&
+          data.title &&
+          data.question_id
+        ) {
           navigation.navigate(data.screen, {
-            item: data.item,
+            title: data.title,
+            question_id: data.question_id,
           });
         } else {
           navigation.navigate(data.screen);
@@ -353,9 +349,8 @@ const Welcome = ({ navigation }) => {
       if (reminder === null || reminder !== "false") {
         try {
           const storedOpenings = await AsyncStorage.getItem("appOpenings");
-          console.log("getting openings :", storedOpenings);
+          // console.log("getting openings :", storedOpenings);
           if (storedOpenings !== null) {
-            console.log("not null");
             setOpenings(parseInt(storedOpenings, 10));
           }
         } catch (error) {
@@ -404,7 +399,6 @@ const Welcome = ({ navigation }) => {
         const isFirstTime = await AsyncStorage.getItem("isFirstTime");
 
         if (isFirstTime == null) {
-          console.log("it is the first time");
           setIsFirst(true);
           await AsyncStorage.setItem("isFirstTime", "true");
         } else if (isFirstTime != null) {
@@ -431,7 +425,6 @@ const Welcome = ({ navigation }) => {
 
     // Check if it's the 10th opening
     if (openings > 0 && openings % 10 === 0) {
-      console.log("modal should open");
       setDonationModal(true);
     }
   }, [isFocused]);
@@ -465,6 +458,8 @@ const Welcome = ({ navigation }) => {
               date: formattedDate,
               notification: notification.request.content.body,
               screen: notification.request.content.data?.screen,
+              title: notification.request.content.data?.title,
+              question_id: notification.request.content.data?.question_id,
               prayerId: notification.request.content.data?.prayerId,
               identifier: notification.request.identifier,
             })
@@ -476,6 +471,7 @@ const Welcome = ({ navigation }) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log("response: ", response);
         const body = response.notification.request.content.body;
         const res = response.notification.request.content.data;
       });
@@ -606,7 +602,7 @@ const Welcome = ({ navigation }) => {
             setIsReminderOn={setIsReminderOff}
           />
           <TouchableOpacity
-            onPress={() => navigation.navigate("Notifications")}
+            onPress={() => navigation.navigate("NotificationScreen")}
             style={
               theme == "dark"
                 ? {
@@ -835,7 +831,6 @@ const Welcome = ({ navigation }) => {
                     };
                     timeOptions = options;
                   } else if (item.ocurrence === "None") {
-                    console.log("none");
                     let options = {
                       month: "numeric",
                       day: "numeric",
@@ -1060,8 +1055,8 @@ const Welcome = ({ navigation }) => {
         featureVisible={featureVisible}
       />
 
-      <MerchComponent theme={theme} />
       <GospelofJesus theme={theme} />
+      <MerchComponent theme={theme} />
       <View
         style={{
           width: "100%",

@@ -19,9 +19,11 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 import { useSupabase } from "../context/useSupabase";
+import axios from "axios";
 
 const QuestionModal = ({
-  item,
+  itemTitle,
+  itemId,
   theme,
   fetchQuestions,
   question,
@@ -73,10 +75,10 @@ const QuestionModal = ({
       setAnswersVisible(false);
       return;
     } else {
-      const { data, error } = await supabase.from("answers").insert({
+      const { data, error } = await supabase.from("answers_test").insert({
         user_id: user.id,
         answer,
-        question_id: item.id,
+        question_id: itemId,
       });
       handleCloseModal();
       // updateAnswers();
@@ -92,27 +94,26 @@ const QuestionModal = ({
       }
 
       let truncatedString = truncateWords(answer, 8);
-      console.log(truncatedString);
-      const message = {
-        title: "Question of the Week",
-        message: `${user?.full_name} has posted a answer: ${truncatedString}`,
-        data: {
-          screen: "Question",
-          question: item.title,
-          verseTitle: "",
-          item: item,
-        },
-      };
 
-      fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
+      // const message = {
+      //   title: "Question of the Week",
+      //   message: `${user?.full_name} has posted a answer: ${truncatedString}`,
+      //   data: {
+      //     screen: "Question",
+      //     title: itemTitle,
+      //     itemId: itemId,
+      //   },
+      // };
+
+      // fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+      //   method: "POST",
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Accept-encoding": "gzip, deflate",
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(message),
+      // });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }

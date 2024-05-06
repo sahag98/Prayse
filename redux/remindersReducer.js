@@ -18,13 +18,11 @@ export const reminderSlice = createSlice({
       state.reminders = Reminders;
     },
     deleteReminder: (state, action) => {
-      console.log("action: ", action);
       state.reminders = state.reminders.filter(
         (reminder) => reminder.reminder.id !== action.payload
       );
     },
     editReminder: (state, action) => {
-      console.log("edit action: ", action);
       const newReminders = [...state.reminders];
       const reminderIndex = state.reminders.findIndex(
         (reminder) => reminder.id === action.payload.reminder.id

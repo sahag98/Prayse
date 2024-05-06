@@ -52,13 +52,17 @@ const NotifyFirstMsg = ({
             allGroups: allGroups,
           },
         };
-        await axios.post("https://exp.host/--/api/v2/push/send", message, {
-          headers: {
-            Accept: "application/json",
-            "Accept-encoding": "gzip, deflate",
-            "Content-Type": "application/json",
-          },
-        });
+        await axios.post(
+          "https://exp.host/--/api/v2/push/send?useFcmV1=true",
+          message,
+          {
+            headers: {
+              Accept: "application/json",
+              "Accept-encoding": "gzip, deflate",
+              "Content-Type": "application/json",
+            },
+          }
+        );
       }
     });
     await AsyncStorage.removeItem("isNotify");

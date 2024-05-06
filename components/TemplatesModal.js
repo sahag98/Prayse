@@ -76,7 +76,6 @@ const TemplatesModal = ({
     const filePath = `${selectedItem.title}_${Date.now()}.png`;
     const fileName = selectedItem.title;
     const exampleImageUri = Image.resolveAssetSource(selectedImg).uri;
-    console.log(exampleImageUri);
     setGroupImage(exampleImageUri);
     const formData = new FormData();
     formData.append("files", {
@@ -164,7 +163,6 @@ const TemplatesModal = ({
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
-                  console.log(item.image);
                   setSelectedImg(item.image);
                   setSelectedItem(item);
                 }}

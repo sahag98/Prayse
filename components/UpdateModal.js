@@ -34,8 +34,8 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
         <ModalView
           style={
             theme == "dark"
-              ? { backgroundColor: "#212121", width: "80%" }
-              : { backgroundColor: "#b7d3ff", width: "80%" }
+              ? { backgroundColor: "#212121", width: "85%" }
+              : { backgroundColor: "#b7d3ff", width: "85%" }
           }
         >
           <ModalIcon>
@@ -46,8 +46,28 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
                   : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
               }
             >
-              An Update is Available
+              An Update is Available!
             </HeaderTitle>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      marginTop: 5,
+                      textAlign: "center",
+                      fontFamily: "Inter-Regular",
+                      color: "white",
+                    }
+                  : {
+                      marginTop: 5,
+                      textAlign: "center",
+                      color: "#2f2d51",
+                      fontFamily: "Inter-Regular",
+                    }
+              }
+            >
+              Update your app to the latest version and check out our newly
+              added features!
+            </Text>
           </ModalIcon>
           <View
             style={{

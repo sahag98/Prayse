@@ -63,7 +63,6 @@ const DevoList = ({ navigation }) => {
     ]);
 
   const fetchReflections = async (title) => {
-    console.log("fetching", title);
     const { data, error } = await supabase
       .from("reflections")
       .select("*, profiles(full_name,avatar_url)")
@@ -96,13 +95,10 @@ const DevoList = ({ navigation }) => {
     }
 
     if (isLikedByMe) {
-      console.log("liked it");
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
         withSpring(1, { damping: 2, stiffness: 80 })
       );
-
-      console.log(title);
       const { data, error } = await supabase
         .from("devo_likes")
         .delete()
@@ -134,8 +130,6 @@ const DevoList = ({ navigation }) => {
       message: `${currentUser?.full_name} has liked the devotional!`,
       data: { screen: "DevoList", verseTitle: "" },
     };
-
-    console.log(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, message);
 
     fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
       method: "POST",
@@ -179,8 +173,6 @@ const DevoList = ({ navigation }) => {
   });
 
   const onShare = async (title, description, day, content) => {
-    console.log(title);
-
     if (title) {
       try {
         await Share.share({

@@ -165,14 +165,14 @@ const JoinModal = ({
                 theme == "dark"
                   ? {
                       color: "white",
-                      fontSize: 20,
+                      fontSize: 22,
                       marginBottom: 5,
                       letterSpacing: 1,
                       fontFamily: "Inter-Bold",
                     }
                   : {
                       color: "#2f2d51",
-                      fontSize: 20,
+                      fontSize: 22,
                       marginBottom: 5,
                       letterSpacing: 1,
                       fontFamily: "Inter-Bold",

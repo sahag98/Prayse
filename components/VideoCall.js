@@ -6,9 +6,7 @@ const VideoCall = () => {
   const [sound, setSound] = useState();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
 
-  console.log("response: ", permissionResponse);
   async function playSound() {
-    console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
       require("../assets/audio/Ebpad.mp3")
     );
@@ -16,7 +14,7 @@ const VideoCall = () => {
       playsInSilentModeIOS: true,
     });
     setSound(sound);
-    console.log("Playing Sound");
+
     await sound.playAsync();
   }
 
@@ -26,7 +24,6 @@ const VideoCall = () => {
 
   async function checkAudioPermission() {
     const { status, granted } = await requestPermission();
-    console.log(status, granted);
   }
 
   useEffect(() => {

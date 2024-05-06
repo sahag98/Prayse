@@ -51,7 +51,7 @@ const DonationModal = ({
           style={
             theme == "dark"
               ? { backgroundColor: "#212121", width: "100%" }
-              : { backgroundColor: "#93D8F8", width: "100%" }
+              : { backgroundColor: "#b7d3ff", width: "100%" }
           }
         >
           <ModalIcon>
@@ -102,8 +102,8 @@ const DonationModal = ({
             }
           >
             Dear Prayse Community, as we strive to reiterate the importance of
-            prayer in today's world, we would like to give you the opportunity
-            to express your generosity.
+            prayer and praise in today's world, we would like to give you the
+            opportunity to express your generosity.
           </Text>
           <Text
             style={
@@ -239,12 +239,12 @@ const DonationModal = ({
                   ? {
                       color: "#bebebe",
                       fontSize: 13,
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "Inter-Regular",
                     }
                   : {
                       color: "#2f2d51",
                       fontSize: 13,
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "Inter-Regular",
                     }
               }
             >
@@ -258,5 +258,3 @@ const DonationModal = ({
 };
 
 export default DonationModal;
-
-const styles = StyleSheet.create({});

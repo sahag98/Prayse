@@ -57,7 +57,6 @@ const CreateGroupModal = ({
       //prayers for production
       //prayers_test for testing
       const pin = Math.floor(Math.random() * 900000) + 100000;
-      console.log(imgUrl);
       const { data, error } = await supabase.from("groups").insert({
         name: groupName,
         color: "grey",
@@ -219,7 +218,8 @@ const CreateGroupModal = ({
                     : groupName.length == 0
                     ? "grey"
                     : "#2f2d51",
-                padding: 8,
+                paddingVertical: 10,
+                paddingHorizontal: 14,
                 borderRadius: 20,
                 alignItems: "center",
                 gap: 5,

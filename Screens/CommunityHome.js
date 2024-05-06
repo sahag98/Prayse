@@ -341,18 +341,19 @@ const CommunityHome = ({ route }) => {
                   theme == "dark"
                     ? {
                         fontFamily: "Inter-Bold",
-                        fontSize: 20,
-                        letterSpacing: 2,
+                        fontSize: 22,
+                        letterSpacing: 1,
                         color: "white",
                       }
                     : {
                         fontFamily: "Inter-Bold",
-                        fontSize: 20,
+                        fontSize: 22,
+                        letterSpacing: 1,
                         color: "#2F2D51",
                       }
                 }
               >
-                <Text>Welcome {currentUser?.full_name}</Text>
+                <Text>Hey {currentUser?.full_name}!</Text>
               </HeaderTitle>
               <Animated.View style={animatedStyle}>
                 <MaterialCommunityIcons

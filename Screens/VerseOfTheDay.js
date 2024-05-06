@@ -169,7 +169,40 @@ const VerseOfTheDay = ({ route }) => {
           color={theme == "dark" ? "white" : "#2f2d51"}
         />
       </TouchableOpacity>
-      <View style={{ justifyContent: "center", marginTop: 15 }}>
+
+      <View
+        style={
+          theme == "dark"
+            ? {
+                justifyContent: "center",
+                backgroundColor: theme == "dark" ? "#212121" : "white",
+
+                alignSelf: "center",
+                width: "90%",
+                borderRadius: 10,
+                padding: 10,
+                marginTop: 25,
+              }
+            : {
+                justifyContent: "center",
+                backgroundColor: theme == "dark" ? "#212121" : "white",
+                shadowColor: "#cccccc",
+
+                shadowOffset: {
+                  width: 0,
+                  height: 6,
+                },
+                shadowOpacity: 0.21,
+                shadowRadius: 6.65,
+                elevation: 9,
+                alignSelf: "center",
+                width: "90%",
+                borderRadius: 10,
+                padding: 10,
+                marginTop: 25,
+              }
+        }
+      >
         <Text style={theme == "dark" ? styles.verseDark : styles.verse}>
           {verse[0].verse}
         </Text>
@@ -199,29 +232,10 @@ const VerseOfTheDay = ({ route }) => {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontSize: 14,
-                        fontFamily: "Inter-Medium",
-                        marginRight: 10,
-                        color: "#ebebeb",
-                      }
-                    : {
-                        fontSize: 14,
-                        fontFamily: "Inter-Medium",
-                        marginRight: 10,
-                        color: "white",
-                      }
-                }
-              >
-                Share
-              </Text>
               <AntDesign
                 name="sharealt"
-                size={20}
-                color={theme == "dark" ? "#ebebeb" : "white"}
+                size={26}
+                color={theme == "dark" ? "#ebebeb" : "#2f2d51"}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -236,29 +250,10 @@ const VerseOfTheDay = ({ route }) => {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontSize: 14,
-                        fontFamily: "Inter-Medium",
-                        marginRight: 10,
-                        color: "#ebebeb",
-                      }
-                    : {
-                        fontSize: 14,
-                        fontFamily: "Inter-Medium",
-                        marginRight: 10,
-                        color: "white",
-                      }
-                }
-              >
-                Voice
-              </Text>
               <AntDesign
                 name="sound"
-                size={24}
-                color={theme == "dark" ? "#ebebeb" : "white"}
+                size={26}
+                color={theme == "dark" ? "#ebebeb" : "#2f2d51"}
               />
             </TouchableOpacity>
             {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
@@ -272,28 +267,9 @@ const VerseOfTheDay = ({ route }) => {
                   alignItems: "center",
                 }}
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontSize: 14,
-                          marginRight: 5,
-                          color: "#d8d800",
-                          fontFamily: "Inter-Medium",
-                        }
-                      : {
-                          fontSize: 14,
-                          fontFamily: "Inter-Medium",
-                          marginRight: 10,
-                          color: "#d8d800",
-                        }
-                  }
-                >
-                  Favorited
-                </Text>
                 <AntDesign
                   name="staro"
-                  size={25}
+                  size={26}
                   color={theme == "dark" ? "#d8d800" : "#d8d800"}
                 />
               </TouchableOpacity>
@@ -308,29 +284,10 @@ const VerseOfTheDay = ({ route }) => {
                   alignItems: "center",
                 }}
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          marginRight: 5,
-                          color: "#aaaaaa",
-                          fontFamily: "Inter-Medium",
-                          fontSize: 14,
-                        }
-                      : {
-                          fontSize: 14,
-                          fontFamily: "Inter-Medium",
-                          marginRight: 10,
-                          color: "white",
-                        }
-                  }
-                >
-                  Favorite
-                </Text>
                 <AntDesign
                   name="staro"
-                  size={25}
-                  color={theme == "dark" ? "#aaaaaa" : "white"}
+                  size={26}
+                  color={theme == "dark" ? "#aaaaaa" : "#2f2d51"}
                 />
               </TouchableOpacity>
             )}
@@ -345,27 +302,13 @@ export default VerseOfTheDay;
 
 const styles = StyleSheet.create({
   utiltiesDark: {
-    backgroundColor: "#212121",
-    borderRadius: 20,
-    height: 50,
     marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   utilities: {
-    backgroundColor: "#2f2d51",
-    borderRadius: 20,
-    height: 50,
     marginTop: 20,
-    shadowColor: "#bdbdbd",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.17,
-    shadowRadius: 3.05,
-    elevation: 4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -402,13 +345,13 @@ const styles = StyleSheet.create({
   verseDark: {
     fontSize: 15,
     fontFamily: "Inter-Regular",
-    lineHeight: 40,
+    lineHeight: 35,
     color: "white",
   },
   verse: {
     fontSize: 15,
     fontFamily: "Inter-Regular",
-    lineHeight: 40,
+    lineHeight: 35,
     color: "#2f2d51",
   },
   verseTitleDark: {
