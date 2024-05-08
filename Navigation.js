@@ -44,6 +44,7 @@ import { checkUserGroups } from "./redux/userReducer";
 
 import QuestionList from "./Screens/QuestionList";
 import OurPresentation from "./Screens/OurPresentation";
+import PublicGroups from "./Screens/PublicGroups";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -251,6 +252,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={DevoList}
+          />
+          <Tab.Screen
+            name="PublicGroups"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={PublicGroups}
           />
           <Tab.Screen
             name="OldPrayerPage"

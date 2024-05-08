@@ -223,10 +223,10 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
             )}
             {page === 1 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <Ionicons
-                  name="images-outline"
+                <MaterialCommunityIcons
+                  name="cross"
                   size={100}
-                  color={theme == "dark" ? "white" : "black"}
+                  color={theme == "BlackWhite" ? "black" : "#8cbaff"}
                 />
 
                 <Text
@@ -244,7 +244,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Group Images
+                  Gospel of Jesus
                 </Text>
                 <Text
                   style={
@@ -261,8 +261,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Pick an image for your prayer group using our templates or
-                  your own images!
+                  How can someone recieve Jesus and get saved?
                 </Text>
 
                 <View
@@ -376,7 +375,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Major Community Design & UI improvements.
+                    - Fixed notification bug.
                   </Text>
                   <Text
                     style={
@@ -385,8 +384,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Changed "Question of the Week" to "Questions" to have
-                    multiple questions to answer and reflect on.
+                    - New Public Groups section.
                   </Text>
                   <Text
                     style={
@@ -395,8 +393,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
                   >
-                    - Switched notification box to its own screen for better
-                    visibility on all notifications.
+                    - Overall design changes.
                   </Text>
                 </View>
                 <View

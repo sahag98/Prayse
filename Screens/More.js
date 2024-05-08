@@ -146,15 +146,64 @@ const More = ({ navigation }) => {
           : { backgroundColor: "#F2F7FF" }
       }
     >
-      <HeaderTitle
-        style={
-          theme == "dark"
-            ? { fontFamily: "Inter-Bold", color: "white", marginVertical: 10 }
-            : { fontFamily: "Inter-Bold", color: "#2F2D51", marginVertical: 10 }
-        }
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+        }}
       >
-        More
-      </HeaderTitle>
+        <HeaderTitle
+          style={
+            theme == "dark"
+              ? {
+                  fontFamily: "Inter-Bold",
+                  fontSize: 22,
+                  color: "white",
+                  marginVertical: 10,
+                }
+              : {
+                  fontFamily: "Inter-Bold",
+                  fontSize: 22,
+                  color: "#2F2D51",
+                  marginVertical: 10,
+                }
+          }
+        >
+          More
+        </HeaderTitle>
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.buymeacoffee.com/prayse")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            // width: "35%",
+            gap: 10,
+            padding: 8,
+            // paddingHorizontal: 15,
+            // paddingVertical: 12,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+          }}
+        >
+          <AntDesign
+            name="hearto"
+            size={24}
+            color={theme == "BlackWhite" ? "black" : "#DE3163"}
+          />
+          <Text
+            style={{
+              fontFamily: "Inter-Bold",
+              color: theme == "dark" ? "white" : "#2f2d51",
+            }}
+          >
+            Give to Prayse
+          </Text>
+        </TouchableOpacity>
+      </View>
       <SettingsItems options={options} theme={theme} navigation={navigation} />
       {Platform.OS === "ios" ? (
         <TouchableOpacity

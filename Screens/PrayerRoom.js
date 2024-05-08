@@ -46,7 +46,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { Video, ResizeMode, Audio } from "expo-av";
 import Constants from "expo-constants";
 
-const PrayerRoom = ({ navigation }) => {
+const PrayerRoom = ({ navigation, route }) => {
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [screenIndex, setScreenIndex] = useState(0);
@@ -311,7 +311,12 @@ const PrayerRoom = ({ navigation }) => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              navigation.goBack();
+              if (route.params?.previousScreen) {
+                navigation.goBack();
+              } else {
+                navigation.navigate("Prayer");
+              }
+
               if (sound) {
                 pauseSound();
               }

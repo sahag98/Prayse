@@ -20,6 +20,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import TemplatesModal from "./TemplatesModal";
+import { Switch } from "react-native-paper";
 
 const CreateGroupModal = ({
   modalVisible,
@@ -34,10 +35,17 @@ const CreateGroupModal = ({
   const [groupImage, setGroupImage] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [isShowingTemplates, setIsShowingTemplates] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
   const insets = useSafeAreaInsets();
   const handleCloseModal = () => {
     setModalVisible(false);
     setGroupName("");
+    setImgUrl(null);
+    setIsEnabled(false);
+  };
+
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
   };
 
   const showToast = (type, content) => {
@@ -63,6 +71,7 @@ const CreateGroupModal = ({
         admin_id: user.id,
         code: pin,
         group_img: imgUrl,
+        is_public: isEnabled,
       });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
@@ -86,6 +95,7 @@ const CreateGroupModal = ({
       getUserGroups();
       getGroupUsers();
       setModalVisible(false);
+      setIsEnabled(false);
       setGroupName("");
       setGroupImage(null);
     }
@@ -358,7 +368,60 @@ const CreateGroupModal = ({
               value={groupName}
               onChangeText={(text) => setGroupName(text)}
             />
-
+            <View
+              style={{
+                marginTop: 5,
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <View style={{ gap: 5 }}>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
+                  }
+                >
+                  Make it Public
+                </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          color: "#D2D2D2",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 13,
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 13,
+                        }
+                  }
+                >
+                  (Anyone can join this group)
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: "grey", true: "grey" }}
+                thumbColor={isEnabled ? "green" : "white"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+            </View>
             <View style={{ width: "100%" }}>
               <Text
                 style={

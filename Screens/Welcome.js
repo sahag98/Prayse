@@ -68,6 +68,7 @@ import MerchComponent from "../components/MerchComponent";
 import noreminder from "../assets/noreminders.png";
 import DailyReflection from "../components/DailyReflection";
 import GospelofJesus from "../components/GospelofJesus";
+import QuestionoftheWeek from "../components/QuestionoftheWeek";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -335,23 +336,14 @@ const Welcome = ({ navigation }) => {
 
   useEffect(() => {
     doFadeInAnimation();
-    // AsyncStorage.getItem("modalShown").then((value) => {
-    //   if (value === null) {
-    //     // If the modal hasn't been shown before, show it and set the flag
-    //     setFeatureVisible(true);
-    //     AsyncStorage.setItem("modalShown", "true");
-    //   }
-    // });
     const loadOpenings = async () => {
-      // await AsyncStorage.removeItem("AppOpenings");
-      // await AsyncStorage.removeItem("ReminderOn");
       const reminder = await AsyncStorage.getItem("ReminderOn");
       if (reminder === null || reminder !== "false") {
         try {
           const storedOpenings = await AsyncStorage.getItem("appOpenings");
           // console.log("getting openings :", storedOpenings);
           if (storedOpenings !== null) {
-            setOpenings(parseInt(storedOpenings, 10));
+            setOpenings(parseInt(storedOpenings, 20));
           }
         } catch (error) {
           console.error("Error loading app openings ", error);
@@ -423,8 +415,8 @@ const Welcome = ({ navigation }) => {
 
     saveOpenings();
 
-    // Check if it's the 10th opening
-    if (openings > 0 && openings % 10 === 0) {
+    // Check if it's the 20th opening
+    if (openings > 0 && openings % 20 === 0) {
       setDonationModal(true);
     }
   }, [isFocused]);
@@ -652,15 +644,7 @@ const Welcome = ({ navigation }) => {
               : {
                   backgroundColor: "#ffcd8b",
                   gap: 10,
-                  shadowColor: "#9f9f9f",
-                  shadowOffset: {
-                    width: 0,
-                    height: 6,
-                  },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 5.62,
 
-                  elevation: 8,
                   flex: 1,
                   marginVertical: 5,
                   borderRadius: 10,
@@ -1054,8 +1038,9 @@ const Welcome = ({ navigation }) => {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
-
+      <QuestionoftheWeek theme={theme} />
       <GospelofJesus theme={theme} />
+
       <MerchComponent theme={theme} />
       <View
         style={{
@@ -1147,124 +1132,6 @@ const Welcome = ({ navigation }) => {
                   : theme == "BlackWhite"
                   ? "black"
                   : "#bb8b18"
-              }
-            />
-          </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate("Gospel")}
-            style={
-              theme == "dark"
-                ? styles.refreshDark
-                : theme == "BlackWhite"
-                ? styles.refreshBlack
-                : styles.refresh
-            }
-          >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <MaterialCommunityIcons
-                name="cross"
-                size={24}
-                color={theme == "BlackWhite" ? "black" : "#8cbaff"}
-              />
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#A5C9FF",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : theme == "BlackWhite"
-                    ? {
-                        color: "black",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#738cb2",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                }
-              >
-                The Gospel of Jesus
-              </Text>
-            </View>
-            <AntDesign
-              name="right"
-              size={18}
-              color={
-                theme == "dark"
-                  ? "#8cbaff"
-                  : theme == "BlackWhite"
-                  ? "black"
-                  : "#738cb2"
-              }
-            />
-          </TouchableOpacity> */}
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL("https://www.buymeacoffee.com/prayse")
-            }
-            style={
-              theme == "dark"
-                ? styles.refreshDark
-                : theme == "BlackWhite"
-                ? styles.refreshBlack
-                : styles.refresh
-            }
-          >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <AntDesign
-                name="hearto"
-                size={24}
-                color={theme == "BlackWhite" ? "black" : "#DE3163"}
-              />
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#e24774",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : theme == "BlackWhite"
-                    ? {
-                        color: "black",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#cb3f68",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                }
-              >
-                Support Prayse
-              </Text>
-            </View>
-            <AntDesign
-              name="right"
-              size={18}
-              color={
-                theme == "dark"
-                  ? "#e24774"
-                  : theme == "BlackWhite"
-                  ? "black"
-                  : "#cb3f68"
               }
             />
           </TouchableOpacity>

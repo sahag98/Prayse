@@ -43,7 +43,7 @@ const GospelofJesus = ({ theme }) => {
           fontSize: 14,
         }}
       >
-        Click here to learn more.
+        Click here to learn more
       </Text>
 
       {/* <Text

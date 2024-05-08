@@ -26,7 +26,7 @@ export const SupabaseProvider = (props) => {
   const [newAnswer, setNewAnswer] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
-
+  const [publicGroups, setPublicGroups] = useState([]);
   const [refreshLikes, setRefreshLikes] = useState(false);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [refreshMembers, setRefreshMembers] = useState(false);
@@ -38,7 +38,7 @@ export const SupabaseProvider = (props) => {
   const [refreshGroup, setRefreshGroup] = useState(false);
   const [refreshAnswers, setRefreshAnswers] = useState(false);
   const [refreshReflections, setRefreshReflections] = useState(false);
-
+  const [latestQuestion, setLatestQuestion] = useState(null);
   const supabase = createClient(
     process.env.EXPO_PUBLIC_SUPABASE_URL,
     process.env.EXPO_PUBLIC_SUPABASE_ANON,
@@ -126,12 +126,29 @@ export const SupabaseProvider = (props) => {
     setSession(null);
   };
 
+  const fetchPublicGroups = async () => {
+    let { data, error } = await supabase
+      .from("groups")
+      .select("*")
+      .eq("is_public", true);
+    setPublicGroups(data);
+  };
+
   const fetchQuestions = async () => {
     const { data: allQuestions, error: answersError } = await supabase
       .from("questions")
       .select("*");
 
     setQuestions(allQuestions);
+  };
+
+  const fetchLatestQuestion = async () => {
+    const { data, error } = await supabase
+      .from("questions")
+      .select("*")
+      .order("id", { ascending: false });
+
+    setLatestQuestion(data[0]);
   };
 
   async function fetchUpdatedAnswers(id) {
@@ -154,7 +171,7 @@ export const SupabaseProvider = (props) => {
 
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
-      .from("answers_test")
+      .from("answers")
       .select("*, profiles(avatar_url,full_name)")
       .order("id", { ascending: false });
 
@@ -188,6 +205,8 @@ export const SupabaseProvider = (props) => {
 
   useEffect(() => {
     fetchQuestions();
+    fetchLatestQuestion();
+    fetchPublicGroups();
     fetchAnswers();
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
@@ -241,6 +260,13 @@ export const SupabaseProvider = (props) => {
               if (payload.eventType === "DELETE") {
                 console.log(payload);
                 setRefreshGroup(true);
+              }
+
+              if (
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE"
+              ) {
+                fetchPublicGroups();
               }
             }
           )
@@ -315,7 +341,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "answers_test",
+              table: "answers",
             },
             (payload) => {
               console.log("payload: ", payload.new.question_id);
@@ -389,6 +415,9 @@ export const SupabaseProvider = (props) => {
         newPost,
         setNewPost,
         newAnswer,
+        publicGroups,
+        fetchLatestQuestion,
+        latestQuestion,
         setRefreshAnswers,
         refreshAnswers,
         fetchUpdatedAnswers,

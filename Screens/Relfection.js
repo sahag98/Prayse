@@ -82,11 +82,11 @@ const Relfection = ({ navigation, route }) => {
       return;
     }
     try {
-      const { data, error } = await supabase.from("reflections").insert({
-        user_id: currentUser?.id,
-        devo_title: route?.params?.devoTitle,
-        reflection: reflection,
-      });
+      // const { data, error } = await supabase.from("reflections").insert({
+      //   user_id: currentUser?.id,
+      //   devo_title: route?.params?.devoTitle,
+      //   reflection: reflection,
+      // });
       setReflection("");
       fetchReflections();
     } catch (error) {
@@ -112,7 +112,7 @@ const Relfection = ({ navigation, route }) => {
       },
     };
 
-    fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+    fetch(process.env.EXPO_PUBLIC_PRAYSE_TEST_MESSAGE, {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -134,22 +134,14 @@ const CommunityHome = ({ route }) => {
     getPrayers();
   }, [isFocused]);
 
-  useEffect(() => {
-    if (route.params !== undefined) {
-      navigation.navigate("PrayerGroup", {
-        group: route.params.group,
-        allGroups: route.params.allGroups,
-      });
-    }
-  }, [route?.params]);
-
   // useEffect(() => {
-  //   getUserPrayers();
-  //   getGroupUsers();
-  //   getUserGroups();
-  //   getPermission();
-  //   getPrayers();
-  // }, [route.params]);
+  //   if (route.params !== undefined) {
+  //     navigation.navigate("PrayerGroup", {
+  //       group: route.params.group,
+  //       allGroups: route.params.allGroups,
+  //     });
+  //   }
+  // }, [route?.params]);
 
   useEffect(() => {
     getUserGroups();
@@ -710,6 +702,32 @@ const CommunityHome = ({ route }) => {
               </TouchableOpacity>
             </View>
           </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("PublicGroups")}
+            style={{
+              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+              padding: 12,
+              borderRadius: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text
+              style={{
+                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                fontFamily: "Inter-Medium",
+              }}
+            >
+              Search for Public Groups
+            </Text>
+            <EvilIcons
+              name="search"
+              size={24}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+          </TouchableOpacity>
+
           {/* {userGroups?.length != 0 && isFetchingUserGroups && (
             <View
               style={{
@@ -878,53 +896,95 @@ const CommunityHome = ({ route }) => {
                         >
                           {item.groups.name}
                         </Text>
-                        <TouchableOpacity
-                          onPress={() =>
-                            copyToClipboard(item.groups.code.toString())
-                          }
-                          style={
-                            theme == "dark"
-                              ? {
-                                  padding: 7,
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  backgroundColor: "#121212",
-                                  borderRadius: 10,
-                                  gap: 8,
-                                }
-                              : {
-                                  padding: 7,
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  backgroundColor: "#f2f7ff",
-                                  borderRadius: 10,
-                                  gap: 8,
-                                }
-                          }
-                        >
-                          <Feather
-                            name="copy"
-                            size={12}
-                            color={theme == "dark" ? "white" : "#2f2d51"}
-                          />
-                          <Text
+                        {item.groups.is_public === true ? (
+                          <View
                             style={
                               theme == "dark"
                                 ? {
-                                    color: "white",
-                                    fontSize: 13,
-                                    fontFamily: "Inter-Medium",
+                                    padding: 7,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    backgroundColor: "#121212",
+                                    borderRadius: 10,
+                                    gap: 8,
                                   }
                                 : {
-                                    color: "#2f2d51",
-                                    fontSize: 13,
-                                    fontFamily: "Inter-Medium",
+                                    padding: 7,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    backgroundColor: "#f2f7ff",
+                                    borderRadius: 10,
+                                    gap: 8,
                                   }
                             }
                           >
-                            {item.groups.code}
-                          </Text>
-                        </TouchableOpacity>
+                            <Text
+                              style={
+                                theme == "dark"
+                                  ? {
+                                      color: "white",
+                                      fontSize: 13,
+                                      fontFamily: "Inter-Medium",
+                                    }
+                                  : {
+                                      color: "#2f2d51",
+                                      fontSize: 13,
+                                      fontFamily: "Inter-Medium",
+                                    }
+                              }
+                            >
+                              PUBLIC
+                            </Text>
+                          </View>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() =>
+                              copyToClipboard(item.groups.code.toString())
+                            }
+                            style={
+                              theme == "dark"
+                                ? {
+                                    padding: 7,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    backgroundColor: "#121212",
+                                    borderRadius: 10,
+                                    gap: 8,
+                                  }
+                                : {
+                                    padding: 7,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    backgroundColor: "#f2f7ff",
+                                    borderRadius: 10,
+                                    gap: 8,
+                                  }
+                            }
+                          >
+                            <Feather
+                              name="copy"
+                              size={12}
+                              color={theme == "dark" ? "white" : "#2f2d51"}
+                            />
+                            <Text
+                              style={
+                                theme == "dark"
+                                  ? {
+                                      color: "white",
+                                      fontSize: 13,
+                                      fontFamily: "Inter-Medium",
+                                    }
+                                  : {
+                                      color: "#2f2d51",
+                                      fontSize: 13,
+                                      fontFamily: "Inter-Medium",
+                                    }
+                              }
+                            >
+                              {item.groups.code}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                       {/* <Text
                         style={{

@@ -109,7 +109,13 @@ const VerseOfTheDay = ({ route }) => {
       >
         <TouchableOpacity
           style={{ marginRight: 5 }}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            if (route.params?.previousScreen) {
+              navigation.goBack();
+            } else {
+              navigation.navigate("More");
+            }
+          }}
         >
           <Ionicons
             name="chevron-back"
@@ -178,7 +184,7 @@ const VerseOfTheDay = ({ route }) => {
                 backgroundColor: theme == "dark" ? "#212121" : "white",
 
                 alignSelf: "center",
-                width: "90%",
+                width: "100%",
                 borderRadius: 10,
                 padding: 10,
                 marginTop: 25,
@@ -196,7 +202,7 @@ const VerseOfTheDay = ({ route }) => {
                 shadowRadius: 6.65,
                 elevation: 9,
                 alignSelf: "center",
-                width: "90%",
+                width: "100%",
                 borderRadius: 10,
                 padding: 10,
                 marginTop: 25,

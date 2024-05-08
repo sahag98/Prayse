@@ -36,7 +36,9 @@ const DailyReflection = ({ theme }) => {
         console.error("Error saving completion status:", error);
       });
 
-    navigation.navigate(selected);
+    navigation.navigate(selected, {
+      previousScreen: "Home",
+    });
   }
 
   async function clearPreviousDayCompletion() {
@@ -210,7 +212,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Go through and pray for all your prayers.
+              Take time to pray for all your prayers.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -277,7 +279,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Reflect on today's scripture and apply it to your day.
+              Reflect on today's verse and apply it to your day.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>

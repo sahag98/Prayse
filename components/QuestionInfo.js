@@ -20,7 +20,7 @@ const QuestionInfo = ({ item, theme }) => {
         <Text
           style={
             theme == "dark"
-              ? { color: "red", fontFamily: "Inter-Regular" }
+              ? { color: "#ff3333", fontFamily: "Inter-Regular" }
               : { color: "red", fontFamily: "Inter-Regular" }
           }
         >

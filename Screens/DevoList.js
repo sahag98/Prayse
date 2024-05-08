@@ -27,7 +27,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-const DevoList = ({ navigation }) => {
+const DevoList = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -231,7 +231,15 @@ const DevoList = ({ navigation }) => {
             justifyContent: "flex-start",
           }}
         >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => {
+              if (route.params?.previousScreen) {
+                navigation.goBack();
+              } else {
+                navigation.navigate("Devotional");
+              }
+            }}
+          >
             <AntDesign
               name="left"
               size={30}

@@ -75,15 +75,12 @@ const QuestionModal = ({
       setAnswersVisible(false);
       return;
     } else {
-      const { data, error } = await supabase.from("answers_test").insert({
+      const { data, error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
       });
-      handleCloseModal();
-      // updateAnswers();
-      // fetchAnswerforQuestion(question._id);
-      // fetchAnswers();
+
       function truncateWords(str, numWords) {
         let words = str.split(" ");
         if (words.length > numWords) {
@@ -95,28 +92,29 @@ const QuestionModal = ({
 
       let truncatedString = truncateWords(answer, 8);
 
-      // const message = {
-      //   title: "Question of the Week",
-      //   message: `${user?.full_name} has posted a answer: ${truncatedString}`,
-      //   data: {
-      //     screen: "Question",
-      //     title: itemTitle,
-      //     itemId: itemId,
-      //   },
-      // };
+      const message = {
+        title: "Question of the Week",
+        message: `${user?.full_name} has posted a answer: ${truncatedString}`,
+        data: {
+          screen: "Question",
+          title: itemTitle,
+          question_id: itemId,
+        },
+      };
 
-      // fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
-      //   method: "POST",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Accept-encoding": "gzip, deflate",
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(message),
-      // });
+      fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         showToast("error", "Something went wrong. Try again.");
       }
+      handleCloseModal();
     }
   };
 
