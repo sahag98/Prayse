@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import React from "react";
 import { Container, HeaderTitle } from "../styles/appStyles";
@@ -77,9 +78,21 @@ const More = ({ navigation }) => {
       title: "About",
       link: "https://www.prayse.app/",
     },
-
     {
       id: 4,
+      icon: (
+        <Feather
+          name="map"
+          style={{ marginRight: 10 }}
+          size={24}
+          color={theme == "dark" ? "white" : "#2f2d51"}
+        />
+      ),
+      title: "Roadmap",
+      screen: "Roadmap",
+    },
+    {
+      id: 5,
       icon: (
         <Feather
           name="shield"
@@ -92,7 +105,7 @@ const More = ({ navigation }) => {
       link: "https://www.prayse.app/privacy",
     },
     {
-      id: 5,
+      id: 6,
       icon: (
         <MaterialCommunityIcons
           name="email-edit-outline"
@@ -105,7 +118,7 @@ const More = ({ navigation }) => {
       link: "mailto:arzsahag@gmail.com",
     },
     {
-      id: 6,
+      id: 7,
       icon: (
         <AntDesign
           name="instagram"
@@ -204,82 +217,88 @@ const More = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <SettingsItems options={options} theme={theme} navigation={navigation} />
-      {Platform.OS === "ios" ? (
-        <TouchableOpacity
-          onPress={() => giveFeedback("ios")}
-          style={theme == "dark" ? styles.verseDark : styles.verse}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MaterialIcons
-              name="feedback"
-              size={24}
-              style={{ marginRight: 10 }}
+      <ScrollView>
+        <SettingsItems
+          options={options}
+          theme={theme}
+          navigation={navigation}
+        />
+        {Platform.OS === "ios" ? (
+          <TouchableOpacity
+            onPress={() => giveFeedback("ios")}
+            style={theme == "dark" ? styles.verseDark : styles.verse}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons
+                name="feedback"
+                size={24}
+                style={{ marginRight: 10 }}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        color: "white",
+                        fontSize: 16,
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        color: "#2f2d51",
+                        fontSize: 16,
+                      }
+                }
+              >
+                Feedback
+              </Text>
+            </View>
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="right"
+              size={14}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Medium",
-                      color: "white",
-                      fontSize: 16,
-                    }
-                  : {
-                      fontFamily: "Inter-Medium",
-                      color: "#2f2d51",
-                      fontSize: 16,
-                    }
-              }
-            >
-              Feedback
-            </Text>
-          </View>
-          <AntDesign
-            style={{ marginLeft: 10 }}
-            name="right"
-            size={14}
-            color={theme == "dark" ? "white" : "#2f2d51"}
-          />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          onPress={() => giveFeedback("android")}
-          style={theme == "dark" ? styles.verseDark : styles.verse}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MaterialIcons
-              name="feedback"
-              size={24}
-              style={{ marginRight: 10 }}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => giveFeedback("android")}
+            style={theme == "dark" ? styles.verseDark : styles.verse}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons
+                name="feedback"
+                size={24}
+                style={{ marginRight: 10 }}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+              <Text
+                style={
+                  theme == "dark"
+                    ? {
+                        fontFamily: "Inter-Medium",
+                        color: "#dbdbdb",
+                        fontSize: 16,
+                      }
+                    : {
+                        fontFamily: "Inter-Medium",
+                        color: "#2f2d51",
+                        fontSize: 16,
+                      }
+                }
+              >
+                Feedback
+              </Text>
+            </View>
+            <AntDesign
+              style={{ marginLeft: 10 }}
+              name="right"
+              size={14}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Medium",
-                      color: "#dbdbdb",
-                      fontSize: 16,
-                    }
-                  : {
-                      fontFamily: "Inter-Medium",
-                      color: "#2f2d51",
-                      fontSize: 16,
-                    }
-              }
-            >
-              Feedback
-            </Text>
-          </View>
-          <AntDesign
-            style={{ marginLeft: 10 }}
-            name="right"
-            size={14}
-            color={theme == "dark" ? "white" : "#2f2d51"}
-          />
-        </TouchableOpacity>
-      )}
+          </TouchableOpacity>
+        )}
+      </ScrollView>
     </Container>
   );
 };

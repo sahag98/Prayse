@@ -4,26 +4,12 @@ import { Modal } from "react-native";
 import { ModalContainer } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native";
 import { useState } from "react";
-import {
-  MaterialIcons,
-  MaterialCommunityIcons,
-  Ionicons,
-} from "@expo/vector-icons";
-import Animated, {
-  FadeIn,
-  Transition,
-  Transitioning,
-} from "react-native-reanimated";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import { useRef } from "react";
 
-import likewrite from "../assets/likewrite.png";
-
-import quest2 from "../assets/quest2.png";
-import merch from "../assets/merch.png";
-import notif from "../assets/notif.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import googleIcon from "../assets/google-icon.png";
 const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const [page, setPage] = useState(0);
 
@@ -261,7 +247,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  How can someone recieve Jesus and get saved?
+                  How can someone receive Jesus and get saved?
                 </Text>
 
                 <View
@@ -342,8 +328,124 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </View>
               </View>
             )}
-
             {page === 2 && (
+              <View style={{ alignItems: "center", gap: 10 }}>
+                <Image style={styles.img} source={googleIcon} />
+
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
+                          color: "white",
+                        }
+                      : {
+                          fontFamily: "Inter-Bold",
+                          fontSize: 22,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Google Sign In
+                </Text>
+                <Text
+                  style={
+                    theme == "dark"
+                      ? {
+                          fontFamily: "Inter-Regular",
+                          fontSize: 15,
+                          color: "#dbdbdb",
+                        }
+                      : {
+                          fontFamily: "Inter-Regular",
+                          fontSize: 15,
+                          color: "#2f2d51",
+                        }
+                  }
+                >
+                  Ability to sign in to community using your google account.
+                </Text>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: 10,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            borderColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#caecfc",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={StartOver}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "white", fontFamily: "Inter-Bold" }
+                          : { color: "#2f2d51", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Exit
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={
+                      theme == "dark"
+                        ? {
+                            width: "45%",
+                            backgroundColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#2f2d51",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
+                    onPress={onNextPage}
+                  >
+                    <Text
+                      style={
+                        theme == "dark"
+                          ? { color: "#212121", fontFamily: "Inter-Bold" }
+                          : { color: "white", fontFamily: "Inter-Bold" }
+                      }
+                    >
+                      Continue
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {page === 3 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <MaterialIcons
                   name="published-with-changes"
@@ -440,7 +542,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </View>
               </View>
             )}
-            {page === 3 && (
+            {page === 4 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Text
                   style={
@@ -562,7 +664,7 @@ export default NewFeaturesModal;
 
 const styles = StyleSheet.create({
   img: {
-    width: 250,
-    height: 250,
+    width: 80,
+    height: 80,
   },
 });

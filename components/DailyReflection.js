@@ -11,6 +11,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompletedModal from "./CompletedModal";
+import { useDispatch } from "react-redux";
+import { increaseStreakCounter } from "../redux/userReducer";
 
 const DailyReflection = ({ theme }) => {
   const navigation = useNavigation();
@@ -18,9 +20,10 @@ const DailyReflection = ({ theme }) => {
   const [isCompleteArray, setIsCompleteArray] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [todaysItems, setTodaysItems] = useState([]);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     getTodaysItems();
+    // clearTodaysCompletion();
     clearPreviousDayCompletion();
   }, [isFocused]);
 
@@ -95,7 +98,7 @@ const DailyReflection = ({ theme }) => {
 
     if (completedItems.length === 3 && !modalShown) {
       setShowModal(true);
-
+      dispatch(increaseStreakCounter());
       // Update AsyncStorage to indicate that the modal has been shown for today
       AsyncStorage.setItem(modalShownKey, "true").catch((error) => {
         console.error("Error saving modal shown status:", error);
@@ -125,6 +128,7 @@ const DailyReflection = ({ theme }) => {
     <View
       style={{
         flex: 1,
+
         justifyContent: "flex-start",
         alignItems: "flex-start",
         width: "100%",
@@ -137,27 +141,26 @@ const DailyReflection = ({ theme }) => {
         showModal={showModal}
         setShowModal={setShowModal}
       />
-      {/* <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-          alignItems: "center",
-        }}
-      ></View> */}
-      <View style={{ gap: 15, width: "100%" }}>
-        {/* <Pressable onPress={clearTodaysCompletion}>
-          <Text style={{ color: "red" }}>Reset</Text>
-        </Pressable> */}
+
+      <View style={{ gap: 10, width: "100%" }}>
         <TouchableOpacity
           onPress={() => handleComplete("PrayerRoom")}
           style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 20,
           }}
         >
+          <View
+            style={{
+              position: "absolute",
+              width: 3,
+              height: "75%",
+              top: "50%",
+              left: 11,
+              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+            }}
+          />
           <View
             style={{
               width: 25,
@@ -181,6 +184,8 @@ const DailyReflection = ({ theme }) => {
             style={{
               backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
+              marginLeft: 15,
+              width: "100%",
               flex: 1,
               borderRadius: 10,
               gap: 10,
@@ -212,7 +217,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Take time to pray for all your prayers.
+              Take a moment to pray for all your prayers.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -222,9 +227,28 @@ const DailyReflection = ({ theme }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 20,
           }}
         >
+          <View
+            style={{
+              position: "absolute",
+              width: 3,
+              height: "50%",
+              bottom: "50%",
+              left: 11,
+              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              width: 3,
+              height: "75%",
+              top: "50%",
+              left: 11,
+              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+            }}
+          />
           <View
             style={{
               width: 25,
@@ -248,6 +272,7 @@ const DailyReflection = ({ theme }) => {
             style={{
               backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
+              marginLeft: 15,
               flex: 1,
               borderRadius: 10,
               gap: 10,
@@ -279,7 +304,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Reflect on today's verse and apply it to your day.
+              Reflect on the daily verse and apply it to your day.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -289,9 +314,18 @@ const DailyReflection = ({ theme }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 20,
           }}
         >
+          <View
+            style={{
+              position: "absolute",
+              width: 3,
+              height: "50%",
+              bottom: "50%",
+              left: 11,
+              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+            }}
+          />
           <View
             style={{
               width: 25,
@@ -316,6 +350,7 @@ const DailyReflection = ({ theme }) => {
               backgroundColor: theme == "dark" ? "#212121" : "white",
               padding: 15,
               flex: 1,
+              marginLeft: 15,
               borderRadius: 10,
               gap: 10,
             }}

@@ -140,6 +140,7 @@ async function registerForPushNotificationsAsync() {
 
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
+  const streak = useSelector((state) => state.user.streak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
   const [openings, setOpenings] = useState(0);
@@ -360,7 +361,7 @@ const Welcome = ({ navigation }) => {
         setIcon(
           <Feather
             name="sun"
-            size={30}
+            size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
           />
         );
@@ -369,7 +370,7 @@ const Welcome = ({ navigation }) => {
         setIcon(
           <Feather
             name="sun"
-            size={30}
+            size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
           />
         );
@@ -378,7 +379,7 @@ const Welcome = ({ navigation }) => {
         setIcon(
           <Feather
             name="moon"
-            size={30}
+            size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
           />
         );
@@ -581,7 +582,15 @@ const Welcome = ({ navigation }) => {
           {icon}
         </Animated.View>
 
-        <View style={{ position: "relative", padding: 10 }}>
+        <View
+          style={{
+            position: "relative",
+            flexDirection: "row",
+            alignItems: "center",
+
+            gap: 0,
+          }}
+        >
           <UpdateModal
             theme={theme}
             isUpdateAvailable={isUpdateAvailable}
@@ -593,36 +602,56 @@ const Welcome = ({ navigation }) => {
             theme={theme}
             setIsReminderOn={setIsReminderOff}
           />
-          <TouchableOpacity
-            onPress={() => navigation.navigate("NotificationScreen")}
-            style={
-              theme == "dark"
-                ? {
-                    backgroundColor: "#212121",
-                    borderRadius: 50,
-                    padding: 12,
-                  }
-                : {
-                    backgroundColor: "#2f2d51",
-                    borderRadius: 50,
-                    padding: 12,
-                  }
-            }
-          >
-            <Ionicons name="notifications-outline" size={24} color="white" />
-          </TouchableOpacity>
-          <Badge
-            size={18}
-            style={{
-              position: "absolute",
-              fontFamily: "Inter-Medium",
-              fontSize: 12,
-              top: 8,
-              right: 6,
-            }}
-          >
-            {notis.length}
-          </Badge>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+            <MaterialCommunityIcons
+              name="hands-pray"
+              size={20}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+            <Text
+              style={{
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontSize: 12,
+                fontFamily: "Inter-Bold",
+              }}
+            >
+              {streak ?? 0}
+            </Text>
+          </View>
+          <View style={{ position: "relative", padding: 8 }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("NotificationScreen")}
+              style={
+                theme == "dark"
+                  ? {
+                      borderRadius: 50,
+                      padding: 8,
+                    }
+                  : {
+                      borderRadius: 50,
+                      padding: 8,
+                    }
+              }
+            >
+              <Ionicons
+                name="notifications-outline"
+                size={20}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+            </TouchableOpacity>
+            <Badge
+              size={14}
+              style={{
+                position: "absolute",
+                fontFamily: "Inter-Medium",
+                fontSize: 11,
+                top: 10,
+                right: 8,
+              }}
+            >
+              {notis.length}
+            </Badge>
+          </View>
         </View>
       </View>
       <DailyReflection theme={theme} />
@@ -1120,7 +1149,7 @@ const Welcome = ({ navigation }) => {
                       }
                 }
               >
-                What's New in v9.3!
+                What's New in v9.4!
               </Text>
             </View>
             <AntDesign
@@ -1656,7 +1685,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   greeting: {
-    fontSize: 22,
+    fontSize: 17,
     // marginVertical: 5,
     fontFamily: "Inter-Bold",
     letterSpacing: 2,
@@ -1665,11 +1694,11 @@ const styles = StyleSheet.create({
   },
   greetingDark: {
     // marginVertical: 5,
-    fontSize: 22,
+    fontSize: 17,
     fontFamily: "Inter-Black",
     alignSelf: "flex-start",
     letterSpacing: 2,
-    color: "white",
+    color: "#d2d2d2",
   },
   greetingBlack: {
     marginVertical: 5,

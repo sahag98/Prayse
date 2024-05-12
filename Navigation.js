@@ -45,6 +45,7 @@ import { checkUserGroups } from "./redux/userReducer";
 import QuestionList from "./Screens/QuestionList";
 import OurPresentation from "./Screens/OurPresentation";
 import PublicGroups from "./Screens/PublicGroups";
+import RoadMap from "./Screens/RoadMap";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -252,6 +253,15 @@ const Navigation = () => {
               tabBarButton: () => null,
             })}
             component={DevoList}
+          />
+          <Tab.Screen
+            name="Roadmap"
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={RoadMap}
           />
           <Tab.Screen
             name="PublicGroups"

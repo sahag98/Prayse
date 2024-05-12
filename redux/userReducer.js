@@ -6,6 +6,7 @@ const initialState = {
   checkmarkVisible: false,
   userGroups: [],
   theme: Appearance.getColorScheme(),
+  streak: 0,
   expoToken: "",
   prayers: [],
   fontSize: 15,
@@ -30,6 +31,9 @@ export const userSlice = createSlice({
     },
     small: (state) => {
       state.fontSize = 12;
+    },
+    increaseStreakCounter: (state) => {
+      state.streak = 1;
     },
     openCheckmark: (state, action) => {
       state.checkmarkVisible = action.payload;
@@ -59,6 +63,7 @@ export const {
   addFolder,
   regular,
   small,
+  increaseStreakCounter,
   large,
   removeUser,
   openCheckmark,
