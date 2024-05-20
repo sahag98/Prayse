@@ -304,37 +304,6 @@ const GroupPrayerItem = ({
     }
     setLoadingPraises(false);
   }
-  // const sendUrgentAnnouncement = async (urgentMessage, user) => {
-  //   let { data: members, error } = await supabase
-  //     .from("members")
-  //     .select("*, profiles(id, expoToken)")
-  //     .eq("group_id", currGroup?.groups?.id)
-  //     .order("id", { ascending: false });
-
-  //   members.map(async (m) => {
-  //     if (m.profiles.expoToken != currentUser.expoToken) {
-  //       const message = {
-  //         to: m.profiles.expoToken,
-  //         sound: "default",
-  //         title: `${currGroup.groups.name} 📢`,
-  //         body: `${user}: ${urgentMessage}`,
-  //         data: {
-  //           screen: "Community",
-  //           currGroup: currGroup,
-  //           allGroups: allGroups,
-  //         },
-  //       };
-  //       await axios.post("https://exp.host/--/api/v2/push/send", message, {
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Accept-encoding": "gzip, deflate",
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //     }
-  //   });
-  //   showToast("success", "Members are notified.");
-  // };
 
   const openReactionModal = (item) => {
     setIsPressedLong(item);
@@ -462,10 +431,11 @@ const GroupPrayerItem = ({
           <View
             style={{
               flexDirection: "row",
+              justifyContent: "flex-end",
               alignItems: "center",
+
               padding: 3,
               gap: 10,
-              justifyContent: "space-between",
             }}
           >
             <Text

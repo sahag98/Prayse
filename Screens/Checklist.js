@@ -190,34 +190,6 @@ const Checklist = ({ navigation }) => {
         onEndReachedThreshold={0}
         initialNumToRender={8}
         windowSize={8}
-        // ListHeaderComponent={() => (
-        //   <TouchableOpacity
-        //     onPress={() => {
-        //       dispatch(deleteAll());
-        //       navigation.navigate("Home");
-        //     }}
-        //     style={{ padding: 10, alignSelf: "flex-end" }}
-        //   >
-        //     <Text
-        //       style={
-        //         theme == "dark"
-        //           ? { fontFamily: "Inter-Bold", color: "#e24774" }
-        //           : { fontFamily: "Inter-Bold", color: "#ff6262" }
-        //       }
-        //     >
-        //       Clear all
-        //     </Text>
-        //   </TouchableOpacity>
-        // )}
-        // ItemSeparatorComponent={() => (
-        //   <Divider
-        //     style={
-        //       theme == "dark"
-        //         ? { backgroundColor: "#525252" }
-        //         : { backgroundColor: "#2f2d51" }
-        //     }
-        //   />
-        // )}
         contentContainerStyle={{ paddingTop: 10 }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}

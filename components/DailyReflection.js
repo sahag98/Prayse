@@ -154,7 +154,7 @@ const DailyReflection = ({ theme }) => {
           <View
             style={{
               position: "absolute",
-              width: 3,
+              width: 4,
               height: "75%",
               top: "50%",
               left: 11,
@@ -232,7 +232,7 @@ const DailyReflection = ({ theme }) => {
           <View
             style={{
               position: "absolute",
-              width: 3,
+              width: 4,
               height: "50%",
               bottom: "50%",
               left: 11,
@@ -242,7 +242,7 @@ const DailyReflection = ({ theme }) => {
           <View
             style={{
               position: "absolute",
-              width: 3,
+              width: 4,
               height: "75%",
               top: "50%",
               left: 11,
@@ -319,7 +319,7 @@ const DailyReflection = ({ theme }) => {
           <View
             style={{
               position: "absolute",
-              width: 3,
+              width: 4,
               height: "50%",
               bottom: "50%",
               left: 11,

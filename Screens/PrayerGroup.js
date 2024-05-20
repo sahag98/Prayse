@@ -10,20 +10,19 @@ import React, { useEffect, useState, useRef } from "react";
 import * as Clipboard from "expo-clipboard";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 import { useSelector } from "react-redux";
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { useSupabase } from "../context/useSupabase";
 import axios from "axios";
 import GroupInfoModal from "../components/GroupInfoModal";
 import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useIsFocused } from "@react-navigation/native";
-import AnnounceMeeting from "../components/AnnounceMeeting";
+
 import Toast from "react-native-toast-message";
 
-import ToolTip from "../components/ToolTip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NotifyFirstMsg from "../components/NotifyFirstMsg";
-import VideoCall from "../components/VideoCall";
+
 import Chat from "../components/Chat";
+import GroupPrayerList from "../components/GroupPrayerList";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -442,10 +441,9 @@ const PrayerGroup = ({ route, navigation }) => {
           </TouchableOpacity>
         </HeaderView>
 
-        {/* <View
+        <View
           style={{
             flexDirection: "row",
-            // backgroundColor: "#212121",
             paddingBottom: 10,
             justifyContent: "space-evenly",
           }}
@@ -453,7 +451,14 @@ const PrayerGroup = ({ route, navigation }) => {
           <Text
             onPress={() => setToggle("chat")}
             style={{
-              color: toggle == "chat" ? "white" : "#d2d2d2",
+              color:
+                theme == "dark"
+                  ? toggle == "chat"
+                    ? "white"
+                    : "#d2d2d2"
+                  : toggle == "chat"
+                  ? "#2f2d51"
+                  : "#d2d2d2",
               textDecorationLine: "underline",
               fontFamily: toggle == "chat" ? "Inter-Bold" : "Inter-Medium",
             }}
@@ -461,40 +466,55 @@ const PrayerGroup = ({ route, navigation }) => {
             Chat
           </Text>
           <Text
-            onPress={() => setToggle("video")}
+            onPress={() => setToggle("prayerlist")}
             style={{
-              color: toggle == "video" ? "white" : "#d2d2d2",
+              color:
+                theme == "dark"
+                  ? toggle == "prayerlist"
+                    ? "white"
+                    : "#9a9a9a"
+                  : toggle == "prayerlist"
+                  ? "#2f2d51"
+                  : "#9a9a9a",
               textDecorationLine: "underline",
-              fontFamily: toggle == "video" ? "Inter-Bold" : "Inter-Medium",
+              fontFamily:
+                toggle == "prayerlist" ? "Inter-Bold" : "Inter-Medium",
             }}
           >
             Prayer List
           </Text>
-        </View> */}
+        </View>
 
-        {/* {toggle == "chat" ? ( */}
-        <Chat
-          theme={theme}
-          currentUser={currentUser}
-          onlineUsers={onlineUsers}
-          areMessagesLoading={areMessagesLoading}
-          groupMessages={groupMessages}
-          setGroupMessages={setGroupMessages}
-          flatListRef={flatListRef}
-          supabase={supabase}
-          currGroup={currGroup}
-          setRefreshMsgLikes={setRefreshMsgLikes}
-          refreshMsgLikes={refreshMsgLikes}
-          allGroups={allGroups}
-          showToast={showToast}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          handleContentSizeChange={handleContentSizeChange}
-          sendMessage={sendMessage}
-        />
-        {/* ) : (
-          <VideoCall />
-        )} */}
+        {toggle == "chat" ? (
+          <Chat
+            theme={theme}
+            currentUser={currentUser}
+            onlineUsers={onlineUsers}
+            areMessagesLoading={areMessagesLoading}
+            groupMessages={groupMessages}
+            setGroupMessages={setGroupMessages}
+            flatListRef={flatListRef}
+            supabase={supabase}
+            currGroup={currGroup}
+            setRefreshMsgLikes={setRefreshMsgLikes}
+            refreshMsgLikes={refreshMsgLikes}
+            allGroups={allGroups}
+            showToast={showToast}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+            handleContentSizeChange={handleContentSizeChange}
+            sendMessage={sendMessage}
+          />
+        ) : (
+          <GroupPrayerList
+            theme={theme}
+            currentUser={currentUser}
+            onlineUsers={onlineUsers}
+            supabase={supabase}
+            currGroup={currGroup}
+            allGroups={allGroups}
+          />
+        )}
       </PrayerContainer>
     </KeyboardAvoidingView>
   );
