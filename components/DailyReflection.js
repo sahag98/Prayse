@@ -141,7 +141,15 @@ const DailyReflection = ({ theme }) => {
         showModal={showModal}
         setShowModal={setShowModal}
       />
-
+      <Text
+        style={{
+          color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+          fontFamily: "Inter-Bold",
+          fontSize: 15,
+        }}
+      >
+        Daily Devotions
+      </Text>
       <View style={{ gap: 10, width: "100%" }}>
         <TouchableOpacity
           onPress={() => handleComplete("PrayerRoom")}

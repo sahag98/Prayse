@@ -69,6 +69,11 @@ import noreminder from "../assets/noreminders.png";
 import DailyReflection from "../components/DailyReflection";
 import GospelofJesus from "../components/GospelofJesus";
 import QuestionoftheWeek from "../components/QuestionoftheWeek";
+import StreakSlider from "../components/StreakSlider";
+import {
+  deleteAppStreakCounter,
+  increaseAppStreakCounter,
+} from "../redux/userReducer";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -141,6 +146,7 @@ async function registerForPushNotificationsAsync() {
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const streak = useSelector((state) => state.user.streak);
+  const appstreak = useSelector((state) => state.user.appstreak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
   const [openings, setOpenings] = useState(0);
@@ -174,9 +180,7 @@ const Welcome = ({ navigation }) => {
   const [quickprayervalue, setQuickprayervalue] = useState("");
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
   const [notiVisible, setNotiVisible] = useState(false);
-  const [reminderVisible, setReminderVisible] = useState(false);
-  const [image, setImage] = useState(null);
-
+  const [isShowingStreak, setIsShowingStreak] = useState(false);
   const doFadeInAnimation = () => {
     welcomeFadeIn.value = withTiming(1, {
       duration: 2000,
@@ -336,6 +340,20 @@ const Welcome = ({ navigation }) => {
   }, [lastNotificationResponse]);
 
   useEffect(() => {
+    async function appStreak() {
+      const currentDate = new Date().toISOString().split("T")[0];
+      const keys = await AsyncStorage.getAllKeys();
+      const todayStreak = keys.filter((key) =>
+        key.startsWith(`appStreak_${currentDate}`)
+      );
+
+      if (todayStreak.length === 0) {
+        await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
+        dispatch(increaseAppStreakCounter());
+      }
+    }
+    appStreak();
+
     doFadeInAnimation();
     const loadOpenings = async () => {
       const reminder = await AsyncStorage.getItem("ReminderOn");
@@ -602,7 +620,10 @@ const Welcome = ({ navigation }) => {
             theme={theme}
             setIsReminderOn={setIsReminderOff}
           />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+          <TouchableOpacity
+            onPress={() => setIsShowingStreak((prev) => !prev)}
+            style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+          >
             <MaterialCommunityIcons
               name="hands-pray"
               size={20}
@@ -615,9 +636,18 @@ const Welcome = ({ navigation }) => {
                 fontFamily: "Inter-Bold",
               }}
             >
-              {streak ?? 0}
+              {appstreak ?? 0}
             </Text>
-          </View>
+          </TouchableOpacity>
+
+          <StreakSlider
+            appstreak={appstreak}
+            streak={streak}
+            theme={theme}
+            setIsShowingStreak={setIsShowingStreak}
+            isShowingStreak={isShowingStreak}
+          />
+
           <View style={{ position: "relative", padding: 8 }}>
             <TouchableOpacity
               onPress={() => navigation.navigate("NotificationScreen")}

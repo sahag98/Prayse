@@ -7,6 +7,7 @@ const initialState = {
   userGroups: [],
   theme: Appearance.getColorScheme(),
   streak: 0,
+  appstreak: 0,
   expoToken: "",
   prayers: [],
   fontSize: 15,
@@ -33,7 +34,21 @@ export const userSlice = createSlice({
       state.fontSize = 12;
     },
     increaseStreakCounter: (state) => {
-      state.streak = 1;
+      if (state.streak) {
+        state.streak = state.streak + 1;
+      } else {
+        state.streak = 1;
+      }
+    },
+    increaseAppStreakCounter: (state) => {
+      if (state.appstreak) {
+        state.appstreak = state.appstreak + 1;
+      } else {
+        state.appstreak = 1;
+      }
+    },
+    deleteAppStreakCounter: (state) => {
+      state.appstreak = 0;
     },
     openCheckmark: (state, action) => {
       state.checkmarkVisible = action.payload;
@@ -64,6 +79,8 @@ export const {
   regular,
   small,
   increaseStreakCounter,
+  increaseAppStreakCounter,
+  deleteAppStreakCounter,
   large,
   removeUser,
   openCheckmark,
