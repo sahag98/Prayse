@@ -10,6 +10,7 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { useRef } from "react";
 
 import googleIcon from "../assets/google-icon.png";
+import { ProgressBar } from "react-native-paper";
 const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const [page, setPage] = useState(0);
 
@@ -85,6 +86,12 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
           >
             What's new!
           </Text>
+          <ProgressBar
+            animatedValue={0.5}
+            style={{ height: 10, borderRadius: 10 }}
+            // progress={15 / 30}
+            color="green"
+          />
           <View ref={ref}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>

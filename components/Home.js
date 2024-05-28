@@ -117,7 +117,7 @@ const Home = ({
     <PrayerContainer
       style={
         theme == "dark"
-          ? { position: "relative", backgroundColor: "#121212" }
+          ? { position: "relative", backgroundColor: "" }
           : { backgroundColor: "#F2F7FF" }
       }
     >

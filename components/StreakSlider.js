@@ -15,6 +15,8 @@ import {
   MaterialCommunityIcons,
   Feather,
 } from "@expo/vector-icons";
+import { ProgressBar } from "react-native-paper";
+
 const StreakSlider = ({
   isShowingStreak,
   setIsShowingStreak,
@@ -52,8 +54,8 @@ const StreakSlider = ({
       <ModalContainer
         style={
           theme == "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+            ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
         <ModalView2
@@ -62,12 +64,12 @@ const StreakSlider = ({
               ? {
                   backgroundColor: "#212121",
                   width: "100%",
-                  gap: 15,
+                  gap: 10,
                 }
               : {
                   backgroundColor: "#b7d3ff",
                   width: "100%",
-                  gap: 15,
+                  gap: 10,
                 }
           }
         >
@@ -78,10 +80,21 @@ const StreakSlider = ({
             size={22}
             color={theme == "dark" ? "white" : "#2f2d51"}
           />
+          <Text
+            style={{
+              textAlign: "center",
+              fontFamily: "Inter-Bold",
+              fontSize: 17,
+              color: theme == "dark" ? "white" : "#2f2d51",
+            }}
+          >
+            Awesome Job!
+          </Text>
           <View
             style={{
               width: "100%",
               marginTop: 10,
+
               flexDirection: "row",
               alignItems: "center",
             }}
@@ -158,14 +171,48 @@ const StreakSlider = ({
           </View>
           <Text
             style={{
+              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              fontFamily: "Inter-Medium",
+              textAlign: "center",
+              fontSize: 13,
+              marginTop: 5,
+            }}
+          >
+            Thank you for praising God with us every day.
+          </Text>
+          <View
+            style={{
+              width: "100%",
+              marginTop: 5,
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontFamily: "Inter-Medium",
+              }}
+            >
+              {((appstreak / 30) * 100).toFixed(1)}%
+            </Text>
+            <ProgressBar
+              style={{ height: 10, borderRadius: 10 }}
+              progress={appstreak / 30}
+              color="green"
+            />
+          </View>
+          <Text
+            style={{
               color: theme == "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Regular",
               fontSize: 13,
-              lineHeight: 21,
+              textAlign: "center",
             }}
           >
-            Thank you for using our app in your daily walk with God!
+            Reach 30 days for a chance to win a special gift!
           </Text>
+
           <TouchableOpacity
             onPress={onShare}
             style={{
@@ -177,8 +224,9 @@ const StreakSlider = ({
           >
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                 fontSize: 13,
+                fontFamily: "Inter-Bold",
               }}
             >
               Share
@@ -186,7 +234,7 @@ const StreakSlider = ({
             <Feather
               name="share"
               size={20}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
             />
           </TouchableOpacity>
         </ModalView2>

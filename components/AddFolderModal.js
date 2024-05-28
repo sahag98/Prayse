@@ -41,8 +41,8 @@ const AddFolderModal = ({
         <ModalContainer
           style={
             theme == "dark"
-              ? { backgroundColor: "#121212" }
-              : { backgroundColor: "#F2F7FF" }
+              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
           }
         >
           <ModalView

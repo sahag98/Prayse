@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  ImageBackground,
 } from "react-native";
 
 import {
@@ -21,7 +22,7 @@ import {
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider } from "react-native-paper";
+import { Button, Divider, ProgressBar } from "react-native-paper";
 import {
   HeaderTitle,
   ModalAction,
@@ -74,7 +75,9 @@ import {
   deleteAppStreakCounter,
   increaseAppStreakCounter,
 } from "../redux/userReducer";
+import { ScrollView } from "react-native";
 
+import bgImg from "../assets/bgImage5.png";
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -142,6 +145,8 @@ async function registerForPushNotificationsAsync() {
   }
   return token;
 }
+
+const image = { uri: "https://legacy.reactjs.org/logo-og.png" };
 
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -544,17 +549,17 @@ const Welcome = ({ navigation }) => {
 
   return (
     <WelcomeContainer
-      contentContainerStyle={{ alignItems: "flex-start" }}
+      // contentContainerStyle={{ alignItems: "flex-start" }}
       onLayout={onLayoutRootView}
       style={
         theme == "dark"
           ? {
               display: "flex",
               position: "relative",
-
+              // flex: 1,
               // alignItems: "center",
 
-              backgroundColor: "#121212",
+              // backgroundColor: "#121212",
             }
           : theme == "BlackWhite"
           ? {
@@ -566,6 +571,7 @@ const Welcome = ({ navigation }) => {
           : {
               display: "flex",
               position: "relative",
+              flex: 1,
               // alignItems: "center",
               backgroundColor: "#F2F7FF",
             }
@@ -684,7 +690,12 @@ const Welcome = ({ navigation }) => {
           </View>
         </View>
       </View>
-      <DailyReflection theme={theme} />
+      {/* <ProgressBar
+        style={{ height: 10, borderRadius: 10 }}
+        progress={15 / 30}
+        color="green"
+      /> */}
+      <DailyReflection streak={streak} appStreak={appstreak} theme={theme} />
       <View style={{ width: "100%", flex: 1 }}>
         <View
           style={
@@ -1537,6 +1548,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F7FF",
     justifyContent: "center",
     alignItems: "center",
+  },
+  bgImg: {
+    flex: 1,
+    justifyContent: "center",
   },
   containerDark: {
     flex: 1,

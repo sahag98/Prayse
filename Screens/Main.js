@@ -5,8 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import Folder from "../components/Folder";
 import useIsReady from "../hooks/useIsReady";
-import { ActivityIndicator, View } from "react-native";
-
+import { ActivityIndicator, ImageBackground, View } from "react-native";
+import bgImg from "../assets/bgImage5.png";
 export default function Main({ navigation }) {
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -50,7 +50,7 @@ export default function Main({ navigation }) {
       <Container
         style={
           theme == "dark"
-            ? { backgroundColor: "#121212" }
+            ? { backgroundColor: "" }
             : theme == "BlackWhite"
             ? { backgroundColor: "white" }
             : { backgroundColor: "#F2F7FF" }

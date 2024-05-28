@@ -10,6 +10,7 @@ import {
   Linking,
   TextInput,
   KeyboardAvoidingView,
+  ImageBackground,
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
@@ -30,7 +31,7 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-
+import bgImg from "../assets/bgImage5.png";
 const Devotional = ({ navigation }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
@@ -100,132 +101,138 @@ const Devotional = ({ navigation }) => {
   }
 
   return (
-    <ScrollView
-      style={{ backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff" }}
-      contentContainerStyle={{ flex: 1 }}
-      refreshControl={
-        <RefreshControl refreshing={refresh} onRefresh={loadDevotionals} />
-      }
-      showsVerticalScrollIndicator={false}
+    <ImageBackground
+      source={bgImg}
+      resizeMode="cover"
+      style={{ flex: 1, justifyContent: "center" }}
     >
-      {refresh ? (
-        <ActivityIndicator
-          size="large"
-          color={theme == "dark" ? "white" : "red"}
-        />
-      ) : null}
-      <Container
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-                justifyContent: "center",
-                alignItems: "center",
-              }
+      <ScrollView
+        style={{ backgroundColor: theme == "dark" ? "" : "#f2f7ff" }}
+        contentContainerStyle={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={loadDevotionals} />
         }
+        showsVerticalScrollIndicator={false}
       >
-        <View
-          style={{
-            backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-
-            padding: 10,
-            borderRadius: 10,
-            gap: 5,
-          }}
+        {refresh ? (
+          <ActivityIndicator
+            size="large"
+            color={theme == "dark" ? "white" : "red"}
+          />
+        ) : null}
+        <Container
+          style={
+            theme == "dark"
+              ? {
+                  backgroundColor: "",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }
+              : {
+                  backgroundColor: "#F2F7FF",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }
+          }
         >
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
               width: "100%",
-              gap: 10,
-            }}
-          >
-            <Image style={styles.img} source={tbf} />
-            <Text
-              style={{
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              triedbyfire
-            </Text>
-
-            <Text
-              style={{
-                marginLeft: "auto",
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              {convertDate(devotionals[0]?.date)}
-            </Text>
-          </View>
-          <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Black",
-              letterSpacing: 1,
-              fontSize: 23,
-            }}
-          >
-            {devotionals[0]?.title}
-          </Text>
-          <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Regular",
-              textAlign: "left",
-              fontSize: 16,
-              marginBottom: 10,
-            }}
-          >
-            {devotionals[0]?.description}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("DevoList")}
-            style={{
-              width: "100%",
-              marginTop: 10,
-              padding: 15,
-              borderRadius: 10,
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
               justifyContent: "center",
               alignItems: "center",
+
+              padding: 10,
+              borderRadius: 10,
+              gap: 5,
             }}
           >
-            <Text
+            <View
               style={{
-                fontFamily: "Inter-Bold",
-                fontSize: 15,
-                color: theme == "dark" ? "#a5c9ff" : "white",
+                flexDirection: "row",
+                alignItems: "center",
+                width: "100%",
+                gap: 10,
               }}
             >
-              View
+              <Image style={styles.img} source={tbf} />
+              <Text
+                style={{
+                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                triedbyfire
+              </Text>
+
+              <Text
+                style={{
+                  marginLeft: "auto",
+                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                {convertDate(devotionals[0]?.date)}
+              </Text>
+            </View>
+            <Text
+              style={{
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontFamily: "Inter-Black",
+                letterSpacing: 1,
+                fontSize: 23,
+              }}
+            >
+              {devotionals[0]?.title}
             </Text>
-          </TouchableOpacity>
-        </View>
-        <Text
-          onPress={loadDevotionals}
-          style={{
-            marginTop: 20,
-            fontFamily: "Inter-Medium",
-            fontSize: 12,
-            color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-          }}
-        >
-          Pull page down or press here to refresh!
-        </Text>
-      </Container>
-    </ScrollView>
+            <Text
+              style={{
+                color: theme == "dark" ? "white" : "#2f2d51",
+                fontFamily: "Inter-Regular",
+                textAlign: "left",
+                fontSize: 16,
+                marginBottom: 10,
+              }}
+            >
+              {devotionals[0]?.description}
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("DevoList")}
+              style={{
+                width: "100%",
+                marginTop: 10,
+                padding: 15,
+                borderRadius: 10,
+                backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Inter-Bold",
+                  fontSize: 15,
+                  color: theme == "dark" ? "#a5c9ff" : "white",
+                }}
+              >
+                View
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text
+            onPress={loadDevotionals}
+            style={{
+              marginTop: 20,
+              fontFamily: "Inter-Medium",
+              fontSize: 12,
+              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+            }}
+          >
+            Pull page down or press here to refresh!
+          </Text>
+        </Container>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 

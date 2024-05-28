@@ -22,15 +22,17 @@ export const colors = {
 const statusBarHeight = Constants.statusBarHeight;
 
 export const WelcomeContainer = styled.ScrollView`
-  background-color: "${colors.primary}";
+  /* background-color: "${colors.primary}"; */
   padding: 15px;
+  height: "100%";
   padding-bottom: 0px;
   flex: 1;
+
   padding-top: ${statusBarHeight}px;
 `;
 
 export const Container = styled.View`
-  background-color: "${colors.primary}";
+  /* background-color: "${colors.primary}"; */
   padding: 15px;
   padding-bottom: 0px;
   flex: 1;
@@ -38,7 +40,7 @@ export const Container = styled.View`
 `;
 
 export const PrayerContainer = styled.View`
-  background-color: "${colors.primary}";
+  /* background-color: "${colors.primary}"; */
   padding: 0px;
   padding-bottom: 0px;
   flex: 1;
@@ -228,7 +230,7 @@ export const ModalView = styled.View`
 export const ModalView2 = styled.View`
   background-color: ${colors.secondary};
   border-radius: 20px;
-  padding: 20px;
+  padding: 15px;
 `;
 
 export const ToolTipView = styled.View`

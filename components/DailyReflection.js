@@ -13,12 +13,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompletedModal from "./CompletedModal";
 import { useDispatch } from "react-redux";
 import { increaseStreakCounter } from "../redux/userReducer";
+import StreakSlider from "./StreakSlider";
+import GiveawayModal from "./GiveawayModal";
 
-const DailyReflection = ({ theme }) => {
+const DailyReflection = ({ theme, streak, appStreak }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isCompleteArray, setIsCompleteArray] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [isShowingStreak, setIsShowingStreak] = useState(false);
+  const [isShowingGiveaway, setIsShowingGiveaway] = useState(false);
   const [todaysItems, setTodaysItems] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -87,6 +90,7 @@ const DailyReflection = ({ theme }) => {
   }
 
   async function getTodaysItems() {
+    console.log("getting todays items");
     const items = await getCompletionStatusForToday();
     setTodaysItems(items);
 
@@ -94,10 +98,20 @@ const DailyReflection = ({ theme }) => {
 
     const currentDate = new Date().toISOString().split("T")[0];
     const modalShownKey = `modal_shown_${currentDate}`;
+    const progressDoneKey = `modal_shown_${currentDate}`;
     const modalShown = await AsyncStorage.getItem(modalShownKey);
 
+    if (appStreak === 2 && !progressDoneKey) {
+      console.log("progress done!");
+      setIsShowingGiveaway(true);
+      setIsShowingStreak(false);
+      AsyncStorage.setItem(progressDoneKey, "true").catch((error) => {
+        console.error("Error saving modal shown status:", error);
+      });
+    }
+
     if (completedItems.length === 3 && !modalShown) {
-      setShowModal(true);
+      setIsShowingStreak(true);
       dispatch(increaseStreakCounter());
       // Update AsyncStorage to indicate that the modal has been shown for today
       AsyncStorage.setItem(modalShownKey, "true").catch((error) => {
@@ -136,10 +150,19 @@ const DailyReflection = ({ theme }) => {
         gap: 10,
       }}
     >
-      <CompletedModal
+      <GiveawayModal
+        isShowingGiveaway={isShowingGiveaway}
+        setIsShowingGiveaway={setIsShowingGiveaway}
         theme={theme}
-        showModal={showModal}
-        setShowModal={setShowModal}
+        appstreak={appStreak}
+        streak={streak}
+      />
+      <StreakSlider
+        appstreak={appStreak}
+        streak={streak}
+        theme={theme}
+        setIsShowingStreak={setIsShowingStreak}
+        isShowingStreak={isShowingStreak}
       />
       <Text
         style={{
@@ -312,7 +335,7 @@ const DailyReflection = ({ theme }) => {
                 lineHeight: 22,
               }}
             >
-              Reflect on the daily verse and apply it to your day.
+              Read the daily verse and apply it to your day.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>

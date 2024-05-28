@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Share,
+  ImageBackground,
 } from "react-native";
 import { client } from "../lib/client";
 import "react-native-url-polyfill/auto";
@@ -26,7 +27,7 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-
+import bgImg from "../assets/bgImage5.png";
 const DevoList = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
@@ -221,7 +222,7 @@ const DevoList = ({ navigation, route }) => {
       <Container
         style={
           theme == "dark"
-            ? { backgroundColor: "#121212" }
+            ? { backgroundColor: "" }
             : { backgroundColor: "#F2F7FF" }
         }
       >
@@ -370,7 +371,11 @@ const DevoList = ({ navigation, route }) => {
                   onPress={() =>
                     navigation.navigate("Reflection", { devoTitle: d.title })
                   }
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
                 >
                   <FontAwesome
                     style={{ marginBottom: 4 }}
@@ -399,7 +404,11 @@ const DevoList = ({ navigation, route }) => {
                   onPress={() =>
                     onShare(d.title, d.description, d.day, d.content)
                   }
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
                 >
                   <FontAwesome5
                     name="share"
