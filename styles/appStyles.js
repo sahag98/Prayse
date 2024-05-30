@@ -87,7 +87,7 @@ export const ListView = styled.View`
   width: 100%;
   padding: 15px;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-radius: 10px;
 `;
 
@@ -147,7 +147,7 @@ export const TodoDate = styled.Text`
 export const TodoCategory = styled.View`
   background-color: #121212;
   border-radius: 20px;
-  padding: 5px;
+
   font-size: 9px;
   letter-spacing: 1px;
   color: ${colors.alternative};

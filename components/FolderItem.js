@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   Modal,
   KeyboardAvoidingView,
+  FlatList,
 } from "react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { editFolderName } from "../redux/folderReducer";
 import {
   Container,
@@ -34,7 +35,7 @@ const FolderItem = ({
   const dispatch = useDispatch();
   const [openEdit, setOpenEdit] = useState(false);
   const [newFolderName, setNewFolderName] = useState(item.name);
-
+  const prayerList = useSelector((state) => state.prayer.prayer);
   const handleOpen = (item) => {
     navigation.navigate("PrayerPage", {
       title: item.name,
@@ -46,6 +47,8 @@ const FolderItem = ({
   function handleCloseEdit() {
     setOpenEdit(false);
   }
+
+  console.log(item.prayers);
 
   function editFolder(id) {
     dispatch(
@@ -61,8 +64,12 @@ const FolderItem = ({
     setIdToDelete(id);
   }
 
+  let id = item.id;
+
+  const prayers = prayerList?.filter((item) => item.folderId === id);
+
   return (
-    <View key={item.id}>
+    <TouchableOpacity onPress={() => handleOpen(item)} key={item.id}>
       <View
         style={
           theme == "dark"
@@ -78,7 +85,7 @@ const FolderItem = ({
             position: "relative",
             height: "100%",
 
-            justifyContent: "center",
+            justifyContent: "space-between",
           }}
         >
           <View
@@ -89,35 +96,6 @@ const FolderItem = ({
 
               justifyContent: "space-between",
               alignItems: "center",
-              position: "absolute",
-              top: 0,
-            }}
-          >
-            <AntDesign
-              name="folder1"
-              size={28}
-              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
-            />
-
-            <Feather
-              style={{ marginLeft: 5 }}
-              onPress={() => {
-                handleDeleteFolder(item.id);
-                setOpen(true);
-              }}
-              name="x"
-              size={26}
-              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
-            />
-          </View>
-          <TouchableOpacity
-            onPress={() => setOpenEdit(true)}
-            style={{
-              flexDirection: "row",
-
-              alignItems: "center",
-              marginBottom: 10,
-              gap: 10,
             }}
           >
             <Text
@@ -131,48 +109,50 @@ const FolderItem = ({
             >
               {item.name}
             </Text>
-            <Feather
-              name="edit-2"
-              size={16}
-              color={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              handleOpen(item);
-            }}
-            style={theme == "dark" ? styles.viewDark : styles.view}
-          >
-            <Text
-              style={
-                theme == "BlackWhite"
-                  ? {
-                      color: "black",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 14,
-                    }
-                  : {
-                      color: "white",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 14,
-                    }
-              }
-            >
-              View prayers
-            </Text>
             <AntDesign
-              style={{ marginLeft: 10 }}
-              name="right"
-              size={15}
-              color={
-                theme == "dark"
-                  ? "white"
-                  : theme == "BlackWhite"
-                  ? "black"
-                  : "white"
-              }
+              name="folder1"
+              size={28}
+              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
             />
-          </TouchableOpacity>
+          </View>
+          {prayers?.length === 0 ? (
+            <View>
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 12,
+                }}
+              >
+                No prayers yet!
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={prayers?.slice(0, 3)}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View
+                  // onPress={() => setOpenEdit(true)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontFamily: "Inter-Regular",
+                      fontSize: 11,
+                    }}
+                  >
+                    {item.prayer}
+                  </Text>
+                </View>
+              )}
+            />
+          )}
+
           <Modal
             animationType="fade"
             transparent={true}
@@ -250,7 +230,7 @@ const FolderItem = ({
           </Modal>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -323,7 +303,7 @@ const styles = StyleSheet.create({
 
   containerDark: {
     backgroundColor: "#212121",
-    padding: 8,
+    padding: 10,
     width: width / 2 - 8,
     height: 135,
     marginBottom: 15,

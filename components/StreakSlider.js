@@ -75,16 +75,21 @@ const StreakSlider = ({
         >
           <AntDesign
             onPress={() => setIsShowingStreak(false)}
-            style={{ position: "absolute", right: 8, top: 8 }}
+            style={{
+              alignSelf: "flex-end",
+              // position: "absolute",
+              // right: 8,
+              // top: 8,
+            }}
             name="close"
-            size={22}
+            size={28}
             color={theme == "dark" ? "white" : "#2f2d51"}
           />
           <Text
             style={{
               textAlign: "center",
               fontFamily: "Inter-Bold",
-              fontSize: 17,
+              fontSize: 18,
               color: theme == "dark" ? "white" : "#2f2d51",
             }}
           >
@@ -172,7 +177,7 @@ const StreakSlider = ({
           <Text
             style={{
               color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-              fontFamily: "Inter-Medium",
+              fontFamily: "Inter-Regular",
               textAlign: "center",
               fontSize: 13,
               marginTop: 5,
@@ -205,7 +210,7 @@ const StreakSlider = ({
           <Text
             style={{
               color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Regular",
+              fontFamily: "Inter-Medium",
               fontSize: 13,
               textAlign: "center",
             }}

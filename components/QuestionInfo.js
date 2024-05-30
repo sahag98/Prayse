@@ -20,8 +20,18 @@ const QuestionInfo = ({ item, theme }) => {
         <Text
           style={
             theme == "dark"
-              ? { color: "#ff3333", fontFamily: "Inter-Regular" }
-              : { color: "red", fontFamily: "Inter-Regular" }
+              ? {
+                  color: "#ff3333",
+                  alignSelf: "flex-end",
+                  fontSize: 13,
+                  fontFamily: "Inter-Regular",
+                }
+              : {
+                  color: "red",
+                  alignSelf: "flex-end",
+                  fontSize: 13,
+                  fontFamily: "Inter-Regular",
+                }
           }
         >
           {item.isNew == true ? "New" : null}

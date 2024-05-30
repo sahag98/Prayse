@@ -136,9 +136,8 @@ export const SupabaseProvider = (props) => {
 
   const fetchQuestions = async () => {
     const { data: allQuestions, error: answersError } = await supabase
-      .from("questions")
+      .from("questions_test")
       .select("*");
-
     setQuestions(allQuestions);
   };
 
@@ -323,7 +322,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "questions",
+              table: "questions_test",
             },
             (payload) => {
               if (
@@ -331,8 +330,9 @@ export const SupabaseProvider = (props) => {
                 payload.eventType == "DELETE" ||
                 payload.eventType == "UPDATE"
               ) {
-                console.log("refresh questions");
+                console.log("refresh test questions");
                 fetchQuestions();
+                fetchAnswers();
               }
             }
           )

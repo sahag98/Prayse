@@ -76,6 +76,8 @@ const ListItems = ({
     const RowText = TodoText;
     const categoryItem = item.category;
 
+    console.log(item.date.split(",")[0]);
+
     const addReminder = (item) => {
       navigation.navigate("Test", {
         reminder: item,
@@ -145,7 +147,7 @@ const ListItems = ({
                 >
                   <Entypo
                     name="dots-three-vertical"
-                    size={20}
+                    size={16}
                     color={theme == "dark" ? "white" : "#2F2D51"}
                   />
                 </TouchableOpacity>
@@ -206,283 +208,296 @@ const ListItems = ({
                     Reminder
                   </Text>
                 </TouchableOpacity>
-                {categoryItem == "General" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFDAA5",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFBF55",
-                          }
-                    }
-                  >
-                    <Text
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 15,
+                  }}
+                >
+                  {categoryItem == "General" && (
+                    <TodoCategory
                       style={
                         theme == "dark"
                           ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#FFDAA5",
                             }
                           : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#FFBF55",
                             }
                       }
                     >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem == "People" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#A5C9FF",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#6B7EFF",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
-                    <Text
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  {categoryItem == "People" && (
+                    <TodoCategory
                       style={
                         theme == "dark"
                           ? {
-                              fontSize: 11,
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#A5C9FF",
                               fontFamily: "Inter-SemiBold",
                               color: "black",
                             }
                           : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#6B7EFF",
+                              fontFamily: "Inter-Regular",
                               color: "white",
                             }
                       }
                     >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem == "Praise" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#A5FFC9",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#65FFA2",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
-                    <Text
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "white",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  {categoryItem == "Praise" && (
+                    <TodoCategory
                       style={
                         theme == "dark"
                           ? {
-                              fontSize: 11,
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#A5FFC9",
                               fontFamily: "Inter-SemiBold",
                               color: "black",
                             }
                           : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "#2F2D51",
-                            }
-                      }
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem == "Personal" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFB2B2",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FF5858",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#65FFA2",
+                              fontFamily: "Inter-Regular",
                               color: "white",
                             }
                       }
                     >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem == "Other" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "white",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "white",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
-                    <Text
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "#2F2D51",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  {categoryItem == "Personal" && (
+                    <TodoCategory
                       style={
                         theme == "dark"
                           ? {
-                              fontSize: 11,
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#FFB2B2",
                               fontFamily: "Inter-SemiBold",
                               color: "black",
                             }
                           : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "#FF5858",
+                              fontFamily: "Inter-Regular",
+                              color: "white",
                             }
                       }
                     >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem == "None" && (
-                  <TodoCategory
-                    style={
-                      theme == "dark"
-                        ? {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "white",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  {categoryItem == "Other" && (
+                    <TodoCategory
+                      style={
+                        theme == "dark"
+                          ? {
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "white",
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
+                          : {
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+                              backgroundColor: "white",
+                              fontFamily: "Inter-Regular",
+                              color: "white",
+                            }
+                      }
+                    >
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  {categoryItem == "None" && (
+                    <TodoCategory
+                      style={
+                        theme == "dark"
+                          ? {
+                              // flex: 1,
+                              // height: 23,
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
 
-                            backgroundColor: "#8C8C8C",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            flex: 1,
-                            height: 23,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#2F2D51",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontSize: 11,
+                              backgroundColor: "#8C8C8C",
                               fontFamily: "Inter-SemiBold",
                               color: "black",
                             }
                           : {
-                              fontSize: 11,
+                              // flex: 1,
+                              // height: 23,
+                              paddingVertical: 5,
+                              paddingHorizontal: 12,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 15,
+
+                              backgroundColor: "#8C8C8C",
                               fontFamily: "Inter-SemiBold",
-                              color: "white",
+                              color: "black",
                             }
                       }
                     >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TodoDate
-                    style={
-                      theme == "dark"
-                        ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
-                        : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
-                    }
-                  >
-                    {item.date}
-                  </TodoDate>
+                      <Text
+                        style={
+                          theme == "dark"
+                            ? {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "black",
+                              }
+                            : {
+                                fontSize: 11,
+                                fontFamily: "Inter-SemiBold",
+                                color: "white",
+                              }
+                        }
+                      >
+                        {item.category}
+                      </Text>
+                    </TodoCategory>
+                  )}
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <TodoDate
+                      style={
+                        theme == "dark"
+                          ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
+                          : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
+                      }
+                    >
+                      {item.date.split(",")[0]}
+                    </TodoDate>
+                  </View>
                 </View>
               </View>
             </>

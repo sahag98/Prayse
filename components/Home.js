@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Animated, Platform, View } from "react-native";
+import { Animated, Platform, Text, View } from "react-native";
 import Header from "./Header";
 import ListItems from "./ListItems";
 import InputModal from "./InputModal";
@@ -117,10 +117,24 @@ const Home = ({
     <PrayerContainer
       style={
         theme == "dark"
-          ? { position: "relative", backgroundColor: "" }
+          ? { position: "relative", backgroundColor: "#121212" }
           : { backgroundColor: "#F2F7FF" }
       }
     >
+      {/* <View
+        style={{
+          backgroundColor: "#212121",
+          position: "absolute",
+          borderRadius: 10,
+          padding: 10,
+          bottom: 20,
+          alignSelf: "center",
+          width: "90%",
+          zIndex: 99,
+        }}
+      >
+        <Text>Delete</Text>
+      </View> */}
       <Animated.View
         pointerEvents={isBoxVisible ? "none" : "auto"}
         style={
@@ -129,7 +143,13 @@ const Home = ({
             : { flex: 1, paddingHorizontal: 15, opacity, height: "100%" }
         }
       >
-        <Header folderName={folderName} theme={theme} navigation={navigation} />
+        <Header
+          folderId={folderId}
+          folderName={folderName}
+          theme={theme}
+          navigation={navigation}
+        />
+
         <ListItems
           navigation={navigation}
           prayerList={prayerList}

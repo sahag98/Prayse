@@ -211,6 +211,9 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
+              backgroundColor: theme == "dark" ? "#212121" : "#d1e3ff",
+              borderRadius: 20,
+              paddingVertical: 5,
               alignItems: "center",
             }}
             onPress={() => setFolderClicked(true)}
@@ -218,8 +221,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
-                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
+                  : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
             >
               Prayer Folders
@@ -230,6 +233,8 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
+              borderRadius: 20,
+              paddingVertical: 5,
               alignItems: "center",
             }}
             onPress={() => setFolderClicked(true)}
@@ -237,15 +242,15 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "#979797" }
-                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
+                  : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
             >
               Prayer Folders
             </HeaderTitle>
           </TouchableOpacity>
         )}
-        <Divider
+        {/* <Divider
           style={
             theme == "dark"
               ? { width: 1.5, backgroundColor: "white", height: "100%" }
@@ -253,11 +258,12 @@ const Folder = ({ navigation, todos }) => {
               ? { width: 1.5, backgroundColor: "black", height: "100%" }
               : { width: 1.5, backgroundColor: "#2f2d51", height: "100%" }
           }
-        />
+        /> */}
         {folderClicked ? (
           <TouchableOpacity
             style={{
               width: "50%",
+
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -266,8 +272,8 @@ const Folder = ({ navigation, todos }) => {
             <HeaderTitle
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "#979797" }
-                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#716dae" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
+                  : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
             >
               Answered
@@ -278,6 +284,9 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
+              backgroundColor: theme == "dark" ? "#212121" : "#d1e3ff",
+              borderRadius: 20,
+              paddingVertical: 5,
               alignItems: "center",
             }}
             onPress={() => setFolderClicked(false)}
@@ -287,10 +296,10 @@ const Folder = ({ navigation, todos }) => {
                 theme == "dark"
                   ? {
                       fontFamily: "Inter-Bold",
-                      fontSize: 20,
+                      fontSize: 18,
                       color: "white",
                     }
-                  : { fontFamily: "Inter-Bold", fontSize: 20, color: "#2F2D51" }
+                  : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
             >
               Answered

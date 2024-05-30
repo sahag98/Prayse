@@ -204,7 +204,8 @@ const Settings = ({ navigation }) => {
                     marginTop: 10,
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-evenly",
+                    justifyContent: "space-between",
+                    gap: 10,
                   }
                 : {
                     marginTop: 10,
@@ -214,7 +215,7 @@ const Settings = ({ navigation }) => {
                   }
             }
           >
-            <View>
+            <View style={{ width: "30%" }}>
               <TouchableOpacity
                 onPress={() => SwitchTheme("light")}
                 style={
@@ -222,20 +223,36 @@ const Settings = ({ navigation }) => {
                 }
               >
                 <View style={styles.lightButton}>
-                  <Text style={{ color: "black", paddingLeft: 5 }}>Aa</Text>
+                  <Text
+                    style={{
+                      color: "black",
+                      paddingLeft: 5,
+                      fontFamily: "Inter-Medium",
+                    }}
+                  >
+                    Aa
+                  </Text>
                 </View>
               </TouchableOpacity>
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", marginTop: 5 }
-                    : { color: "#2f2d51", marginTop: 5 }
+                    ? {
+                        color: "white",
+                        marginTop: 5,
+                        fontFamily: "Inter-Bold",
+                      }
+                    : {
+                        color: "#2f2d51",
+                        marginTop: 5,
+                        fontFamily: "Inter-Bold",
+                      }
                 }
               >
-                Light
+                Light theme
               </Text>
             </View>
-            <View>
+            <View style={{ width: "30%" }}>
               <TouchableOpacity
                 onPress={() => SwitchTheme("dark")}
                 style={
@@ -244,7 +261,12 @@ const Settings = ({ navigation }) => {
               >
                 <View style={styles.darkButton}>
                   <Text
-                    style={{ color: "black", paddingLeft: 5, color: "white" }}
+                    style={{
+                      color: "black",
+                      paddingLeft: 5,
+                      color: "white",
+                      fontFamily: "Inter-Medium",
+                    }}
                   >
                     Aa
                   </Text>
@@ -253,34 +275,55 @@ const Settings = ({ navigation }) => {
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", marginTop: 5 }
-                    : { color: "#2f2d51", marginTop: 5 }
+                    ? { color: "white", marginTop: 5, fontFamily: "Inter-Bold" }
+                    : {
+                        color: "#2f2d51",
+                        marginTop: 5,
+                        fontFamily: "Inter-Bold",
+                      }
                 }
               >
-                Dark
+                Dark theme
               </Text>
             </View>
-            <View>
+            <View style={{ width: "30%" }}>
               <TouchableOpacity onPress={SystemTheme} style={styles.system}>
                 <View style={styles.systemDark}>
                   <Text
-                    style={{ color: "black", paddingLeft: 5, color: "white" }}
+                    style={{
+                      color: "black",
+                      paddingLeft: 5,
+                      color: "white",
+                      fontFamily: "Inter-Medium",
+                    }}
                   >
                     Aa
                   </Text>
                 </View>
                 <View style={styles.systemLight}>
-                  <Text style={{ color: "black", paddingLeft: 5 }}>Aa</Text>
+                  <Text
+                    style={{
+                      color: "black",
+                      paddingLeft: 5,
+                      fontFamily: "Inter-Medium",
+                    }}
+                  >
+                    Aa
+                  </Text>
                 </View>
               </TouchableOpacity>
               <Text
                 style={
                   theme == "dark"
-                    ? { color: "white", marginTop: 5 }
-                    : { color: "#2f2d51", marginTop: 5 }
+                    ? { color: "white", marginTop: 5, fontFamily: "Inter-Bold" }
+                    : {
+                        color: "#2f2d51",
+                        marginTop: 5,
+                        fontFamily: "Inter-Bold",
+                      }
                 }
               >
-                System
+                System theme
               </Text>
             </View>
           </View>
@@ -444,7 +487,7 @@ const Settings = ({ navigation }) => {
               value={isEnabled}
             />
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setDeleteAllModal(true)}
             style={theme == "dark" ? styles.clearAllDark : styles.clearAll}
           >
@@ -457,7 +500,7 @@ const Settings = ({ navigation }) => {
             >
               Clear All Data
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Modal
             animationType="fade"
             transparent={true}
@@ -636,8 +679,8 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#d3d3d3",
-    height: 80,
-    width: 100,
+    aspectRatio: 1 / 1,
+    width: "100%",
     borderRadius: 5,
     padding: 35,
   },
@@ -645,8 +688,8 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#d3d3d3",
-    height: 80,
-    width: 100,
+    aspectRatio: 1 / 1,
+    width: "100%",
     borderRadius: 5,
     padding: 35,
   },
@@ -656,8 +699,8 @@ const styles = StyleSheet.create({
     right: -1,
     borderTopLeftRadius: 5,
     backgroundColor: "white",
-    height: 60,
-    width: 75,
+    aspectRatio: 1 / 1,
+    width: "100%",
   },
   darkButton: {
     position: "absolute",
@@ -665,31 +708,30 @@ const styles = StyleSheet.create({
     right: -1,
     borderTopLeftRadius: 5,
     backgroundColor: "#212121",
-    height: 60,
-    width: 75,
+    aspectRatio: 1 / 1,
+    width: "100%",
   },
   system: {
     position: "relative",
     overflow: "hidden",
     backgroundColor: "black",
-    width: 100,
-    height: 80,
+    aspectRatio: 1 / 1,
+    width: "100%",
     borderRadius: 5,
-    padding: 35,
   },
   systemDark: {
     position: "absolute",
     right: -1,
     backgroundColor: "#212121",
-    height: 100,
-    width: 50,
+    height: "100%",
+    width: "50%",
   },
   systemLight: {
     position: "absolute",
     left: -1,
     backgroundColor: "white",
-    height: 100,
-    width: 50,
+    height: "100%",
+    width: "50%",
   },
   activeDark: {
     borderWidth: 2,
@@ -697,8 +739,8 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#373737",
-    height: 80,
-    width: 100,
+    aspectRatio: 1 / 1,
+    width: "100%",
     borderRadius: 5,
     padding: 35,
   },
@@ -706,8 +748,8 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#373737",
-    height: 80,
-    width: 100,
+    aspectRatio: 1 / 1,
+    width: "100%",
     borderRadius: 5,
     padding: 35,
   },

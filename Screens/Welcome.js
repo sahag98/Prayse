@@ -352,6 +352,8 @@ const Welcome = ({ navigation }) => {
         key.startsWith(`appStreak_${currentDate}`)
       );
 
+      // await AsyncStorage.removeItem(`appStreak_${currentDate}`);
+      // dispatch(deleteAppStreakCounter());
       if (todayStreak.length === 0) {
         await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
         dispatch(increaseAppStreakCounter());

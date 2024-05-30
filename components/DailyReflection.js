@@ -12,7 +12,11 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompletedModal from "./CompletedModal";
 import { useDispatch } from "react-redux";
-import { increaseStreakCounter } from "../redux/userReducer";
+import {
+  deleteAppStreakCounter,
+  deleteStreakCounter,
+  increaseStreakCounter,
+} from "../redux/userReducer";
 import StreakSlider from "./StreakSlider";
 import GiveawayModal from "./GiveawayModal";
 
@@ -48,12 +52,13 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
   }
 
   async function clearPreviousDayCompletion() {
+    console.log("clearing previous day");
     const currentDate = new Date();
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1); // Get yesterday's date
 
     const yesterdayDateString = yesterday.toISOString().split("T")[0]; // Format yesterday's date
-
+    console.log("yesterday: ", yesterdayDateString);
     // Loop through isCompleteArray and remove completion status for yesterday's reflections
     for (const item of isCompleteArray) {
       await AsyncStorage.removeItem(
@@ -90,7 +95,6 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
   }
 
   async function getTodaysItems() {
-    console.log("getting todays items");
     const items = await getCompletionStatusForToday();
     setTodaysItems(items);
 
@@ -100,8 +104,9 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
     const modalShownKey = `modal_shown_${currentDate}`;
     const progressDoneKey = `modal_shown_${currentDate}`;
     const modalShown = await AsyncStorage.getItem(modalShownKey);
-
-    if (appStreak === 2 && !progressDoneKey) {
+    // await AsyncStorage.removeItem(modalShownKey);
+    // dispatch(deleteStreakCounter());
+    if (appStreak === 30 && !progressDoneKey) {
       console.log("progress done!");
       setIsShowingGiveaway(true);
       setIsShowingStreak(false);
@@ -112,6 +117,7 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
 
     if (completedItems.length === 3 && !modalShown) {
       setIsShowingStreak(true);
+      console.log("should increase streak counter");
       dispatch(increaseStreakCounter());
       // Update AsyncStorage to indicate that the modal has been shown for today
       AsyncStorage.setItem(modalShownKey, "true").catch((error) => {

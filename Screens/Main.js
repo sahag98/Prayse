@@ -50,7 +50,7 @@ export default function Main({ navigation }) {
       <Container
         style={
           theme == "dark"
-            ? { backgroundColor: "" }
+            ? { backgroundColor: "#121212" }
             : theme == "BlackWhite"
             ? { backgroundColor: "white" }
             : { backgroundColor: "#F2F7FF" }

@@ -50,6 +50,9 @@ export const userSlice = createSlice({
     deleteAppStreakCounter: (state) => {
       state.appstreak = 0;
     },
+    deleteStreakCounter: (state) => {
+      state.streak = 0;
+    },
     openCheckmark: (state, action) => {
       state.checkmarkVisible = action.payload;
     },
@@ -81,6 +84,7 @@ export const {
   increaseStreakCounter,
   increaseAppStreakCounter,
   deleteAppStreakCounter,
+  deleteStreakCounter,
   large,
   removeUser,
   openCheckmark,
