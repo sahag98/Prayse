@@ -40,7 +40,7 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
     AsyncStorage.setItem(`completion_${currentDate}_${selected}`, "completed")
       .then(() => {
         // Update todaysItems state to reflect the change immediately
-        getTodaysItems();
+        // getTodaysItems();
       })
       .catch((error) => {
         console.error("Error saving completion status:", error);
@@ -59,14 +59,23 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
 
     const yesterdayDateString = yesterday.toISOString().split("T")[0]; // Format yesterday's date
     console.log("yesterday: ", yesterdayDateString);
-    // Loop through isCompleteArray and remove completion status for yesterday's reflections
-    for (const item of isCompleteArray) {
-      await AsyncStorage.removeItem(
-        `completion_${yesterdayDateString}_${item}`
-      );
+
+    // Retrieve all keys from AsyncStorage
+    const keys = await AsyncStorage.getAllKeys();
+
+    // Filter keys to get only completion status for yesterday
+    const yesterdayKeys = keys.filter((key) =>
+      key.startsWith(`completion_${yesterdayDateString}_`)
+    );
+
+    // Remove completion status for each reflection item for yesterday
+    for (const key of yesterdayKeys) {
+      await AsyncStorage.removeItem(key);
     }
 
-    // Clear isCompleteArray
+    console.log("cleared previous day items:", yesterdayKeys);
+
+    // Optionally clear isCompleteArray if it's used elsewhere in your code
     setIsCompleteArray([]);
   }
 

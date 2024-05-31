@@ -172,7 +172,7 @@ const ListItems = ({
                           borderWidth: 1,
                           padding: 5,
                           borderRadius: 5,
-                          gap: 5,
+                          gap: 8,
                         }
                       : {
                           flexDirection: "row",
@@ -181,7 +181,7 @@ const ListItems = ({
                           borderWidth: 1,
                           padding: 5,
                           borderRadius: 5,
-                          gap: 5,
+                          gap: 8,
                         }
                   }
                 >

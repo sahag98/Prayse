@@ -217,7 +217,7 @@ const More = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <SettingsItems
           options={options}
           theme={theme}

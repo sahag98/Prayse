@@ -150,7 +150,7 @@ const image = { uri: "https://legacy.reactjs.org/logo-og.png" };
 
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
-  const streak = useSelector((state) => state.user.streak);
+  const streak = useSelector((state) => state.user.devostreak);
   const appstreak = useSelector((state) => state.user.appstreak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);

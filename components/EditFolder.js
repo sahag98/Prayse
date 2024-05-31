@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import {
   HeaderTitle,
@@ -19,17 +19,25 @@ import {
 import { editFolderName } from "../redux/folderReducer";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
   const [newFolderName, setNewFolderName] = useState(folderName);
+
   const dispatch = useDispatch();
-  function editFolder(id) {
+  const navigation = useNavigation();
+
+  function HandleEditFolder(id) {
+    console.log("just edited.");
     dispatch(
       editFolderName({
         name: newFolderName,
         id: id,
       })
     );
+    navigation.setParams({
+      title: newFolderName,
+    });
     setOpenEdit(false);
   }
 
@@ -46,11 +54,23 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
       >
-        <ModalContainer
+        <View
           style={
             theme == "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+              ? {
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                }
+              : {
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                }
           }
         >
           <ModalView
@@ -97,13 +117,13 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
               </ModalAction>
               <ModalAction
                 color={theme == "dark" ? "#121212" : "#2F2D51"}
-                onPress={() => editFolder(folderId)}
+                onPress={() => HandleEditFolder(folderId)}
               >
                 <AntDesign name="check" size={28} color={"white"} />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>
-        </ModalContainer>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );

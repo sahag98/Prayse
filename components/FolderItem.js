@@ -131,6 +131,7 @@ const FolderItem = ({
             <FlatList
               data={prayers?.slice(0, 3)}
               keyExtractor={(item) => item.id}
+              style={{ gap: 5 }}
               renderItem={({ item }) => (
                 <View
                   // onPress={() => setOpenEdit(true)}
@@ -141,7 +142,7 @@ const FolderItem = ({
                 >
                   <Text
                     style={{
-                      color: theme == "dark" ? "white" : "#2f2d51",
+                      color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
                       fontFamily: "Inter-Regular",
                       fontSize: 11,
                     }}

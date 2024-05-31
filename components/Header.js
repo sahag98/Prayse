@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Text,
   Modal,
+  Share,
 } from "react-native";
 import {
   HeaderView,
@@ -25,15 +26,48 @@ import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
 import { deletePrayerByFolderId } from "../redux/prayerReducer";
 import { useState } from "react";
 import EditFolder from "./EditFolder";
+import { useSelector } from "react-redux";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import DeleteFolder from "./DeleteFolder";
+
 const Header = ({ navigation, folderName, folderId, theme }) => {
   const [isShowingModal, setIsShowingModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const folders = useSelector((state) => state.folder.folders);
+  const prayerList = useSelector((state) => state.prayer.prayer);
+  const folderPrayers = prayerList.filter((item) => item.folderId === folderId);
+
+  const onShare = async () => {
+    let prayers = [];
+
+    folderPrayers.map((p) => {
+      prayers.push(p.prayer);
+    });
+
+    try {
+      await Share.share({
+        message: "Pray for these prayers: " + "\n" + prayers.toLocaleString(),
+      });
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
   let [fontsLoaded] = useFonts({
     "Inter-Black": require("../assets/fonts/Inter-Black.ttf"),
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
   });
+
+  // const name = folders.filter((item)=>item.name === folderName)
+  // console.log("folder name: ", folderName);
 
   const BusyIndicator = () => {
     return (
@@ -43,19 +77,28 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
     );
   };
 
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
+  const slideUpValue = useSharedValue(300);
+
+  function doSlideUpAnimation() {
+    slideUpValue.value = withTiming(-10, {
+      duration: 300,
+      easing: Easing.ease,
+    });
   }
 
-  function deleteFolderById(id) {
-    if (id == 4044) {
-      dispatch(deleteQuickFolder(id));
-      setOpen(false);
-    } else {
-      dispatch(deleteFolder(id));
-      dispatch(deletePrayerByFolderId(id));
-      setOpen(false);
-    }
+  function doSlideDownAnimation() {
+    slideUpValue.value = withTiming(300, {
+      duration: 300,
+      easing: Easing.ease,
+    });
+  }
+
+  const animatedSlideUpStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: slideUpValue.value }],
+  }));
+
+  if (!fontsLoaded) {
+    return <BusyIndicator />;
   }
 
   return (
@@ -98,14 +141,17 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
           </View>
           <Entypo
             name="dots-three-vertical"
-            onPress={() => setIsShowingModal(true)}
+            onPress={() => {
+              setIsShowingModal(true);
+              doSlideUpAnimation();
+            }}
             size={20}
             color={theme == "dark" ? "white" : "#2F2D51"}
           />
         </View>
 
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={isShowingModal}
           onRequestClose={() => setIsShowingModal(false)}
@@ -129,34 +175,71 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                   }
             }
           >
-            <View
+            <Animated.View
               style={
                 theme == "dark"
-                  ? {
-                      backgroundColor: "rgba(33, 33, 33, 0.7)",
-                      width: "90%",
-                      borderRadius: 10,
-                      padding: 10,
-                      gap: 10,
-                    }
-                  : {
-                      backgroundColor: "#b7d3ff",
-                      width: "90%",
-                      borderRadius: 10,
-                      padding: 10,
-                      gap: 10,
-                    }
+                  ? [
+                      animatedSlideUpStyle,
+                      {
+                        backgroundColor: "rgba(33, 33, 33, 0.7)",
+                        width: "95%",
+                        // borderWidth: 0.5,
+                        // borderColor: "#d2d2d2",
+                        borderRadius: 10,
+                        padding: 10,
+                        gap: 10,
+                      },
+                    ]
+                  : [
+                      {
+                        backgroundColor: "rgba(183, 211, 255,0.5)",
+                        width: "95%",
+                        borderRadius: 10,
+                        padding: 10,
+                        gap: 10,
+                      },
+                    ]
               }
             >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 5,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    fontSize: 16,
+                    color: theme == "dark" ? "white" : "#2f2d51",
+                  }}
+                >
+                  Folder Settings
+                </Text>
+                <AntDesign
+                  onPress={() => {
+                    setIsShowingModal(false);
+                    doSlideDownAnimation();
+                  }}
+                  style={{ alignSelf: "flex-end" }}
+                  name="closecircleo"
+                  size={24}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
+              </View>
+
               <TouchableOpacity
                 onPress={() => {
                   setIsShowingModal(false);
                   setOpenEdit(true);
+                  console.log("opening edit");
                 }}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: "#212121",
+                  backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                   borderRadius: 10,
                   justifyContent: "space-between",
                   padding: 10,
@@ -166,19 +249,24 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                   style={{
                     textAlign: "center",
                     fontFamily: "Inter-Medium",
-                    fontSize: 15,
-                    color: theme == "dark" ? "white" : "white",
+
+                    color: theme == "dark" ? "white" : "#2f2d51",
                   }}
                 >
                   Rename Folder
                 </Text>
-                <Feather name="edit" size={22} color="white" />
+                <Feather
+                  name="edit"
+                  size={22}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
               </TouchableOpacity>
-              <View
+              <TouchableOpacity
+                onPress={onShare}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: "#212121",
+                  backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                   borderRadius: 10,
                   justifyContent: "space-between",
                   padding: 10,
@@ -189,20 +277,28 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                   style={{
                     textAlign: "center",
                     fontFamily: "Inter-Medium",
-                    fontSize: 15,
-                    color: theme == "dark" ? "white" : "red",
+
+                    color: theme == "dark" ? "white" : "#2f2d51",
                   }}
                 >
                   Share
                 </Text>
 
-                <Feather name="share" size={21} color="white" />
-              </View>
-              <View
+                <Feather
+                  name="share"
+                  size={21}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setOpenDelete(true);
+                  setIsShowingModal(false);
+                }}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: "#270000",
+                  backgroundColor: theme == "dark" ? "#270000" : "#ffd8d8",
                   borderRadius: 10,
                   justifyContent: "space-between",
                   padding: 10,
@@ -212,21 +308,27 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                   style={{
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
-                    fontSize: 15,
+
                     color: theme == "dark" ? "#ff3b3b" : "#ff3b3b",
                   }}
                 >
                   Delete
                 </Text>
                 <EvilIcons name="trash" size={24} color="#ff3b3b" />
-              </View>
-            </View>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </Modal>
         <EditFolder
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
           folderName={folderName}
+          theme={theme}
+          folderId={folderId}
+        />
+        <DeleteFolder
+          openDelete={openDelete}
+          setOpenDelete={setOpenDelete}
           theme={theme}
           folderId={folderId}
         />

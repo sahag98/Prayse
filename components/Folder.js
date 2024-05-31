@@ -484,57 +484,6 @@ const Folder = ({ navigation, todos }) => {
           </Text>
         </View>
       )}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={open}
-        onRequestClose={handleCloseModal}
-        statusBarTranslucent={true}
-        // onShow={() => inputRef.current?.focus()}
-      >
-        <ModalContainer
-          style={
-            theme == "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-          }
-        >
-          <ModalView
-            style={
-              theme == "dark"
-                ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#93D8F8" }
-            }
-          >
-            <ModalIcon>
-              <HeaderTitle
-                style={
-                  theme == "dark"
-                    ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
-                    : { fontSize: 18, fontFamily: "Inter-Bold" }
-                }
-              >
-                Are you sure you want to delete this folder and all its prayers?
-              </HeaderTitle>
-            </ModalIcon>
-            <ModalActionGroup>
-              <ModalAction color={"white"} onPress={() => setOpen(false)}>
-                <AntDesign
-                  name="close"
-                  size={28}
-                  color={theme == "dark" ? "black" : "#2F2D51"}
-                />
-              </ModalAction>
-              <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
-                onPress={deleteF}
-              >
-                <AntDesign name="check" size={28} color={"white"} />
-              </ModalAction>
-            </ModalActionGroup>
-          </ModalView>
-        </ModalContainer>
-      </Modal>
 
       <AddFolderModal
         addVisible={addVisible}
