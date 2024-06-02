@@ -13,14 +13,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompletedModal from "./CompletedModal";
 import { useDispatch } from "react-redux";
 import {
+  addtoCompletedItems,
   deleteAppStreakCounter,
+  deleteCompletedItems,
+  deletePreviousDayItems,
   deleteStreakCounter,
   increaseStreakCounter,
 } from "../redux/userReducer";
 import StreakSlider from "./StreakSlider";
 import GiveawayModal from "./GiveawayModal";
 
-const DailyReflection = ({ theme, streak, appStreak }) => {
+const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isCompleteArray, setIsCompleteArray] = useState([]);
@@ -29,22 +32,37 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
   const [todaysItems, setTodaysItems] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
-    getTodaysItems();
-    // clearTodaysCompletion();
+    // getTodaysItems();
+    // // clearTodaysCompletion();
     clearPreviousDayCompletion();
   }, [isFocused]);
 
   function handleComplete(selected) {
-    // Save completion status with current date
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
-    AsyncStorage.setItem(`completion_${currentDate}_${selected}`, "completed")
-      .then(() => {
-        // Update todaysItems state to reflect the change immediately
-        // getTodaysItems();
+    console.log("selected: ", selected);
+    // console.log("completedItems:  ", completedItems);
+    const currentDate = new Date().toISOString().split("T")[0];
+    // dispatch(deleteCompletedItems());
+    dispatch(
+      addtoCompletedItems({
+        item: selected,
+        date: currentDate,
       })
-      .catch((error) => {
-        console.error("Error saving completion status:", error);
-      });
+    );
+    dispatch(increaseStreakCounter());
+    // if (completedItems.length === 3){
+    //   dispatch(add)
+    // }
+
+    // Save completion status with current date
+    // const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
+    // AsyncStorage.setItem(`completion_${currentDate}_${selected}`, "completed")
+    //   .then(() => {
+    //     // Update todaysItems state to reflect the change immediately
+    //     // getTodaysItems();
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error saving completion status:", error);
+    //   });
 
     navigation.navigate(selected, {
       previousScreen: "Home",
@@ -52,31 +70,29 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
   }
 
   async function clearPreviousDayCompletion() {
-    console.log("clearing previous day");
     const currentDate = new Date();
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1); // Get yesterday's date
 
     const yesterdayDateString = yesterday.toISOString().split("T")[0]; // Format yesterday's date
-    console.log("yesterday: ", yesterdayDateString);
+
+    dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
 
     // Retrieve all keys from AsyncStorage
-    const keys = await AsyncStorage.getAllKeys();
+    // const keys = await AsyncStorage.getAllKeys();
 
-    // Filter keys to get only completion status for yesterday
-    const yesterdayKeys = keys.filter((key) =>
-      key.startsWith(`completion_${yesterdayDateString}_`)
-    );
+    // // Filter keys to get only completion status for yesterday
+    // const yesterdayKeys = keys.filter((key) =>
+    //   key.startsWith(`completion_${yesterdayDateString}_`)
+    // );
 
-    // Remove completion status for each reflection item for yesterday
-    for (const key of yesterdayKeys) {
-      await AsyncStorage.removeItem(key);
-    }
+    // // Remove completion status for each reflection item for yesterday
+    // for (const key of yesterdayKeys) {
+    //   await AsyncStorage.removeItem(key);
+    // }
 
-    console.log("cleared previous day items:", yesterdayKeys);
-
-    // Optionally clear isCompleteArray if it's used elsewhere in your code
-    setIsCompleteArray([]);
+    // // Optionally clear isCompleteArray if it's used elsewhere in your code
+    // setIsCompleteArray([]);
   }
 
   async function getCompletionStatusForToday() {
@@ -99,6 +115,8 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
         status: completionStatus,
       });
     }
+
+    console.log("completion status for today: ", completionStatusForToday);
 
     return completionStatusForToday;
   }
@@ -157,7 +175,6 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
     <View
       style={{
         flex: 1,
-
         justifyContent: "flex-start",
         alignItems: "flex-start",
         width: "100%",
@@ -210,8 +227,8 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
           <View
             style={{
               width: 25,
-              backgroundColor: todaysItems.find(
-                (item) => item.reflectionItem === "PrayerRoom"
+              backgroundColor: completedItems.find(
+                (item) => item.item === "PrayerRoom"
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -298,8 +315,8 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
           <View
             style={{
               width: 25,
-              backgroundColor: todaysItems.find(
-                (item) => item.reflectionItem === "VerseOfTheDay"
+              backgroundColor: completedItems.find(
+                (item) => item.item === "VerseOfTheDay"
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -375,8 +392,8 @@ const DailyReflection = ({ theme, streak, appStreak }) => {
           <View
             style={{
               width: 25,
-              backgroundColor: todaysItems.find(
-                (item) => item.reflectionItem === "DevoList"
+              backgroundColor: completedItems.find(
+                (item) => item.item === "DevoList"
               )
                 ? theme == "dark"
                   ? "#a5c9ff"

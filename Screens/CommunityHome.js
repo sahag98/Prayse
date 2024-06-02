@@ -317,8 +317,7 @@ const CommunityHome = ({ route }) => {
                 }
           }
         >
-          <Animated.View
-            entering={FadeIn.duration(500)}
+          <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -386,7 +385,7 @@ const CommunityHome = ({ route }) => {
                 <Ionicons name="settings" size={20} color="black" />
               </TouchableOpacity>
             </TouchableOpacity>
-          </Animated.View>
+          </View>
           <View
             style={{
               flexDirection: "row",

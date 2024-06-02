@@ -351,7 +351,7 @@ const Folder = ({ navigation, todos }) => {
             color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
           />
           <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
-            Create a folder to write your prayers in!
+            Create a folder to for your prayers.
           </TodoText>
           <Text
             style={{
@@ -360,7 +360,7 @@ const Folder = ({ navigation, todos }) => {
               fontFamily: "Inter-Regular",
             }}
           >
-            (These prayers are only visible to you)
+            (These folders are only visible to you.)
           </Text>
         </View>
       )}

@@ -151,7 +151,9 @@ const image = { uri: "https://legacy.reactjs.org/logo-og.png" };
 const Welcome = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const streak = useSelector((state) => state.user.devostreak);
-  const appstreak = useSelector((state) => state.user.appstreak);
+  const completedItems = useSelector((state) => state.user.completedItems);
+  const appstreak = useSelector((state) => state.user.appstreakNum);
+  // const appstreak = useSelector((state) => state.user.appstreak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
   const [openings, setOpenings] = useState(0);
@@ -346,18 +348,36 @@ const Welcome = ({ navigation }) => {
 
   useEffect(() => {
     async function appStreak() {
-      const currentDate = new Date().toISOString().split("T")[0];
-      const keys = await AsyncStorage.getAllKeys();
-      const todayStreak = keys.filter((key) =>
-        key.startsWith(`appStreak_${currentDate}`)
-      );
-
-      // await AsyncStorage.removeItem(`appStreak_${currentDate}`);
       // dispatch(deleteAppStreakCounter());
-      if (todayStreak.length === 0) {
-        await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
-        dispatch(increaseAppStreakCounter());
-      }
+      // console.log("app streak:", appstreak);
+
+      const today = new Date().toLocaleDateString("en-CA");
+
+      console.log("today: ", today);
+      // console.log("today: ", today);
+      // const currentDate = new Date();
+      // const t = new Date()
+      // const tomorrow = new Date(today);
+      // tomorrow.setDate(today.getDate() + 1); // Get yesterday's date
+      // console.log("tomorrow: ", tomorrow);
+      // const yesterdayDateString = yesterday.toISOString().split("T")[0];
+      // console.log("today: ", currentDate - 1);
+
+      // console.log("same date");
+      dispatch(increaseAppStreakCounter({ today: today }));
+
+      // console.log("getting app streak");
+      // const keys = await AsyncStorage.getAllKeys();
+      // const todayStreak = keys.filter((key) =>
+      //   key.startsWith(`appStreak_${currentDate}`)
+      // );
+      // console.log("today streak: ", todayStreak);
+      // // await AsyncStorage.removeItem(`appStreak_${currentDate}`);
+      // // dispatch(deleteAppStreakCounter());
+      // if (todayStreak.length === 0) {
+      //   await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
+      //   dispatch(increaseAppStreakCounter());
+      // }
     }
     appStreak();
 
@@ -454,7 +474,7 @@ const Welcome = ({ navigation }) => {
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => sendToken(token).then(console.log("token sent")))
+      .then((token) => sendToken(token))
       .catch((err) => console.log(err));
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -644,12 +664,12 @@ const Welcome = ({ navigation }) => {
                 fontFamily: "Inter-Bold",
               }}
             >
-              {appstreak ?? 0}
+              {appstreak.length ?? 0}
             </Text>
           </TouchableOpacity>
 
           <StreakSlider
-            appstreak={appstreak}
+            appstreak={appstreak.length}
             streak={streak}
             theme={theme}
             setIsShowingStreak={setIsShowingStreak}
@@ -697,7 +717,12 @@ const Welcome = ({ navigation }) => {
         progress={15 / 30}
         color="green"
       /> */}
-      <DailyReflection streak={streak} appStreak={appstreak} theme={theme} />
+      <DailyReflection
+        completedItems={completedItems}
+        streak={streak}
+        appStreak={appstreak}
+        theme={theme}
+      />
       <View style={{ width: "100%", flex: 1 }}>
         <View
           style={
@@ -1124,7 +1149,9 @@ const Welcome = ({ navigation }) => {
       >
         <View
           style={
-            notiVisible ? { width: "100%", gap: 2 } : { width: "100%", gap: 2 }
+            notiVisible
+              ? { marginBottom: 40, width: "100%", gap: 2 }
+              : { marginBottom: 40, width: "100%", gap: 2 }
           }
         >
           <Text
@@ -1323,84 +1350,6 @@ const Welcome = ({ navigation }) => {
               />
             </TouchableOpacity>
           )}
-        </View>
-        <View
-          style={{
-            marginBottom: 40,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            width: "100%",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Prayer")}
-            style={
-              theme == "dark"
-                ? [styles.buttonDark, { backgroundColor: "#212121" }]
-                : theme == "BlackWhite"
-                ? styles.buttonBlack
-                : styles.button
-            }
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : theme == "BlackWhite"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "white", fontFamily: "Inter-Bold" }
-              }
-            >
-              Create Folder
-            </Text>
-            <AntDesign
-              style={{ marginLeft: 10 }}
-              name="right"
-              size={20}
-              color={theme == "dark" ? "white" : "white"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setQuickModal(true)}
-            style={
-              theme == "dark"
-                ? [styles.buttonDark]
-                : theme == "BlackWhite"
-                ? [
-                    styles.buttonDark,
-                    {
-                      backgroundColor: "white",
-                      borderColor: "black",
-                      borderWidth: 1,
-                    },
-                  ]
-                : [styles.button, { backgroundColor: "#b7d3ff" }]
-            }
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? { color: "#121212", fontFamily: "Inter-Bold" }
-                  : theme == "BlackWhite"
-                  ? { color: "black", fontFamily: "Inter-Bold" }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-              }
-            >
-              Quick Prayer
-            </Text>
-            <AntDesign
-              style={{ marginLeft: 10 }}
-              name="pluscircleo"
-              size={24}
-              color={
-                theme == "dark"
-                  ? "#121212"
-                  : theme == "BlackWhite"
-                  ? "black"
-                  : "#2f2d51"
-              }
-            />
-          </TouchableOpacity>
         </View>
       </View>
 
