@@ -63,12 +63,12 @@ const StreakSlider = ({
             theme == "dark"
               ? {
                   backgroundColor: "#212121",
-                  width: "100%",
+                  width: "95%",
                   gap: 10,
                 }
               : {
                   backgroundColor: "#b7d3ff",
-                  width: "100%",
+                  width: "95%",
                   gap: 10,
                 }
           }
@@ -89,11 +89,11 @@ const StreakSlider = ({
             style={{
               textAlign: "center",
               fontFamily: "Inter-Bold",
-              fontSize: 18,
+              fontSize: 26,
               color: theme == "dark" ? "white" : "#2f2d51",
             }}
           >
-            Awesome Job!
+            Streaks
           </Text>
           <View
             style={{
@@ -170,7 +170,7 @@ const StreakSlider = ({
                   fontSize: 12,
                 }}
               >
-                Daily Devotions Streak
+                Devotions Streak
               </Text>
             </View>
           </View>
@@ -213,6 +213,7 @@ const StreakSlider = ({
               fontFamily: "Inter-Medium",
               fontSize: 13,
               textAlign: "center",
+              marginBottom: 10,
             }}
           >
             Reach 30 days for a chance to win a special gift!

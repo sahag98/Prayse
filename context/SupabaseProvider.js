@@ -136,8 +136,9 @@ export const SupabaseProvider = (props) => {
 
   const fetchQuestions = async () => {
     const { data: allQuestions, error: answersError } = await supabase
-      .from("questions_test")
-      .select("*");
+      .from("questions")
+      .select("*")
+      .order("id", { ascending: false });
     setQuestions(allQuestions);
   };
 
@@ -417,6 +418,8 @@ export const SupabaseProvider = (props) => {
         newAnswer,
         publicGroups,
         fetchLatestQuestion,
+        fetchQuestions,
+        fetchAnswers,
         latestQuestion,
         setRefreshAnswers,
         refreshAnswers,

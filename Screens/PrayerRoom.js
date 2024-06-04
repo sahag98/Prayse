@@ -311,7 +311,9 @@ const PrayerRoom = ({ navigation, route }) => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
+              console.log(route.params?.previousScreen);
               if (route.params?.previousScreen) {
+                console.log("previous screen:");
                 navigation.goBack();
               } else {
                 navigation.navigate("Prayer");
@@ -434,7 +436,13 @@ const PrayerRoom = ({ navigation, route }) => {
                   <TouchableOpacity
                     style={{ marginRight: 10 }}
                     onPress={() => {
-                      navigation.navigate("Prayer");
+                      console.log(route.params?.previousScreen);
+                      if (route.params?.previousScreen) {
+                        navigation.goBack();
+                      } else {
+                        navigation.navigate("Prayer");
+                      }
+
                       if (sound) {
                         pauseSound();
                       }
@@ -627,7 +635,13 @@ const PrayerRoom = ({ navigation, route }) => {
                   <TouchableOpacity
                     style={{ marginRight: 10 }}
                     onPress={() => {
-                      navigation.navigate("Prayer");
+                      if (route.params?.previousScreen) {
+                        console.log("previous screen:");
+                        navigation.goBack();
+                      } else {
+                        navigation.navigate("Prayer");
+                      }
+
                       if (sound) {
                         pauseSound();
                       }
@@ -818,7 +832,11 @@ const PrayerRoom = ({ navigation, route }) => {
             <TouchableOpacity
               style={{ marginRight: 10 }}
               onPress={() => {
-                navigation.navigate("Prayer");
+                if (route.params?.previousScreen) {
+                  navigation.goBack();
+                } else {
+                  navigation.navigate("Prayer");
+                }
                 if (sound) {
                   pauseSound();
                 }

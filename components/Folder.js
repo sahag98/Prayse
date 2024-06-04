@@ -351,12 +351,12 @@ const Folder = ({ navigation, todos }) => {
             color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
           />
           <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
-            Create a folder to for your prayers.
+            Create a prayer folder.
           </TodoText>
           <Text
             style={{
               color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-              fontSize: 13,
+              fontSize: 12,
               fontFamily: "Inter-Regular",
             }}
           >
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
 
   press: {
-    fontFamily: "Inter-Medium",
+    fontFamily: "Inter-Bold",
     padding: 10,
     alignSelf: "center",
     textAlign: "center",
@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   pressDark: {
-    fontFamily: "Inter-Medium",
+    fontFamily: "Inter-Bold",
     padding: 10,
     textAlign: "center",
     alignSelf: "center",

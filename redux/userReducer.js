@@ -12,7 +12,7 @@ const initialState = {
   appstreak: [],
   appstreakNum: 0,
   expoToken: "",
-  alreadyIncreasedStreak: false,
+  hasIncreasedDevoStreak: false,
   prayers: [],
   fontSize: 15,
   selectedId: null,
@@ -38,17 +38,25 @@ export const userSlice = createSlice({
       state.fontSize = 12;
     },
     increaseAppStreakCounter: (state, action) => {
-      // console.log(state.appstreakNum);
-      if (state.appstreak.some((item) => item.today === action.payload.today)) {
+      if (
+        state.appstreak.length > 0 &&
+        state.appstreak[state.appstreak.length - 1]?.today ===
+          action.payload.today
+      ) {
         console.log("exists");
+        return;
       } else {
         state.appstreak = [...state.appstreak, action.payload];
       }
-      // state.appstreakNum = 1;
+
       const lastItem = state.appstreak[state.appstreak.length - 1];
       const oneBeforeLastItem = state.appstreak[state.appstreak.length - 2];
 
+      // console.log("last item: ", lastItem.today);
+      // console.log("one before last item: ", oneBeforeLastItem.today);
+
       if (lastItem && oneBeforeLastItem) {
+        console.log("will be adding streak");
         const lastItemDate = new Date(lastItem.today);
         const oneBeforeLastItemDate = new Date(oneBeforeLastItem.today);
 
@@ -83,24 +91,107 @@ export const userSlice = createSlice({
       // };
     },
     addtoCompletedItems: (state, action) => {
-      if (
-        state.completedItems.some(
-          (item) => item.item === action.payload.item
-        ) &&
-        state.completedItems.length === 3
-      ) {
-        return;
+      console.log("trying to add");
+
+      const { date, item } = action.payload;
+
+      // Find the index of the entry with the same date
+      const dateIndex = state.completedItems.findIndex(
+        (entry) => entry.date === date
+      );
+
+      if (dateIndex >= 0) {
+        // If date exists, add the item to the items array of that date
+
+        if (state.completedItems[dateIndex].items.length == 3) {
+          return;
+        }
+        state.completedItems[dateIndex].items.push(item);
       } else {
-        state.completedItems = [...state.completedItems, action.payload];
+        // If date does not exist, create a new entry
+        state.completedItems.push({ date: date, items: [item] });
       }
     },
     deletePreviousDayItems: (state, action) => {
-      state.completedItems = state.completedItems.filter(
-        (item) => item.date !== action.payload.yesterday
+      console.log("payload: ", action.payload);
+      const { yesterday } = action.payload;
+      const currentDate = new Date().toLocaleDateString().split("T")[0];
+      const dateIndex = state.completedItems.findIndex(
+        (entry) => entry?.date === yesterday
       );
+
+      const currentDateIndex = state.completedItems.findIndex(
+        (entry) => entry?.date === currentDate
+      );
+
+      if (dateIndex >= 0) {
+        console.log("length: ", state.completedItems[dateIndex].items.length);
+        state.completedItems[dateIndex].items.length = 0;
+      }
+
+      const lastItemData =
+        state.completedItems[state.completedItems.length - 1];
+
+      const lastItem =
+        state.completedItems[state.completedItems.length - 1]?.date;
+      const oneBeforeLastItem =
+        state.completedItems[state.completedItems.length - 2]?.date;
+
+      function parseLocaleDateString(dateString, locale = "en-US") {
+        const [month, day, year] = dateString.split(/[\/\-]/).map(Number);
+        // Note: Adjust parsing logic based on known locale format if needed
+        return new Date(year, month - 1, day);
+      }
+
+      if (lastItem && oneBeforeLastItem) {
+        const lastItemDate = parseLocaleDateString(lastItem);
+        const oneBeforeLastItemDate = parseLocaleDateString(oneBeforeLastItem);
+        console.log("will be adding devo streak");
+        // const lastItemDate = new Date(lastItem);
+        // const oneBeforeLastItemDate = new Date(oneBeforeLastItem);
+
+        console.log("date: ", lastItemDate);
+
+        // Normalize both dates to the start of their respective days
+        lastItemDate.setHours(0, 0, 0, 0);
+        oneBeforeLastItemDate.setHours(0, 0, 0, 0);
+
+        // Calculate the difference in days
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // One day in milliseconds
+        const differenceInDays =
+          (lastItemDate - oneBeforeLastItemDate) / oneDayInMilliseconds;
+
+        console.log("difference: ", differenceInDays);
+
+        // Check if the difference is exactly one day
+        if (differenceInDays === 1) {
+          if (
+            currentDate === lastItem &&
+            lastItemData.items.length === 3 &&
+            state.hasIncreasedDevoStreak == false
+          ) {
+            state.devostreak += 1;
+            state.hasIncreasedDevoStreak = true;
+          }
+
+          // state.devostreak = state.devostreak + 1;
+          // state.hasIncreasedDevoStreak == true;
+          console.log(
+            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate."
+          );
+          // Perform your function here
+        } else {
+          state.devostreak = 0;
+          console.log(
+            "The oneBeforeLastItemDate is not the correct date before the lastItemDate."
+          );
+        }
+      }
     },
     deleteCompletedItems: (state) => {
+      console.log("deleting ITEMS>>>");
       state.completedItems = [];
+      // state.completedItems.length = 0;
     },
     increaseStreakCounter: (state) => {
       if (

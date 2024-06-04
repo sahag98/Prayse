@@ -34,10 +34,10 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
             style={{
               color: theme == "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Bold",
-              fontSize: 22,
+              fontSize: 24,
             }}
           >
-            Awesome Job!
+            Streaks
           </Text>
           <Text
             style={{

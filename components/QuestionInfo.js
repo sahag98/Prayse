@@ -58,8 +58,8 @@ const QuestionInfo = ({ item, theme }) => {
         <Text
           style={
             theme == "dark"
-              ? { fontSize: 13, color: "grey", fontFamily: "Inter-Regular" }
-              : { fontSize: 13, color: "#2f2d51", fontFamily: "Inter-Regular" }
+              ? { fontSize: 12, color: "grey", fontFamily: "Inter-Regular" }
+              : { fontSize: 12, color: "#2f2d51", fontFamily: "Inter-Regular" }
           }
         >
           Added on: {new Date(item.created_at).toLocaleDateString()}

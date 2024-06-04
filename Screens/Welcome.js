@@ -349,7 +349,7 @@ const Welcome = ({ navigation }) => {
   useEffect(() => {
     async function appStreak() {
       // dispatch(deleteAppStreakCounter());
-      // console.log("app streak:", appstreak);
+      console.log("app streak:", appstreak);
 
       const today = new Date().toLocaleDateString("en-CA");
 
@@ -664,12 +664,12 @@ const Welcome = ({ navigation }) => {
                 fontFamily: "Inter-Bold",
               }}
             >
-              {appstreak.length ?? 0}
+              {appstreak ?? 0}
             </Text>
           </TouchableOpacity>
 
           <StreakSlider
-            appstreak={appstreak.length}
+            appstreak={appstreak}
             streak={streak}
             theme={theme}
             setIsShowingStreak={setIsShowingStreak}

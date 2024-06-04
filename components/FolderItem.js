@@ -48,6 +48,17 @@ const FolderItem = ({
     setOpenEdit(false);
   }
 
+  function truncateWords(str) {
+    let words = str.split(" ");
+    if (words.length > 5) {
+      return words.slice(0, 5).join(" ") + " ...";
+    } else {
+      return str;
+    }
+  }
+
+  // let truncatedString = truncateWords(prayer);
+
   console.log(item.prayers);
 
   function editFolder(id) {
@@ -83,7 +94,8 @@ const FolderItem = ({
           style={{
             display: "flex",
             position: "relative",
-            height: "100%",
+            flex: 1,
+            // height: "100%",
 
             justifyContent: "space-between",
           }}
@@ -129,7 +141,7 @@ const FolderItem = ({
             </View>
           ) : (
             <FlatList
-              data={prayers?.slice(0, 3)}
+              data={prayers?.slice(0, 2)}
               keyExtractor={(item) => item.id}
               style={{ gap: 5 }}
               renderItem={({ item }) => (
@@ -147,7 +159,7 @@ const FolderItem = ({
                       fontSize: 11,
                     }}
                   >
-                    {item.prayer}
+                    {truncateWords(item.prayer)}
                   </Text>
                 </View>
               )}
@@ -306,7 +318,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#212121",
     padding: 10,
     width: width / 2 - 8,
-    height: 135,
+    // aspectRatio: 1 / 1,
+    minHeight: 135,
+    // height: 135,
     marginBottom: 15,
     borderRadius: 10,
   },

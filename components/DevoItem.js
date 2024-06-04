@@ -92,6 +92,16 @@ const DevoItem = ({
     };
   }, [currentUser?.id, devo.title, refreshReflections, isFocused]);
 
+  function switchDateFormat(dateString) {
+    let dateParts = dateString.split("-");
+
+    let formattedDate = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
+
+    return formattedDate;
+  }
+
+  // Example usage
+
   return (
     <ScrollView
       refreshControl={
@@ -163,7 +173,7 @@ const DevoItem = ({
                     }
               }
             >
-              {convertDigitIn(devo.date)}
+              {switchDateFormat(devo.date)}
             </Text>
           </View>
           <Image style={styles.img} source={tbf} />

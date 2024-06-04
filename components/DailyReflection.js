@@ -33,36 +33,21 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     // getTodaysItems();
+    console.log("completed Items:  ", completedItems);
     // // clearTodaysCompletion();
     clearPreviousDayCompletion();
   }, [isFocused]);
 
   function handleComplete(selected) {
-    console.log("selected: ", selected);
-    // console.log("completedItems:  ", completedItems);
-    const currentDate = new Date().toISOString().split("T")[0];
+    const currentDate = new Date().toLocaleDateString().split("T")[0];
     // dispatch(deleteCompletedItems());
+    // dispatch(deleteStreakCounter());
     dispatch(
       addtoCompletedItems({
         item: selected,
         date: currentDate,
       })
     );
-    dispatch(increaseStreakCounter());
-    // if (completedItems.length === 3){
-    //   dispatch(add)
-    // }
-
-    // Save completion status with current date
-    // const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
-    // AsyncStorage.setItem(`completion_${currentDate}_${selected}`, "completed")
-    //   .then(() => {
-    //     // Update todaysItems state to reflect the change immediately
-    //     // getTodaysItems();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error saving completion status:", error);
-    //   });
 
     navigation.navigate(selected, {
       previousScreen: "Home",
@@ -74,25 +59,15 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1); // Get yesterday's date
 
-    const yesterdayDateString = yesterday.toISOString().split("T")[0]; // Format yesterday's date
+    // const currentDate = new Date().toISOString().split("T")[0];
+    // console.log(currentDate);
+    const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
+
+    // const yesterdayDateString = yesterday
+    //   .toLocaleDateString("en-CA")
+    //   .split("T")[0];
 
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
-
-    // Retrieve all keys from AsyncStorage
-    // const keys = await AsyncStorage.getAllKeys();
-
-    // // Filter keys to get only completion status for yesterday
-    // const yesterdayKeys = keys.filter((key) =>
-    //   key.startsWith(`completion_${yesterdayDateString}_`)
-    // );
-
-    // // Remove completion status for each reflection item for yesterday
-    // for (const key of yesterdayKeys) {
-    //   await AsyncStorage.removeItem(key);
-    // }
-
-    // // Optionally clear isCompleteArray if it's used elsewhere in your code
-    // setIsCompleteArray([]);
   }
 
   async function getCompletionStatusForToday() {
@@ -205,7 +180,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       >
         Daily Devotions
       </Text>
-      <View style={{ gap: 10, width: "100%" }}>
+      <View style={{ gap: 12, width: "100%" }}>
         <TouchableOpacity
           onPress={() => handleComplete("PrayerRoom")}
           style={{
@@ -221,14 +196,22 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               height: "75%",
               top: "50%",
               left: 11,
-              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "PrayerRoom")
+              )
+                ? theme == "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+                : theme == "dark"
+                ? "#212121"
+                : "white",
             }}
           />
           <View
             style={{
               width: 25,
-              backgroundColor: completedItems.find(
-                (item) => item.item === "PrayerRoom"
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "PrayerRoom")
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -277,10 +260,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
                 color: theme == "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
-                lineHeight: 22,
               }}
             >
-              Take a moment to pray for all your prayers.
+              Take a moment to pray.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -299,7 +281,15 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               height: "50%",
               bottom: "50%",
               left: 11,
-              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "VerseOfTheDay")
+              )
+                ? theme == "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+                : theme == "dark"
+                ? "#212121"
+                : "white",
             }}
           />
           <View
@@ -309,14 +299,22 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               height: "75%",
               top: "50%",
               left: 11,
-              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "VerseOfTheDay")
+              )
+                ? theme == "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+                : theme == "dark"
+                ? "#212121"
+                : "white",
             }}
           />
           <View
             style={{
               width: 25,
-              backgroundColor: completedItems.find(
-                (item) => item.item === "VerseOfTheDay"
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "VerseOfTheDay")
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -364,10 +362,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
                 color: theme == "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
-                lineHeight: 22,
               }}
             >
-              Read the daily verse and apply it to your day.
+              Read the daily verse.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -386,14 +383,22 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               height: "50%",
               bottom: "50%",
               left: 11,
-              backgroundColor: theme == "dark" ? "#474747" : "#2f2d51",
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "DevoList")
+              )
+                ? theme == "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+                : theme == "dark"
+                ? "#212121"
+                : "white",
             }}
           />
           <View
             style={{
               width: 25,
-              backgroundColor: completedItems.find(
-                (item) => item.item === "DevoList"
+              backgroundColor: completedItems.some((completedItem) =>
+                completedItem.items.find((item) => item === "DevoList")
               )
                 ? theme == "dark"
                   ? "#a5c9ff"
@@ -441,10 +446,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
                 color: theme == "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
-                lineHeight: 22,
               }}
             >
-              Dive into today's devotional and reflect on it.
+              Dive into today's devotional.
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>

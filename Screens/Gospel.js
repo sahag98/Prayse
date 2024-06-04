@@ -248,8 +248,8 @@ const Gospel = ({ navigation }) => {
               <Text style={theme == "dark" ? styles.prayDark : styles.pray}>
                 Dear God, I recognize that I am a sinner and have been seperated
                 from you. From this point on, I accept you Jesus as my Lord and
-                Savior. Please forgive me from my sins and I surrender all areas
-                my life to You.
+                Savior. Please forgive me from my sins and help me to surrender
+                all areas my life to You.
               </Text>
               <Text
                 style={

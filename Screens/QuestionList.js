@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useSelector } from "react-redux";
 import QuestionHelpModal from "../components/QuestionHelpModal";
@@ -13,11 +13,17 @@ import QuestionInfo from "../components/QuestionInfo";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
+import { useIsFocused } from "@react-navigation/native";
 const QuestionList = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
+  const isFocused = useIsFocused();
+  const { questions, answers, fetchQuestions, fetchAnswers } = useSupabase();
 
-  const { questions, answers } = useSupabase();
+  useEffect(() => {
+    fetchQuestions();
+    fetchAnswers();
+  }, [isFocused]);
 
   // questions.sort((a, b) => {
   //   const dateA = new Date(a.created_at);
@@ -66,7 +72,7 @@ const QuestionList = ({ navigation }) => {
         <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
           <FontAwesome5
             name="question-circle"
-            size={28}
+            size={25}
             color={theme == "dark" ? "#c8c8c8" : "#2f2d51"}
           />
         </TouchableOpacity>
