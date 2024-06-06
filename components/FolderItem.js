@@ -5,6 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Modal,
+  Platform,
   KeyboardAvoidingView,
   FlatList,
 } from "react-native";
@@ -42,6 +43,9 @@ const FolderItem = ({
       prayers: item.prayers,
       id: item.id,
     });
+    // navigation.setParams({
+    //   title: item.name,
+    // });
   };
 
   function handleCloseEdit() {

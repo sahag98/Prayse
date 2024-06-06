@@ -192,13 +192,13 @@ const Navigation = () => {
               if (route.name === "Home") {
                 iconName = focused ? "home" : "home-outline";
               } else if (route.name === "More") {
-                iconName = focused ? "ios-list" : "ios-list-outline";
+                iconName = focused ? "list" : "list-outline";
               } else if (route.name === "Prayer") {
                 iconName = focused ? "hands-pray" : "hands-pray";
               } else if (route.name === "Devotional") {
-                iconName = focused ? "ios-bookmarks" : "ios-bookmarks-outline";
+                iconName = focused ? "bookmarks" : "bookmarks-outline";
               } else if (route.name === "Community") {
-                iconName = focused ? "ios-globe" : "ios-globe-outline";
+                iconName = focused ? "globe" : "globe-outline";
               }
 
               if (route.name === "Prayer") {

@@ -1,6 +1,7 @@
 import {
   Image,
   Linking,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,7 +21,7 @@ const MerchComponent = ({ theme }) => {
       <View
         style={{
           width: "100%",
-          flexDirection: "column",
+          flexDirection: Platform.isPad ? "row" : "column",
           justifyContent: "space-between",
           alignItems: "center",
           gap: 5,

@@ -46,6 +46,11 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
   const onShare = async () => {
     let prayers = [];
 
+    if (folderPrayers.length == 0) {
+      alert("No prayers to share.");
+      return;
+    }
+
     folderPrayers.map((p) => {
       prayers.push(p.prayer);
     });
@@ -216,7 +221,7 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
               >
                 <Text
                   style={{
-                    fontFamily: "Inter-Medium",
+                    fontFamily: "Inter-Bold",
                     fontSize: 16,
                     color: theme == "dark" ? "white" : "#2f2d51",
                   }}
@@ -244,7 +249,7 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                  backgroundColor: theme == "dark" ? "#2e2e2e" : "#b7d3ff",
                   borderRadius: 10,
                   justifyContent: "space-between",
                   padding: 10,
@@ -271,7 +276,7 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                  backgroundColor: theme == "dark" ? "#2e2e2e" : "#b7d3ff",
                   borderRadius: 10,
                   justifyContent: "space-between",
                   padding: 10,
@@ -306,7 +311,7 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
                   backgroundColor: theme == "dark" ? "#270000" : "#ffd8d8",
                   borderRadius: 10,
                   justifyContent: "space-between",
-                  padding: 10,
+                  padding: 14,
                 }}
               >
                 <Text

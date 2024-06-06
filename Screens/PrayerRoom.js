@@ -496,7 +496,7 @@ const PrayerRoom = ({ navigation, route }) => {
                 >
                   <Feather
                     name={isPlayingSound ? "volume-2" : "volume-x"}
-                    size={24}
+                    size={30}
                     color={theme == "dark" ? "#121212" : "white"}
                   />
                 </TouchableOpacity>
@@ -695,7 +695,7 @@ const PrayerRoom = ({ navigation, route }) => {
                 >
                   <Feather
                     name={isPlayingSound ? "volume-2" : "volume-x"}
-                    size={24}
+                    size={30}
                     color={theme == "dark" ? "#121212" : "white"}
                   />
                 </TouchableOpacity>
@@ -905,7 +905,7 @@ const PrayerRoom = ({ navigation, route }) => {
                   {data.prayer}
                 </Animated.Text>
               </View>
-              <Animated.Text
+              {/* <Animated.Text
                 style={[
                   styles.swipeText,
                   theme == "dark" && { color: "white" },
@@ -914,7 +914,7 @@ const PrayerRoom = ({ navigation, route }) => {
                 ]}
               >
                 Swipe right to go to the next prayer.
-              </Animated.Text>
+              </Animated.Text> */}
             </View>
           </GestureDetector>
 
@@ -992,7 +992,7 @@ export default PrayerRoom;
 
 const styles = StyleSheet.create({
   swipeText: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Inter-Regular",
     color: "#2f2d51",
   },
@@ -1041,8 +1041,8 @@ const styles = StyleSheet.create({
   },
   pageContent: {
     padding: 20,
-    marginBottom: 50,
-    gap: 10,
+    marginBottom: 70,
+    gap: 30,
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
@@ -1051,6 +1051,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     marginHorizontal: 15,
+    marginTop: 5,
   },
   stepIndicator: {
     flex: 1,

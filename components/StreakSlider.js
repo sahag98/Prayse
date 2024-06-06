@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ModalContainer, ModalView, ModalView2 } from "../styles/appStyles";
 import {
   Entypo,
@@ -16,6 +16,8 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { ProgressBar } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { didEnterGiveaway } from "../redux/userReducer";
 
 const StreakSlider = ({
   isShowingStreak,
@@ -24,6 +26,19 @@ const StreakSlider = ({
   streak,
   appstreak,
 }) => {
+  const hasEnteredGiveaway = useSelector(
+    (state) => state.user.alreadyEnteredGiveaway
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("app streak: ", appstreak);
+
+    if (appstreak === 3 && hasEnteredGiveaway == false) {
+      dispatch(didEnterGiveaway());
+      console.log("entering giveaway!!");
+    }
+  }, [appstreak]);
+
   const onShare = async () => {
     try {
       await Share.share({
@@ -176,10 +191,10 @@ const StreakSlider = ({
           </View>
           <Text
             style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              color: theme == "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Regular",
               textAlign: "center",
-              fontSize: 13,
+              fontSize: 15,
               marginTop: 5,
             }}
           >
@@ -188,7 +203,7 @@ const StreakSlider = ({
           <View
             style={{
               width: "100%",
-              marginTop: 5,
+              marginTop: 10,
               gap: 5,
             }}
           >
@@ -197,26 +212,27 @@ const StreakSlider = ({
                 textAlign: "center",
                 color: theme == "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Medium",
+                fontSize: 16,
               }}
             >
-              {((appstreak / 30) * 100).toFixed(1)}%
+              {((appstreak / 3) * 100).toFixed(1)}%
             </Text>
             <ProgressBar
-              style={{ height: 10, borderRadius: 10 }}
-              progress={appstreak / 30}
+              style={{ height: 8, borderRadius: 10 }}
+              progress={appstreak / 3}
               color="green"
             />
           </View>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
               fontFamily: "Inter-Medium",
               fontSize: 13,
               textAlign: "center",
               marginBottom: 10,
             }}
           >
-            Reach 30 days for a chance to win a special gift!
+            Reach 3 days for a chance to win a special gift!
           </Text>
 
           <TouchableOpacity

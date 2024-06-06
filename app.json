@@ -13,7 +13,6 @@
       "color": "#349eeb"
     },
     "plugins": [
-      ["expo-privacy-manifest-polyfill-plugin"],
       [
         "expo-image-picker",
         {
@@ -33,7 +32,9 @@
           "username": "sahag98"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-font",
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./assets/prayer-splash.png",
@@ -56,19 +57,33 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPITypeReasons": ["DDA9.1","C617.1","3B52.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "DDA9.1",
+              "C617.1",
+              "3B52.1"
+            ]
           },
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
-            "NSPrivacyAccessedAPITypeReasons": ["35F9.1","8FFB.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1",
+              "8FFB.1"
+            ]
           },
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
-            "NSPrivacyAccessedAPITypeReasons": ["E174.1","85F4.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1",
+              "85F4.1"
+            ]
           },
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1","1C8F.1","C56D.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1",
+              "1C8F.1",
+              "C56D.1"
+            ]
           }
         ]
       },

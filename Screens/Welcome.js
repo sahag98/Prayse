@@ -349,11 +349,11 @@ const Welcome = ({ navigation }) => {
   useEffect(() => {
     async function appStreak() {
       // dispatch(deleteAppStreakCounter());
-      console.log("app streak:", appstreak);
+      // console.log("app streak:", appstreak);
 
       const today = new Date().toLocaleDateString("en-CA");
 
-      console.log("today: ", today);
+      // console.log("today: ", today);
       // console.log("today: ", today);
       // const currentDate = new Date();
       // const t = new Date()
@@ -1681,7 +1681,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   greeting: {
-    fontSize: 17,
+    fontSize: 18,
     // marginVertical: 5,
     fontFamily: "Inter-Bold",
     letterSpacing: 2,
@@ -1690,7 +1690,7 @@ const styles = StyleSheet.create({
   },
   greetingDark: {
     // marginVertical: 5,
-    fontSize: 17,
+    fontSize: 18,
     fontFamily: "Inter-Black",
     alignSelf: "flex-start",
     letterSpacing: 2,

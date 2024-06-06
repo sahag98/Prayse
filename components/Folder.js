@@ -211,7 +211,7 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
-              backgroundColor: theme == "dark" ? "#212121" : "#d1e3ff",
+              backgroundColor: theme == "dark" ? "#3b3b3b" : "#d1e3ff",
               borderRadius: 20,
               paddingVertical: 5,
               alignItems: "center",
@@ -284,7 +284,7 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
-              backgroundColor: theme == "dark" ? "#212121" : "#d1e3ff",
+              backgroundColor: theme == "dark" ? "#3b3b3b" : "#d1e3ff",
               borderRadius: 20,
               paddingVertical: 5,
               alignItems: "center",

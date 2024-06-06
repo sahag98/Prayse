@@ -203,11 +203,13 @@ const DevoItem = ({
                 ? {
                     color: "#efefef",
                     lineHeight: 25,
+                    fontSize: 15,
                     fontFamily: "Inter-Regular",
                   }
                 : {
                     color: "#2f2d51",
                     lineHeight: 25,
+                    fontSize: 15,
                     fontFamily: "Inter-Regular",
                   }
             }

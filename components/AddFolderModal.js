@@ -64,14 +64,14 @@ const AddFolderModal = ({
                     : { fontFamily: "Inter-Bold", fontSize: 20 }
                 }
               >
-                Folder
+                Create Folder
               </HeaderTitle>
-              <AntDesign
+              {/* <AntDesign
                 style={{ marginTop: 10 }}
                 name="edit"
                 size={30}
                 color={theme == "dark" ? "white" : "#2F2D51"}
-              />
+              /> */}
             </ModalIcon>
             <TextInput
               // ref={folderInputRef}
@@ -114,8 +114,9 @@ const styles = StyleSheet.create({
     width: 250,
     paddingHorizontal: 10,
     color: "white",
-    paddingVertical: 20,
+    paddingVertical: 15,
     borderRadius: 10,
+    marginTop: 10,
     // alignItems: "center",
     // alignSelf: "center",
     // textAlignVertical: "center",
@@ -127,9 +128,10 @@ const styles = StyleSheet.create({
     width: 250,
     fontSize: 14,
     color: "white",
+    marginTop: 10,
     // height: 40,
     paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingVertical: 15,
     borderRadius: 10,
     alignItems: "center",
     alignSelf: "center",

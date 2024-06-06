@@ -179,7 +179,7 @@ const Devotional = ({ navigation }) => {
               color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
               fontFamily: "Inter-Regular",
               textAlign: "left",
-              // fontSize: 16,
+              fontSize: 15,
               marginBottom: 10,
             }}
           >

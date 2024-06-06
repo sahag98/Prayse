@@ -441,7 +441,7 @@ const PrayerGroup = ({ route, navigation }) => {
           </TouchableOpacity>
         </HeaderView>
 
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             paddingBottom: 10,
@@ -483,7 +483,7 @@ const PrayerGroup = ({ route, navigation }) => {
           >
             Prayer List
           </Text>
-        </View>
+        </View> */}
 
         {toggle == "chat" ? (
           <Chat

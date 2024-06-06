@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Platform,
   Share,
   ImageBackground,
 } from "react-native";

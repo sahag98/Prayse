@@ -68,6 +68,10 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     //   .split("T")[0];
 
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
+
+    if (appStreak === 3) {
+      console.log("You are entering the giveaway!!");
+    }
   }
 
   async function getCompletionStatusForToday() {
@@ -192,7 +196,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <View
             style={{
               position: "absolute",
-              width: 4,
+              width: 5,
               height: "75%",
               top: "50%",
               left: 11,
@@ -277,7 +281,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <View
             style={{
               position: "absolute",
-              width: 4,
+              width: 5,
               height: "50%",
               bottom: "50%",
               left: 11,
@@ -295,7 +299,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <View
             style={{
               position: "absolute",
-              width: 4,
+              width: 5,
               height: "75%",
               top: "50%",
               left: 11,
@@ -379,7 +383,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <View
             style={{
               position: "absolute",
-              width: 4,
+              width: 5,
               height: "50%",
               bottom: "50%",
               left: 11,

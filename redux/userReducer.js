@@ -12,6 +12,7 @@ const initialState = {
   appstreak: [],
   appstreakNum: 0,
   expoToken: "",
+  alreadyEnteredGiveaway: false,
   hasIncreasedDevoStreak: false,
   prayers: [],
   fontSize: 15,
@@ -37,7 +38,11 @@ export const userSlice = createSlice({
     small: (state) => {
       state.fontSize = 12;
     },
+    didEnterGiveaway: (state, action) => {
+      state.alreadyEnteredGiveaway = true;
+    },
     increaseAppStreakCounter: (state, action) => {
+      state.alreadyEnteredGiveaway = false;
       if (
         state.appstreak.length > 0 &&
         state.appstreak[state.appstreak.length - 1]?.today ===
@@ -92,7 +97,6 @@ export const userSlice = createSlice({
     },
     addtoCompletedItems: (state, action) => {
       console.log("trying to add");
-
       const { date, item } = action.payload;
 
       // Find the index of the entry with the same date
@@ -239,6 +243,7 @@ export const {
   addFolder,
   regular,
   small,
+  didEnterGiveaway,
   addtoCompletedItems,
   increaseStreakCounter,
   increaseAppStreakCounter,

@@ -2,6 +2,7 @@ import {
   KeyboardAvoidingView,
   Modal,
   StyleSheet,
+  Platform,
   Text,
   View,
 } from "react-native";
@@ -22,7 +23,8 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
-  const [newFolderName, setNewFolderName] = useState(folderName);
+  console.log("folder name: ", folderName);
+  const [newFolderName, setNewFolderName] = useState("");
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -39,6 +41,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
       title: newFolderName,
     });
     setOpenEdit(false);
+    setNewFolderName("");
   }
 
   return (
@@ -144,6 +147,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     textAlignVertical: "center",
+    fontSize: 14,
     fontFamily: "Inter-Regular",
     backgroundColor: "#2F2D51",
   },

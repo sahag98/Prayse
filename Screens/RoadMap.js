@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -16,15 +17,22 @@ import { useIsFocused } from "@react-navigation/native";
 const RoadMap = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [roadmap, setRoadmap] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const isFocused = useIsFocused();
   useEffect(() => {
     async function fetchRoadMap() {
-      const roadmapItems = await fetch(
-        `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`
-      ).then(async (res) => res.json());
+      try {
+        setIsLoading(true);
+        const roadmapItems = await fetch(
+          `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`
+        ).then(async (res) => res.json());
 
-      setRoadmap(roadmapItems);
+        setRoadmap(roadmapItems);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchRoadMap();
   }, [isFocused]);
@@ -53,70 +61,72 @@ const RoadMap = ({ navigation }) => {
         RoadMap of App Updates
       </Text>
 
-      <FlatList
-        keyExtractor={(e, i) => i.toString()}
-        data={roadmap}
-        renderItem={({ item }) => {
-          return (
-            <View key={item.id}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text
+      {isLoading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator color="white" />
+        </View>
+      ) : (
+        <FlatList
+          keyExtractor={(e, i) => i.toString()}
+          data={roadmap}
+          renderItem={({ item }) => {
+            return (
+              <View style={{ gap: 5 }} key={item.id}>
+                <View
                   style={{
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                    fontFamily: "Inter-Bold",
-                    fontSize: 18,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {item.version}
-                </Text>
-                <Text
-                  style={{
-                    color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                    fontFamily: "Inter-Regular",
-                  }}
-                >
-                  {format(item.releaseDate, "PP")}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontFamily: "Inter-Bold",
+                      fontSize: 24,
+                    }}
+                  >
+                    {item.version}
+                  </Text>
+                  <Text
+                    style={{
+                      color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                      fontFamily: "Inter-Regular",
+                    }}
+                  >
+                    {format(item.releaseDate, "PP")}
+                  </Text>
+                </View>
 
-              <View>
-                <View></View>
-                <View />
-              </View>
-              <View>
-                <View>
-                  <View>
-                    <Text
-                      style={{
-                        color: theme == "dark" ? "white" : "#2f2d51",
-                        fontSize: 16,
-                        fontFamily: "Inter-Medium",
-                      }}
-                    >
-                      {item.title}
-                    </Text>
+                <View style={{ gap: 5 }}>
+                  <Text
+                    style={{
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontSize: 18,
+                      fontFamily: "Inter-Medium",
+                    }}
+                  >
+                    {item.title}
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                        fontFamily: "Inter-Regular",
-                      }}
-                    >
-                      {item.description}
-                    </Text>
-                  </View>
+                  <Text
+                    style={{
+                      color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                      fontFamily: "Inter-Regular",
+                      lineHeight: 23,
+                      fontSize: 15,
+                    }}
+                  >
+                    {item.description}
+                  </Text>
                 </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </Container>
   );
 };
