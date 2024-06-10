@@ -352,7 +352,7 @@ const Welcome = ({ navigation }) => {
       // console.log("app streak:", appstreak);
 
       const today = new Date().toLocaleDateString("en-CA");
-
+      console.log(today);
       // console.log("today: ", today);
       // console.log("today: ", today);
       // const currentDate = new Date();
@@ -760,10 +760,10 @@ const Welcome = ({ navigation }) => {
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 17, color: "white" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                   : {
                       fontFamily: "Inter-Bold",
-                      fontSize: 17,
+                      fontSize: 18,
                       color: "#2f2d51",
                     }
               }

@@ -1,5 +1,7 @@
 import {
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Share,
   StyleSheet,
   Text,
@@ -17,6 +19,9 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { ProgressBar } from "react-native-paper";
+import { useDispatch } from "react-redux";
+import { resetGiveaway } from "../redux/userReducer";
+import { useSupabase } from "../context/useSupabase";
 
 const GiveawayModal = ({
   isShowingGiveaway,
@@ -27,133 +32,147 @@ const GiveawayModal = ({
 }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const { supabase } = useSupabase();
 
-  function handleSubmit() {
+  const dispatch = useDispatch();
+  async function handleSubmit() {
     if (email.length === 0) {
       setError("An email address is required. Try again");
       return;
+    } else {
+      const { data, error } = await supabase
+        .from("giveaway_entries")
+        .insert([{ email: email, streak: appstreak }])
+        .select();
     }
     console.log("submitting");
-    setIsShowingGiveaway(false);
+    closeModal();
+  }
+
+  function closeModal() {
+    dispatch(resetGiveaway());
   }
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={isShowingGiveaway}
-      onRequestClose={() => setIsShowingGiveaway(false)}
+      onRequestClose={closeModal}
       statusBarTranslucent={true}
     >
-      <ModalContainer
-        style={
-          theme == "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
-        }
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ModalView2
+        <ModalContainer
           style={
             theme == "dark"
-              ? {
-                  backgroundColor: "#212121",
-                  width: "100%",
-                  gap: 10,
-                }
-              : {
-                  backgroundColor: "#b7d3ff",
-                  width: "100%",
-                  gap: 10,
-                }
+              ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
           }
         >
-          <AntDesign
-            onPress={() => setIsShowingGiveaway(false)}
-            style={{ position: "absolute", right: 8, top: 8 }}
-            name="close"
-            size={22}
-            color={theme == "dark" ? "white" : "#2f2d51"}
-          />
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Inter-Bold",
-              fontSize: 17,
-              color: theme == "dark" ? "white" : "#2f2d51",
-            }}
-          >
-            You have reached 30 days!
-          </Text>
-          <Text
-            style={{
-              fontFamily: "Inter-Medium",
-
-              color: theme == "dark" ? "white" : "#2f2d51",
-            }}
-          >
-            Enter your email for a chance to win a prayse merch item of your
-            choice.
-          </Text>
-          <TextInput
-            onChangeText={(text) => setEmail(text)}
-            autoCapitalize="none"
-            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "grey"}
-            value={email}
-            blurOnSubmit={true}
+          <ModalView2
             style={
               theme == "dark"
                 ? {
-                    color: "white",
-                    // width: "100%",
-                    backgroundColor: "#121212",
-                    padding: 8,
-                    borderRadius: 10,
-                    fontFamily: "Inter-Regular",
+                    backgroundColor: "#212121",
+                    width: "100%",
+                    gap: 10,
                   }
                 : {
-                    color: "#2f2d51",
+                    backgroundColor: "#b7d3ff",
                     width: "100%",
-                    backgroundColor: "white",
-                    padding: 8,
-                    borderRadius: 10,
-                    fontFamily: "Inter-Regular",
+                    gap: 10,
                   }
             }
-            placeholder="Enter email"
-          />
-          {error && (
-            <Text
-              style={{
-                color: "red",
-                fontFamily: "Inter-Regular",
-                fontSize: 13,
-              }}
-            >
-              {error}
-            </Text>
-          )}
-
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={{
-              width: "100%",
-              backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-              padding: 12,
-              borderRadius: 10,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
           >
+            <AntDesign
+              onPress={() => setIsShowingGiveaway(false)}
+              style={{ position: "absolute", right: 8, top: 8 }}
+              name="close"
+              size={22}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
             <Text
               style={{
-                color: theme == "dark" ? "#121212" : "white",
+                textAlign: "center",
                 fontFamily: "Inter-Bold",
+                fontSize: 17,
+                color: theme == "dark" ? "white" : "#2f2d51",
               }}
             >
-              Submit
+              You have reached 30 days!
             </Text>
-          </TouchableOpacity>
-        </ModalView2>
-      </ModalContainer>
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+
+                color: theme == "dark" ? "white" : "#2f2d51",
+              }}
+            >
+              Enter your email for a chance to win a prayse merch item of your
+              choice.
+            </Text>
+            <TextInput
+              onChangeText={(text) => setEmail(text)}
+              autoCapitalize="none"
+              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "grey"}
+              value={email}
+              blurOnSubmit={true}
+              style={
+                theme == "dark"
+                  ? {
+                      color: "white",
+                      backgroundColor: "#121212",
+                      padding: 12,
+                      borderRadius: 10,
+                      fontFamily: "Inter-Regular",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      backgroundColor: "white",
+                      padding: 12,
+                      borderRadius: 10,
+                      fontFamily: "Inter-Regular",
+                    }
+              }
+              placeholder="Enter email"
+            />
+            {error && (
+              <Text
+                style={{
+                  color: "red",
+                  fontFamily: "Inter-Regular",
+                  fontSize: 13,
+                }}
+              >
+                {error}
+              </Text>
+            )}
+
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={{
+                width: "100%",
+                backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                padding: 12,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: theme == "dark" ? "#121212" : "white",
+                  fontFamily: "Inter-Bold",
+                }}
+              >
+                Submit
+              </Text>
+            </TouchableOpacity>
+          </ModalView2>
+        </ModalContainer>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

@@ -184,14 +184,14 @@ const DevoItem = ({
               ? {
                   marginTop: 5,
                   marginBottom: 10,
-                  borderLeftWidth: 2,
+                  borderLeftWidth: 4,
                   borderLeftColor: "#A5C9FF",
                   paddingHorizontal: 10,
                 }
               : {
                   marginTop: 5,
                   marginBottom: 10,
-                  borderLeftWidth: 2,
+                  borderLeftWidth: 4,
                   borderLeftColor: "#ffcd8b",
                   paddingHorizontal: 10,
                 }
@@ -202,12 +202,14 @@ const DevoItem = ({
               theme == "dark"
                 ? {
                     color: "#efefef",
+                    marginLeft: 3,
                     lineHeight: 25,
                     fontSize: 15,
                     fontFamily: "Inter-Regular",
                   }
                 : {
                     color: "#2f2d51",
+                    marginLeft: 3,
                     lineHeight: 25,
                     fontSize: 15,
                     fontFamily: "Inter-Regular",

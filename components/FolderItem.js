@@ -160,7 +160,7 @@ const FolderItem = ({
                     style={{
                       color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
                       fontFamily: "Inter-Regular",
-                      fontSize: 11,
+                      fontSize: 12,
                     }}
                   >
                     {truncateWords(item.prayer)}

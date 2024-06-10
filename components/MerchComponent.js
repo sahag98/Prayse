@@ -22,17 +22,19 @@ const MerchComponent = ({ theme }) => {
         style={{
           width: "100%",
           flexDirection: Platform.isPad ? "row" : "column",
-          justifyContent: "space-between",
+
+          justifyContent: "between",
           alignItems: "center",
-          gap: 5,
+          gap: Platform.isPad ? 30 : 10,
           flex: 1,
         }}
       >
         <View
           style={{
+            width: Platform.isPad ? "auto" : "100%",
             // width: "50%",
             // height: "100%",
-            gap: 10,
+            gap: 5,
             // justifyContent: "space-between",
           }}
         >
@@ -49,9 +51,10 @@ const MerchComponent = ({ theme }) => {
             style={{
               color: theme == "dark" ? "#bebebe" : "#2f2d51",
               fontFamily: "Inter-Regular",
+              marginBottom: 10,
             }}
           >
-            Check out our merch! We have shirts, tank tops and more!
+            Reminding us of the power of prayer and praise in our walk with God.
           </Text>
 
           <TouchableOpacity
@@ -62,15 +65,16 @@ const MerchComponent = ({ theme }) => {
               alignItems: "center",
               flexDirection: "row",
               gap: 10,
-              width: "auto",
+              width: Platform.isPad ? "50%" : "100%",
               padding: 12,
-              borderRadius: 20,
+              borderRadius: 10,
             }}
           >
             <Text
               style={{
                 color: theme == "dark" ? "#121212" : "white",
                 fontFamily: "Inter-Bold",
+                fontSize: 15,
               }}
             >
               Shop Now
@@ -84,7 +88,15 @@ const MerchComponent = ({ theme }) => {
         </View>
         <Image
           source={merch}
-          style={[styles.merchImg, { aspectRatio: 16 / 9 }]}
+          style={[
+            styles.merchImg,
+            {
+              flex: 1,
+              width: "100%",
+              height: 350,
+              aspectRatio: Platform.isPad ? 1 / 1 : null,
+            },
+          ]}
         />
       </View>
     </View>
@@ -120,10 +132,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
-  merchImg: {
-    width: "100%",
-    objectFit: "contain",
-    height: 350,
-    maxHeight: 350,
-  },
+  merchImg: { flex: 1 },
 });

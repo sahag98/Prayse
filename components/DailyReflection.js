@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CompletedModal from "./CompletedModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addtoCompletedItems,
   deleteAppStreakCounter,
@@ -28,8 +28,15 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const isFocused = useIsFocused();
   const [isCompleteArray, setIsCompleteArray] = useState([]);
   const [isShowingStreak, setIsShowingStreak] = useState(false);
-  const [isShowingGiveaway, setIsShowingGiveaway] = useState(false);
+  const hasEnteredGiveaway = useSelector(
+    (state) => state.user.alreadyEnteredGiveaway
+  );
+  // const [isShowingGiveaway, setIsShowingGiveaway] =
+  //   useState(hasEnteredGiveaway);
   const [todaysItems, setTodaysItems] = useState([]);
+
+  // console.log(completedItems);
+
   const dispatch = useDispatch();
   useEffect(() => {
     // getTodaysItems();
@@ -40,6 +47,8 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
 
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
+
+    console.log("curr: ", currentDate);
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
     dispatch(
@@ -62,7 +71,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     // const currentDate = new Date().toISOString().split("T")[0];
     // console.log(currentDate);
     const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
-
+    console.log("string: ", yesterdayDateString);
     // const yesterdayDateString = yesterday
     //   .toLocaleDateString("en-CA")
     //   .split("T")[0];
@@ -162,8 +171,8 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       }}
     >
       <GiveawayModal
-        isShowingGiveaway={isShowingGiveaway}
-        setIsShowingGiveaway={setIsShowingGiveaway}
+        isShowingGiveaway={hasEnteredGiveaway}
+        // setIsShowingGiveaway={setIsShowingGiveaway}
         theme={theme}
         appstreak={appStreak}
         streak={streak}
@@ -177,9 +186,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       />
       <Text
         style={{
-          color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+          color: theme == "dark" ? "white" : "#2f2d51",
           fontFamily: "Inter-Bold",
-          fontSize: 15,
+          fontSize: 18,
         }}
       >
         Daily Devotions

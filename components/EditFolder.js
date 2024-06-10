@@ -25,11 +25,15 @@ import { useNavigation } from "@react-navigation/native";
 const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
   console.log("folder name: ", folderName);
   const [newFolderName, setNewFolderName] = useState("");
-
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   function HandleEditFolder(id) {
+    if (newFolderName.length == 0) {
+      setError("Folder name field can't be empty.");
+      return;
+    }
     console.log("just edited.");
     dispatch(
       editFolderName({
@@ -41,6 +45,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
       title: newFolderName,
     });
     setOpenEdit(false);
+    setError("");
     setNewFolderName("");
   }
 
@@ -110,8 +115,27 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
                 e.key === "Enter" && e.preventDefault();
               }}
             />
+            {error && (
+              <Text
+                style={{
+                  marginTop: 5,
+                  fontSize: 13,
+                  fontFamily: "Inter-Regular",
+                  color: theme == "dark" ? "red" : "red",
+                }}
+              >
+                {error}
+              </Text>
+            )}
+
             <ModalActionGroup>
-              <ModalAction color={"white"} onPress={() => setOpenEdit(false)}>
+              <ModalAction
+                color={"white"}
+                onPress={() => {
+                  setError("");
+                  setOpenEdit(false);
+                }}
+              >
                 <AntDesign
                   name="close"
                   size={28}
