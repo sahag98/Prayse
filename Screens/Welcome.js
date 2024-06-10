@@ -352,18 +352,8 @@ const Welcome = ({ navigation }) => {
       // console.log("app streak:", appstreak);
 
       const today = new Date().toLocaleDateString("en-CA");
+      console.log(today);
 
-      // console.log("today: ", today);
-      // console.log("today: ", today);
-      // const currentDate = new Date();
-      // const t = new Date()
-      // const tomorrow = new Date(today);
-      // tomorrow.setDate(today.getDate() + 1); // Get yesterday's date
-      // console.log("tomorrow: ", tomorrow);
-      // const yesterdayDateString = yesterday.toISOString().split("T")[0];
-      // console.log("today: ", currentDate - 1);
-
-      // console.log("same date");
       dispatch(increaseAppStreakCounter({ today: today }));
 
       // console.log("getting app streak");
@@ -760,10 +750,10 @@ const Welcome = ({ navigation }) => {
             <Text
               style={
                 theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 17, color: "white" }
+                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                   : {
                       fontFamily: "Inter-Bold",
-                      fontSize: 17,
+                      fontSize: 18,
                       color: "#2f2d51",
                     }
               }

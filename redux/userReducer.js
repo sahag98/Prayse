@@ -13,6 +13,7 @@ const initialState = {
   appstreakNum: 0,
   expoToken: "",
   alreadyEnteredGiveaway: false,
+  isShowingGiveawayModal: false,
   hasIncreasedDevoStreak: false,
   prayers: [],
   fontSize: 15,
@@ -40,9 +41,14 @@ export const userSlice = createSlice({
     },
     didEnterGiveaway: (state, action) => {
       state.alreadyEnteredGiveaway = true;
+      state.isShowingGiveawayModal = true;
+    },
+    resetGiveaway: (state) => {
+      state.alreadyEnteredGiveaway = false;
     },
     increaseAppStreakCounter: (state, action) => {
-      state.alreadyEnteredGiveaway = false;
+      // state.alreadyEnteredGiveaway = false;
+      // state.isShowingGiveawayModal = false;
       if (
         state.appstreak.length > 0 &&
         state.appstreak[state.appstreak.length - 1]?.today ===
@@ -78,12 +84,13 @@ export const userSlice = createSlice({
         if (differenceInDays === 1) {
           state.appstreakNum = state.appstreakNum + 1;
           console.log(
-            "The oneBeforeLastItemDate is the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is the correct date before the lastItemDate."
           );
           // Perform your function here
         } else {
+          state.appstreakNum = 0;
           console.log(
-            "The oneBeforeLastItemDate is not the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is not the correct date before the lastItemDate."
           );
         }
       }
@@ -124,6 +131,9 @@ export const userSlice = createSlice({
         (entry) => entry?.date === yesterday
       );
 
+      console.log("current date: ", currentDate);
+      console.log("yesterday date: ", yesterday);
+
       const currentDateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === currentDate
       );
@@ -140,6 +150,14 @@ export const userSlice = createSlice({
         state.completedItems[state.completedItems.length - 1]?.date;
       const oneBeforeLastItem =
         state.completedItems[state.completedItems.length - 2]?.date;
+
+      if (lastItem !== currentDate) {
+        state.hasIncreasedDevoStreak = false;
+      }
+      // if (lastItem !== currentDate) {
+      //   console.log("yes same date");
+      //   state.hasIncreasedDevoStreak = false
+      // }
 
       function parseLocaleDateString(dateString, locale = "en-US") {
         const [month, day, year] = dateString.split(/[\/\-]/).map(Number);
@@ -169,11 +187,14 @@ export const userSlice = createSlice({
 
         // Check if the difference is exactly one day
         if (differenceInDays === 1) {
+          console.log("check");
+          console.log("has increased already: ", state.hasIncreasedDevoStreak);
           if (
             currentDate === lastItem &&
             lastItemData.items.length === 3 &&
             state.hasIncreasedDevoStreak == false
           ) {
+            console.log("should increase devo");
             state.devostreak += 1;
             state.hasIncreasedDevoStreak = true;
           }
@@ -209,6 +230,7 @@ export const userSlice = createSlice({
     },
     deleteStreakCounter: (state) => {
       state.devostreak = 0;
+      state.hasIncreasedDevoStreak = false;
     },
 
     deleteAppStreakCounter: (state) => {
@@ -243,6 +265,7 @@ export const {
   addFolder,
   regular,
   small,
+  resetGiveaway,
   didEnterGiveaway,
   addtoCompletedItems,
   increaseStreakCounter,

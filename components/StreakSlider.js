@@ -26,16 +26,17 @@ const StreakSlider = ({
   streak,
   appstreak,
 }) => {
-  const hasEnteredGiveaway = useSelector(
-    (state) => state.user.alreadyEnteredGiveaway
+  const isShowingGiveawayModal = useSelector(
+    (state) => state.user.isShowingGiveawayModal
   );
+
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("app streak: ", appstreak);
+    console.log("app streak check: ", appstreak);
 
-    if (appstreak === 3 && hasEnteredGiveaway == false) {
-      dispatch(didEnterGiveaway());
+    if (appstreak === 3 && isShowingGiveawayModal == false) {
       console.log("entering giveaway!!");
+      dispatch(didEnterGiveaway());
     }
   }, [appstreak]);
 
