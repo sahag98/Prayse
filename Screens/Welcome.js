@@ -353,17 +353,7 @@ const Welcome = ({ navigation }) => {
 
       const today = new Date().toLocaleDateString("en-CA");
       console.log(today);
-      // console.log("today: ", today);
-      // console.log("today: ", today);
-      // const currentDate = new Date();
-      // const t = new Date()
-      // const tomorrow = new Date(today);
-      // tomorrow.setDate(today.getDate() + 1); // Get yesterday's date
-      // console.log("tomorrow: ", tomorrow);
-      // const yesterdayDateString = yesterday.toISOString().split("T")[0];
-      // console.log("today: ", currentDate - 1);
 
-      // console.log("same date");
       dispatch(increaseAppStreakCounter({ today: today }));
 
       // console.log("getting app streak");
