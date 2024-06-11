@@ -1,33 +1,21 @@
+import { useState } from "react";
 import {
   FlatList,
   StyleSheet,
   Text,
-  Platform,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { AnimatedFAB } from "react-native-paper";
 import { useSelector } from "react-redux";
-import { AntDesign } from "@expo/vector-icons";
-import { client } from "../lib/client";
-import { useState } from "react";
-import { useEffect } from "react";
+
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
 import AnswerItem from "../components/AnswerItem";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useSupabase } from "../context/useSupabase";
-
-import { AnimatedFAB } from "react-native-paper";
-
 import QuestionModal from "../components/QuestionModal";
-import moment from "moment";
-import { ActivityIndicator } from "react-native";
-
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import QuestionHelpModal from "../components/QuestionHelpModal";
-
-import Animated, { FadeIn } from "react-native-reanimated";
+import { useSupabase } from "../context/useSupabase";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const Question = ({ navigation, route }) => {
   const {
@@ -56,7 +44,7 @@ const Question = ({ navigation, route }) => {
   };
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === itemId
+    (answer) => answer.question_id === itemId,
   );
 
   return (
@@ -187,13 +175,13 @@ const Question = ({ navigation, route }) => {
       </View>
       <View style={styles.actionButtons}>
         <AnimatedFAB
-          icon={"plus"}
-          label={"Add answer"}
-          extended={true}
+          icon="plus"
+          label="Add answer"
+          extended
           onPress={() => setAnswersVisible(true)}
-          visible={true}
-          animateFrom={"right"}
-          iconMode={"dynamic"}
+          visible
+          animateFrom="right"
+          iconMode="dynamic"
           color={theme == "dark" ? "#212121" : "white"}
           style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
         />

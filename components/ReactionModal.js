@@ -1,15 +1,12 @@
+import React from "react";
 import {
   Image,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import React from "react";
-import { ModalContainer, ReactionModalContainer } from "../styles/appStyles";
-import { AntDesign } from "@expo/vector-icons";
 import ChatBubble from "react-native-chat-bubble";
 import Animated, {
   useAnimatedStyle,
@@ -37,25 +34,25 @@ const ReactionModal = ({
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   const isPraisedByMe = !!praises?.find(
-    (praise) => praise.user_id == currentUser.id
+    (praise) => praise.user_id == currentUser.id,
   );
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={reactionModalVisibile}
       onRequestClose={() => setReactionModalVisibile(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <TouchableWithoutFeedback onPress={() => setReactionModalVisibile(false)}>
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   padding: 30,
                   alignItems:
-                    isPressedLong?.user_id == currentUser.id
+                    isPressedLong?.user_id === currentUser.id
                       ? "flex-end"
                       : "flex-start",
                   justifyContent: "center",
@@ -65,7 +62,7 @@ const ReactionModal = ({
               : {
                   padding: 30,
                   alignItems:
-                    isPressedLong?.user_id == currentUser.id
+                    isPressedLong?.user_id === currentUser.id
                       ? "flex-end"
                       : "flex-start",
                   justifyContent: "center",
@@ -81,19 +78,19 @@ const ReactionModal = ({
                 borderRadius: 50,
 
                 backgroundColor:
-                  isPressedLong?.user_id == currentUser.id
-                    ? theme == "dark"
+                  isPressedLong?.user_id === currentUser.id
+                    ? theme === "dark"
                       ? "#353535"
                       : "#b7d3ff"
-                    : theme == "dark"
-                    ? "#212121"
-                    : "#dee4e7",
+                    : theme === "dark"
+                      ? "#212121"
+                      : "#dee4e7",
               }}
               onPress={() =>
                 toggleLike(
                   isPressedLong.id,
                   isPressedLong.profiles.expoToken,
-                  isPressedLong.message
+                  isPressedLong.message,
                 )
               }
             >
@@ -102,9 +99,9 @@ const ReactionModal = ({
                   style={
                     isLikedByMe
                       ? { width: 25, height: 25, tintColor: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "#a5c9ff" }
-                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                      : theme === "dark"
+                        ? { width: 25, height: 25, tintColor: "#a5c9ff" }
+                        : { width: 25, height: 25, tintColor: "#2f2d51" }
                   }
                   source={{
                     uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -118,19 +115,19 @@ const ReactionModal = ({
                 borderRadius: 50,
 
                 backgroundColor:
-                  isPressedLong?.user_id == currentUser.id
-                    ? theme == "dark"
+                  isPressedLong?.user_id === currentUser.id
+                    ? theme === "dark"
                       ? "#353535"
                       : "#b7d3ff"
-                    : theme == "dark"
-                    ? "#212121"
-                    : "#dee4e7",
+                    : theme === "dark"
+                      ? "#212121"
+                      : "#dee4e7",
               }}
               onPress={() =>
                 togglePraise(
                   isPressedLong.id,
                   isPressedLong.profiles.expoToken,
-                  isPressedLong.message
+                  isPressedLong.message,
                 )
               }
             >
@@ -139,9 +136,9 @@ const ReactionModal = ({
                   style={
                     isPraisedByMe
                       ? { width: 25, height: 25, tintColor: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { width: 25, height: 25, tintColor: "#a5c9ff" }
-                      : { width: 25, height: 25, tintColor: "#2f2d51" }
+                      : theme === "dark"
+                        ? { width: 25, height: 25, tintColor: "#a5c9ff" }
+                        : { width: 25, height: 25, tintColor: "#2f2d51" }
                   }
                   source={praise}
                 />
@@ -149,20 +146,18 @@ const ReactionModal = ({
             </TouchableOpacity>
           </View>
           <ChatBubble
-            isOwnMessage={
-              isPressedLong?.user_id == currentUser.id ? true : false
-            }
+            isOwnMessage={isPressedLong?.user_id === currentUser.id}
             bubbleColor={
-              isPressedLong?.user_id == currentUser.id
-                ? theme == "dark"
+              isPressedLong?.user_id === currentUser.id
+                ? theme === "dark"
                   ? "#353535"
                   : "#b7d3ff"
-                : theme == "light"
-                ? "#dee4e7"
-                : "#212121"
+                : theme === "light"
+                  ? "#dee4e7"
+                  : "#212121"
             }
             style={
-              theme == "dark"
+              theme === "dark"
                 ? [
                     {
                       borderRadius: 10,
@@ -187,7 +182,7 @@ const ReactionModal = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontFamily: "Inter-Regular",
@@ -213,5 +208,3 @@ const ReactionModal = ({
 };
 
 export default ReactionModal;
-
-const styles = StyleSheet.create({});

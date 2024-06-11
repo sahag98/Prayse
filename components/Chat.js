@@ -1,14 +1,14 @@
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
 } from "react-native";
-import { FontAwesome, Entypo, Octicons } from "@expo/vector-icons";
 
+import { FontAwesome, Octicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 
 import GroupPrayerItem from "../components/GroupPrayerItem";
@@ -38,7 +38,7 @@ const Chat = ({
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
+          backgroundColor: theme === "dark" ? "#121212" : "#f2f7ff",
           alignItems: "center",
           alignSelf: "center",
           paddingHorizontal: 10,
@@ -61,7 +61,7 @@ const Chat = ({
         <Octicons name="dot-fill" size={24} color="green" />
         <Text
           style={{
-            color: theme == "dark" ? "white" : "#2f2d51",
+            color: theme === "dark" ? "white" : "#2f2d51",
             fontFamily: "Inter-Regular",
             fontSize: 13,
           }}
@@ -86,11 +86,11 @@ const Chat = ({
               alignItems: "center",
             }}
           >
-            <ActivityIndicator color={theme == "dark" ? "white" : "#2f2d51"} />
+            <ActivityIndicator color={theme === "dark" ? "white" : "#2f2d51"} />
           </View>
         ) : (
           <>
-            {groupMessages.length == 0 ? (
+            {groupMessages.length === 0 ? (
               <View
                 style={{
                   flex: 1,
@@ -100,7 +100,7 @@ const Chat = ({
               >
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? { fontFamily: "Inter-Regular", color: "#bebebe" }
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
@@ -119,7 +119,7 @@ const Chat = ({
                 ListHeaderComponent={() => (
                   <View
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             height: 30,
                           }
@@ -129,9 +129,9 @@ const Chat = ({
                     }
                   />
                 )}
-                keyExtractor={(e, i) => i.toString()}
+                keyExtractor={(i) => i.toString()}
                 initialNumToRender={30}
-                renderItem={({ item, index }) => {
+                renderItem={({ item }) => {
                   return (
                     <View style={{ gap: 5 }}>
                       <GroupPrayerItem
@@ -147,7 +147,7 @@ const Chat = ({
                         allGroups={allGroups}
                         showToast={showToast}
                       />
-                      {item.user_id != currentUser.id && (
+                      {item.user_id !== currentUser.id && (
                         <View
                           style={{
                             flexDirection: "row",
@@ -159,7 +159,7 @@ const Chat = ({
                         >
                           <Text
                             style={{
-                              color: theme == "dark" ? "#707070" : "#acacac",
+                              color: theme === "dark" ? "#707070" : "#acacac",
 
                               fontFamily: "Inter-Regular",
                               fontSize: 11,
@@ -192,8 +192,8 @@ const Chat = ({
             minHeight: 35,
             maxHeight: 200,
             width: "85%",
-            backgroundColor: theme == "dark" ? "#212121" : "white",
-            borderWidth: theme == "dark" ? 0 : 1,
+            backgroundColor: theme === "dark" ? "#212121" : "white",
+            borderWidth: theme === "dark" ? 0 : 1,
             borderColor: "#2f2d51",
             borderRadius: 10,
             padding: 10,
@@ -202,19 +202,19 @@ const Chat = ({
         >
           <TextInput
             style={
-              theme == "dark"
+              theme === "dark"
                 ? [
                     styles.inputDark,
-                    { paddingBottom: Platform.OS == "android" ? 0 : 5 },
+                    { paddingBottom: Platform.OS === "android" ? 0 : 5 },
                   ]
                 : [
                     styles.input,
-                    { paddingBottom: Platform.OS == "android" ? 0 : 5 },
+                    { paddingBottom: Platform.OS === "android" ? 0 : 5 },
                   ]
             }
             placeholder="Write a prayer..."
-            placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={theme === "dark" ? "#b8b8b8" : "#2f2d51"}
+            selectionColor={theme === "dark" ? "white" : "#2f2d51"}
             value={newMessage}
             textAlignVertical="center"
             onChangeText={(text) => setNewMessage(text)}
@@ -222,11 +222,11 @@ const Chat = ({
             onSubmitEditing={(e) => {
               e.key === "Enter" && e.preventDefault();
             }}
-            multiline={true}
+            multiline
           />
         </View>
         <TouchableOpacity
-          disabled={newMessage.length == 0 ? true : false}
+          disabled={newMessage.length === 0}
           style={{
             width: "15%",
             justifyContent: "center",
@@ -237,7 +237,7 @@ const Chat = ({
           <FontAwesome
             name="send"
             size={28}
-            color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+            color={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
           />
         </TouchableOpacity>
       </View>

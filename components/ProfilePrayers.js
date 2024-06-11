@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
-import { Modal } from "react-native";
+
 import {
   HeaderTitle,
   ModalAction,
@@ -14,7 +15,6 @@ import {
 const ProfilePrayers = ({
   item,
   theme,
-  user,
   getPrayers,
   getUserPrayers,
   supabase,
@@ -23,7 +23,7 @@ const ProfilePrayers = ({
 
   async function handleDelete(id) {
     setDeleteModal(false);
-    const { error } = await supabase.from("prayers").delete().eq("id", id);
+    await supabase.from("prayers").delete().eq("id", id);
     getUserPrayers();
     getPrayers();
   }
@@ -31,12 +31,12 @@ const ProfilePrayers = ({
   return (
     <View
       style={
-        theme == "dark" ? styles.prayerContainerDark : styles.prayerContainer
+        theme === "dark" ? styles.prayerContainerDark : styles.prayerContainer
       }
     >
       <Text
         style={
-          theme == "dark"
+          theme === "dark"
             ? {
                 fontFamily: "Inter-Regular",
                 color: "white",
@@ -61,27 +61,27 @@ const ProfilePrayers = ({
           style={{ alignSelf: "center", verticalAlign: "middle" }}
           name="close"
           size={25}
-          color={theme == "dark" ? "#ff4e4e" : "#cb3f68"}
+          color={theme === "dark" ? "#ff4e4e" : "#cb3f68"}
         />
       </TouchableOpacity>
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={deleteModal}
         onRequestClose={() => setDeleteModal(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         // onShow={() => inputRef.current?.focus()}
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#93D8F8" }
             }
@@ -89,7 +89,7 @@ const ProfilePrayers = ({
             <ModalIcon>
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                     : { fontSize: 18, fontFamily: "Inter-Bold" }
                 }
@@ -98,21 +98,18 @@ const ProfilePrayers = ({
               </HeaderTitle>
             </ModalIcon>
             <ModalActionGroup>
-              <ModalAction
-                color={"white"}
-                onPress={() => setDeleteModal(false)}
-              >
+              <ModalAction color="white" onPress={() => setDeleteModal(false)}>
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme == "dark" ? "black" : "#2F2D51"}
+                  color={theme === "dark" ? "black" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={theme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={() => handleDelete(item.id)}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

@@ -1,5 +1,6 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { Modal, Text, TouchableOpacity } from "react-native";
+
 import { ModalContainer, ModalView } from "../styles/appStyles";
 
 const CompletedModal = ({ theme, showModal, setShowModal }) => {
@@ -9,20 +10,20 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={showModal}
       onRequestClose={handleCloseModal}
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <ModalView
           style={{
-            backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+            backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
             width: "95%",
             marginHorizontal: 20,
             justifyContent: "center",
@@ -32,7 +33,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
         >
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Bold",
               fontSize: 24,
             }}
@@ -41,7 +42,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Regular",
               textAlign: "center",
             }}
@@ -51,7 +52,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Regular",
               textAlign: "center",
             }}
@@ -61,7 +62,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Medium",
               textAlign: "center",
             }}
@@ -72,7 +73,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
           <TouchableOpacity
             onPress={handleCloseModal}
             style={{
-              backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+              backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
               padding: 15,
               width: "100%",
               borderRadius: 10,
@@ -82,7 +83,7 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
           >
             <Text
               style={{
-                color: theme == "dark" ? "#121212" : "white",
+                color: theme === "dark" ? "#121212" : "white",
                 fontFamily: "Inter-Bold",
                 textAlign: "center",
               }}
@@ -97,5 +98,3 @@ const CompletedModal = ({ theme, showModal, setShowModal }) => {
 };
 
 export default CompletedModal;
-
-const styles = StyleSheet.create({});

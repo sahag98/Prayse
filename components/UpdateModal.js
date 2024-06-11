@@ -1,15 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Modal } from "react-native";
+import {
+  Linking,
+  Modal,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
 import {
   HeaderTitle,
   ModalContainer,
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-import { TouchableOpacity } from "react-native";
-import { Platform } from "react-native";
-import { Linking } from "react-native";
 
 const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
   const handleCloseModal = () => {
@@ -18,22 +22,21 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isUpdateAvailable}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
-      // onShow={() => inputRef.current?.focus()}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <ModalView
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "#212121", width: "85%" }
               : { backgroundColor: "#b7d3ff", width: "85%" }
           }
@@ -41,7 +44,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
           <ModalIcon>
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
                   : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
               }
@@ -50,7 +53,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
             </HeaderTitle>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       marginTop: 5,
                       textAlign: "center",
@@ -78,19 +81,19 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
           >
             <TouchableOpacity
               onPress={() => {
-                if (Platform.OS == "android") {
+                if (Platform.OS === "android") {
                   Linking.openURL(
-                    "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+                    "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
                   );
                 }
-                if (Platform.OS == "ios") {
+                if (Platform.OS === "ios") {
                   Linking.openURL(
-                    "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+                    "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
                   );
                 }
               }}
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       backgroundColor: "#a5c9ff",
                       justifyContent: "center",
@@ -111,7 +114,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         color: "#212121",
                         fontSize: 15,
@@ -129,7 +132,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         textDecorationLine: "underline",
                         padding: 10,
@@ -155,5 +158,3 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
 };
 
 export default UpdateModal;
-
-const styles = StyleSheet.create({});

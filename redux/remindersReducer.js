@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 const initialState = {
   reminders: [],
@@ -19,13 +18,13 @@ export const reminderSlice = createSlice({
     },
     deleteReminder: (state, action) => {
       state.reminders = state.reminders.filter(
-        (reminder) => reminder.reminder.id !== action.payload
+        (reminder) => reminder.reminder.id !== action.payload,
       );
     },
     editReminder: (state, action) => {
       const newReminders = [...state.reminders];
       const reminderIndex = state.reminders.findIndex(
-        (reminder) => reminder.id === action.payload.reminder.id
+        (reminder) => reminder.id === action.payload.reminder.id,
       );
       newReminders.splice(reminderIndex, 1, action.payload.re);
       state.reminders = newReminders;

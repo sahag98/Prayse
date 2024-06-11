@@ -1,14 +1,14 @@
+import React from "react";
 import {
   KeyboardAvoidingView,
   Modal,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
-  View,
 } from "react-native";
-import React from "react";
+
 import { AntDesign } from "@expo/vector-icons";
+
 import {
   HeaderTitle,
   ModalAction,
@@ -30,7 +30,7 @@ const AddFolderModal = ({
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={addVisible}
       onRequestClose={handleCloseModal}
     >
@@ -77,8 +77,8 @@ const AddFolderModal = ({
               // ref={folderInputRef}
               style={theme == "dark" ? styles.inputDark : styles.input}
               placeholder="Enter folder name"
-              placeholderTextColor={"white"}
-              selectionColor={"white"}
+              placeholderTextColor="white"
+              selectionColor="white"
               textAlignVertical="center"
               // autoFocus={true}
               onChangeText={(text) => setFolderName(text)}
@@ -86,18 +86,18 @@ const AddFolderModal = ({
               onSubmitEditing={(e) => {
                 e.key === "Enter" && e.preventDefault();
               }}
-              multiline={true}
+              multiline
             />
 
             <ModalActionGroup>
-              <ModalAction color={"white"} onPress={() => setAddVisible(false)}>
-                <AntDesign name="close" size={28} color={"#2F2D51"} />
+              <ModalAction color="white" onPress={() => setAddVisible(false)}>
+                <AntDesign name="close" size={28} color="#2F2D51" />
               </ModalAction>
               <ModalAction
                 color={theme == "dark" ? "#121212" : "#2F2D51"}
                 onPress={addNewFolder}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

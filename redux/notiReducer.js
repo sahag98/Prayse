@@ -17,7 +17,7 @@ export const notiSlice = createSlice({
     },
     deleteNoti: (state, action) => {
       state.notifications = state.notifications.filter(
-        (notification) => notification.noti_id !== action.payload
+        (notification) => notification.noti_id !== action.payload,
       );
     },
   },

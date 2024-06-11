@@ -1,12 +1,8 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 import React from "react";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
+
 import { useSupabase } from "../context/useSupabase";
 
 const QuestionoftheWeek = ({ theme }) => {
@@ -16,7 +12,7 @@ const QuestionoftheWeek = ({ theme }) => {
   return (
     <View
       style={{
-        backgroundColor: theme == "dark" ? "#212121" : "white",
+        backgroundColor: theme === "dark" ? "#212121" : "white",
         marginBottom: 15,
         width: "100%",
         padding: 15,
@@ -28,7 +24,7 @@ const QuestionoftheWeek = ({ theme }) => {
         <View style={{ gap: 15 }}>
           <Text
             style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               fontFamily: "Inter-Medium",
             }}
           >
@@ -45,7 +41,7 @@ const QuestionoftheWeek = ({ theme }) => {
             })
           }
           style={{
-            backgroundColor: theme == "dark" ? "#212121" : "white",
+            backgroundColor: theme === "dark" ? "#212121" : "white",
 
             width: "100%",
 
@@ -62,7 +58,7 @@ const QuestionoftheWeek = ({ theme }) => {
           >
             <Text
               style={{
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                 fontFamily: "Inter-Medium",
               }}
             >
@@ -70,7 +66,7 @@ const QuestionoftheWeek = ({ theme }) => {
             </Text>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#ff3333",
                       fontSize: 13,
@@ -84,7 +80,7 @@ const QuestionoftheWeek = ({ theme }) => {
           </View>
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Bold",
               lineHeight: 24,
               fontSize: 18,
@@ -94,7 +90,7 @@ const QuestionoftheWeek = ({ theme }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+              color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
               fontFamily: "Inter-Bold",
               textDecorationLine: "underline",
               lineHeight: 24,
@@ -110,5 +106,3 @@ const QuestionoftheWeek = ({ theme }) => {
 };
 
 export default QuestionoftheWeek;
-
-const styles = StyleSheet.create({});

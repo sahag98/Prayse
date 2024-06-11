@@ -1,45 +1,32 @@
+import React, { useEffect, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
+  FlatList,
+  Image,
+  Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
-import { Modal } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import uuid from "react-native-uuid";
-import {
-  HeaderTitle,
-  HeaderView,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import uuid from "react-native-uuid";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Image } from "react-native";
-import { TextInput } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
+import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+
 import ProfilePrayers from "./ProfilePrayers";
-import { FlatList } from "react-native";
-import { Keyboard } from "react-native";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
 
 const ProfileModal = ({
   logout,
-  session,
   setCurrentUser,
   getPrayers,
   setPrayerModal,
@@ -53,11 +40,9 @@ const ProfileModal = ({
   const theme = useSelector((state) => state.user.theme);
   const insets = useSafeAreaInsets();
   const [name, setName] = useState(user?.full_name);
-  const [nameError, setNameError] = useState(false);
   const [isUnique, setIsUnique] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
-  const isFocused = useIsFocused();
   const navigation = useNavigation();
   useEffect(() => {
     getUserPrayers();
@@ -77,7 +62,7 @@ const ProfileModal = ({
   };
 
   async function getProfile() {
-    const { data: profiles, error: profileError } = await supabase
+    const { data: profiles } = await supabase
       .from("profiles")
       .select()
       .eq("id", user?.id);
@@ -106,7 +91,7 @@ const ProfileModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!"
+          "We need camera roll permissions to make this work!",
         );
       } else {
         pickImage();
@@ -116,7 +101,7 @@ const ProfileModal = ({
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -126,7 +111,7 @@ const ProfileModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
+        result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -139,7 +124,7 @@ const ProfileModal = ({
         type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
       });
 
-      let { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, formData);
 
@@ -178,7 +163,7 @@ const ProfileModal = ({
     const id = uuid.v4();
     const newId = id.substring(0, 3);
 
-    const { data, error } = await supabase
+    await supabase
       .from("profiles")
       .update({
         full_name: `Anonymous${newId}`,
@@ -194,7 +179,7 @@ const ProfileModal = ({
   }
 
   const checkIfUnique = async () => {
-    const { data: profiles, profileError } = await supabase
+    const { data: profiles } = await supabase
       .from("profiles")
       .select("full_name")
       .neq("id", user.id);
@@ -212,8 +197,6 @@ const ProfileModal = ({
     if (name.length <= 1) {
       setIsEmpty(true);
       return;
-      // showToast("error", "The name field can't be left empty.");
-      // handleCloseModal();
     }
 
     // Wait for checkIfUnique to complete and get the result
@@ -224,7 +207,7 @@ const ProfileModal = ({
     }
 
     if (isUniqueName) {
-      const { data, error } = await supabase
+      await supabase
         .from("profiles")
         .update({ full_name: name })
         .eq("id", user.id)
@@ -241,7 +224,7 @@ const ProfileModal = ({
     <Modal
       animationType="fade"
       onShow={onModalShow}
-      transparent={true}
+      transparent
       visible={profileVisible}
       onRequestClose={handleCloseModal}
     >
@@ -251,20 +234,20 @@ const ProfileModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
           }
         >
@@ -279,12 +262,12 @@ const ProfileModal = ({
               <AntDesign
                 name="close"
                 size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={theme === "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", color: "white" }
                   : { fontFamily: "Inter-Bold", color: "#2F2D51" }
               }
@@ -296,7 +279,7 @@ const ProfileModal = ({
               <AntDesign
                 name="check"
                 size={30}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
               />
             </TouchableOpacity>
           </HeaderView>
@@ -312,20 +295,20 @@ const ProfileModal = ({
             <TouchableOpacity
               onPress={photoPermission}
               style={
-                theme == "dark" ? styles.featherIconDark : styles.featherIcon
+                theme === "dark" ? styles.featherIconDark : styles.featherIcon
               }
             >
               <AntDesign
                 name="plus"
                 size={20}
-                color={theme == "dark" ? "white" : "black"}
+                color={theme === "dark" ? "white" : "black"}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.inputField}>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
                   : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
               }
@@ -333,8 +316,8 @@ const ProfileModal = ({
               Change Name
             </Text>
             <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+              style={theme === "dark" ? styles.inputDark : styles.input}
+              selectionColor={theme === "dark" ? "white" : "#2f2d51"}
               value={name}
               onChangeText={(text) => setName(text)}
             />
@@ -374,7 +357,7 @@ const ProfileModal = ({
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Medium",
                         textDecorationLine: "underline",
@@ -404,7 +387,7 @@ const ProfileModal = ({
           </View>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     padding: 10,
                     fontSize: 17,
@@ -425,10 +408,10 @@ const ProfileModal = ({
           >
             Prayers Shared
           </Text>
-          {userPrayers?.length == 0 ? (
+          {userPrayers?.length === 0 ? (
             <View
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       width: "100%",
                       backgroundColor: "#212121",
@@ -455,7 +438,7 @@ const ProfileModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { fontFamily: "Inter-Regular", color: "#bebebe" }
                     : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                 }
@@ -465,7 +448,7 @@ const ProfileModal = ({
               <TouchableOpacity onPress={addPrayer}>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Bold",
                           textDecorationLine: "underline",
@@ -485,7 +468,7 @@ const ProfileModal = ({
           ) : (
             <FlatList
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       width: "100%",
                       backgroundColor: "#212121",
@@ -502,10 +485,10 @@ const ProfileModal = ({
                     }
               }
               data={userPrayers}
-              keyExtractor={(e, i) => i.toString()}
+              keyExtractor={(i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator
               renderItem={({ item }) => (
                 <ProfilePrayers
                   item={item}
@@ -520,16 +503,16 @@ const ProfileModal = ({
           )}
           <TouchableOpacity
             onPress={logout}
-            style={theme == "dark" ? styles.logoutDark : styles.logout}
+            style={theme === "dark" ? styles.logoutDark : styles.logout}
           >
             <Ionicons
               name="md-exit-outline"
               size={25}
-              color={theme == "dark" ? "white" : "white"}
+              color={theme === "dark" ? "white" : "white"}
             />
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { color: "white", fontFamily: "Inter-Bold" }
                   : { color: "white", fontFamily: "Inter-Bold" }
               }

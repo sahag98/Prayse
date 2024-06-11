@@ -1,32 +1,29 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Pressable,
-  Image,
-} from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import {
-  GestureDetector,
-  Gesture,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import {
   Directions,
+  Gesture,
+  GestureDetector,
 } from "react-native-gesture-handler";
-
-import prayseIcon from "../assets/prayer.png";
-import cm2 from "../assets/cm2.png";
-import bible from "../assets/Bible.png";
 import Animated, {
   FadeIn,
   FadeOut,
-  BounceInRight,
-  SlideOutLeft,
-  BounceOutLeft,
   SlideInRight,
+  SlideOutLeft,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
+
+import bible from "../assets/Bible.png";
+import cm2 from "../assets/cm2.png";
+import prayseIcon from "../assets/prayer.png";
 
 const onboardingSteps = [
   {
@@ -81,7 +78,7 @@ export default function OnboardingScreen({ navigation }) {
 
   const swipes = Gesture.Simultaneous(
     Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
   );
 
   return (

@@ -1,7 +1,9 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { ModalContainer, ModalView } from "../styles/appStyles";
+import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
+
+import { ModalContainer, ModalView } from "../styles/appStyles";
 
 const RemovedGroupModal = ({
   isGroupRemoved,
@@ -19,10 +21,10 @@ const RemovedGroupModal = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isGroupRemoved}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
+      statusBarTranslucent
       // onShow={() => inputRef.current?.focus()}
     >
       <ModalContainer

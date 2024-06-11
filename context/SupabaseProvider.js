@@ -1,9 +1,12 @@
-import "react-native-url-polyfill/auto";
-import { createClient } from "@supabase/supabase-js";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { SupabaseContext } from "./SupabaseContext";
 import Toast from "react-native-toast-message";
+
+import { createClient } from "@supabase/supabase-js";
+
+import { SupabaseContext } from "./SupabaseContext";
+
+import "react-native-url-polyfill/auto";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -49,7 +52,7 @@ export const SupabaseProvider = (props) => {
         persistSession: true,
         detectSessionInUrl: false,
       },
-    }
+    },
   );
 
   const getGoogleOAuthUrl = async () => {
@@ -74,7 +77,7 @@ export const SupabaseProvider = (props) => {
     if (error) throw error;
     setLoggedIn(data.session !== null);
 
-    let { data: profiles, error: profileError } = await supabase
+    const { data: profiles } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", data.session.user.id);
@@ -92,7 +95,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const login = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -103,7 +106,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const register = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -127,7 +130,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const fetchPublicGroups = async () => {
-    let { data, error } = await supabase
+    const { data } = await supabase
       .from("groups")
       .select("*")
       .eq("is_public", true);
@@ -135,7 +138,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const fetchQuestions = async () => {
-    const { data: allQuestions, error: answersError } = await supabase
+    const { data: allQuestions } = await supabase
       .from("questions")
       .select("*")
       .order("id", { ascending: false });
@@ -143,7 +146,7 @@ export const SupabaseProvider = (props) => {
   };
 
   const fetchLatestQuestion = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("questions")
       .select("*")
       .order("id", { ascending: false });
@@ -189,7 +192,7 @@ export const SupabaseProvider = (props) => {
     setLoggedIn(result.data.session !== null);
     if (result.data.session) {
       console.log("session is on");
-      let { data: profiles, error: profileError } = await supabase
+      const { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", result.data.session.user.id);
@@ -231,7 +234,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setNewPost(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -247,7 +250,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setNewAnswer(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -268,7 +271,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 fetchPublicGroups();
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -283,7 +286,7 @@ export const SupabaseProvider = (props) => {
               setNewMsgGroupId(payload.new.group_id);
 
               setUserofSentMessage(payload.new.user_id);
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -294,12 +297,12 @@ export const SupabaseProvider = (props) => {
             },
             (payload) => {
               if (
-                payload.eventType == "INSERT" ||
-                payload.eventType == "DELETE"
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE"
               ) {
                 setRefreshMembers(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -310,13 +313,13 @@ export const SupabaseProvider = (props) => {
             },
             (payload) => {
               if (
-                payload.eventType == "INSERT" ||
-                payload.eventType == "DELETE"
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE"
               ) {
                 console.log("refresh payload");
                 setRefreshMsgLikes(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -327,15 +330,15 @@ export const SupabaseProvider = (props) => {
             },
             (payload) => {
               if (
-                payload.eventType == "INSERT" ||
-                payload.eventType == "DELETE" ||
-                payload.eventType == "UPDATE"
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE" ||
+                payload.eventType === "UPDATE"
               ) {
                 console.log("refresh test questions");
                 fetchQuestions();
                 fetchAnswers();
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -347,14 +350,14 @@ export const SupabaseProvider = (props) => {
             (payload) => {
               console.log("payload: ", payload.new.question_id);
               if (
-                payload.eventType == "INSERT" ||
-                payload.eventType == "DELETE"
+                payload.eventType === "INSERT" ||
+                payload.eventType === "DELETE"
               ) {
                 console.log("refreshing answers");
                 setRefreshAnswers(true);
                 fetchAnswers();
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -370,7 +373,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setRefreshLikes(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -383,7 +386,7 @@ export const SupabaseProvider = (props) => {
               if (payload.eventType === "INSERT") {
                 setRefreshComments(true);
               }
-            }
+            },
           )
           .on(
             "postgres_changes",
@@ -397,7 +400,7 @@ export const SupabaseProvider = (props) => {
                 console.log(payload);
                 setRefreshReflections(true);
               }
-            }
+            },
           )
           .subscribe();
 

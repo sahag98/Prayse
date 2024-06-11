@@ -1,23 +1,22 @@
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  resolveAssetSource,
 } from "react-native";
-import React, { useState } from "react";
-import { ModalContainer } from "../styles/appStyles";
+
 import biblestudy from "../assets/templates/biblestudy.png";
 import classmates from "../assets/templates/classmates.png";
-import general from "../assets/templates/general.png";
-import teens from "../assets/templates/teens.png";
 import couples from "../assets/templates/couples.png";
+import general from "../assets/templates/general.png";
 import kids from "../assets/templates/kids.png";
+import teens from "../assets/templates/teens.png";
 import work from "../assets/templates/work.png";
 import ya from "../assets/templates/ya.png";
+import { ModalContainer } from "../styles/appStyles";
 
 const TemplatesModal = ({
   theme,
@@ -98,13 +97,6 @@ const TemplatesModal = ({
       console.log("error: ", error.message);
     }
     setIsShowingTemplates(false);
-    // let { error: uploadError } = await supabase.storage
-    //   .from("group")
-    //   .upload(filePath, formData);
-
-    // if (uploadError) {
-    //   throw uploadError;
-    // }
 
     try {
       const { data: imageData, error: getUrlError } = await supabase.storage
@@ -112,29 +104,29 @@ const TemplatesModal = ({
         .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
 
       setImgUrl(imageData.signedUrl);
-    } catch (error) {
-      console.log("error while creating signed url: ", error);
+    } catch (getUrlError) {
+      console.log("error while creating signed url: ", getUrlError);
     }
   };
 
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={isShowingTemplates}
       onRequestClose={() => setIsShowingTemplates(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   borderRadius: 10,
                   position: "relative",
@@ -159,7 +151,7 @@ const TemplatesModal = ({
           <FlatList
             data={templates}
             numColumns={2}
-            keyExtractor={(e, i) => i.toString()}
+            keyExtractor={(i) => i.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
@@ -169,16 +161,16 @@ const TemplatesModal = ({
                 style={{
                   flex: 1,
                   padding: 10,
-                  backgroundColor: theme == "dark" ? "#121212" : "white",
+                  backgroundColor: theme === "dark" ? "#121212" : "white",
                   borderWidth: 2,
                   borderColor:
-                    theme == "dark"
+                    theme === "dark"
                       ? selectedImg === item.image
                         ? "#a5c9ff"
                         : "#121212"
                       : selectedImg === item.image
-                      ? "#2f2d51"
-                      : "white",
+                        ? "#2f2d51"
+                        : "white",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 10,
@@ -214,7 +206,7 @@ const TemplatesModal = ({
               }}
               style={{
                 width: "48%",
-                backgroundColor: theme == "dark" ? "#121212" : "white",
+                backgroundColor: theme === "dark" ? "#121212" : "white",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
@@ -223,7 +215,7 @@ const TemplatesModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Bold",
                 }}
               >
@@ -234,7 +226,7 @@ const TemplatesModal = ({
               onPress={selectImage}
               style={{
                 width: "48%",
-                backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
@@ -243,7 +235,7 @@ const TemplatesModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "#212121" : "white",
+                  color: theme === "dark" ? "#212121" : "white",
                   fontFamily: "Inter-Bold",
                 }}
               >
@@ -258,5 +250,3 @@ const TemplatesModal = ({
 };
 
 export default TemplatesModal;
-
-const styles = StyleSheet.create({});

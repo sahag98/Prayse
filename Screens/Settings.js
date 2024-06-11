@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as Application from "expo-application";
+import * as Device from "expo-device";
+import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import {
-  View,
-  StyleSheet,
-  Platform,
-  TouchableOpacity,
-  Switch,
   Modal,
+  Platform,
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { Divider, Text } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+
+import { deleteAnsweredPrayers } from "../redux/answeredReducer";
+import { deleteAllFolders } from "../redux/folderReducer";
+import { clearPrayerData } from "../redux/prayerReducer";
+import {
+  darkMode,
+  large,
+  regular,
+  small,
+  systemTheme,
+} from "../redux/userReducer";
 import {
   Container,
   HeaderTitle,
@@ -16,24 +35,6 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
-import { Divider, Text } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  darkMode,
-  large,
-  regular,
-  small,
-  systemTheme,
-} from "../redux/userReducer";
-import { deleteAllFolders } from "../redux/folderReducer";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
-import { clearPrayerData } from "../redux/prayerReducer";
-import { useEffect } from "react";
-import { deleteAnsweredPrayers } from "../redux/answeredReducer";
-import * as Application from "expo-application";
 
 const Settings = ({ navigation }) => {
   const [active, setActive] = useState(false);
@@ -98,7 +99,7 @@ const Settings = ({ navigation }) => {
     sendToken(token);
   }
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
@@ -108,7 +109,6 @@ const Settings = ({ navigation }) => {
     setIsEnabled((previousState) => !previousState);
     if (isEnabled == false) {
       getPermission();
-      return;
     }
   };
 
@@ -503,10 +503,10 @@ const Settings = ({ navigation }) => {
           </TouchableOpacity> */}
           <Modal
             animationType="fade"
-            transparent={true}
+            transparent
             visible={deleteAllModal}
             onRequestClose={handleCloseModal}
-            statusBarTranslucent={true}
+            statusBarTranslucent
             // onShow={() => inputRef.current?.focus()}
           >
             <ModalContainer
@@ -540,7 +540,7 @@ const Settings = ({ navigation }) => {
                 </ModalIcon>
                 <ModalActionGroup>
                   <ModalAction
-                    color={"white"}
+                    color="white"
                     onPress={() => setDeleteAllModal(false)}
                   >
                     <AntDesign
@@ -556,7 +556,7 @@ const Settings = ({ navigation }) => {
                       setDeleteAllModal(false);
                     }}
                   >
-                    <AntDesign name="check" size={28} color={"white"} />
+                    <AntDesign name="check" size={28} color="white" />
                   </ModalAction>
                 </ModalActionGroup>
               </ModalView>

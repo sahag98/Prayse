@@ -1,6 +1,6 @@
-import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Moment from "moment";
+import { Image, StyleSheet, Text, View } from "react-native";
 const ReflectionItem = ({ item, theme }) => {
   return (
     <View style={{ gap: 10, paddingVertical: 15 }}>
@@ -22,7 +22,7 @@ const ReflectionItem = ({ item, theme }) => {
           />
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontSize: 15,
               fontFamily: "Inter-Medium",
             }}
@@ -32,7 +32,7 @@ const ReflectionItem = ({ item, theme }) => {
         </View>
         <Text
           style={{
-            color: theme == "dark" ? "white" : "#2f2d51",
+            color: theme === "dark" ? "white" : "#2f2d51",
             fontSize: 12,
             fontFamily: "Inter-Regular",
           }}
@@ -42,7 +42,7 @@ const ReflectionItem = ({ item, theme }) => {
       </View>
       <Text
         style={{
-          color: theme == "dark" ? "white" : "#2f2d51",
+          color: theme === "dark" ? "white" : "#2f2d51",
           fontFamily: "Inter-Regular",
         }}
       >

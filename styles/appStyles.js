@@ -1,13 +1,5 @@
-import styled from "styled-components/native";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableHighlight,
-  SafeAreaView,
-  TextInput,
-} from "react-native";
 import Constants from "expo-constants";
+import styled from "styled-components/native";
 
 // Colors
 export const colors = {

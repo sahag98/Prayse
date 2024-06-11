@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import * as Notifications from "expo-notifications";
 import {
-  View,
-  Text,
-  TextInput,
-  Keyboard,
   Image,
-  TouchableOpacity,
+  Keyboard,
+  Platform,
   StyleSheet,
   Switch,
-  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { AntDesign, Feather, Entypo } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import * as Notifications from "expo-notifications";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import Toast from "react-native-toast-message";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+
+import calendar from "../assets/calendar.png";
+import time from "../assets/time.png";
 import {
   addNewReminder,
   deleteReminder,
   editReminder,
 } from "../redux/remindersReducer";
-import calendar from "../assets/calendar.png";
-import time from "../assets/time.png";
-import { useIsFocused } from "@react-navigation/native";
-import Toast from "react-native-toast-message";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 export default function Reminder({ route, navigation }) {
   const isFocused = useIsFocused();
@@ -67,16 +69,16 @@ export default function Reminder({ route, navigation }) {
     if (route.params.reminderToEditTitle && route.params.type != "Add") {
       setNewReminder(route.params.reminderToEditTitle);
       setNewNote(route.params.reminderToEditNote);
-      let originalTimestamp = route.params.reminderToEditTime;
+      const originalTimestamp = route.params.reminderToEditTime;
 
       const dateObject = new Date(originalTimestamp);
-      let date = new Date(
+      const date = new Date(
         dateObject.getFullYear(),
         dateObject.getMonth(),
-        dateObject.getDate()
+        dateObject.getDate(),
       );
       setReminderDate(date);
-      let time = new Date(0); // Initialize with the epoch
+      const time = new Date(0); // Initialize with the epoch
       time.setHours(dateObject.getHours());
       time.setMinutes(dateObject.getMinutes());
 
@@ -128,7 +130,7 @@ export default function Reminder({ route, navigation }) {
 
   const scheduleNotification = async (reminder, combinedDate, type) => {
     const secondsUntilNotification = Math.floor(
-      (combinedDate.getTime() - Date.now()) / 1000
+      (combinedDate.getTime() - Date.now()) / 1000,
     );
 
     if (repeatOption == "daily" && isRepeat) {
@@ -147,18 +149,18 @@ export default function Reminder({ route, navigation }) {
       if (type == "edit") {
         dispatch(
           editReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Daily",
-          })
+          }),
         );
       } else {
         dispatch(
           addNewReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Daily",
-          })
+          }),
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "ios") {
@@ -179,23 +181,23 @@ export default function Reminder({ route, navigation }) {
       if (type == "edit") {
         dispatch(
           editReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       } else {
         dispatch(
           addNewReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "android") {
       const newDate = new Date(
-        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
+        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000,
       );
       const seconds = newDate.getTime() / 1000;
       const identifier = await Notifications.scheduleNotificationAsync({
@@ -205,7 +207,7 @@ export default function Reminder({ route, navigation }) {
           data: { screen: "Reminder" },
         },
         trigger: {
-          seconds: seconds,
+          seconds,
           repeats: isRepeat,
         },
       });
@@ -213,18 +215,18 @@ export default function Reminder({ route, navigation }) {
       if (type == "edit") {
         dispatch(
           editReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       } else {
         dispatch(
           addNewReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       }
     } else {
@@ -242,18 +244,18 @@ export default function Reminder({ route, navigation }) {
       if (type == "edit") {
         dispatch(
           editReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "None",
-          })
+          }),
         );
       } else {
         dispatch(
           addNewReminder({
-            reminder: reminder,
-            identifier: identifier,
+            reminder,
+            identifier,
             ocurrence: "None",
-          })
+          }),
         );
       }
     }
@@ -265,7 +267,7 @@ export default function Reminder({ route, navigation }) {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes()
+      reminderTime.getMinutes(),
     );
 
     const newReminderObj = {
@@ -276,7 +278,7 @@ export default function Reminder({ route, navigation }) {
     };
 
     await Notifications.cancelScheduledNotificationAsync(
-      route.params.reminderIdentifier
+      route.params.reminderIdentifier,
     );
 
     dispatch(deleteReminder(route.params.reminderEditId));
@@ -284,7 +286,7 @@ export default function Reminder({ route, navigation }) {
     scheduleNotification(
       newReminderObj,
       combinedDate,
-      "add"
+      "add",
       // reminderTime.getHours(),
       // reminderTime.getMinutes()
     );
@@ -311,7 +313,7 @@ export default function Reminder({ route, navigation }) {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes()
+      reminderTime.getMinutes(),
     );
 
     const newReminderObj = {
@@ -358,7 +360,7 @@ export default function Reminder({ route, navigation }) {
     Keyboard.dismiss();
 
     if (reminderDate.length == 0) {
-      let today = new Date();
+      const today = new Date();
       setReminderDate(today);
     }
     setReminderTime(Date.now());
@@ -423,7 +425,7 @@ export default function Reminder({ route, navigation }) {
           onPress={
             route.params.type == "Add" ? addReminder : handleEditReminder
           }
-          disabled={newReminder.length == 0 ? true : false}
+          disabled={newReminder.length == 0}
           style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
         >
           <Text
@@ -457,8 +459,8 @@ export default function Reminder({ route, navigation }) {
                     ? "#5c5c5c"
                     : "grey"
                   : theme == "light"
-                  ? "#2f2d51"
-                  : "#A5C9FF"
+                    ? "#2f2d51"
+                    : "#A5C9FF"
               }
             />
           ) : (
@@ -473,8 +475,8 @@ export default function Reminder({ route, navigation }) {
                     ? "#5c5c5c"
                     : "grey"
                   : theme == "light"
-                  ? "#2f2d51"
-                  : "#A5C9FF"
+                    ? "#2f2d51"
+                    : "#A5C9FF"
               }
             />
           )}
@@ -536,7 +538,7 @@ export default function Reminder({ route, navigation }) {
                 : { minHeight: 50, color: "#2f2d51" }
             }
             placeholder="Prayer Notes"
-            multiline={true}
+            multiline
             textAlignVertical="top"
             numberOfLines={3}
             value={newNote}

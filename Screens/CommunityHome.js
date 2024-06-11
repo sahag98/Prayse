@@ -1,31 +1,21 @@
+import React, { useEffect, useState } from "react";
+import * as Clipboard from "expo-clipboard";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import * as Network from "expo-network";
+import * as Notifications from "expo-notifications";
 import {
   Dimensions,
+  FlatList,
+  Image,
   Keyboard,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
-import { useSupabase } from "../context/useSupabase";
-import { HeaderTitle, HeaderView } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import { Image } from "react-native";
-import { useState } from "react";
-import { TouchableOpacity, Platform } from "react-native";
-import {
-  Entypo,
-  Ionicons,
-  AntDesign,
-  MaterialIcons,
-  MaterialCommunityIcons,
-  Feather,
-  EvilIcons,
-  FontAwesome,
-} from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
 import Animated, {
   Easing,
   FadeIn,
@@ -34,21 +24,30 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-import WelcomeModal from "../components/WelcomeModal";
-
-import CreateGroupModal from "../components/CreateGroupModal";
-import { FlatList } from "react-native";
-import JoinModal from "../components/JoinModal";
-import ProfileModal from "../components/ProfileModal";
-import communityReady from "../hooks/communityReady";
-import * as Clipboard from "expo-clipboard";
-import Constants from "expo-constants";
-import * as Network from "expo-network";
 import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
+import {
+  AntDesign,
+  Entypo,
+  EvilIcons,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import globeBg from "../assets/globe-bg.png";
 import groupBg from "../assets/group-bg.png";
 import questionBg from "../assets/question-bg.png";
+import CreateGroupModal from "../components/CreateGroupModal";
+import JoinModal from "../components/JoinModal";
+import ProfileModal from "../components/ProfileModal";
+import WelcomeModal from "../components/WelcomeModal";
+import { useSupabase } from "../context/useSupabase";
+import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -90,7 +89,6 @@ const CommunityHome = ({ route }) => {
   // const { current: velocity } = useRef(new Animated.Value(0));
   const [searchName, setSearchName] = useState("");
   const [isViewingGroups, setIsViewingGroups] = useState(false);
-  const isReady = communityReady();
   const [hasConnection, setHasConnection] = useState(true);
   const [isFetchingUserGroups, setIsFetchingUserGroups] = useState(false);
   const rotation = useSharedValue(0);
@@ -151,7 +149,7 @@ const CommunityHome = ({ route }) => {
   async function getPrayers() {
     //prayers for production
     //prayers_test for testing
-    let { data: prayers, error } = await supabase
+    const { data: prayers, error } = await supabase
       .from("prayers")
       .select("*, profiles(*)")
       .order("id", { ascending: false });
@@ -161,7 +159,7 @@ const CommunityHome = ({ route }) => {
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
-    let { data: prayers, error } = await supabase
+    const { data: prayers, error } = await supabase
       .from("prayers")
       .select("*")
       .eq("user_id", currentUser?.id)
@@ -172,7 +170,7 @@ const CommunityHome = ({ route }) => {
   async function getUserGroups() {
     try {
       setIsFetchingUserGroups(true);
-      let { data: groups, error } = await supabase
+      const { data: groups, error } = await supabase
         .from("members")
         .select("*,groups(*), profiles(*)")
         .eq("user_id", currentUser?.id)
@@ -185,7 +183,7 @@ const CommunityHome = ({ route }) => {
   }
 
   async function getGroupUsers() {
-    let { data: groups, error } = await supabase
+    const { data: groups, error } = await supabase
       .from("members")
       .select("*,groups(*), profiles(*)")
       .order("id", { ascending: true });
@@ -238,7 +236,7 @@ const CommunityHome = ({ route }) => {
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   const list = userGroups?.filter((item) =>
-    searchName !== "" ? item.groups.name.includes(searchName) : true
+    searchName !== "" ? item.groups.name.includes(searchName) : true,
   );
 
   const width = Dimensions.get("window").width - 30;
@@ -256,7 +254,7 @@ const CommunityHome = ({ route }) => {
         supabase={supabase}
         getUserGroups={getUserGroups}
         setCurrentUser={setCurrentUser}
-        isShowingWelcome={true}
+        isShowingWelcome
         setIsShowingWelcome={setIsShowingWelcome}
         user={currentUser}
       />
@@ -811,7 +809,7 @@ const CommunityHome = ({ route }) => {
                       navigation.navigate("PrayerGroup", {
                         group: item,
                         allGroups: groups.filter(
-                          (g) => g.group_id === item.group_id
+                          (g) => g.group_id === item.group_id,
                         ),
                       })
                     }
@@ -1044,7 +1042,7 @@ const CommunityHome = ({ route }) => {
                               >
                                 +
                                 {groups.filter(
-                                  (g) => g.group_id === item.group_id
+                                  (g) => g.group_id === item.group_id,
                                 )?.length - 3}
                               </Text>
                             )}
@@ -1308,7 +1306,7 @@ const CommunityHome = ({ route }) => {
                       navigation.navigate("PrayerGroup", {
                         group: item,
                         allGroups: groups.filter(
-                          (g) => g.group_id === item.group_id
+                          (g) => g.group_id === item.group_id,
                         ),
                       })
                     }
@@ -1417,7 +1415,7 @@ const CommunityHome = ({ route }) => {
                               >
                                 +
                                 {groups.filter(
-                                  (g) => g.group_id === item.group_id
+                                  (g) => g.group_id === item.group_id,
                                 )?.length - 6}
                               </Text>
                             )}

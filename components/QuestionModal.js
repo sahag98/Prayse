@@ -1,12 +1,17 @@
+import { useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
   Modal,
+  Platform,
+  Text,
+  TouchableOpacity,
 } from "react-native";
+import Toast from "react-native-toast-message";
+
+import { AntDesign } from "@expo/vector-icons";
+
+import { useSupabase } from "../context/useSupabase";
 import {
   ModalAction,
   ModalActionGroup,
@@ -14,22 +19,12 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
-import Toast from "react-native-toast-message";
-
-import { useSupabase } from "../context/useSupabase";
-import axios from "axios";
 
 const QuestionModal = ({
   itemTitle,
   itemId,
   theme,
-  fetchQuestions,
-  question,
-  setQuestions,
   user,
-  answersArray,
   supabase,
   setAnswersVisible,
   answersVisible,
@@ -53,36 +48,20 @@ const QuestionModal = ({
     });
   };
 
-  // async function updateAnswers() {
-  //   const copyofQuestions = [...questions];
-  //   const foundQuestion = copyofQuestions.find((q) => q.id === question.id);
-
-  //   foundQuestion.answers.push({
-  //     answer: answer,
-  //     created_at: new Date(),
-  //     profiles: {
-  //       avatar_url: currentUser.avatar_url,
-  //       full_name: currentUser.full_name,
-  //     },
-  //   });
-  //   setQuestions(copyofQuestions);
-  // }
-
   const addAnswer = async () => {
     // updateAnswers();
     if (answer.length <= 0) {
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
-      return;
     } else {
-      const { data, error } = await supabase.from("answers").insert({
+      const { error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
       });
 
       function truncateWords(str, numWords) {
-        let words = str.split(" ");
+        const words = str.split(" ");
         if (words.length > numWords) {
           return words.slice(0, numWords).join(" ") + " ...";
         } else {
@@ -90,7 +69,7 @@ const QuestionModal = ({
         }
       }
 
-      let truncatedString = truncateWords(answer, 8);
+      const truncatedString = truncateWords(answer, 8);
 
       const message = {
         title: "Question of the Week",
@@ -126,10 +105,10 @@ const QuestionModal = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={answersVisible}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -138,21 +117,21 @@ const QuestionModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#b7d3ff" }
             }
           >
             <StyledInput
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       height: inputHeight < 100 ? 100 : inputHeight,
                       verticalAlign: "top",
@@ -169,21 +148,18 @@ const QuestionModal = ({
                     }
               }
               placeholder="Add answer"
-              placeholderTextColor={"#e0e0e0"}
-              selectionColor={"white"}
-              autoFocus={true}
+              placeholderTextColor="#e0e0e0"
+              selectionColor="white"
+              autoFocus
               onChangeText={(text) => setAnswer(text)}
               value={answer}
               onContentSizeChange={handleContentSizeChange}
               onSubmitEditing={(e) => {
                 e.key === "Enter" && e.preventDefault();
               }}
-              multiline={true}
+              multiline
             />
-            <TouchableOpacity
-              style={styles.dismiss}
-              onPress={() => Keyboard.dismiss()}
-            >
+            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
               <Text
                 style={{
                   color: "#ff4e4e",
@@ -195,18 +171,18 @@ const QuestionModal = ({
               </Text>
             </TouchableOpacity>
             <ModalActionGroup>
-              <ModalAction color={"white"} onPress={handleCloseModal}>
+              <ModalAction color="white" onPress={handleCloseModal}>
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme == "dark" ? "#121212" : "#2F2D51"}
+                  color={theme === "dark" ? "#121212" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={theme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={addAnswer}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>
@@ -217,5 +193,3 @@ const QuestionModal = ({
 };
 
 export default QuestionModal;
-
-const styles = StyleSheet.create({});

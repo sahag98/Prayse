@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -9,15 +10,16 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Container, HeaderView } from "../styles/appStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
 import { Divider } from "react-native-paper";
+import { useSelector } from "react-redux";
+
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+
 import ReflectionItem from "../components/ReflectionItem";
 import { useSupabase } from "../context/useSupabase";
-import { useIsFocused } from "@react-navigation/native";
+import { Container, HeaderView } from "../styles/appStyles";
 
 const Relfection = ({ navigation, route }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -62,7 +64,6 @@ const Relfection = ({ navigation, route }) => {
   const checkSignIn = () => {
     if (!isLoggedIn) {
       createTwoButtonAlert();
-      return;
     } else {
       console.log("signed in");
     }
@@ -85,7 +86,7 @@ const Relfection = ({ navigation, route }) => {
       const { data, error } = await supabase.from("reflections").insert({
         user_id: currentUser?.id,
         devo_title: route?.params?.devoTitle,
-        reflection: reflection,
+        reflection,
       });
       setReflection("");
       fetchReflections();
@@ -93,7 +94,7 @@ const Relfection = ({ navigation, route }) => {
       console.log(error);
     }
     function truncateWords(str, numWords) {
-      let words = str.split(" ");
+      const words = str.split(" ");
       if (words.length > numWords) {
         return words.slice(0, numWords).join(" ") + " ...";
       } else {
@@ -101,7 +102,7 @@ const Relfection = ({ navigation, route }) => {
       }
     }
 
-    let truncatedString = truncateWords(reflection, 8);
+    const truncatedString = truncateWords(reflection, 8);
     const message = {
       title: `Reflection on Devotional: ${route?.params?.devoTitle}`,
       message: `${currentUser?.full_name} has wrote a reflection: ${truncatedString}`,
@@ -294,12 +295,12 @@ const Relfection = ({ navigation, route }) => {
             onSubmitEditing={(e) => {
               e.key === "Enter" && e.preventDefault();
             }}
-            multiline={true}
+            multiline
             // // ios fix for centering it at the top-left corner
             // numberOfLines={5}
           />
           <TouchableOpacity
-            disabled={reflection.length == 0 ? true : false}
+            disabled={reflection.length == 0}
             onPress={sendReflection}
             style={{
               backgroundColor:
@@ -308,8 +309,8 @@ const Relfection = ({ navigation, route }) => {
                     ? "#212121"
                     : "#a5c9ff"
                   : reflection.length == 0
-                  ? "grey"
-                  : "#2f2d51",
+                    ? "grey"
+                    : "#2f2d51",
               borderRadius: 100,
               padding: 8,
               justifyContent: "center",

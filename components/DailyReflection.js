@@ -1,47 +1,31 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 import React, { useEffect, useState } from "react";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import CompletedModal from "./CompletedModal";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+
 import {
   addtoCompletedItems,
-  deleteAppStreakCounter,
-  deleteCompletedItems,
   deletePreviousDayItems,
-  deleteStreakCounter,
-  increaseStreakCounter,
 } from "../redux/userReducer";
-import StreakSlider from "./StreakSlider";
+
 import GiveawayModal from "./GiveawayModal";
+import StreakSlider from "./StreakSlider";
 
 const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [isCompleteArray, setIsCompleteArray] = useState([]);
   const [isShowingStreak, setIsShowingStreak] = useState(false);
   const hasEnteredGiveaway = useSelector(
-    (state) => state.user.alreadyEnteredGiveaway
+    (state) => state.user.alreadyEnteredGiveaway,
   );
-  // const [isShowingGiveaway, setIsShowingGiveaway] =
-  //   useState(hasEnteredGiveaway);
-  const [todaysItems, setTodaysItems] = useState([]);
-
-  // console.log(completedItems);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
-    // getTodaysItems();
     console.log("completed Items:  ", completedItems);
-    // // clearTodaysCompletion();
+
     clearPreviousDayCompletion();
   }, [isFocused]);
 
@@ -55,7 +39,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       addtoCompletedItems({
         item: selected,
         date: currentDate,
-      })
+      }),
     );
 
     navigation.navigate(selected, {
@@ -83,82 +67,6 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     }
   }
 
-  async function getCompletionStatusForToday() {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date
-    const keys = await AsyncStorage.getAllKeys();
-
-    const completionStatusForToday = [];
-
-    // Filter keys to get only completion status for the current date
-    const todayKeys = keys.filter((key) =>
-      key.startsWith(`completion_${currentDate}_`)
-    );
-
-    // Get completion status for each reflection item
-    for (const key of todayKeys) {
-      const completionStatus = await AsyncStorage.getItem(key);
-      const reflectionItem = key.split("_")[2]; // Extract the reflection item name
-      completionStatusForToday.push({
-        reflectionItem,
-        status: completionStatus,
-      });
-    }
-
-    console.log("completion status for today: ", completionStatusForToday);
-
-    return completionStatusForToday;
-  }
-
-  async function getTodaysItems() {
-    const items = await getCompletionStatusForToday();
-    setTodaysItems(items);
-
-    const completedItems = items.filter((item) => item.status === "completed");
-
-    const currentDate = new Date().toISOString().split("T")[0];
-    const modalShownKey = `modal_shown_${currentDate}`;
-    const progressDoneKey = `modal_shown_${currentDate}`;
-    const modalShown = await AsyncStorage.getItem(modalShownKey);
-    // await AsyncStorage.removeItem(modalShownKey);
-    // dispatch(deleteStreakCounter());
-    if (appStreak === 30 && !progressDoneKey) {
-      console.log("progress done!");
-      setIsShowingGiveaway(true);
-      setIsShowingStreak(false);
-      AsyncStorage.setItem(progressDoneKey, "true").catch((error) => {
-        console.error("Error saving modal shown status:", error);
-      });
-    }
-
-    if (completedItems.length === 3 && !modalShown) {
-      setIsShowingStreak(true);
-      console.log("should increase streak counter");
-      dispatch(increaseStreakCounter());
-      // Update AsyncStorage to indicate that the modal has been shown for today
-      AsyncStorage.setItem(modalShownKey, "true").catch((error) => {
-        console.error("Error saving modal shown status:", error);
-      });
-    }
-  }
-
-  async function clearTodaysCompletion() {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date
-    const keys = await AsyncStorage.getAllKeys();
-
-    // Filter keys to get only completion status for the current date
-    const todayKeys = keys.filter((key) =>
-      key.startsWith(`completion_${currentDate}_`)
-    );
-
-    // Remove completion status for each reflection item for today
-    for (const key of todayKeys) {
-      await AsyncStorage.removeItem(key);
-    }
-
-    // Clear todaysItems
-    setTodaysItems([]);
-  }
-
   return (
     <View
       style={{
@@ -172,7 +80,6 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     >
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
-        // setIsShowingGiveaway={setIsShowingGiveaway}
         theme={theme}
         appstreak={appStreak}
         streak={streak}
@@ -186,7 +93,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       />
       <Text
         style={{
-          color: theme == "dark" ? "white" : "#2f2d51",
+          color: theme === "dark" ? "white" : "#2f2d51",
           fontFamily: "Inter-Bold",
           fontSize: 18,
         }}
@@ -210,30 +117,30 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               top: "50%",
               left: 11,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom")
+                completedItem.items.find((item) => item === "PrayerRoom"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
             }}
           />
           <View
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom")
+                completedItem.items.find((item) => item === "PrayerRoom"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
               borderWidth: 4,
-              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
+              borderColor: theme === "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
@@ -241,7 +148,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <TouchableOpacity
             onPress={() => handleComplete("PrayerRoom")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "white",
+              backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,
               marginLeft: 15,
               width: "100%",
@@ -255,7 +162,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                   fontFamily: "Inter-Light",
                   fontSize: 14,
                 }}
@@ -265,12 +172,12 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               <MaterialCommunityIcons
                 name="hands-pray"
                 size={20}
-                color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
               }}
@@ -295,14 +202,14 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               bottom: "50%",
               left: 11,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
             }}
           />
           <View
@@ -313,30 +220,30 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               top: "50%",
               left: 11,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
             }}
           />
           <View
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
               borderWidth: 4,
-              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
+              borderColor: theme === "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
@@ -344,7 +251,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <TouchableOpacity
             onPress={() => handleComplete("VerseOfTheDay")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "white",
+              backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,
               marginLeft: 15,
               flex: 1,
@@ -357,7 +264,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                   fontFamily: "Inter-Light",
                   fontSize: 14,
                 }}
@@ -367,12 +274,12 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               <Feather
                 name="book-open"
                 size={20}
-                color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
               }}
@@ -397,30 +304,30 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               bottom: "50%",
               left: 11,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList")
+                completedItem.items.find((item) => item === "DevoList"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
             }}
           />
           <View
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList")
+                completedItem.items.find((item) => item === "DevoList"),
               )
-                ? theme == "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : theme == "dark"
-                ? "#212121"
-                : "white",
+                : theme === "dark"
+                  ? "#212121"
+                  : "white",
               borderWidth: 4,
-              borderColor: theme == "dark" ? "#474747" : "#b7d3ff",
+              borderColor: theme === "dark" ? "#474747" : "#b7d3ff",
               height: 25,
               borderRadius: 50,
             }}
@@ -428,7 +335,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           <TouchableOpacity
             onPress={() => handleComplete("DevoList")}
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "white",
+              backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,
               flex: 1,
               marginLeft: 15,
@@ -441,7 +348,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                   fontFamily: "Inter-Light",
                   fontSize: 14,
                 }}
@@ -451,12 +358,12 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               <Feather
                 name="book"
                 size={20}
-                color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Bold",
                 fontSize: 17,
               }}
@@ -465,7 +372,6 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>
-        {/* Repeat similar structure for other TouchableOpacity components */}
       </View>
     </View>
   );

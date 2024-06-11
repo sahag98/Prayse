@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -7,15 +8,16 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-import groupBg from "../assets/group-bg.png";
-import { useSelector } from "react-redux";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AntDesign, EvilIcons } from "@expo/vector-icons";
-import { useSupabase } from "../context/useSupabase";
 import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
+import { AntDesign, EvilIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
+
+import groupBg from "../assets/group-bg.png";
+import { useSupabase } from "../context/useSupabase";
+import { Container, HeaderTitle } from "../styles/appStyles";
 
 const PublicGroups = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -25,14 +27,14 @@ const PublicGroups = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
 
   async function getGroupUsers() {
-    let { data: groups, error } = await supabase
+    const { data: groups, error } = await supabase
       .from("members")
       .select("*,groups(*), profiles(*)")
       .order("id", { ascending: true });
     setGroups(groups);
   }
   const list = publicGroups.filter((item) =>
-    search !== "" ? item.name.includes(search) : true
+    search !== "" ? item.name.includes(search) : true,
   );
 
   useEffect(() => {
@@ -51,7 +53,6 @@ const PublicGroups = ({ navigation }) => {
     if (code.length <= 0) {
       showToast("error", "The group name field can't be empty.");
       setModalVisible(false);
-      return;
     } else {
       const { data: group, error: groupError } = await supabase
         .from("groups")
@@ -59,9 +60,8 @@ const PublicGroups = ({ navigation }) => {
         .eq("code", code);
 
       if (group.length == 0) {
-        return;
       } else if (group.length > 0) {
-        let { data: members, error } = await supabase
+        const { data: members, error } = await supabase
           .from("members")
           .select("*")
           .eq("group_id", group[0].id)
@@ -302,7 +302,7 @@ const PublicGroups = ({ navigation }) => {
                             >
                               +
                               {groups.filter(
-                                (g) => g.group_id === item.group_id
+                                (g) => g.group_id === item.group_id,
                               )?.length - 3}
                             </Text>
                           )}

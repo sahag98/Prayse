@@ -1,19 +1,21 @@
+import { useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
   Dimensions,
-  TouchableOpacity,
+  FlatList,
+  KeyboardAvoidingView,
   Modal,
   Platform,
-  KeyboardAvoidingView,
-  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign } from "@expo/vector-icons";
+
 import { editFolderName } from "../redux/folderReducer";
 import {
-  Container,
   HeaderTitle,
   ModalAction,
   ModalActionGroup,
@@ -22,17 +24,8 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { useState } from "react";
 
-const FolderItem = ({
-  item,
-  theme,
-  navigation,
-  open,
-  setOpen,
-  setIdToDelete,
-  idToDelete,
-}) => {
+const FolderItem = ({ item, theme, navigation }) => {
   const dispatch = useDispatch();
   const [openEdit, setOpenEdit] = useState(false);
   const [newFolderName, setNewFolderName] = useState(item.name);
@@ -43,9 +36,6 @@ const FolderItem = ({
       prayers: item.prayers,
       id: item.id,
     });
-    // navigation.setParams({
-    //   title: item.name,
-    // });
   };
 
   function handleCloseEdit() {
@@ -53,7 +43,7 @@ const FolderItem = ({
   }
 
   function truncateWords(str) {
-    let words = str.split(" ");
+    const words = str.split(" ");
     if (words.length > 5) {
       return words.slice(0, 5).join(" ") + " ...";
     } else {
@@ -61,25 +51,17 @@ const FolderItem = ({
     }
   }
 
-  // let truncatedString = truncateWords(prayer);
-
-  console.log(item.prayers);
-
   function editFolder(id) {
     dispatch(
       editFolderName({
         name: newFolderName,
-        id: id,
-      })
+        id,
+      }),
     );
     setOpenEdit(false);
   }
 
-  function handleDeleteFolder(id) {
-    setIdToDelete(id);
-  }
-
-  let id = item.id;
+  const id = item.id;
 
   const prayers = prayerList?.filter((item) => item.folderId === id);
 
@@ -87,11 +69,11 @@ const FolderItem = ({
     <TouchableOpacity onPress={() => handleOpen(item)} key={item.id}>
       <View
         style={
-          theme == "dark"
+          theme === "dark"
             ? [styles.containerDark, styles.elevationDark]
-            : theme == "BlackWhite"
-            ? [styles.containerBlack, styles.elevationBlack]
-            : styles.container
+            : theme === "BlackWhite"
+              ? [styles.containerBlack, styles.elevationBlack]
+              : styles.container
         }
       >
         <View
@@ -99,8 +81,6 @@ const FolderItem = ({
             display: "flex",
             position: "relative",
             flex: 1,
-            // height: "100%",
-
             justifyContent: "space-between",
           }}
         >
@@ -116,7 +96,7 @@ const FolderItem = ({
           >
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontSize: 18,
                 marginVertical: 5,
                 maxWidth: "90%",
@@ -128,14 +108,14 @@ const FolderItem = ({
             <AntDesign
               name="folder1"
               size={28}
-              color={theme == "BlackWhite" ? "white" : "#e8bb4e"}
+              color={theme === "BlackWhite" ? "white" : "#e8bb4e"}
             />
           </View>
           {prayers?.length === 0 ? (
             <View>
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Regular",
                   fontSize: 12,
                 }}
@@ -150,7 +130,6 @@ const FolderItem = ({
               style={{ gap: 5 }}
               renderItem={({ item }) => (
                 <View
-                  // onPress={() => setOpenEdit(true)}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -158,7 +137,7 @@ const FolderItem = ({
                 >
                   <Text
                     style={{
-                      color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                      color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                       fontFamily: "Inter-Regular",
                       fontSize: 12,
                     }}
@@ -172,11 +151,10 @@ const FolderItem = ({
 
           <Modal
             animationType="fade"
-            transparent={true}
+            transparent
             visible={openEdit}
             onRequestClose={handleCloseEdit}
-            statusBarTranslucent={true}
-            // onShow={() => inputRef.current?.focus()}
+            statusBarTranslucent
           >
             <KeyboardAvoidingView
               style={{ flex: 1 }}
@@ -184,14 +162,14 @@ const FolderItem = ({
             >
               <ModalContainer
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
                     : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
                 }
               >
                 <ModalView
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? { backgroundColor: "#212121" }
                       : { backgroundColor: "#93D8F8" }
                   }
@@ -199,7 +177,7 @@ const FolderItem = ({
                   <ModalIcon>
                     <HeaderTitle
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               fontFamily: "Inter-Bold",
                               fontSize: 18,
@@ -212,11 +190,11 @@ const FolderItem = ({
                     </HeaderTitle>
                   </ModalIcon>
                   <StyledInput
-                    style={theme == "dark" ? styles.inputDark : styles.input}
+                    style={theme === "dark" ? styles.inputDark : styles.input}
                     placeholder="Enter new folder name"
-                    placeholderTextColor={"white"}
-                    selectionColor={"white"}
-                    autoFocus={true}
+                    placeholderTextColor="white"
+                    selectionColor="white"
+                    autoFocus
                     onChangeText={(text) => setNewFolderName(text)}
                     value={newFolderName}
                     onSubmitEditing={(e) => {
@@ -225,20 +203,20 @@ const FolderItem = ({
                   />
                   <ModalActionGroup>
                     <ModalAction
-                      color={"white"}
+                      color="white"
                       onPress={() => setOpenEdit(false)}
                     >
                       <AntDesign
                         name="close"
                         size={28}
-                        color={theme == "dark" ? "black" : "#2F2D51"}
+                        color={theme === "dark" ? "black" : "#2F2D51"}
                       />
                     </ModalAction>
                     <ModalAction
-                      color={theme == "dark" ? "#121212" : "#2F2D51"}
+                      color={theme === "dark" ? "#121212" : "#2F2D51"}
                       onPress={() => editFolder(item.id)}
                     >
-                      <AntDesign name="check" size={28} color={"white"} />
+                      <AntDesign name="check" size={28} color="white" />
                     </ModalAction>
                   </ModalActionGroup>
                 </ModalView>

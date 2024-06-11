@@ -1,13 +1,14 @@
+import React from "react";
 import {
   KeyboardAvoidingView,
   Modal,
   Platform,
   StyleSheet,
-  Text,
-  View,
 } from "react-native";
-import React from "react";
+
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
 import {
   HeaderTitle,
   ModalAction,
@@ -17,7 +18,6 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { useNavigation } from "@react-navigation/native";
 
 const EditGroupModal = ({
   theme,
@@ -32,7 +32,7 @@ const EditGroupModal = ({
   const navigation = useNavigation();
 
   const editGroup = async () => {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("groups")
       .update({ name: groupName })
       .eq("id", group.group_id)
@@ -53,10 +53,10 @@ const EditGroupModal = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={openEdit}
       onRequestClose={handleCloseEdit}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -64,14 +64,14 @@ const EditGroupModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#b7d3ff" }
             }
@@ -79,7 +79,7 @@ const EditGroupModal = ({
             <ModalIcon>
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 18,
@@ -92,11 +92,11 @@ const EditGroupModal = ({
               </HeaderTitle>
             </ModalIcon>
             <StyledInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
+              style={theme === "dark" ? styles.inputDark : styles.input}
               placeholder="Enter new folder name"
-              placeholderTextColor={"white"}
-              selectionColor={"white"}
-              autoFocus={true}
+              placeholderTextColor="white"
+              selectionColor="white"
+              autoFocus
               onChangeText={(text) => setGroupName(text)}
               value={groupName}
               onSubmitEditing={(e) => {
@@ -104,18 +104,18 @@ const EditGroupModal = ({
               }}
             />
             <ModalActionGroup>
-              <ModalAction color={"white"} onPress={() => setOpenEdit(false)}>
+              <ModalAction color="white" onPress={() => setOpenEdit(false)}>
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme == "dark" ? "black" : "#2F2D51"}
+                  color={theme === "dark" ? "black" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={theme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={editGroup}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

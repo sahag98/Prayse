@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
 import {
   ActivityIndicator,
   FlatList,
@@ -6,13 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import { Container } from "../styles/appStyles";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+
 import { AntDesign } from "@expo/vector-icons";
-import { format } from "date-fns";
 import { useIsFocused } from "@react-navigation/native";
+
+import { Container } from "../styles/appStyles";
 
 const RoadMap = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -24,7 +25,7 @@ const RoadMap = ({ navigation }) => {
       try {
         setIsLoading(true);
         const roadmapItems = await fetch(
-          `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`
+          `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`,
         ).then(async (res) => res.json());
 
         setRoadmap(roadmapItems);

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 const initialState = {
   messages: [],

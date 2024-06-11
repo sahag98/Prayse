@@ -1,34 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   ActivityIndicator,
   Alert,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   Share,
-  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { client } from "../lib/client";
-import "react-native-url-polyfill/auto";
-import { Container, HeaderView } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import useIsReady from "../hooks/useIsReady";
-import { useIsFocused } from "@react-navigation/native";
-import tbf from "../assets/tbf-logo.jpg";
-import NetInfo from "@react-native-community/netinfo";
-import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useSupabase } from "../context/useSupabase";
-import DevoItem from "../components/DevoItem";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-import bgImg from "../assets/bgImage5.png";
+import { useSelector } from "react-redux";
+
+import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import NetInfo from "@react-native-community/netinfo";
+import { useIsFocused } from "@react-navigation/native";
+
+import tbf from "../assets/tbf-logo.jpg";
+import DevoItem from "../components/DevoItem";
+import { useSupabase } from "../context/useSupabase";
+import useIsReady from "../hooks/useIsReady";
+import { client } from "../lib/client";
+import { Container, HeaderView } from "../styles/appStyles";
+
+import "react-native-url-polyfill/auto";
 const DevoList = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
@@ -99,7 +100,7 @@ const DevoList = ({ navigation, route }) => {
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
+        withSpring(1, { damping: 2, stiffness: 80 }),
       );
       const { data, error } = await supabase
         .from("devo_likes")
@@ -119,7 +120,7 @@ const DevoList = ({ navigation, route }) => {
     }
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
+      withSpring(1, { damping: 2, stiffness: 80 }),
     );
 
     const { data, error } = await supabase.from("devo_likes").insert({
@@ -128,7 +129,7 @@ const DevoList = ({ navigation, route }) => {
     });
 
     const message = {
-      title: title,
+      title,
       message: `${currentUser?.full_name} has liked the devotional!`,
       data: { screen: "DevoList", verseTitle: "" },
     };
@@ -188,12 +189,12 @@ const DevoList = ({ navigation, route }) => {
   };
 
   function convertDigitIn(str) {
-    let newStr = str.replace(/-/g, "/");
+    const newStr = str.replace(/-/g, "/");
     return newStr.split("/").reverse().join("/");
   }
 
   const isLikedByMe = !!likesArray?.find(
-    (like) => like.user_id == currentUser?.id
+    (like) => like.user_id == currentUser?.id,
   );
 
   const BusyIndicator = () => {
@@ -342,8 +343,8 @@ const DevoList = ({ navigation, route }) => {
                         isLikedByMe
                           ? "red"
                           : theme == "dark"
-                          ? "white"
-                          : "#2f2d51"
+                            ? "white"
+                            : "#2f2d51"
                       }
                     />
                     <Text
@@ -353,8 +354,8 @@ const DevoList = ({ navigation, route }) => {
                         color: isLikedByMe
                           ? "red"
                           : theme == "dark"
-                          ? "white"
-                          : "#2f2d51",
+                            ? "white"
+                            : "#2f2d51",
                       }}
                     >
                       {likesArray?.length}

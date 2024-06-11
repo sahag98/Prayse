@@ -1,16 +1,19 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Modal } from "react-native";
-import { ModalContainer } from "../styles/appStyles";
-import { TouchableOpacity } from "react-native";
-import { useState } from "react";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useRef, useState } from "react";
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { ProgressBar } from "react-native-paper";
 import Animated, { FadeIn } from "react-native-reanimated";
 
-import { useRef } from "react";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import googleIcon from "../assets/google-icon.png";
-import { ProgressBar } from "react-native-paper";
+import { ModalContainer } from "../styles/appStyles";
 const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   const [page, setPage] = useState(0);
 
@@ -30,14 +33,14 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={featureVisible}
       onRequestClose={() => setFeatureVisible(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
@@ -45,7 +48,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
         <Animated.View
           entering={FadeIn.duration(500)}
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   borderRadius: 5,
                   position: "relative",
@@ -66,7 +69,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     textAlign: "center",
                     fontFamily: "Inter-Black",
@@ -103,7 +106,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
 
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Bold",
                           fontSize: 22,
@@ -120,7 +123,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </Text>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Regular",
                           fontSize: 15,
@@ -147,7 +150,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             borderColor: "#A5C9FF",
@@ -170,7 +173,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "white", fontFamily: "Inter-Bold" }
                           : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                       }
@@ -180,7 +183,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             backgroundColor: "#A5C9FF",
@@ -203,7 +206,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "#212121", fontFamily: "Inter-Bold" }
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
@@ -219,12 +222,12 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 <MaterialCommunityIcons
                   name="cross"
                   size={100}
-                  color={theme == "BlackWhite" ? "black" : "#8cbaff"}
+                  color={theme === "BlackWhite" ? "black" : "#8cbaff"}
                 />
 
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Bold",
                           fontSize: 22,
@@ -241,7 +244,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </Text>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Regular",
                           fontSize: 15,
@@ -268,7 +271,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             borderColor: "#A5C9FF",
@@ -291,7 +294,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "white", fontFamily: "Inter-Bold" }
                           : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                       }
@@ -301,7 +304,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             backgroundColor: "#A5C9FF",
@@ -324,7 +327,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "#212121", fontFamily: "Inter-Bold" }
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
@@ -341,7 +344,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
 
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Bold",
                           fontSize: 22,
@@ -358,7 +361,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 </Text>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Regular",
                           fontSize: 15,
@@ -385,7 +388,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             borderColor: "#A5C9FF",
@@ -408,7 +411,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "white", fontFamily: "Inter-Bold" }
                           : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                       }
@@ -418,7 +421,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "45%",
                             backgroundColor: "#A5C9FF",
@@ -441,7 +444,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "#212121", fontFamily: "Inter-Bold" }
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
@@ -461,7 +464,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 />
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Bold",
                           fontSize: 22,
@@ -479,7 +482,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 <View style={{ gap: 5 }}>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -488,7 +491,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </Text>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -497,7 +500,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </Text>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -516,7 +519,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   <TouchableOpacity
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             width: "100%",
                             backgroundColor: "#A5C9FF",
@@ -538,7 +541,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "#121212", fontFamily: "Inter-Bold" }
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
@@ -553,7 +556,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Medium",
                           fontSize: 18,
@@ -571,7 +574,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 <View style={{ alignItems: "center", gap: 10 }}>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -581,7 +584,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
 
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -590,7 +593,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </Text>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Regular", color: "#dbdbdb" }
                         : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                     }
@@ -599,7 +602,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </Text>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             fontFamily: "Inter-Regular",
                             marginBottom: 10,
@@ -614,17 +617,6 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   >
                     - Removed update suggestion for now.
                   </Text>
-
-                  {/* <Text
-                    style={
-                      theme == "dark"
-                        ? { fontFamily: "Inter-Regular", color: "white" }
-                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                    }
-                  >
-                    Once you answer the question you will not be able to edit or
-                    delete your question.
-                  </Text> */}
                 </View>
                 <TouchableOpacity
                   style={
@@ -650,7 +642,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                 >
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { color: "#121212", fontFamily: "Inter-Bold" }
                         : { color: "white", fontFamily: "Inter-Bold" }
                     }

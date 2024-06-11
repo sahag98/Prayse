@@ -1,11 +1,5 @@
-import {
-  ImageURISource,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
 import React, { useCallback } from "react";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -14,7 +8,7 @@ import Animated, {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const Button = ({ currentIndex, length, setFeatureVisible, flatListRef }) => {
+const Button = ({ currentIndex, length, flatListRef }) => {
   const rnBtnStyle = useAnimatedStyle(() => {
     return {
       width:
@@ -51,7 +45,6 @@ const Button = ({ currentIndex, length, setFeatureVisible, flatListRef }) => {
 
   const onPress = useCallback(() => {
     if (currentIndex.value === length - 1) {
-      return;
     } else {
       flatListRef?.current?.scrollToIndex({
         index: currentIndex.value + 1,

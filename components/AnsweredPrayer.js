@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch } from "react-redux";
+
 import { AntDesign, Feather } from "@expo/vector-icons";
+
 import {
   addNoteToPrayer,
   removeAnsweredPrayer,
 } from "../redux/answeredReducer";
-import { useState } from "react";
 import { AnswerInput } from "../styles/appStyles";
-import { useDispatch } from "react-redux";
 
 const AnsweredPrayer = ({ item, index, theme }) => {
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
       addNoteToPrayer({
         id: prayerId,
         answerNote: answer,
-      })
+      }),
     );
     setOpenOptions(false);
     setAnswer("");
@@ -35,7 +37,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
         <Feather name="check-circle" size={22} color="#66b266" />
         <View
           style={
-            theme == "dark" ? styles.answeredPrayerDark : styles.answeredPrayer
+            theme === "dark" ? styles.answeredPrayerDark : styles.answeredPrayer
           }
         >
           <View
@@ -47,7 +49,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
           >
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontSize: 16,
                 fontFamily: "Inter-Bold",
                 width: "90%",
@@ -61,7 +63,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
               <AntDesign
                 name="close"
                 size={22}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={theme === "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
           </View>
@@ -77,7 +79,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
               {item.answerNoted && (
                 <Text
                   style={{
-                    color: theme == "dark" ? "#66b266" : "#00ab00",
+                    color: theme === "dark" ? "#66b266" : "#00ab00",
                     fontSize: 15,
                     fontFamily: "Inter-Regular",
                     width: "90%",
@@ -90,13 +92,13 @@ const AnsweredPrayer = ({ item, index, theme }) => {
             {!item.answerNoted && (
               <AnswerInput
                 onPressIn={() => InputPress(item.prayer.id)}
-                style={theme == "dark" ? styles.inputDark : styles.input}
+                style={theme === "dark" ? styles.inputDark : styles.input}
                 placeholder="How did God answer this prayer?"
-                placeholderTextColor={theme == "dark" ? "#c2c2c2" : "grey"}
-                selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+                placeholderTextColor={theme === "dark" ? "#c2c2c2" : "grey"}
+                selectionColor={theme === "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setAnswer(text)}
                 value={answer}
-                multiline={true}
+                multiline
               />
             )}
             {openOptions && (
@@ -117,7 +119,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
                   <AntDesign
                     name="close"
                     size={28}
-                    color={theme == "dark" ? "#121212" : "#2f2d51"}
+                    color={theme === "dark" ? "#121212" : "#2f2d51"}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -125,17 +127,17 @@ const AnsweredPrayer = ({ item, index, theme }) => {
                   style={[
                     styles.actionButton,
                     {
-                      backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+                      backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
                     },
                   ]}
                 >
-                  <AntDesign name="check" size={28} color={"white"} />
+                  <AntDesign name="check" size={28} color="white" />
                 </TouchableOpacity>
               </View>
             )}
           </View>
         </View>
-        <View></View>
+        <View />
       </View>
     </View>
   );

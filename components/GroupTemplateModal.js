@@ -1,23 +1,22 @@
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  resolveAssetSource,
 } from "react-native";
-import React, { useState } from "react";
-import { ModalContainer } from "../styles/appStyles";
+
 import biblestudy from "../assets/templates/biblestudy.png";
 import classmates from "../assets/templates/classmates.png";
-import general from "../assets/templates/general.png";
-import teens from "../assets/templates/teens.png";
 import couples from "../assets/templates/couples.png";
+import general from "../assets/templates/general.png";
 import kids from "../assets/templates/kids.png";
+import teens from "../assets/templates/teens.png";
 import work from "../assets/templates/work.png";
 import ya from "../assets/templates/ya.png";
+import { ModalContainer } from "../styles/appStyles";
 
 const GroupTemplateModal = ({
   theme,
@@ -100,13 +99,6 @@ const GroupTemplateModal = ({
       console.log("error: ", error.message);
     }
     setIsShowingGroupTemplates(false);
-    // let { error: uploadError } = await supabase.storage
-    //   .from("group")
-    //   .upload(filePath, formData);
-
-    // if (uploadError) {
-    //   throw uploadError;
-    // }
 
     const { data: imageData, error: getUrlError } = await supabase.storage
       .from("group")
@@ -116,7 +108,7 @@ const GroupTemplateModal = ({
       throw getUrlError;
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("groups")
       .update({
         group_img: imageData.signedUrl,
@@ -129,21 +121,21 @@ const GroupTemplateModal = ({
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={isShowingGroupTemplates}
       onRequestClose={() => setIsShowingGroupTemplates(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   borderRadius: 10,
                   position: "relative",
@@ -168,7 +160,7 @@ const GroupTemplateModal = ({
           <FlatList
             data={templates}
             numColumns={2}
-            keyExtractor={(e, i) => i.toString()}
+            keyExtractor={(i) => i.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
@@ -178,16 +170,16 @@ const GroupTemplateModal = ({
                 style={{
                   flex: 1,
                   padding: 10,
-                  backgroundColor: theme == "dark" ? "#121212" : "white",
+                  backgroundColor: theme === "dark" ? "#121212" : "white",
                   borderWidth: 2,
                   borderColor:
-                    theme == "dark"
+                    theme === "dark"
                       ? selectedImg === item.image
                         ? "#a5c9ff"
                         : "#121212"
                       : selectedImg === item.image
-                      ? "#2f2d51"
-                      : "white",
+                        ? "#2f2d51"
+                        : "white",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 10,
@@ -200,7 +192,7 @@ const GroupTemplateModal = ({
                 />
                 <Text
                   style={{
-                    color: theme == "dark" ? "white" : "#2f2d51",
+                    color: theme === "dark" ? "white" : "#2f2d51",
                     fontFamily: "Inter-Medium",
                   }}
                 >
@@ -223,7 +215,7 @@ const GroupTemplateModal = ({
               }}
               style={{
                 width: "48%",
-                backgroundColor: theme == "dark" ? "#121212" : "white",
+                backgroundColor: theme === "dark" ? "#121212" : "white",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
@@ -232,7 +224,7 @@ const GroupTemplateModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Bold",
                 }}
               >
@@ -243,7 +235,7 @@ const GroupTemplateModal = ({
               onPress={selectImage}
               style={{
                 width: "48%",
-                backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
                 padding: 15,
                 borderRadius: 10,
                 justifyContent: "center",
@@ -252,7 +244,7 @@ const GroupTemplateModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "#212121" : "white",
+                  color: theme === "dark" ? "#212121" : "white",
                   fontFamily: "Inter-Bold",
                 }}
               >
@@ -267,5 +259,3 @@ const GroupTemplateModal = ({
 };
 
 export default GroupTemplateModal;
-
-const styles = StyleSheet.create({});

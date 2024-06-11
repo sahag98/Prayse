@@ -1,33 +1,27 @@
+import React from "react";
 import {
-  Image,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import React from "react";
-import { ModalContainer, ReactionModalContainer } from "../styles/appStyles";
+
 import { AntDesign } from "@expo/vector-icons";
-import ChatBubble from "react-native-chat-bubble";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-} from "react-native-reanimated";
+
 const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={tooltipVisible}
       onRequestClose={() => setTooltipVisible(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <TouchableWithoutFeedback onPress={() => setTooltipVisible(false)}>
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   padding: 30,
                   alignItems: "center",
@@ -46,7 +40,7 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
         >
           <View
             style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#93d8f8",
+              backgroundColor: theme === "dark" ? "#212121" : "#93d8f8",
               width: "100%",
               padding: 15,
               borderRadius: 10,
@@ -55,7 +49,7 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
           >
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontSize: 18,
                 textAlign: "center",
                 fontFamily: "Inter-Bold",
@@ -71,7 +65,7 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
             </TouchableOpacity>
             <Text
               style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
                 fontFamily: "Inter-Regular",
               }}
             >
@@ -85,5 +79,3 @@ const ToolTip = ({ tooltipVisible, setTooltipVisible, theme }) => {
 };
 
 export default ToolTip;
-
-const styles = StyleSheet.create({});

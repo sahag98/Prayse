@@ -1,15 +1,17 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userReducer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
-import folderReducer from "./folderReducer";
-import prayerReducer from "./prayerReducer";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+
 import answeredReducer from "./answeredReducer";
 import favoritesReducer from "./favoritesReducer";
-import notiReducer from "./notiReducer";
-import remindersReducer from "./remindersReducer";
+import folderReducer from "./folderReducer";
 import messageReducer from "./messageReducer";
+import notiReducer from "./notiReducer";
+import prayerReducer from "./prayerReducer";
+import remindersReducer from "./remindersReducer";
+import userReducer from "./userReducer";
 
 const reducers = combineReducers({
   user: userReducer,

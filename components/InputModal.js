@@ -1,33 +1,33 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useFonts } from "expo-font";
 import {
-  KeyboardAvoidingView,
-  Keyboard,
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  Platform,
   ActivityIndicator,
-  Button,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
+import { SelectList } from "react-native-dropdown-select-list";
+import { AnimatedFAB } from "react-native-paper";
+import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign } from "@expo/vector-icons";
+
+import { addPrayer, editPrayer } from "../redux/prayerReducer";
 import {
-  ModalContainer,
-  ModalView,
-  StyledInput,
+  HeaderTitle,
   ModalAction,
   ModalActionGroup,
+  ModalContainer,
   ModalIcon,
-  HeaderTitle,
+  ModalView,
+  StyledInput,
 } from "../styles/appStyles";
-import { SelectList } from "react-native-dropdown-select-list";
-import { AntDesign } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
-import uuid from "react-native-uuid";
-import { AnimatedFAB } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
-import { addPrayer, editPrayer } from "../redux/prayerReducer";
-import { useEffect } from "react";
 
 const InputModal = ({
   categoryValue,
@@ -70,7 +70,7 @@ const InputModal = ({
     setCategoryValue("");
   };
   const dispatch = useDispatch();
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
   });
@@ -102,8 +102,6 @@ const InputModal = ({
     },
   ];
 
-  const [selected, setSelected] = useState("");
-
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
       setInputHeight(60);
@@ -121,7 +119,7 @@ const InputModal = ({
   };
 
   const handleSubmit = () => {
-    if (prayerValue.length == 0) {
+    if (prayerValue.length === 0) {
       alert("Type in a prayer and try again.");
       return;
     }
@@ -130,22 +128,22 @@ const InputModal = ({
         addPrayer({
           prayer: prayerValue,
           folder: folderName,
-          folderId: folderId,
+          folderId,
           category: categoryValue,
           date: new Date().toLocaleString(),
           id: uuid.v4(),
-        })
+        }),
       );
     } else {
       dispatch(
         editPrayer({
           prayer: prayerValue,
           folder: folderName,
-          folderId: folderId,
+          folderId,
           category: categoryValue,
           date: prayertoBeEdited.date,
           id: prayertoBeEdited.id,
-        })
+        }),
       );
       setIsEditing(false);
       setCategorytoBeEdited(null);
@@ -165,24 +163,24 @@ const InputModal = ({
     <View style={{ position: "relative", flex: 1 }}>
       <View style={styles.actionButtons}>
         <AnimatedFAB
-          icon={"plus"}
-          label={"Add prayer"}
+          icon="plus"
+          label="Add prayer"
           extended={isExtended}
           onPress={() => {
             setModalVisible(true);
             setTaskName("Add");
           }}
           visible={visible}
-          animateFrom={"left"}
-          iconMode={"dynamic"}
-          color={theme == "dark" ? "#121212" : "white"}
-          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
+          animateFrom="left"
+          iconMode="dynamic"
+          color={theme === "dark" ? "#121212" : "white"}
+          style={theme === "dark" ? styles.fabStyleDark : styles.fabStyle}
         />
       </View>
 
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={modalVisible}
         onRequestClose={handleCloseModal}
       >
@@ -192,14 +190,14 @@ const InputModal = ({
         >
           <ModalContainer
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#121212" }
                 : { backgroundColor: "#F2F7FF" }
             }
           >
             <ModalView
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { backgroundColor: "#212121" }
                   : { backgroundColor: "#b7d3ff" }
               }
@@ -210,7 +208,7 @@ const InputModal = ({
                 >
                   <HeaderTitle
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { fontFamily: "Inter-Bold", color: "white" }
                         : { fontFamily: "Inter-Bold" }
                     }
@@ -220,13 +218,13 @@ const InputModal = ({
                   <AntDesign
                     name="edit"
                     size={24}
-                    color={theme == "dark" ? "white" : "#2F2D51"}
+                    color={theme === "dark" ? "white" : "#2F2D51"}
                   />
                 </View>
               </ModalIcon>
               <StyledInput
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         height: inputHeight < 60 ? 60 : inputHeight,
                         marginTop: 10,
@@ -245,16 +243,16 @@ const InputModal = ({
                       }
                 }
                 placeholder="Add a prayer"
-                placeholderTextColor={"#e0e0e0"}
-                selectionColor={"white"}
-                autoFocus={true}
+                placeholderTextColor="#e0e0e0"
+                selectionColor="white"
+                autoFocus
                 onChangeText={(text) => setPrayerValue(text)}
                 value={prayerValue}
                 onContentSizeChange={handleContentSizeChange}
                 onSubmitEditing={(e) => {
                   e.key === "Enter" && e.preventDefault();
                 }}
-                multiline={true}
+                multiline
               />
               <TouchableOpacity
                 style={styles.dismiss}
@@ -270,7 +268,9 @@ const InputModal = ({
                   Dismiss Keyboard
                 </Text>
               </TouchableOpacity>
-              <Text style={theme == "dark" ? styles.selectDark : styles.select}>
+              <Text
+                style={theme === "dark" ? styles.selectDark : styles.select}
+              >
                 Select a Category (optional):
               </Text>
               <SelectList
@@ -284,10 +284,10 @@ const InputModal = ({
                     : { key: "None", value: "None" }
                 }
                 boxStyles={
-                  theme == "dark" ? styles.categoryDark : styles.category
+                  theme === "dark" ? styles.categoryDark : styles.category
                 }
                 dropdownStyles={
-                  theme == "dark" ? styles.dropdownDark : styles.dropdown
+                  theme === "dark" ? styles.dropdownDark : styles.dropdown
                 }
                 dropdownTextStyles={styles.dropdownTextDark}
                 inputStyles={styles.inputText}
@@ -295,18 +295,18 @@ const InputModal = ({
                 maxHeight="250"
               />
               <ModalActionGroup>
-                <ModalAction color={"white"} onPress={handleCloseModal}>
+                <ModalAction color="white" onPress={handleCloseModal}>
                   <AntDesign
                     name="close"
                     size={28}
-                    color={theme == "dark" ? "#121212" : "#2F2D51"}
+                    color={theme === "dark" ? "#121212" : "#2F2D51"}
                   />
                 </ModalAction>
                 <ModalAction
-                  color={theme == "dark" ? "#121212" : "#2F2D51"}
+                  color={theme === "dark" ? "#121212" : "#2F2D51"}
                   onPress={handleSubmit}
                 >
-                  <AntDesign name="check" size={28} color={"white"} />
+                  <AntDesign name="check" size={28} color="white" />
                 </ModalAction>
               </ModalActionGroup>
             </ModalView>

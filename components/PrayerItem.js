@@ -1,29 +1,28 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Image } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-// import prayerIcon from "../assets/prayIcon.png";
-import { format } from "timeago.js";
-import { useSupabase } from "../context/useSupabase";
-import Moment from "moment";
-import { useSelector } from "react-redux";
-import CommentModal from "./CommentModal";
 import axios from "axios";
+import Moment from "moment";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSequence,
   withSpring,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
-const PrayerItem = ({ getPrayers, prayers, session, item }) => {
+// import prayerIcon from "../assets/prayIcon.png";
+import { FontAwesome } from "@expo/vector-icons";
+
+import { useSupabase } from "../context/useSupabase";
+
+import CommentModal from "./CommentModal";
+
+const PrayerItem = ({ prayers, session, item }) => {
   const theme = useSelector((state) => state.user.theme);
   const scale = useSharedValue(1);
   const [commentVisible, setCommentVisible] = useState(false);
   const {
     currentUser,
-    logout,
     supabase,
     refreshComments,
     setRefreshComments,
@@ -86,7 +85,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
     const message = {
       to: expoToken,
       sound: "default",
-      title: title,
+      title,
       body: `${currentUser.full_name} is praying on: ${item.prayer}.`,
       data: { screen: "Community" },
     };
@@ -104,9 +103,9 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
+        withSpring(1, { damping: 2, stiffness: 80 }),
       );
-      const { data, error } = await supabase
+      await supabase
         .from("likes")
         .delete()
         .eq("prayer_id", id)
@@ -116,11 +115,11 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
     }
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
+      withSpring(1, { damping: 2, stiffness: 80 }),
     );
     //prayer_id for production
     //prayertest_id for testing
-    const { data, error } = await supabase.from("likes").insert({
+    const { error } = await supabase.from("likes").insert({
       prayer_id: id,
       user_id: currentUser.id,
     });
@@ -143,7 +142,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
     >
       <View
         style={
-          theme == "dark" ? styles.prayerContainerDark : styles.prayerContainer
+          theme === "dark" ? styles.prayerContainerDark : styles.prayerContainer
         }
       >
         <View
@@ -156,7 +155,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Image
               style={
-                theme == "dark" ? styles.profileImgDark : styles.profileImg
+                theme === "dark" ? styles.profileImgDark : styles.profileImg
               }
               source={{
                 uri: item.profiles?.avatar_url
@@ -166,7 +165,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
             />
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 15, color: "white" }
                   : { fontFamily: "Inter-Bold", fontSize: 15, color: "#2f2d51" }
               }
@@ -176,14 +175,14 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
             {item.profiles?.admin == true && (
               <View
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { borderRadius: 10, backgroundColor: "#ff4e4e" }
                     : { borderRadius: 10, backgroundColor: "#ff3b3b" }
                 }
               >
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           paddingVertical: 3,
                           paddingHorizontal: 6,
@@ -208,7 +207,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
           </View>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#d6d6d6",
                     fontFamily: "Inter-Light",
@@ -227,7 +226,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
 
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   marginTop: 5,
                   marginLeft: 5,
@@ -285,17 +284,17 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                         fontFamily: "Inter-Medium",
                         fontSize: 15,
                       }
-                    : theme == "dark"
-                    ? {
-                        color: "white",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                      }
+                    : theme === "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
                 }
               >
                 {likes.length}
@@ -304,9 +303,9 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                 style={
                   isLikedByMe
                     ? { width: 28, height: 28, tintColor: "#ff4e4e" }
-                    : theme == "dark"
-                    ? { width: 28, height: 28, tintColor: "white" }
-                    : { width: 28, height: 28, tintColor: "#2f2d51" }
+                    : theme === "dark"
+                      ? { width: 28, height: 28, tintColor: "white" }
+                      : { width: 28, height: 28, tintColor: "#2f2d51" }
                 }
                 source={{
                   uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -323,17 +322,17 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                         fontFamily: "Inter-Medium",
                         fontSize: 15,
                       }
-                    : theme == "dark"
-                    ? {
-                        color: "white",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                      }
+                    : theme === "dark"
+                      ? {
+                          color: "white",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
+                      : {
+                          color: "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 15,
+                        }
                 }
               >
                 {likes.length}
@@ -343,9 +342,9 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                   style={
                     isLikedByMe
                       ? { width: 28, height: 28, tintColor: "#ff4e4e" }
-                      : theme == "dark"
-                      ? { width: 28, height: 28, tintColor: "white" }
-                      : { width: 28, height: 28, tintColor: "#2f2d51" }
+                      : theme === "dark"
+                        ? { width: 28, height: 28, tintColor: "white" }
+                        : { width: 28, height: 28, tintColor: "#2f2d51" }
                   }
                   source={{
                     uri: "https://cdn.glitch.global/1948cbef-f54d-41c2-acf7-6548a208aa97/Black%20and%20White%20Rectangle%20Sports%20Logo%20(1).png?v=1698692894367",
@@ -365,13 +364,13 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
               <FontAwesome
                 name="comment-o"
                 size={28}
-                color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
+                color={theme === "dark" ? "#2f2f2f" : "#c6c6df"}
               />
             ) : (
               <FontAwesome
                 name="comment-o"
                 size={28}
-                color={theme == "dark" ? "#2f2f2f" : "#c6c6df"}
+                color={theme === "dark" ? "#2f2f2f" : "#c6c6df"}
               />
             )}
           </TouchableOpacity>
@@ -384,7 +383,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
               <>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontSize: 15,
                           fontFamily: "Inter-Medium",
@@ -402,14 +401,14 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                 <FontAwesome
                   name="comment-o"
                   size={28}
-                  color={theme == "dark" ? "#d6d6d6" : "#c6c6df"}
+                  color={theme === "dark" ? "#d6d6d6" : "#c6c6df"}
                 />
               </>
             ) : (
               <>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontSize: 15,
                           fontFamily: "Inter-Medium",
@@ -428,7 +427,7 @@ const PrayerItem = ({ getPrayers, prayers, session, item }) => {
                 <FontAwesome
                   name="comment-o"
                   size={28}
-                  color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                  color={theme === "dark" ? "#d6d6d6" : "#2f2d51"}
                 />
               </>
             )}

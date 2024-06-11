@@ -1,3 +1,4 @@
+import React from "react";
 import {
   FlatList,
   StyleSheet,
@@ -5,13 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { Container } from "../styles/appStyles";
-import { Divider } from "react-native-paper";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
+import { Container } from "../styles/appStyles";
 const Notifications = ({ navigation }) => {
   const dispatch = useDispatch();
   const notis = useSelector((state) => state.noti.notifications);

@@ -1,7 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { AntDesign } from "@expo/vector-icons";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+
+import { AntDesign } from "@expo/vector-icons";
+
 import { deleteFavoriteVerse } from "../redux/favoritesReducer";
 
 const FavoriteVerses = ({ item, theme }) => {
@@ -9,11 +11,11 @@ const FavoriteVerses = ({ item, theme }) => {
 
   const dateObject = new Date(item?._updatedAt);
   return (
-    <View style={theme == "dark" ? styles.fvDark : styles.fv} key={item.id}>
+    <View style={theme === "dark" ? styles.fvDark : styles.fv} key={item.id}>
       <View style={{ width: "100%" }}>
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "white",
                   fontSize: 15,
@@ -30,12 +32,12 @@ const FavoriteVerses = ({ item, theme }) => {
         >
           {dateObject?.toDateString()}
         </Text>
-        <Text style={theme == "dark" ? styles.fvVerseDark : styles.fvVerse}>
+        <Text style={theme === "dark" ? styles.fvVerseDark : styles.fvVerse}>
           {item.verse}
         </Text>
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "white",
                   fontSize: 15,
@@ -54,7 +56,7 @@ const FavoriteVerses = ({ item, theme }) => {
         </Text>
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? [
                   styles.fvVerseDark,
                   { textAlign: "right", fontFamily: "Inter-Medium" },

@@ -1,7 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useSupabase } from "../context/useSupabase";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
+
+import { useSupabase } from "../context/useSupabase";
 
 const QuestionItem = ({ theme, question }) => {
   const [answersArray, setAnswersArray] = useState([]);
@@ -26,7 +28,7 @@ const QuestionItem = ({ theme, question }) => {
 
   function convertDigitIn(str) {
     if (str) {
-      let newStr = str.replace(/-/g, "/");
+      const newStr = str.replace(/-/g, "/");
       return newStr.split("/").reverse().join("/");
     }
   }
@@ -45,7 +47,7 @@ const QuestionItem = ({ theme, question }) => {
           gap: 10,
         }}
       >
-        <Text style={theme == "dark" ? styles.titleDark : styles.title}>
+        <Text style={theme === "dark" ? styles.titleDark : styles.title}>
           {question.title}
         </Text>
         <View
@@ -57,7 +59,7 @@ const QuestionItem = ({ theme, question }) => {
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
@@ -79,7 +81,7 @@ const QuestionItem = ({ theme, question }) => {
           </Text>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#d6d6d6",
                     backgroundColor: "#212121",
@@ -103,17 +105,15 @@ const QuestionItem = ({ theme, question }) => {
           </Text>
         </View>
       </View>
-      <View style={{}}>
-        <TouchableOpacity
-          style={{
-            padding: 15,
-            backgroundColor: "#212121",
-            borderRadius: 50,
-          }}
-        >
-          <AntDesign name="arrowright" size={24} color="#A5C9FF" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={{
+          padding: 15,
+          backgroundColor: "#212121",
+          borderRadius: 50,
+        }}
+      >
+        <AntDesign name="arrowright" size={24} color="#A5C9FF" />
+      </TouchableOpacity>
     </View>
   );
 };

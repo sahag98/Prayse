@@ -1,6 +1,12 @@
-import { Linking, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
 
 const SettingsItems = ({ options, theme, navigation }) => {
@@ -11,14 +17,14 @@ const SettingsItems = ({ options, theme, navigation }) => {
           <TouchableOpacity
             key={option.id}
             onPress={() => Linking.openURL(option.link)}
-            style={theme == "dark" ? styles.verseDark : styles.verse}
+            style={theme === "dark" ? styles.verseDark : styles.verse}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {option.icon}
 
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Medium",
                         color: "#dbdbdb",
@@ -38,20 +44,20 @@ const SettingsItems = ({ options, theme, navigation }) => {
               style={{ marginLeft: 10 }}
               name="right"
               size={14}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme === "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             key={option.id}
             onPress={() => navigation.navigate(option.screen)}
-            style={theme == "dark" ? styles.verseDark : styles.verse}
+            style={theme === "dark" ? styles.verseDark : styles.verse}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {option.icon}
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Medium",
                         color: "#dbdbdb",
@@ -71,10 +77,10 @@ const SettingsItems = ({ options, theme, navigation }) => {
               style={{ marginLeft: 10 }}
               name="right"
               size={14}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme === "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
-        )
+        ),
       )}
     </>
   );

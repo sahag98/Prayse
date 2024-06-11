@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Image,
   Linking,
@@ -7,15 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import merch from "../assets/merch.png";
+
 import { AntDesign } from "@expo/vector-icons";
+
+import merch from "../assets/merch.png";
 <AntDesign name="rightcircleo" size={24} color="black" />;
 const MerchComponent = ({ theme }) => {
   return (
     <View
       style={
-        theme == "dark" ? styles.merchContainerDark : styles.merchContainer
+        theme === "dark" ? styles.merchContainerDark : styles.merchContainer
       }
     >
       <View
@@ -40,7 +42,7 @@ const MerchComponent = ({ theme }) => {
         >
           <Text
             style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
+              color: theme === "dark" ? "white" : "#2f2d51",
               fontFamily: "Inter-Bold",
               fontSize: 18,
             }}
@@ -49,7 +51,7 @@ const MerchComponent = ({ theme }) => {
           </Text>
           <Text
             style={{
-              color: theme == "dark" ? "#bebebe" : "#2f2d51",
+              color: theme === "dark" ? "#bebebe" : "#2f2d51",
               fontFamily: "Inter-Regular",
               marginBottom: 10,
             }}
@@ -60,7 +62,7 @@ const MerchComponent = ({ theme }) => {
           <TouchableOpacity
             onPress={() => Linking.openURL("https://shop.prayse.app/")}
             style={{
-              backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+              backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
@@ -72,7 +74,7 @@ const MerchComponent = ({ theme }) => {
           >
             <Text
               style={{
-                color: theme == "dark" ? "#121212" : "white",
+                color: theme === "dark" ? "#121212" : "white",
                 fontFamily: "Inter-Bold",
                 fontSize: 15,
               }}
@@ -82,7 +84,7 @@ const MerchComponent = ({ theme }) => {
             <AntDesign
               name="shoppingcart"
               size={22}
-              color={theme == "dark" ? "#121212" : "white"}
+              color={theme === "dark" ? "#121212" : "white"}
             />
           </TouchableOpacity>
         </View>

@@ -1,27 +1,15 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Modal,
-} from "react-native";
+import { Modal, Text, View } from "react-native";
+
+import { AntDesign, Feather } from "@expo/vector-icons";
+
 import {
   HeaderTitle,
-  HeaderView,
   ModalAction,
   ModalActionGroup,
   ModalContainer,
   ModalIcon,
   ModalView,
-  StyledInput,
 } from "../styles/appStyles";
-import axios from "axios";
-import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
-import { Feather } from "@expo/vector-icons";
 const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
   const handleCloseModal = () => {
     setCheckInbox(false);
@@ -30,21 +18,21 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={checkInbox}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
         }
       >
         <ModalView
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "#212121", width: "100%" }
               : { backgroundColor: "#b7d3ff", width: "100%" }
           }
@@ -55,7 +43,7 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
             >
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { fontFamily: "Inter-Bold", color: "white" }
                     : { fontFamily: "Inter-Bold" }
                 }
@@ -67,7 +55,7 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
           </ModalIcon>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
@@ -85,10 +73,10 @@ const CheckInboxModal = ({ theme, checkInbox, setCheckInbox }) => {
           </Text>
           <ModalActionGroup>
             <ModalAction
-              color={theme == "dark" ? "#121212" : "#2F2D51"}
+              color={theme === "dark" ? "#121212" : "#2F2D51"}
               onPress={handleCloseModal}
             >
-              <AntDesign name="check" size={28} color={"white"} />
+              <AntDesign name="check" size={28} color="white" />
             </ModalAction>
           </ModalActionGroup>
         </ModalView>

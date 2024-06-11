@@ -1,11 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
-import { Container, HeaderTitle } from "../styles/appStyles";
-import { TouchableOpacity } from "react-native";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import { FlatList } from "react-native";
+
+import { Ionicons } from "@expo/vector-icons";
+
 import FavoriteVerses from "../components/FavoriteVerses";
+import { Container, HeaderTitle } from "../styles/appStyles";
 
 const Favorites = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
