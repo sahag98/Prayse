@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 const initialState = {
   prayer: [],
@@ -12,12 +11,12 @@ export const prayerSlice = createSlice({
     clearPrayerData: (state) => {
       state.prayer = [];
     },
-    deleteFavorites: (state, action) => {
+    deleteFavorites: (state) => {
       state.favoriteVerses = [];
     },
     deleteFavoriteVerse: (state, action) => {
       state.favoriteVerses = state.favoriteVerses.filter(
-        (verse) => verse.id !== action.payload
+        (verse) => verse.id !== action.payload,
       );
     },
     addPrayer: (state, action) => {
@@ -28,23 +27,23 @@ export const prayerSlice = createSlice({
       state.answeredPrayers = state.answeredPrayers.map((obj) =>
         obj.id === action.payload.id
           ? { ...obj, answerNoted: action.payload.answerNote }
-          : obj
+          : obj,
       );
     },
     deletePrayer: (state, action) => {
       state.prayer = state.prayer.filter(
-        (prayer) => prayer.id !== action.payload
+        (prayer) => prayer.id !== action.payload,
       );
     },
     deletePrayerByFolderId: (state, action) => {
       state.prayer = state.prayer.filter(
-        (prayer) => prayer.folderId !== action.payload
+        (prayer) => prayer.folderId !== action.payload,
       );
     },
     editPrayer: (state, action) => {
       const newPrayers = [...state.prayer];
       const prayerIndex = state.prayer.findIndex(
-        (prayer) => prayer.id === action.payload.id
+        (prayer) => prayer.id === action.payload.id,
       );
       newPrayers.splice(prayerIndex, 1, action.payload);
       state.prayer = newPrayers;

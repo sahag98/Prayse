@@ -1,23 +1,25 @@
 import React, { useRef } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Share,
+  Alert,
   Animated,
   PanResponder,
+  Share,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { Feather, AntDesign } from "@expo/vector-icons";
 import { Divider } from "react-native-paper";
+import uuid from "react-native-uuid";
+import { useDispatch } from "react-redux";
+
+import { AntDesign, Feather } from "@expo/vector-icons";
+
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
-import { useDispatch } from "react-redux";
-import uuid from "react-native-uuid";
 
 const BottomBox = ({
   slideUpValue,
-  isEditing,
   setIsEditing,
   setLoading,
   handleTriggerEdit,
@@ -41,9 +43,9 @@ const BottomBox = ({
     dispatch(
       addToAnsweredPrayer({
         answeredDate: new Date().toDateString(),
-        prayer: prayer,
+        prayer,
         id: uuid.v4(),
-      })
+      }),
     );
     setLoading(true);
     setIsBoxVisible(false);
@@ -103,14 +105,14 @@ const BottomBox = ({
           }).start();
         }
       },
-    })
+    }),
   ).current;
 
   return (
     <View style={styles.container}>
       <Animated.View
         style={
-          theme == "dark"
+          theme === "dark"
             ? [
                 styles.boxDark,
                 {
@@ -143,16 +145,16 @@ const BottomBox = ({
             borderRadius: 50,
             marginBottom: 10,
           }}
-        ></TouchableOpacity>
+        />
         {answeredAlready === selectedEdit.id ? (
           <TouchableOpacity
-            disabled={true}
-            underlayColor={"#212121"}
+            disabled
+            underlayColor="#212121"
             style={styles.buttonItems}
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#66b266",
                       fontSize: 15,
@@ -176,7 +178,7 @@ const BottomBox = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#66b266",
                       fontSize: 15,
@@ -213,7 +215,7 @@ const BottomBox = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "#A5C9FF", fontSize: 15, fontFamily: "Inter-Medium" }
                 : { color: "#6B7EFF", fontSize: 15, fontFamily: "Inter-Medium" }
             }
@@ -223,7 +225,7 @@ const BottomBox = ({
           <Feather
             name="edit"
             size={22}
-            color={theme == "dark" ? "#A5C9FF" : "#6B7EFF"}
+            color={theme === "dark" ? "#A5C9FF" : "#6B7EFF"}
           />
         </TouchableOpacity>
         <Divider style={{ marginVertical: 5, backgroundColor: "grey" }} />
@@ -233,7 +235,7 @@ const BottomBox = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "#ff6666", fontSize: 15, fontFamily: "Inter-Medium" }
                 : { color: "#ff6262", fontSize: 15, fontFamily: "Inter-Medium" }
             }
@@ -243,7 +245,7 @@ const BottomBox = ({
           <AntDesign
             name="close"
             size={23}
-            color={theme == "dark" ? "#ff6666" : "#ff6262"}
+            color={theme === "dark" ? "#ff6666" : "#ff6262"}
           />
         </TouchableOpacity>
       </Animated.View>

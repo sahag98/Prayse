@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Image,
   Linking,
@@ -8,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+
 import { HeaderTitle } from "../styles/appStyles";
 
 const DevoItem = ({
@@ -17,12 +18,10 @@ const DevoItem = ({
   tbf,
   currentUser,
   refresh,
-  channel,
   setChannel,
   fetchLikes,
   fetchReflections,
   loadDevotionals,
-  convertDigitIn,
   supabase,
   theme,
   refreshReflections,
@@ -30,12 +29,6 @@ const DevoItem = ({
   useEffect(() => {
     fetchLikes(devo.title);
     fetchReflections(devo.title);
-    // setTimeout(() => {
-    //   setIsShowingHeader(false);
-    // }, 5000);
-    /** only create the channel if we have a roomCode and username */
-
-    // dispatch(clearMessages());
     /**
      * Step 1:
      *
@@ -93,9 +86,9 @@ const DevoItem = ({
   }, [currentUser?.id, devo.title, refreshReflections, isFocused]);
 
   function switchDateFormat(dateString) {
-    let dateParts = dateString.split("-");
+    const dateParts = dateString.split("-");
 
-    let formattedDate = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
+    const formattedDate = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
 
     return formattedDate;
   }
@@ -112,7 +105,7 @@ const DevoItem = ({
     >
       <HeaderTitle
         style={
-          theme == "dark"
+          theme === "dark"
             ? {
                 fontFamily: "Inter-Black",
                 marginTop: 0,
@@ -134,7 +127,7 @@ const DevoItem = ({
         {devo.title}
       </HeaderTitle>
       <Text
-        style={theme == "dark" ? styles.descriptionDark : styles.description}
+        style={theme === "dark" ? styles.descriptionDark : styles.description}
       >
         {devo.description}
       </Text>
@@ -143,7 +136,7 @@ const DevoItem = ({
         <TouchableOpacity
           onPress={() =>
             Linking.openURL(
-              "https://triedbyfire.substack.com?utm_source=navbar&utm_medium=web"
+              "https://triedbyfire.substack.com?utm_source=navbar&utm_medium=web",
             )
           }
           style={{
@@ -155,12 +148,12 @@ const DevoItem = ({
           }}
         >
           <View style={{ gap: 2 }}>
-            <Text style={theme == "dark" ? styles.ownerDark : styles.owner}>
+            <Text style={theme === "dark" ? styles.ownerDark : styles.owner}>
               TRIED BY FIRE
             </Text>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#d6d6d6",
                       fontSize: 13,
@@ -180,7 +173,7 @@ const DevoItem = ({
         </TouchableOpacity>
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   marginTop: 5,
                   marginBottom: 10,
@@ -199,7 +192,7 @@ const DevoItem = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#efefef",
                     marginLeft: 3,
@@ -221,10 +214,10 @@ const DevoItem = ({
         </View>
       </View>
 
-      <Text style={theme == "dark" ? styles.dayDark : styles.day}>
+      <Text style={theme === "dark" ? styles.dayDark : styles.day}>
         {devo.day}
       </Text>
-      <Text style={theme == "dark" ? styles.contentDark : styles.content}>
+      <Text style={theme === "dark" ? styles.contentDark : styles.content}>
         {devo.content}
       </Text>
     </ScrollView>

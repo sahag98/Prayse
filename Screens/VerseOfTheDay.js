@@ -1,15 +1,21 @@
-import { StyleSheet, Text, Share, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Container, HeaderTitle } from "../styles/appStyles";
-import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites, deleteFavorites } from "../redux/favoritesReducer";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import uuid from "react-native-uuid";
 import * as Speech from "expo-speech";
+import {
+  ActivityIndicator,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+
 import { client } from "../lib/client";
-import { ActivityIndicator } from "react-native";
+import { addToFavorites } from "../redux/favoritesReducer";
+import { Container, HeaderTitle } from "../styles/appStyles";
 
 const VerseOfTheDay = ({ route }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -65,7 +71,7 @@ const VerseOfTheDay = ({ route }) => {
     dispatch(
       addToFavorites({
         verse,
-      })
+      }),
     );
   };
 
@@ -264,7 +270,7 @@ const VerseOfTheDay = ({ route }) => {
             </TouchableOpacity>
             {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
               <TouchableOpacity
-                disabled={true}
+                disabled
                 style={{
                   flexDirection: "row",
                   width: "33.33%",

@@ -1,14 +1,16 @@
+import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+
+import { AntDesign } from "@expo/vector-icons";
+
 import {
   HeaderTitle,
   ModalAction,
@@ -18,7 +20,6 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { AntDesign } from "@expo/vector-icons";
 const GroupPrayerModal = ({
   theme,
   supabase,
@@ -46,7 +47,7 @@ const GroupPrayerModal = ({
 
   async function handleSubmit() {
     console.log(currGroup.id, prayerValue, currentUser?.id);
-    const { data, error } = await supabase.from("group_prayers").insert({
+    const { error } = await supabase.from("group_prayers").insert({
       prayer: prayerValue,
       user_id: currentUser?.id,
       group_id: currGroup.group_id,
@@ -57,7 +58,7 @@ const GroupPrayerModal = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isShowingModal}
       onRequestClose={handleCloseModal}
     >
@@ -67,14 +68,14 @@ const GroupPrayerModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "#121212" }
               : { backgroundColor: "#F2F7FF" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#b7d3ff" }
             }
@@ -85,7 +86,7 @@ const GroupPrayerModal = ({
               >
                 <HeaderTitle
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? { fontFamily: "Inter-Bold", color: "white" }
                       : { fontFamily: "Inter-Bold" }
                   }
@@ -95,13 +96,13 @@ const GroupPrayerModal = ({
                 <AntDesign
                   name="edit"
                   size={24}
-                  color={theme == "dark" ? "white" : "#2F2D51"}
+                  color={theme === "dark" ? "white" : "#2F2D51"}
                 />
               </View>
             </ModalIcon>
             <StyledInput
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       height: inputHeight < 60 ? 60 : inputHeight,
                       marginTop: 10,
@@ -120,16 +121,16 @@ const GroupPrayerModal = ({
                     }
               }
               placeholder="Add a prayer"
-              placeholderTextColor={"#e0e0e0"}
-              selectionColor={"white"}
-              autoFocus={true}
+              placeholderTextColor="#e0e0e0"
+              selectionColor="white"
+              autoFocus
               onChangeText={(text) => setPrayerValue(text)}
               value={prayerValue}
               onContentSizeChange={handleContentSizeChange}
               onSubmitEditing={(e) => {
                 e.key === "Enter" && e.preventDefault();
               }}
-              multiline={true}
+              multiline
             />
             <TouchableOpacity onPress={() => Keyboard.dismiss()}>
               <Text
@@ -143,18 +144,18 @@ const GroupPrayerModal = ({
               </Text>
             </TouchableOpacity>
             <ModalActionGroup>
-              <ModalAction color={"white"} onPress={handleCloseModal}>
+              <ModalAction color="white" onPress={handleCloseModal}>
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme == "dark" ? "#121212" : "#2F2D51"}
+                  color={theme === "dark" ? "#121212" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={theme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={handleSubmit}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>
@@ -165,5 +166,3 @@ const GroupPrayerModal = ({
 };
 
 export default GroupPrayerModal;
-
-const styles = StyleSheet.create({});

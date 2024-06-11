@@ -1,35 +1,34 @@
+import React, { useEffect, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
+  Animated,
   FlatList,
   Image,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Modal, Animated } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import {
   AntDesign,
+  Entypo,
   Feather,
   Ionicons,
   MaterialCommunityIcons,
-  Entypo,
   MaterialIcons,
 } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
-
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
-
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import EditGroupModal from "./EditGroupModal";
 import { useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
 
 import groupBg from "../assets/group-bg.png";
+import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
+import EditGroupModal from "./EditGroupModal";
 import GroupTemplateModal from "./GroupTemplateModal";
 
 const GroupInfoMenu = ({
@@ -39,7 +38,6 @@ const GroupInfoMenu = ({
   handleRemoveConfirmation,
   userToEdit,
   setShowMenu,
-  setUserToEdit,
   onAnimationComplete,
 }) => {
   const [slideAnim] = useState(new Animated.Value(0));
@@ -99,7 +97,7 @@ const GroupInfoMenu = ({
             />
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontFamily: "Inter-Medium",
@@ -118,7 +116,7 @@ const GroupInfoMenu = ({
           <TouchableOpacity
             style={{
               borderRadius: 200,
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+              backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
               padding: 10,
             }}
             onPress={() => setShowMenu(false)}
@@ -126,13 +124,13 @@ const GroupInfoMenu = ({
             <AntDesign
               name="close"
               size={24}
-              color={theme == "dark" ? "white" : "white"}
+              color={theme === "dark" ? "white" : "white"}
             />
           </TouchableOpacity>
         </View>
-        {group.user_id == currentUser.id &&
-          group.is_admin == true &&
-          currentUser.id != userToEdit.id && (
+        {group.user_id === currentUser.id &&
+          group.is_admin === true &&
+          currentUser.id !== userToEdit.id && (
             <View
               style={{
                 backgroundColor: "#121212",
@@ -148,12 +146,12 @@ const GroupInfoMenu = ({
                   width: "100%",
                   paddingHorizontal: 15,
                 }}
-              ></View>
+              />
               <TouchableOpacity
                 style={{
                   paddingHorizontal: 15,
                   paddingVertical: 18,
-                  backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
                   borderRadius: 10,
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -211,13 +209,13 @@ const GroupInfoModal = ({
   };
 
   const removeUser = async (user) => {
-    let { data: groupMessages, error } = await supabase
+    await supabase
       .from("messages")
       .delete()
       .eq("group_id", group.group_id)
       .eq("user_id", user.id);
 
-    let { data, MemberError } = await supabase
+    await supabase
       .from("members")
       .delete()
       .eq("group_id", group.group_id)
@@ -232,12 +230,12 @@ const GroupInfoModal = ({
     setShowLeaveConfirmation(true);
   };
 
-  const handleRemoveConfirmation = (user) => {
+  const handleRemoveConfirmation = () => {
     setShowRemoveConfirmation(true);
   };
 
   const leaveGroup = async () => {
-    let { data, MemberError } = await supabase
+    await supabase
       .from("members")
       .delete()
       .eq("group_id", group.group_id)
@@ -267,7 +265,7 @@ const GroupInfoModal = ({
   };
 
   const deleteGroup = async () => {
-    let { data, error } = await supabase
+    const { error } = await supabase
       .from("groups")
       .delete()
       .eq("id", group.group_id)
@@ -295,7 +293,7 @@ const GroupInfoModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!"
+          "We need camera roll permissions to make this work!",
         );
       } else {
         pickImage();
@@ -305,7 +303,7 @@ const GroupInfoModal = ({
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -315,7 +313,7 @@ const GroupInfoModal = ({
     if (!result.canceled) {
       setGroupImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
+        result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -328,7 +326,7 @@ const GroupInfoModal = ({
         type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
       });
 
-      let { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("group")
         .upload(filePath, formData);
 
@@ -345,26 +343,23 @@ const GroupInfoModal = ({
         throw getUrlError;
       }
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("groups")
         .update({
           group_img: imageData.signedUrl,
         })
         .eq("id", group.group_id);
-      // navigation.navigate("Community");
-      // setGroupInfoVisible(false);
+
       if (error) {
         throw error;
       }
-      // getProfile();
-      // getPrayers();
     }
   };
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={groupInfoVisible}
       onRequestClose={handleCloseModal}
     >
@@ -432,10 +427,10 @@ const GroupInfoModal = ({
                     imgUrl
                       ? { uri: imgUrl }
                       : !imgUrl && !group.groups.group_img
-                      ? groupBg
-                      : {
-                          uri: group.groups.group_img,
-                        }
+                        ? groupBg
+                        : {
+                            uri: group.groups.group_img,
+                          }
                   }
                 />
                 <Text
@@ -582,10 +577,10 @@ const GroupInfoModal = ({
                     groupImage
                       ? groupImage
                       : !groupImage && !group.groups.group_img
-                      ? groupBg
-                      : {
-                          uri: group.groups.group_img,
-                        }
+                        ? groupBg
+                        : {
+                            uri: group.groups.group_img,
+                          }
                   }
                 />
               </View>
@@ -717,7 +712,7 @@ const GroupInfoModal = ({
                         onPress={() => handleEditUser(item.profiles)}
                         name="chevron-right"
                         size={24}
-                        color={theme == "dark" ? "white" : "#2f2d51"}
+                        color={theme === "dark" ? "white" : "#2f2d51"}
                       />
                       {/* <View
                         style={
@@ -817,11 +812,11 @@ const GroupInfoModal = ({
                 );
               }}
             />
-            {group.groups.admin_id != currentUser.id && (
+            {group.groups.admin_id !== currentUser.id && (
               <TouchableOpacity
                 onPress={handleLeaveConfirmation}
                 style={{
-                  backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
                   flexDirection: "row",
                   gap: 10,
                   justifyContent: "center",
@@ -837,34 +832,12 @@ const GroupInfoModal = ({
                 </Text>
               </TouchableOpacity>
             )}
-            {group.groups.admin_id == currentUser.id && (
+            {group.groups.admin_id === currentUser.id && (
               <>
-                {/* <TouchableOpacity
-                  onPress={handleDeleteConfirmation}
-                  style={{
-                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
-                    flexDirection: "row",
-                    gap: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: 8,
-                    marginBottom: 10,
-                    borderRadius: 10,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="delete-outline"
-                    size={36}
-                    color="white"
-                  />
-                  <Text style={{ color: "white", fontFamily: "Inter-Bold" }}>
-                    Announce Prayer Group Meeting
-                  </Text>
-                </TouchableOpacity> */}
                 <TouchableOpacity
                   onPress={handleDeleteConfirmation}
                   style={{
-                    backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+                    backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
                     flexDirection: "row",
                     gap: 10,
                     justifyContent: "center",
@@ -901,8 +874,6 @@ const GroupInfoModal = ({
         )}
         {showRemoveConfirmation && (
           <View
-            // entering={FadeIn.duration(500)}
-            // exiting={FadeOut.duration(500)}
             style={{
               flex: 1,
               justifyContent: "center",
@@ -917,7 +888,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",
@@ -926,7 +897,7 @@ const GroupInfoModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Regular",
                   fontSize: 15,
                 }}
@@ -958,7 +929,7 @@ const GroupInfoModal = ({
                     style={{
                       fontFamily: "Inter-Bold",
                       fontSize: 16,
-                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
                     }}
                   >
                     Confirm
@@ -970,8 +941,6 @@ const GroupInfoModal = ({
         )}
         {showLeaveConfirmation && (
           <View
-            // entering={FadeIn.duration(500)}
-            // exiting={FadeOut.duration(500)}
             style={{
               flex: 1,
               justifyContent: "center",
@@ -986,7 +955,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",
@@ -995,7 +964,7 @@ const GroupInfoModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Medium",
                   fontSize: 18,
                 }}
@@ -1028,7 +997,7 @@ const GroupInfoModal = ({
                     style={{
                       fontFamily: "Inter-Bold",
                       fontSize: 16,
-                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
                     }}
                   >
                     Confirm
@@ -1040,8 +1009,6 @@ const GroupInfoModal = ({
         )}
         {showConfirmation && (
           <View
-            // entering={FadeIn.duration(500)}
-            // exiting={FadeOut.duration(500)}
             style={{
               flex: 1,
               justifyContent: "center",
@@ -1056,7 +1023,7 @@ const GroupInfoModal = ({
           >
             <View
               style={{
-                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
                 padding: 20,
                 borderRadius: 10,
                 width: "80%",
@@ -1065,7 +1032,7 @@ const GroupInfoModal = ({
             >
               <Text
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
+                  color: theme === "dark" ? "white" : "#2f2d51",
                   fontFamily: "Inter-Medium",
                   fontSize: 18,
                 }}
@@ -1097,7 +1064,7 @@ const GroupInfoModal = ({
                     style={{
                       fontFamily: "Inter-Bold",
                       fontSize: 16,
-                      color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
                     }}
                   >
                     Confirm

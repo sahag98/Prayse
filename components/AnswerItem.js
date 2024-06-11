@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Image } from "react-native";
 import Moment from "moment";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 const AnswerItem = ({ item, theme }) => {
   return (

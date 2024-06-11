@@ -1,7 +1,8 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Container } from "../styles/appStyles";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+
+import { Container } from "../styles/appStyles";
 
 const OurPresentation = () => {
   const theme = useSelector((state) => state.user.theme);

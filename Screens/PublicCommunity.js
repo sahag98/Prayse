@@ -1,19 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import { useSupabase } from "../context/useSupabase";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Entypo, AntDesign } from "@expo/vector-icons";
-import { TouchableOpacity, Platform } from "react-native";
-
-import { AnimatedFAB } from "react-native-paper";
-import CommunityPrayers from "../components/CommunityPrayers";
-import CommunityModal from "../components/ComunityModal";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import * as Notifications from "expo-notifications";
+import React, { useEffect, useRef, useState } from "react";
 import * as Device from "expo-device";
-import { useRef } from "react";
+import * as Notifications from "expo-notifications";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { AnimatedFAB } from "react-native-paper";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -21,6 +16,15 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
+
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+
+import CommunityPrayers from "../components/CommunityPrayers";
+import CommunityModal from "../components/ComunityModal";
+import { useSupabase } from "../context/useSupabase";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const PublicCommunity = ({ route }) => {
   const navigation = useNavigation();
@@ -86,7 +90,7 @@ const PublicCommunity = ({ route }) => {
   async function getPrayers() {
     //prayers for production
     //prayers_test for testing
-    let { data: prayers, error } = await supabase
+    const { data: prayers, error } = await supabase
       .from("prayers")
       .select("*, profiles(*)")
       .order("id", { ascending: false });
@@ -96,7 +100,7 @@ const PublicCommunity = ({ route }) => {
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
-    let { data: prayers, error } = await supabase
+    const { data: prayers, error } = await supabase
       .from("prayers")
       .select("*")
       .eq("user_id", currentUser?.id)
@@ -304,13 +308,13 @@ const PublicCommunity = ({ route }) => {
       </View>
       <View style={styles.actionButtons}>
         <AnimatedFAB
-          icon={"plus"}
-          label={"Post prayer"}
+          icon="plus"
+          label="Post prayer"
           extended={extended}
           onPress={() => setPrayerModal(true)}
-          visible={true}
-          animateFrom={"right"}
-          iconMode={"dynamic"}
+          visible
+          animateFrom="right"
+          iconMode="dynamic"
           color={theme == "dark" ? "#212121" : "white"}
           style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
         />

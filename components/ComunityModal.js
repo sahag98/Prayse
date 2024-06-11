@@ -1,22 +1,22 @@
+import React, { useState } from "react";
 import {
   Keyboard,
+  Modal,
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { Modal } from "react-native";
+import { Switch } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
 import { AntDesign } from "@expo/vector-icons";
 
 import { ModalContainer } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import Toast from "react-native-toast-message";
-import { TextInput } from "react-native";
-import { Switch } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CommunityModal = ({
   modalVisible,
@@ -58,7 +58,7 @@ const CommunityModal = ({
 
   const addPrayer = async () => {
     function truncateWords(str, numWords) {
-      let words = str.split(" ");
+      const words = str.split(" ");
       if (words.length > numWords) {
         return words.slice(0, numWords).join(" ") + " ...";
       } else {
@@ -66,20 +66,24 @@ const CommunityModal = ({
       }
     }
 
-    let truncatedString = truncateWords(prayer, 5);
+    const truncatedString = truncateWords(prayer, 5);
 
     if (prayer.length <= 0) {
       showToast("error", "The prayer field can't be left empty.");
       setModalVisible(false);
-      return;
     } else {
       //prayers for production
       //prayers_test for testing
-      const { data, error } = await supabase.from("prayers").insert({
-        prayer: prayer,
+      const { error } = await supabase.from("prayers").insert({
+        prayer,
         user_id: user?.id,
         disable_response: isEnabled,
       });
+
+      if (error) {
+        showToast("error", "Something went wrong");
+        return;
+      }
       showToast("success", "Prayer posted successfully.🙏🏼");
       const message = {
         title: "Community 🌐",
@@ -111,26 +115,26 @@ const CommunityModal = ({
     // <SafeAreaProvider>
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={modalVisible}
       onRequestClose={handleCloseModal}
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? {
                 backgroundColor: "#121212",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
               }
             : {
                 backgroundColor: "#F2F7FF",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
               }
         }
       >
@@ -148,11 +152,11 @@ const CommunityModal = ({
             <AntDesign
               name="left"
               size={30}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme === "dark" ? "white" : "#2f2d51"}
             />
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontSize: 20,
@@ -172,13 +176,13 @@ const CommunityModal = ({
           </TouchableOpacity>
 
           <TouchableOpacity
-            disabled={prayer.length == 0 ? true : false}
+            disabled={prayer.length == 0}
             onPress={addPrayer}
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
-                    backgroundColor: prayer.length == 0 ? "#212121" : "#A5C9FF",
-
+                    backgroundColor:
+                      prayer.length === 0 ? "#212121" : "#A5C9FF",
                     padding: 10,
                     justifyContent: "center",
                     alignItems: "center",
@@ -186,8 +190,7 @@ const CommunityModal = ({
                   }
                 : {
                     backgroundColor:
-                      prayer.length == 0 ? "lightgrey" : "#2f2d51",
-
+                      prayer.length === 0 ? "lightgrey" : "#2f2d51",
                     padding: 10,
                     justifyContent: "center",
                     alignItems: "center",
@@ -197,9 +200,9 @@ const CommunityModal = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
-                      color: prayer.length == 0 ? "grey" : "#121212",
+                      color: prayer.length === 0 ? "grey" : "#121212",
                       fontFamily: "Inter-Bold",
                     }
                   : { color: "white", fontFamily: "Inter-Bold" }
@@ -212,7 +215,7 @@ const CommunityModal = ({
         <View style={styles.inputField}>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "white", fontSize: 18, fontFamily: "Inter-Bold" }
                 : { color: "#2f2d51", fontSize: 18, fontFamily: "Inter-Bold" }
             }
@@ -220,23 +223,23 @@ const CommunityModal = ({
             Prayer
           </Text>
           <TextInput
-            style={theme == "dark" ? styles.inputDark : styles.input}
+            style={theme === "dark" ? styles.inputDark : styles.input}
             autoFocus={modalVisible}
             placeholder="Add a prayer"
-            placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={theme === "dark" ? "#d6d6d6" : "#2f2d51"}
+            selectionColor={theme === "dark" ? "white" : "#2f2d51"}
             value={prayer}
             onChangeText={(text) => setPrayer(text)}
             onContentSizeChange={handleContentSizeChange}
             onSubmitEditing={(e) => {
               e.key === "Enter" && e.preventDefault();
             }}
-            multiline={true}
+            multiline
           />
           <TouchableOpacity onPress={() => Keyboard.dismiss()}>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       marginTop: 5,
                       color: "#ff6262",
@@ -266,7 +269,7 @@ const CommunityModal = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "white", fontFamily: "Inter-Medium", fontSize: 16 }
                 : {
                     color: "#2f2d51",

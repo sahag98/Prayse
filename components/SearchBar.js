@@ -1,12 +1,13 @@
 import React from "react";
 import {
+  Keyboard,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
-  StyleSheet,
-  Keyboard,
 } from "react-native";
-import { EvilIcons, AntDesign } from "@expo/vector-icons";
+
+import { AntDesign, EvilIcons } from "@expo/vector-icons";
 
 const SearchBar = ({ theme, search, setSearch }) => {
   const closeSearch = () => {
@@ -16,7 +17,7 @@ const SearchBar = ({ theme, search, setSearch }) => {
   return (
     <View
       style={{
-        backgroundColor: theme == "dark" ? "#212121" : "white",
+        backgroundColor: theme === "dark" ? "#212121" : "white",
         borderRadius: 10,
         padding: 10,
 
@@ -38,14 +39,14 @@ const SearchBar = ({ theme, search, setSearch }) => {
         <EvilIcons
           name="search"
           size={24}
-          color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+          color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
         />
         <TextInput
           style={styles.textInputStyle}
           value={search}
           placeholder="Search prayers..."
-          placeholderTextColor={"#d2d2d2"}
-          selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+          placeholderTextColor="#d2d2d2"
+          selectionColor={theme === "dark" ? "white" : "#2f2d51"}
           onChangeText={(text) => setSearch(text)}
           autoFocus={false}
         />
@@ -54,7 +55,7 @@ const SearchBar = ({ theme, search, setSearch }) => {
         <AntDesign
           name="close"
           size={22}
-          color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+          color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
         />
       </TouchableOpacity>
     </View>

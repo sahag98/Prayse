@@ -1,4 +1,3 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import SkeletonLoader from "expo-skeleton-loader";
 import { useSelector } from "react-redux";
@@ -8,8 +7,8 @@ const GroupSkeleton = () => {
   return (
     <SkeletonLoader
       duration={800}
-      highlightColor={theme == "dark" ? "#212121" : "white"}
-      boneColor={theme == "dark" ? "#121212" : "#F2F7FF"}
+      highlightColor={theme === "dark" ? "#212121" : "white"}
+      boneColor={theme === "dark" ? "#121212" : "#F2F7FF"}
       style={{ flex: 1 }}
     >
       <SkeletonLoader.Container
@@ -25,9 +24,6 @@ const GroupSkeleton = () => {
             width: "100%",
             height: 90,
             borderRadius: 10,
-            // width: "100%",
-            // height: 90,
-            // borderRadius: 10,
           }}
         />
         <SkeletonLoader.Item
@@ -63,5 +59,3 @@ const GroupSkeleton = () => {
   );
 };
 export default GroupSkeleton;
-
-const styles = StyleSheet.create({});

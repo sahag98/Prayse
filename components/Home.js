@@ -1,13 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Animated, Platform, Text, View } from "react-native";
-import Header from "./Header";
-import ListItems from "./ListItems";
-import InputModal from "./InputModal";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Platform, View } from "react-native";
+import { useSelector } from "react-redux";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch, useSelector } from "react-redux";
-import { Container, PrayerContainer } from "../styles/appStyles";
-import { StyleSheet } from "react-native";
+
+import { PrayerContainer } from "../styles/appStyles";
+
 import BottomBox from "./BottomBox";
+import Header from "./Header";
+import InputModal from "./InputModal";
+import ListItems from "./ListItems";
 
 const Home = ({
   navigation,
@@ -31,10 +33,9 @@ const Home = ({
   const [answeredAlready, setAnsweredAlready] = useState("");
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers
+    (state) => state.answered.answeredPrayers,
   );
   const slideUpValue = useRef(new Animated.Value(0)).current;
-  const dispatch = useDispatch();
   const isIOS = Platform.OS === "ios";
   const [visible, setVisible] = useState(true);
   const { current: velocity } = useRef(new Animated.Value(0));
@@ -67,7 +68,7 @@ const Home = ({
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
       )
     ) {
       setAnsweredAlready(prayer.id);
@@ -116,25 +117,11 @@ const Home = ({
   return (
     <PrayerContainer
       style={
-        theme == "dark"
+        theme === "dark"
           ? { position: "relative", backgroundColor: "#121212" }
           : { backgroundColor: "#F2F7FF" }
       }
     >
-      {/* <View
-        style={{
-          backgroundColor: "#212121",
-          position: "absolute",
-          borderRadius: 10,
-          padding: 10,
-          bottom: 20,
-          alignSelf: "center",
-          width: "90%",
-          zIndex: 99,
-        }}
-      >
-        <Text>Delete</Text>
-      </View> */}
       <Animated.View
         pointerEvents={isBoxVisible ? "none" : "auto"}
         style={
@@ -231,11 +218,3 @@ const Home = ({
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  animation: {
-    width: 300,
-    height: 300,
-    alignSelf: "center",
-  },
-});

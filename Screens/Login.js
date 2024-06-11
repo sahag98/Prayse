@@ -1,7 +1,11 @@
+import React, { useEffect, useState } from "react";
+import * as WebBrowser from "expo-web-browser";
 import {
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Linking,
+  Modal,
   Platform,
   StyleSheet,
   Text,
@@ -9,22 +13,19 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+
+import googleIcon from "../assets/google-icon.png";
 import { useSupabase } from "../context/useSupabase";
-import { MaterialCommunityIcons, Feather, Ionicons } from "@expo/vector-icons";
-import * as WebBrowser from "expo-web-browser";
-import React, { useState } from "react";
 import {
   Container,
   ModalActionGroup,
   ModalContainer,
   ModalView,
 } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import googleIcon from "../assets/google-icon.png";
-import Toast from "react-native-toast-message";
-import { useEffect } from "react";
-import { Modal } from "react-native";
-import { Keyboard } from "react-native";
 
 const Login = () => {
   const theme = useSelector((state) => state.user.theme);
@@ -59,7 +60,6 @@ const Login = () => {
   const SignUp = () => {
     if (email.length == 0 || password.length == 0) {
       showToast("error", "Email and password field can't be empty.");
-      return;
     } else {
       register(email, password);
       setIsLoggingIn(true);
@@ -83,7 +83,7 @@ const Login = () => {
         //prayseapp://google-auth
         {
           showInRecents: true,
-        }
+        },
       );
 
       if (result.type === "success") {
@@ -187,7 +187,7 @@ const Login = () => {
                 autoCapitalize="none"
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
                 value={email}
-                blurOnSubmit={true}
+                blurOnSubmit
                 style={
                   theme == "dark"
                     ? {
@@ -237,7 +237,7 @@ const Login = () => {
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
-                blurOnSubmit={true}
+                blurOnSubmit
                 secureTextEntry={!passVisible}
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
                 style={
@@ -291,10 +291,10 @@ const Login = () => {
             </TouchableOpacity>
             <Modal
               animationType="fade"
-              transparent={true}
+              transparent
               visible={forgotModal}
               onRequestClose={() => setForgotModal(false)}
-              statusBarTranslucent={true}
+              statusBarTranslucent
               // onShow={() => inputRef.current?.focus()}
             >
               <ModalContainer
@@ -512,7 +512,7 @@ const Login = () => {
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
               value={email}
               autoCapitalize="none"
-              blurOnSubmit={true}
+              blurOnSubmit
               style={
                 theme == "dark"
                   ? {
@@ -568,8 +568,8 @@ const Login = () => {
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
-                blurOnSubmit={true}
-                secureTextEntry={passVisible ? false : true}
+                blurOnSubmit
+                secureTextEntry={!passVisible}
                 placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
                 style={
                   theme == "dark"

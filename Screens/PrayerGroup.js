@@ -1,28 +1,27 @@
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import * as Clipboard from "expo-clipboard";
 import {
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   Text,
   TouchableOpacity,
   View,
-  Platform,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
-import * as Clipboard from "expo-clipboard";
-import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
+import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
+
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { useSupabase } from "../context/useSupabase";
-import axios from "axios";
-import GroupInfoModal from "../components/GroupInfoModal";
-import RemovedGroupModal from "../components/RemovedGroupModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
-import Toast from "react-native-toast-message";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import Chat from "../components/Chat";
+import GroupInfoModal from "../components/GroupInfoModal";
 import GroupPrayerList from "../components/GroupPrayerList";
+import RemovedGroupModal from "../components/RemovedGroupModal";
+import { useSupabase } from "../context/useSupabase";
+import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroup = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -64,7 +63,7 @@ const PrayerGroup = ({ route, navigation }) => {
       async function getGroupMessages() {
         try {
           setAreMessagesLoading(true);
-          let { data, error } = await supabase
+          const { data, error } = await supabase
             .from("messages")
             .select("*, profiles(full_name, avatar_url, expoToken)")
             .eq("group_id", currGroup.group_id)
@@ -186,7 +185,7 @@ const PrayerGroup = ({ route, navigation }) => {
   };
 
   async function getSingleGroup() {
-    let { data: groups, error } = await supabase
+    const { data: groups, error } = await supabase
       .from("groups")
       .select("*")
       .eq("id", currGroup?.group_id);
@@ -250,7 +249,7 @@ const PrayerGroup = ({ route, navigation }) => {
       },
     });
 
-    let { data: members, error: membersError } = await supabase
+    const { data: members, error: membersError } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
       .eq("group_id", currGroup.groups?.id)
@@ -266,7 +265,7 @@ const PrayerGroup = ({ route, navigation }) => {
           data: {
             screen: "PrayerGroup",
             group: currGroup,
-            allGroups: allGroups,
+            allGroups,
           },
         };
         await axios.post("https://exp.host/--/api/v2/push/send", message, {

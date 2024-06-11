@@ -1,29 +1,30 @@
 import React, { useRef, useState } from "react";
+import { useFonts } from "expo-font";
 import {
+  ActivityIndicator,
   Alert,
   Animated,
-  Modal,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Text,
-  ActivityIndicator,
   FlatList,
   Linking,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { useSelector } from "react-redux";
+
+import { Ionicons } from "@expo/vector-icons";
+
 import {
-  ModalView,
-  ModalAction2,
-  ModalActionGroup2,
-  ModalIcon,
-  ModalContainer,
-  Container1,
   Container,
   HeaderView,
+  ModalAction2,
+  ModalActionGroup2,
+  ModalContainer,
+  ModalIcon,
+  ModalView,
 } from "../styles/appStyles";
-import { useFonts } from "expo-font";
-import { useSelector } from "react-redux";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
 
 const Gospel = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -141,11 +142,11 @@ const Gospel = ({ navigation }) => {
           onPress: () =>
             Linking.openURL("https://www.instagram.com/prayse.app/"),
         },
-      ]
+      ],
     );
   };
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
@@ -219,7 +220,7 @@ const Gospel = ({ navigation }) => {
       />
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent
         visible={clearModalVisible}
         onRequestClose={handleCloseModal}
       >

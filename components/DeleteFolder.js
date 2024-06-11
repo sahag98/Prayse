@@ -1,5 +1,12 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Modal } from "react-native";
+import { useDispatch } from "react-redux";
+
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
+import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
+import { deletePrayerByFolderId } from "../redux/prayerReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -8,11 +15,6 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-import { AntDesign } from "@expo/vector-icons";
-import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
-import { deletePrayerByFolderId } from "../redux/prayerReducer";
-import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
 
 const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
   const navigation = useNavigation();
@@ -33,22 +35,22 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={openDelete}
       onRequestClose={() => setOpenDelete(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
       // onShow={() => inputRef.current?.focus()}
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <ModalView
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "#212121" }
               : { backgroundColor: "#93D8F8" }
           }
@@ -56,7 +58,7 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
           <ModalIcon>
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                   : { fontSize: 18, fontFamily: "Inter-Bold" }
               }
@@ -65,18 +67,18 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
             </HeaderTitle>
           </ModalIcon>
           <ModalActionGroup>
-            <ModalAction color={"white"} onPress={() => setOpenDelete(false)}>
+            <ModalAction color="white" onPress={() => setOpenDelete(false)}>
               <AntDesign
                 name="close"
                 size={28}
-                color={theme == "dark" ? "black" : "#2F2D51"}
+                color={theme === "dark" ? "black" : "#2F2D51"}
               />
             </ModalAction>
             <ModalAction
-              color={theme == "dark" ? "#121212" : "#2F2D51"}
+              color={theme === "dark" ? "#121212" : "#2F2D51"}
               onPress={deleteFolderById}
             >
-              <AntDesign name="check" size={28} color={"white"} />
+              <AntDesign name="check" size={28} color="white" />
             </ModalAction>
           </ModalActionGroup>
         </ModalView>
@@ -86,5 +88,3 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
 };
 
 export default DeleteFolder;
-
-const styles = StyleSheet.create({});

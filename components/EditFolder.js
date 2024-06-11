@@ -1,26 +1,26 @@
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
-  StyleSheet,
   Platform,
+  StyleSheet,
   Text,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
+import { editFolderName } from "../redux/folderReducer";
 import {
   HeaderTitle,
   ModalAction,
   ModalActionGroup,
-  ModalContainer,
   ModalIcon,
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
-import { editFolderName } from "../redux/folderReducer";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 
 const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
   console.log("folder name: ", folderName);
@@ -30,7 +30,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
   const navigation = useNavigation();
 
   function HandleEditFolder(id) {
-    if (newFolderName.length == 0) {
+    if (newFolderName.length === 0) {
       setError("Folder name field can't be empty.");
       return;
     }
@@ -38,8 +38,8 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
     dispatch(
       editFolderName({
         name: newFolderName,
-        id: id,
-      })
+        id,
+      }),
     );
     navigation.setParams({
       title: newFolderName,
@@ -52,11 +52,10 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={openEdit}
       onRequestClose={() => setOpenEdit(false)}
-      statusBarTranslucent={true}
-      // onShow={() => inputRef.current?.focus()}
+      statusBarTranslucent
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -64,7 +63,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
       >
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   padding: 10,
                   justifyContent: "center",
@@ -83,7 +82,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
         >
           <ModalView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#93D8F8" }
             }
@@ -91,7 +90,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
             <ModalIcon>
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 18,
@@ -104,11 +103,11 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
               </HeaderTitle>
             </ModalIcon>
             <StyledInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
+              style={theme === "dark" ? styles.inputDark : styles.input}
               placeholder="Enter new folder name"
-              placeholderTextColor={"white"}
-              selectionColor={"white"}
-              autoFocus={true}
+              placeholderTextColor="white"
+              selectionColor="white"
+              autoFocus
               onChangeText={(text) => setNewFolderName(text)}
               value={newFolderName}
               onSubmitEditing={(e) => {
@@ -121,7 +120,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
                   marginTop: 5,
                   fontSize: 13,
                   fontFamily: "Inter-Regular",
-                  color: theme == "dark" ? "red" : "red",
+                  color: theme === "dark" ? "red" : "red",
                 }}
               >
                 {error}
@@ -130,7 +129,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
 
             <ModalActionGroup>
               <ModalAction
-                color={"white"}
+                color="white"
                 onPress={() => {
                   setError("");
                   setOpenEdit(false);
@@ -139,14 +138,14 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme == "dark" ? "black" : "#2F2D51"}
+                  color={theme === "dark" ? "black" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={theme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={() => HandleEditFolder(folderId)}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

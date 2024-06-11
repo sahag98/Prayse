@@ -1,51 +1,50 @@
 import React, { useEffect, useState } from "react";
-import {
-  NavigationContainer,
-  DarkTheme,
-  DefaultTheme,
-} from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Main from "./Screens/Main";
+import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
-import Welcome from "./Screens/Welcome";
-import Gospel from "./Screens/Gospel";
-import Settings from "./Screens/Settings";
-import { useDispatch, useSelector } from "react-redux";
-import PrayerPage from "./Screens/PrayerPage";
-import OldPrayerPage from "./Screens/oldPrayerPage";
+import { ActivityIndicator, Linking, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Devotional from "./Screens/Devotional";
-import { useFonts } from "expo-font";
-import { View, ActivityIndicator } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import More from "./Screens/More";
-import VerseOfTheDay from "./Screens/VerseOfTheDay";
-import Favorites from "./Screens/Favorites";
+import { useDispatch, useSelector } from "react-redux";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
+
 import { useSupabase } from "./context/useSupabase";
+import Checklist from "./Screens/Checklist";
 import CommunityHome from "./Screens/CommunityHome";
+import DevoList from "./Screens/DevoList";
+import Devotional from "./Screens/Devotional";
+import Favorites from "./Screens/Favorites";
+import Gospel from "./Screens/Gospel";
 import Login from "./Screens/Login";
-import Question from "./Screens/Question";
+import Main from "./Screens/Main";
+import More from "./Screens/More";
+import NotificationScreen from "./Screens/NotificationsScreen";
+import OldPrayerPage from "./Screens/oldPrayerPage";
+import OnboardingScreen from "./Screens/Onboarding";
+import OurPresentation from "./Screens/OurPresentation";
+import PrayerGroup from "./Screens/PrayerGroup";
+import PrayerPage from "./Screens/PrayerPage";
+import PrayerRoom from "./Screens/PrayerRoom";
 import PublicCommunity from "./Screens/PublicCommunity";
-import Test from "./Screens/Test";
-import { Linking } from "react-native";
+import PublicGroups from "./Screens/PublicGroups";
+import Question from "./Screens/Question";
+import QuestionList from "./Screens/QuestionList";
+import Relfection from "./Screens/Relfection";
 // import * as Linking from "expo-linking";
 import Reminder from "./Screens/Reminder";
-import PrayerGroup from "./Screens/PrayerGroup";
-import OnboardingScreen from "./Screens/Onboarding";
-import Relfection from "./Screens/Relfection";
-import DevoList from "./Screens/DevoList";
-import * as Notifications from "expo-notifications";
-import Checklist from "./Screens/Checklist";
-import PrayerRoom from "./Screens/PrayerRoom";
-import NotificationScreen from "./Screens/NotificationsScreen";
-import { checkUserGroups } from "./redux/userReducer";
-
-import QuestionList from "./Screens/QuestionList";
-import OurPresentation from "./Screens/OurPresentation";
-import PublicGroups from "./Screens/PublicGroups";
 import RoadMap from "./Screens/RoadMap";
+import Settings from "./Screens/Settings";
+import Test from "./Screens/Test";
+import VerseOfTheDay from "./Screens/VerseOfTheDay";
+import Welcome from "./Screens/Welcome";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -95,7 +94,7 @@ const Navigation = () => {
     );
   };
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Black": require("./assets/fonts/Inter-Black.ttf"),
     "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("./assets/fonts/Inter-Regular.ttf"),
@@ -156,7 +155,7 @@ const Navigation = () => {
             // Listen to incoming links from deep linking
             const eventListenerSubscription = Linking.addEventListener(
               "url",
-              onReceiveURL
+              onReceiveURL,
             );
 
             // Listen to expo push notifications
@@ -170,7 +169,7 @@ const Navigation = () => {
 
                   // Let React Navigation handle the URL
                   listener(url);
-                }
+                },
               );
 
             return () => {
@@ -214,8 +213,8 @@ const Navigation = () => {
               theme == "dark"
                 ? "white"
                 : theme == "BlackWhite"
-                ? "black"
-                : "#2f2d51",
+                  ? "black"
+                  : "#2f2d51",
             tabBarInactiveTintColor: "gray",
           })}
         >

@@ -1,20 +1,21 @@
-import "react-native-gesture-handler";
 import React, { useState } from "react";
-import AnimatedSplash from "react-native-animated-splash-screen";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
-import { PersistGate } from "redux-persist/integration/react";
 import { Buffer } from "buffer";
-global.Buffer = Buffer;
+import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { persistStore } from "redux-persist";
-import Navigation from "./Navigation";
-import "react-native-url-polyfill/auto";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { SupabaseProvider } from "./context/SupabaseProvider";
-import "expo-dev-client";
-let persistor = persistStore(store);
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
+import { SupabaseProvider } from "./context/SupabaseProvider";
+import { store } from "./redux/store";
+import Navigation from "./Navigation";
+
+import "react-native-url-polyfill/auto";
+import "expo-dev-client";
+global.Buffer = Buffer;
+const persistor = persistStore(store);
 
 export default function App() {
   const [loading, setLoading] = useState(false);
@@ -97,10 +98,10 @@ export default function App() {
     <>
       {/* <NotiTest /> */}
       <AnimatedSplash
-        translucent={true}
+        translucent
         isLoaded={loading}
         logoImage={require("./assets/prayer.png")}
-        backgroundColor={"white"}
+        backgroundColor="white"
         logoHeight={200}
         logoWidth={200}
       >

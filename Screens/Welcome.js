@@ -1,28 +1,60 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { nativeApplicationVersion } from "expo-application";
+import * as Device from "expo-device";
+import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
+import * as SplashScreen from "expo-splash-screen";
 import {
   ActivityIndicator,
-  Platform,
-  Linking,
-  View,
-  Modal,
+  Dimensions,
   FlatList,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Linking,
+  Modal,
+  Platform,
   SafeAreaView,
-  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { SelectList } from "react-native-dropdown-select-list";
+import { Badge, Divider } from "react-native-paper";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
-  Ionicons,
   AntDesign,
-  MaterialCommunityIcons,
   Feather,
+  Ionicons,
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, ProgressBar } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
+
+import noreminder from "../assets/noreminders.png";
+import DailyReflection from "../components/DailyReflection";
+import DonationModal from "../components/DonationModal";
+import GospelofJesus from "../components/GospelofJesus";
+import MerchComponent from "../components/MerchComponent";
+import NewFeaturesModal from "../components/NewFeaturesModal";
+import QuestionoftheWeek from "../components/QuestionoftheWeek";
+import StreakSlider from "../components/StreakSlider";
+import UpdateModal from "../components/UpdateModal";
+import { useSupabase } from "../context/useSupabase";
+import { addQuickFolder } from "../redux/folderReducer";
+import { addNoti } from "../redux/notiReducer";
+import { addPrayer } from "../redux/prayerReducer";
+import { deleteReminder } from "../redux/remindersReducer";
+import { increaseAppStreakCounter } from "../redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -33,51 +65,6 @@ import {
   StyledInput,
   WelcomeContainer,
 } from "../styles/appStyles";
-import * as SplashScreen from "expo-splash-screen";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
-import { useIsFocused } from "@react-navigation/native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
-
-import { addQuickFolder } from "../redux/folderReducer";
-import uuid from "react-native-uuid";
-import { KeyboardAvoidingView } from "react-native";
-import { SelectList } from "react-native-dropdown-select-list";
-import { Keyboard } from "react-native";
-import { addPrayer } from "../redux/prayerReducer";
-
-import { Badge } from "react-native-paper";
-import { addNoti } from "../redux/notiReducer";
-
-import NewFeaturesModal from "../components/NewFeaturesModal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import DonationModal from "../components/DonationModal";
-
-import { nativeApplicationVersion } from "expo-application";
-import UpdateModal from "../components/UpdateModal";
-import { useSupabase } from "../context/useSupabase";
-import { Dimensions } from "react-native";
-import { deleteReminder } from "../redux/remindersReducer";
-
-import MerchComponent from "../components/MerchComponent";
-
-import noreminder from "../assets/noreminders.png";
-import DailyReflection from "../components/DailyReflection";
-import GospelofJesus from "../components/GospelofJesus";
-import QuestionoftheWeek from "../components/QuestionoftheWeek";
-import StreakSlider from "../components/StreakSlider";
-import {
-  deleteAppStreakCounter,
-  increaseAppStreakCounter,
-} from "../redux/userReducer";
-import { ScrollView } from "react-native";
-
-import bgImg from "../assets/bgImage5.png";
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -130,7 +117,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings."
+        "To recieve notifications in the future, enable Notifications from the App Settings.",
       );
       return;
     }
@@ -169,7 +156,7 @@ const Welcome = ({ navigation }) => {
   const notis = useSelector((state) => state.noti.notifications);
 
   const quickFolderExists = useSelector(
-    (state) => state.folder.quickFolderExists
+    (state) => state.folder.quickFolderExists,
   );
 
   const welcomeFadeIn = useSharedValue(0);
@@ -201,7 +188,7 @@ const Welcome = ({ navigation }) => {
 
   async function fetchUpdate() {
     try {
-      let { data: update, error } = await supabase
+      const { data: update, error } = await supabase
         .from("update")
         .select("isUpdateAvailable");
 
@@ -236,7 +223,7 @@ const Welcome = ({ navigation }) => {
             id: 4044,
             name: "Quick Prayers",
             prayers: [],
-          })
+          }),
         );
       } catch (error) {
         console.log(error);
@@ -258,7 +245,7 @@ const Welcome = ({ navigation }) => {
         category: quickcategoryvalue,
         date: new Date().toLocaleString(),
         id: uuid.v4(),
-      })
+      }),
     );
     setQuickModal(false);
     setQuickprayervalue("");
@@ -296,11 +283,11 @@ const Welcome = ({ navigation }) => {
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
           );
         } else if (Platform.OS === "android") {
           Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
           );
         }
       }
@@ -354,7 +341,7 @@ const Welcome = ({ navigation }) => {
       const today = new Date().toLocaleDateString("en-CA");
       console.log(today);
 
-      dispatch(increaseAppStreakCounter({ today: today }));
+      dispatch(increaseAppStreakCounter({ today }));
 
       // console.log("getting app streak");
       // const keys = await AsyncStorage.getAllKeys();
@@ -398,7 +385,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else if (currentHour >= 12 && currentHour < 18) {
         setGreeting("Good afternoon ");
@@ -407,7 +394,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else {
         setGreeting("Good Evening ");
@@ -416,7 +403,7 @@ const Welcome = ({ navigation }) => {
             name="moon"
             size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
-          />
+          />,
         );
       }
     }
@@ -468,7 +455,7 @@ const Welcome = ({ navigation }) => {
       .catch((err) => console.log(err));
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        let date = Date();
+        const date = Date();
         const formattedDate = date.toLocaleString("en-US", {
           weekday: "short",
           year: "numeric",
@@ -490,7 +477,7 @@ const Welcome = ({ navigation }) => {
               question_id: notification.request.content.data?.question_id,
               prayerId: notification.request.content.data?.prayerId,
               identifier: notification.request.identifier,
-            })
+            }),
           );
         }
 
@@ -507,7 +494,7 @@ const Welcome = ({ navigation }) => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current
+        notificationListener.current,
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -574,19 +561,19 @@ const Welcome = ({ navigation }) => {
               // backgroundColor: "#121212",
             }
           : theme == "BlackWhite"
-          ? {
-              display: "flex",
-              position: "relative",
-              // alignItems: "center",
-              backgroundColor: "white",
-            }
-          : {
-              display: "flex",
-              position: "relative",
-              flex: 1,
-              // alignItems: "center",
-              backgroundColor: "#F2F7FF",
-            }
+            ? {
+                display: "flex",
+                position: "relative",
+                // alignItems: "center",
+                backgroundColor: "white",
+              }
+            : {
+                display: "flex",
+                position: "relative",
+                flex: 1,
+                // alignItems: "center",
+                backgroundColor: "#F2F7FF",
+              }
       }
     >
       <View
@@ -609,8 +596,8 @@ const Welcome = ({ navigation }) => {
               theme == "dark"
                 ? styles.greetingDark
                 : theme == "BlackWhite"
-                ? styles.greetingBlack
-                : styles.greeting
+                  ? styles.greetingBlack
+                  : styles.greeting
             }
           >
             {greeting}
@@ -902,7 +889,7 @@ const Welcome = ({ navigation }) => {
                     };
                     timeOptions = options;
                   } else if (item.ocurrence === "None") {
-                    let options = {
+                    const options = {
                       month: "numeric",
                       day: "numeric",
                       year: "2-digit",
@@ -913,7 +900,7 @@ const Welcome = ({ navigation }) => {
                   }
                   const formattedDate = timestamp.toLocaleString(
                     "en-US",
-                    timeOptions
+                    timeOptions,
                   );
 
                   return (
@@ -1166,8 +1153,8 @@ const Welcome = ({ navigation }) => {
               theme == "dark"
                 ? styles.refreshDark
                 : theme == "BlackWhite"
-                ? styles.refreshBlack
-                : styles.refresh
+                  ? styles.refreshBlack
+                  : styles.refresh
             }
           >
             <View
@@ -1184,8 +1171,8 @@ const Welcome = ({ navigation }) => {
                   theme == "dark"
                     ? "#f1d592"
                     : theme == "BlackWhite"
-                    ? "black"
-                    : "#bb8b18"
+                      ? "black"
+                      : "#bb8b18"
                 }
               />
               <Text
@@ -1197,16 +1184,16 @@ const Welcome = ({ navigation }) => {
                         fontFamily: "Inter-Medium",
                       }
                     : theme == "BlackWhite"
-                    ? {
-                        color: "black",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#bb8b18",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
+                      ? {
+                          color: "black",
+                          marginLeft: 10,
+                          fontFamily: "Inter-Medium",
+                        }
+                      : {
+                          color: "#bb8b18",
+                          marginLeft: 10,
+                          fontFamily: "Inter-Medium",
+                        }
                 }
               >
                 What's New in v9.4!
@@ -1219,8 +1206,8 @@ const Welcome = ({ navigation }) => {
                 theme == "dark"
                   ? "#f1d592"
                   : theme == "BlackWhite"
-                  ? "black"
-                  : "#bb8b18"
+                    ? "black"
+                    : "#bb8b18"
               }
             />
           </TouchableOpacity>
@@ -1230,12 +1217,12 @@ const Welcome = ({ navigation }) => {
                 theme == "dark"
                   ? styles.refreshDark
                   : theme == "BlackWhite"
-                  ? styles.refreshBlack
-                  : styles.refresh
+                    ? styles.refreshBlack
+                    : styles.refresh
               }
               onPress={() =>
                 Linking.openURL(
-                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
                 )
               }
             >
@@ -1253,8 +1240,8 @@ const Welcome = ({ navigation }) => {
                     theme == "dark"
                       ? "#d6d6d6"
                       : theme == "BlackWhite"
-                      ? "black"
-                      : "#606060"
+                        ? "black"
+                        : "#606060"
                   }
                 />
                 <Text
@@ -1266,16 +1253,16 @@ const Welcome = ({ navigation }) => {
                           marginLeft: 10,
                         }
                       : theme == "BlackWhite"
-                      ? {
-                          color: "black",
-                          fontFamily: "Inter-Medium",
-                          marginLeft: 10,
-                        }
-                      : {
-                          color: "#606060",
-                          fontFamily: "Inter-Medium",
-                          marginLeft: 10,
-                        }
+                        ? {
+                            color: "black",
+                            fontFamily: "Inter-Medium",
+                            marginLeft: 10,
+                          }
+                        : {
+                            color: "#606060",
+                            fontFamily: "Inter-Medium",
+                            marginLeft: 10,
+                          }
                   }
                 >
                   Check for Updates
@@ -1288,8 +1275,8 @@ const Welcome = ({ navigation }) => {
                   theme == "dark"
                     ? "#d6d6d6"
                     : theme == "BlackWhite"
-                    ? "black"
-                    : "#606060"
+                      ? "black"
+                      : "#606060"
                 }
               />
             </TouchableOpacity>
@@ -1299,7 +1286,7 @@ const Welcome = ({ navigation }) => {
               style={theme == "dark" ? styles.refreshDark : styles.refresh}
               onPress={() =>
                 Linking.openURL(
-                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
                 )
               }
             >
@@ -1345,7 +1332,7 @@ const Welcome = ({ navigation }) => {
 
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={quickModal}
         onRequestClose={handleCloseModal}
       >
@@ -1413,16 +1400,16 @@ const Welcome = ({ navigation }) => {
                       }
                 }
                 placeholder="Add a prayer"
-                placeholderTextColor={"#e0e0e0"}
-                selectionColor={"white"}
-                autoFocus={true}
+                placeholderTextColor="#e0e0e0"
+                selectionColor="white"
+                autoFocus
                 onChangeText={(text) => setQuickprayervalue(text)}
                 value={quickprayervalue}
                 onContentSizeChange={handleContentSizeChange}
                 onSubmitEditing={(e) => {
                   e.key === "Enter" && e.preventDefault();
                 }}
-                multiline={true}
+                multiline
               />
               <TouchableOpacity
                 style={styles.dismiss}
@@ -1459,7 +1446,7 @@ const Welcome = ({ navigation }) => {
                 maxHeight="250"
               />
               <ModalActionGroup>
-                <ModalAction color={"white"} onPress={handleCloseModal}>
+                <ModalAction color="white" onPress={handleCloseModal}>
                   <AntDesign
                     name="close"
                     size={28}
@@ -1470,7 +1457,7 @@ const Welcome = ({ navigation }) => {
                   color={theme == "dark" ? "#121212" : "#2F2D51"}
                   onPress={handleQuickPrayer}
                 >
-                  <AntDesign name="check" size={28} color={"white"} />
+                  <AntDesign name="check" size={28} color="white" />
                 </ModalAction>
               </ModalActionGroup>
             </ModalView>

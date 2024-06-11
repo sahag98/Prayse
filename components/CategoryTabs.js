@@ -1,20 +1,20 @@
 import React from "react";
 import {
-  View,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 
 const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
   return (
     <>
-      {prayerList.length != 0 && (
+      {prayerList.length !== 0 && (
         <View>
           <ScrollView
             showsHorizontalScrollIndicator={false}
-            horizontal={true}
+            horizontal
             contentContainerStyle={styles.tab}
           >
             {selected.map((selected, idx) => (
@@ -22,7 +22,7 @@ const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
                 key={idx}
                 onPress={() => setStatus(selected)}
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? [
                         styles.btnTabDark,
                         status === selected && styles.btnActiveDark,
@@ -32,7 +32,7 @@ const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
               >
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? [
                           styles.textTabDark,
                           status === selected && styles.textTabActiveDark,

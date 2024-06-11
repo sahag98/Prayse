@@ -1,12 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import { Container } from "../styles/appStyles";
 import React, { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, View } from "react-native";
 import { useSelector } from "react-redux";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import Folder from "../components/Folder";
 import useIsReady from "../hooks/useIsReady";
-import { ActivityIndicator, ImageBackground, View } from "react-native";
-import bgImg from "../assets/bgImage5.png";
+import { Container } from "../styles/appStyles";
 export default function Main({ navigation }) {
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -52,8 +53,8 @@ export default function Main({ navigation }) {
           theme == "dark"
             ? { backgroundColor: "#121212" }
             : theme == "BlackWhite"
-            ? { backgroundColor: "white" }
-            : { backgroundColor: "#F2F7FF" }
+              ? { backgroundColor: "white" }
+              : { backgroundColor: "#F2F7FF" }
         }
       >
         <Folder todos={todos} setTodos={setTodos} navigation={navigation} />

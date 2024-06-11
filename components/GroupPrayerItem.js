@@ -1,30 +1,24 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Moment from "moment";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import ChatBubble from "react-native-chat-bubble";
 import Animated, {
   FadeIn,
   FadeOut,
-  useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-import React, { useEffect, useRef, useState } from "react";
-import Moment from "moment";
-import axios from "axios";
-import { Ionicons } from "@expo/vector-icons";
-import ChatBubble from "react-native-chat-bubble";
+
 import { useIsFocused } from "@react-navigation/native";
-import LottieView from "lottie-react-native";
+
 import ReactionModal from "./ReactionModal";
 
 const GroupPrayerItem = ({
-  setRefreshMsgLikes,
   allGroups,
-  refreshMsgLikes,
-  setGroupMessages,
-  getGroupMessagesForLikes,
   item,
   currentUser,
-  showToast,
   currGroup,
   supabase,
   theme,
@@ -33,10 +27,8 @@ const GroupPrayerItem = ({
   const [praises, setPraises] = useState([]);
   const [channel, setChannel] = useState();
   const isFocused = useIsFocused();
-  const [likedId, setLikedId] = useState();
   const [reactionModalVisibile, setReactionModalVisibile] = useState(false);
   const [isPressedLong, setIsPressedLong] = useState();
-  const animationRef = useRef(null);
   const [loadingLikes, setLoadingLikes] = useState(false);
   const [loadingPraises, setLoadingPraises] = useState(false);
   useEffect(() => {
@@ -120,8 +112,8 @@ const GroupPrayerItem = ({
       body: `${currentUser.full_name} has reacted on ${item} with a prayer 🙏`,
       data: {
         screen: "Community",
-        currGroup: currGroup,
-        allGroups: allGroups,
+        currGroup,
+        allGroups,
       },
     };
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -141,8 +133,8 @@ const GroupPrayerItem = ({
       body: `${currentUser.full_name} has reacted on ${item} with a praise 🙌`,
       data: {
         screen: "Community",
-        currGroup: currGroup,
-        allGroups: allGroups,
+        currGroup,
+        allGroups,
       },
     };
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -154,19 +146,14 @@ const GroupPrayerItem = ({
     });
   };
   const scale = useSharedValue(1);
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    };
-  });
 
   async function toggleLike(id, expoToken, message) {
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
+        withSpring(1, { damping: 2, stiffness: 80 }),
       );
-      const { data, error } = await supabase
+      await supabase
         .from("message_likes")
         .delete()
         .eq("prayer_id", id)
@@ -184,8 +171,6 @@ const GroupPrayerItem = ({
       setReactionModalVisibile(false);
       return;
     }
-    //prayer_id for production
-    //prayertest_id for testing
 
     channel.send({
       type: "broadcast",
@@ -199,9 +184,9 @@ const GroupPrayerItem = ({
 
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
+      withSpring(1, { damping: 2, stiffness: 80 }),
     );
-    const { data, error } = await supabase.from("message_likes").insert({
+    const { error } = await supabase.from("message_likes").insert({
       prayer_id: id,
       user_id: currentUser.id,
     });
@@ -237,9 +222,9 @@ const GroupPrayerItem = ({
     if (isPraisedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
+        withSpring(1, { damping: 2, stiffness: 80 }),
       );
-      const { data, error } = await supabase
+      await supabase
         .from("message_praises")
         .delete()
         .eq("prayer_id", id)
@@ -257,9 +242,6 @@ const GroupPrayerItem = ({
       setReactionModalVisibile(false);
       return;
     }
-    //prayer_id for production
-    //prayertest_id for testing
-
     channel.send({
       type: "broadcast",
       event: "message",
@@ -272,9 +254,9 @@ const GroupPrayerItem = ({
 
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
+      withSpring(1, { damping: 2, stiffness: 80 }),
     );
-    const { data, error } = await supabase.from("message_praises").insert({
+    const { error } = await supabase.from("message_praises").insert({
       prayer_id: id,
       user_id: currentUser.id,
     });
@@ -286,8 +268,6 @@ const GroupPrayerItem = ({
   }
 
   async function fetchPraises(prayerId) {
-    //prayer_id for production
-    //prayertest_id for testing
     try {
       setLoadingPraises(true);
       const { data: praises, error: praisesError } = await supabase
@@ -312,11 +292,11 @@ const GroupPrayerItem = ({
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   const isPraisedByMe = !!praises?.find(
-    (praise) => praise.user_id == currentUser.id
+    (praise) => praise.user_id == currentUser.id,
   );
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
   const isPrayerPraised = !!praises?.find(
-    (praise) => praise.prayer_id == item.id
+    (praise) => praise.prayer_id == item.id,
   );
   return (
     <TouchableOpacity
@@ -335,18 +315,18 @@ const GroupPrayerItem = ({
         theme={theme}
       />
       <ChatBubble
-        isOwnMessage={item.user_id == currentUser.id ? true : false}
+        isOwnMessage={item.user_id === currentUser.id}
         bubbleColor={
-          item.user_id == currentUser.id
-            ? theme == "dark"
+          item.user_id === currentUser.id
+            ? theme === "dark"
               ? "#353535"
               : "#b7d3ff"
-            : theme == "light"
-            ? "#d9e7ff"
-            : "#212121"
+            : theme === "light"
+              ? "#d9e7ff"
+              : "#212121"
         }
         style={
-          theme == "dark"
+          theme === "dark"
             ? [
                 {
                   borderRadius: 10,
@@ -367,7 +347,7 @@ const GroupPrayerItem = ({
               }
         }
       >
-        {item.user_id != currentUser.id && (
+        {item.user_id !== currentUser.id && (
           <View
             style={{
               flexDirection: "row",
@@ -378,7 +358,7 @@ const GroupPrayerItem = ({
           >
             <Image
               style={
-                theme == "dark" ? styles.profileImgDark : styles.profileImg
+                theme === "dark" ? styles.profileImgDark : styles.profileImg
               }
               source={{
                 uri: item.profiles?.avatar_url
@@ -388,7 +368,7 @@ const GroupPrayerItem = ({
             />
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontFamily: "Inter-Medium",
@@ -407,7 +387,7 @@ const GroupPrayerItem = ({
         )}
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "white",
                   fontFamily: "Inter-Regular",
@@ -427,7 +407,7 @@ const GroupPrayerItem = ({
         >
           {item.message}
         </Text>
-        {item.user_id == currentUser.id ? (
+        {item.user_id === currentUser.id ? (
           <View
             style={{
               flexDirection: "row",
@@ -440,7 +420,7 @@ const GroupPrayerItem = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#d6d6d6",
                       alignSelf: "flex-end",
@@ -464,7 +444,7 @@ const GroupPrayerItem = ({
                 exiting={FadeOut.duration(500)}
                 style={{
                   display: isPrayerLiked ? "flex" : "none",
-                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
@@ -472,14 +452,14 @@ const GroupPrayerItem = ({
                   justifyContent: "center",
                   alignItems: "center",
                   bottom: -25,
-                  left: item.user_id == currentUser.id ? -30 : -40,
+                  left: item.user_id === currentUser.id ? -30 : -40,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
                     fontSize: 13,
-                    color: theme == "dark" ? "#121212" : "white",
+                    color: theme === "dark" ? "#121212" : "white",
                   }}
                 >
                   🙏 {likes?.length}
@@ -492,7 +472,7 @@ const GroupPrayerItem = ({
                 exiting={FadeOut.duration(500)}
                 style={{
                   display: isPrayerPraised ? "flex" : "none",
-                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
@@ -500,14 +480,14 @@ const GroupPrayerItem = ({
                   justifyContent: "center",
                   alignItems: "center",
                   bottom: -25,
-                  left: item.user_id == currentUser.id ? 8 : -10,
+                  left: item.user_id === currentUser.id ? 8 : -10,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
                     fontSize: 13,
-                    color: theme == "dark" ? "#121212" : "white",
+                    color: theme === "dark" ? "#121212" : "white",
                   }}
                 >
                   🙌 {praises?.length}
@@ -527,7 +507,7 @@ const GroupPrayerItem = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#d6d6d6",
                       alignSelf: "flex-end",
@@ -551,7 +531,7 @@ const GroupPrayerItem = ({
                 exiting={FadeOut.duration(500)}
                 style={{
                   display: isPrayerLiked ? "flex" : "none",
-                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
@@ -559,14 +539,14 @@ const GroupPrayerItem = ({
                   justifyContent: "center",
                   alignItems: "center",
                   bottom: -25,
-                  right: item.user_id == currentUser.id ? -30 : -25,
+                  right: item.user_id === currentUser.id ? -30 : -25,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
                     fontSize: 13,
-                    color: theme == "dark" ? "#121212" : "white",
+                    color: theme === "dark" ? "#121212" : "white",
                   }}
                 >
                   🙏 {likes?.length}
@@ -579,7 +559,7 @@ const GroupPrayerItem = ({
                 exiting={FadeOut.duration(500)}
                 style={{
                   display: isPrayerPraised ? "flex" : "none",
-                  backgroundColor: theme == "dark" ? "white" : "#2f2d51",
+                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
                   position: "absolute",
                   borderRadius: 100,
                   zIndex: 20,
@@ -587,14 +567,14 @@ const GroupPrayerItem = ({
                   justifyContent: "center",
                   alignItems: "center",
                   bottom: -25,
-                  right: item.user_id == currentUser.id ? -10 : 14,
+                  right: item.user_id === currentUser.id ? -10 : 14,
                 }}
               >
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
                     fontSize: 13,
-                    color: theme == "dark" ? "#121212" : "white",
+                    color: theme === "dark" ? "#121212" : "white",
                   }}
                 >
                   🙌 {praises?.length}
@@ -603,16 +583,6 @@ const GroupPrayerItem = ({
             )}
           </View>
         )}
-        {/* <Text
-          style={{
-            color: "#d2d2d2",
-            marginLeft: 5,
-            fontFamily: "Inter-Medium",
-            fontSize: 11,
-          }}
-        >
-          Press and hold to pray or praise.
-        </Text> */}
       </ChatBubble>
     </TouchableOpacity>
   );

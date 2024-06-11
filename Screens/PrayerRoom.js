@@ -1,50 +1,45 @@
+import React, { useEffect, useRef, useState } from "react";
+import { Audio, ResizeMode, Video } from "expo-av";
+import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
+import AnimatedLottieView from "lottie-react-native";
 import {
-  Pressable,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Platform,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { Container } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import { StatusBar } from "expo-status-bar";
 import {
-  MaterialCommunityIcons,
-  Ionicons,
-  FontAwesome5,
-  Feather,
-} from "@expo/vector-icons";
+  Directions,
+  Gesture,
+  GestureDetector,
+} from "react-native-gesture-handler";
 import Animated, {
-  FadeIn,
-  FadeOut,
-  BounceInRight,
-  SlideOutLeft,
-  BounceOutLeft,
-  SlideInRight,
   Easing,
+  SlideInRight,
+  SlideOutLeft,
   useAnimatedStyle,
   useSharedValue,
-  withRepeat,
-  withTiming,
-  withSequence,
   withDelay,
+  withSequence,
+  withTiming,
 } from "react-native-reanimated";
-import Ebpad from "../assets/audio/Ebpad.mp3";
-import OrganicG from "../assets/audio/OrganicG.mp3";
-import gradient from "../assets/video/gradient.mp4";
-import darkGradient from "../assets/video/dark-gradient.mp4";
+import { useSelector } from "react-redux";
 
 import {
-  GestureDetector,
-  Gesture,
-  Directions,
-} from "react-native-gesture-handler";
-import AnimatedLottieView from "lottie-react-native";
+  Feather,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
-import { Video, ResizeMode, Audio } from "expo-av";
-import Constants from "expo-constants";
+
+import Ebpad from "../assets/audio/Ebpad.mp3";
+import OrganicG from "../assets/audio/OrganicG.mp3";
+import darkGradient from "../assets/video/dark-gradient.mp4";
+import gradient from "../assets/video/gradient.mp4";
+import { Container } from "../styles/appStyles";
 
 const PrayerRoom = ({ navigation, route }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -174,7 +169,7 @@ const PrayerRoom = ({ navigation, route }) => {
       withTiming(1, {
         duration: 4000,
         easing: Easing.ease,
-      })
+      }),
     );
   };
 
@@ -196,8 +191,8 @@ const PrayerRoom = ({ navigation, route }) => {
         withTiming(0, {
           duration: 3000,
           easing: Easing.ease,
-        })
-      )
+        }),
+      ),
     );
   };
 
@@ -229,15 +224,15 @@ const PrayerRoom = ({ navigation, route }) => {
           withTiming(1, {
             duration: 2000,
             easing: Easing.ease,
-          })
+          }),
         ),
         withDelay(
           5000,
           withTiming(0.5, {
             duration: 2000,
             easing: Easing.ease,
-          })
-        )
+          }),
+        ),
       );
       loadVideo();
       doRoomFadeIn();
@@ -278,7 +273,7 @@ const PrayerRoom = ({ navigation, route }) => {
 
   const swipes = Gesture.Simultaneous(
     Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
   );
 
   if (prayers.length == 0) {
@@ -411,7 +406,7 @@ const PrayerRoom = ({ navigation, route }) => {
                 source={theme == "dark" ? darkGradient : gradient}
                 useNativeControls={false}
                 resizeMode={ResizeMode.COVER}
-                isLooping={true}
+                isLooping
                 onPlaybackStatusUpdate={(status) => setStatus(() => status)}
               />
               <StatusBar hidden />
@@ -617,7 +612,7 @@ const PrayerRoom = ({ navigation, route }) => {
               source={theme == "dark" ? darkGradient : gradient}
               useNativeControls={false}
               resizeMode={ResizeMode.COVER}
-              isLooping={true}
+              isLooping
               onPlaybackStatusUpdate={(status) => setStatus(() => status)}
             >
               <StatusBar hidden />

@@ -1,25 +1,27 @@
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useSupabase } from "../context/useSupabase";
+
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+
+import { useSupabase } from "../context/useSupabase";
 const QuestionInfo = ({ item, theme }) => {
   const navigation = useNavigation();
 
-  const { fetchUpdatedAnswers, answers, newAnswer } = useSupabase();
+  const { answers } = useSupabase();
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === item.id
+    (answer) => answer.question_id === item.id,
   );
 
   return (
     <TouchableOpacity
-      style={theme == "dark" ? styles.questionDark : styles.question}
+      style={theme === "dark" ? styles.questionDark : styles.question}
     >
       {item.isNew && (
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "#ff3333",
                   alignSelf: "flex-end",
@@ -34,12 +36,12 @@ const QuestionInfo = ({ item, theme }) => {
                 }
           }
         >
-          {item.isNew == true ? "New" : null}
+          {item.isNew === true ? "New" : null}
         </Text>
       )}
       <Text
         style={
-          theme == "dark"
+          theme === "dark"
             ? { fontSize: 16, color: "white", fontFamily: "Inter-Medium" }
             : { fontSize: 16, color: "#2f2d51", fontFamily: "Inter-Medium" }
         }
@@ -57,7 +59,7 @@ const QuestionInfo = ({ item, theme }) => {
       >
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? { fontSize: 12, color: "grey", fontFamily: "Inter-Regular" }
               : { fontSize: 12, color: "#2f2d51", fontFamily: "Inter-Regular" }
           }
@@ -66,11 +68,11 @@ const QuestionInfo = ({ item, theme }) => {
         </Text>
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? { fontSize: 13, color: "grey", fontFamily: "Inter-Regular" }
               : { fontSize: 13, color: "#2f2d51", fontFamily: "Inter-Regular" }
           }
-        ></Text>
+        />
         <View
           style={{
             flexDirection: "row",
@@ -83,11 +85,11 @@ const QuestionInfo = ({ item, theme }) => {
           <FontAwesome5
             name="check-circle"
             size={20}
-            color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+            color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
           />
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#A5C9FF",
                     fontSize: 13,
@@ -112,7 +114,7 @@ const QuestionInfo = ({ item, theme }) => {
           })
         }
         style={{
-          backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
+          backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
           padding: 12,
           borderRadius: 10,
           justifyContent: "center",
@@ -121,7 +123,7 @@ const QuestionInfo = ({ item, theme }) => {
       >
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "#A5C9FF",
                   fontSize: 14,

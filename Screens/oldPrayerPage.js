@@ -1,7 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import React, { useEffect, useState } from "react";
+import * as Clipboard from "expo-clipboard";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
+import { useSelector } from "react-redux";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   Container,
   HeaderTitle,
@@ -13,11 +18,6 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
-import * as Clipboard from "expo-clipboard";
-import { useEffect } from "react";
 
 const OldPrayerPage = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -149,10 +149,10 @@ const OldPrayerPage = ({ navigation }) => {
       </HeaderView>
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={openClearModal}
         onRequestClose={handleCloseModal}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         // onShow={() => inputRef.current?.focus()}
       >
         <ModalContainer
@@ -182,7 +182,7 @@ const OldPrayerPage = ({ navigation }) => {
             </ModalIcon>
             <ModalActionGroup>
               <ModalAction
-                color={"white"}
+                color="white"
                 onPress={() => setOpenClearModal(false)}
               >
                 <AntDesign
@@ -198,7 +198,7 @@ const OldPrayerPage = ({ navigation }) => {
                   setOpenClearModal(false);
                 }}
               >
-                <AntDesign name="check" size={28} color={"white"} />
+                <AntDesign name="check" size={28} color="white" />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

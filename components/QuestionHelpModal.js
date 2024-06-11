@@ -1,31 +1,25 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Modal } from "react-native";
-import { ModalContainer } from "../styles/appStyles";
-import { TouchableOpacity } from "react-native";
-import { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { Transition, Transitioning } from "react-native-reanimated";
-import { Button } from "react-native";
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
+import {
+  Image,
+  Linking,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import questionLight from "../assets/questionLight.png";
-import questionDark from "../assets/questionDark.png";
-import expire from "../assets/expire.png";
 import insta from "../assets/insta.png";
-import { Linking } from "react-native";
+import questionDark from "../assets/questionDark.png";
+import questionLight from "../assets/questionLight.png";
+import { ModalContainer } from "../styles/appStyles";
 const QuestionHelpModal = ({
   questionHelpModal,
   setQuestionHelpModal,
   theme,
 }) => {
   const [page, setPage] = useState(0);
-  // const transition = (
-  //   <Transition.Together>
-  //     <Transition.In type="fade" durationMs={500} />
-  //     <Transition.Out type="fade" durationMs={500} />
-  //   </Transition.Together>
-  // );
+
   const ref = useRef();
 
   const onNextPage = () => {
@@ -43,21 +37,21 @@ const QuestionHelpModal = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={questionHelpModal}
       onRequestClose={() => setQuestionHelpModal(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   borderRadius: 5,
                   position: "relative",
@@ -76,7 +70,7 @@ const QuestionHelpModal = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
@@ -100,12 +94,12 @@ const QuestionHelpModal = ({
               <View style={{ alignItems: "center", gap: 10 }}>
                 <Image
                   style={styles.img}
-                  source={theme == "dark" ? questionDark : questionLight}
+                  source={theme === "dark" ? questionDark : questionLight}
                 />
 
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? { fontFamily: "Inter-Regular", color: "white" }
                       : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                   }
@@ -115,7 +109,7 @@ const QuestionHelpModal = ({
                 </Text>
                 <TouchableOpacity
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           width: "100%",
                           borderColor: "#A5C9FF",
@@ -154,7 +148,7 @@ const QuestionHelpModal = ({
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { fontFamily: "Inter-Regular", color: "white" }
                           : { fontFamily: "Inter-Regular", color: "#2f2d51" }
                       }
@@ -166,20 +160,10 @@ const QuestionHelpModal = ({
                       to get insight on the next possible question.
                     </Text>
                   </TouchableOpacity>
-                  {/* <Text
-                    style={
-                      theme == "dark"
-                        ? { fontFamily: "Inter-Regular", color: "white" }
-                        : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                    }
-                  >
-                    Once you answer the question you will not be able to edit or
-                    delete your question.
-                  </Text> */}
                 </View>
                 <TouchableOpacity
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           width: "100%",
                           backgroundColor: "#A5C9FF",
@@ -201,7 +185,7 @@ const QuestionHelpModal = ({
                 >
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? { color: "#121212", fontFamily: "Inter-Bold" }
                         : { color: "white", fontFamily: "Inter-Bold" }
                     }

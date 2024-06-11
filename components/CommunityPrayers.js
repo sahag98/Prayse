@@ -1,14 +1,18 @@
-import { StyleSheet, View, RefreshControl } from "react-native";
-import { FlatList } from "react-native";
-import PrayerItem from "./PrayerItem";
-import Skeleton from "./Skeleton";
-import NetInfo from "@react-native-community/netinfo";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from "react-native";
 import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
+
+import NetInfo from "@react-native-community/netinfo";
+
 import communityReady from "../hooks/communityReady";
-import { ActivityIndicator } from "react-native";
+
+import PrayerItem from "./PrayerItem";
 
 const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -22,7 +26,7 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
 
   const checkConnection = () => {
     NetInfo.fetch().then((state) => {
-      if (state.isConnected == true) {
+      if (state.isConnected === true) {
         setIsConnected(true);
       } else setIsConnected(false);
     });
@@ -32,14 +36,14 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
     return (
       <View
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
             : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
         }
       >
         <ActivityIndicator
           size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
+          color={theme === "dark" ? "white" : "#2f2d51"}
         />
       </View>
     );
@@ -80,7 +84,7 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
           ItemSeparatorComponent={() => (
             <Divider
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { backgroundColor: "#525252", marginBottom: 18 }
                   : { backgroundColor: "#2f2d51", marginBottom: 18 }
               }
@@ -89,7 +93,7 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
           scrollEventThrottle={16}
           refreshControl={
             <RefreshControl
-              tintColor={theme == "dark" ? "white" : "#2f2d51"}
+              tintColor={theme === "dark" ? "white" : "#2f2d51"}
               refreshing={refreshing}
               onRefresh={handleRefresh}
             />
@@ -110,5 +114,3 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
 };
 
 export default CommunityPrayers;
-
-const styles = StyleSheet.create({});

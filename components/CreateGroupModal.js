@@ -1,26 +1,28 @@
+import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   Image,
+  Modal,
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { Modal } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import groupBg from "../assets/group-bg.png";
-import { HeaderView, ModalContainer } from "../styles/appStyles";
-import { useState } from "react";
-import Toast from "react-native-toast-message";
-import { TextInput } from "react-native";
+import { Switch } from "react-native-paper";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+
+import groupBg from "../assets/group-bg.png";
+import { HeaderView, ModalContainer } from "../styles/appStyles";
+
 import TemplatesModal from "./TemplatesModal";
-import { Switch } from "react-native-paper";
 
 const CreateGroupModal = ({
   modalVisible,
@@ -60,12 +62,11 @@ const CreateGroupModal = ({
     if (groupName.length <= 0) {
       showToast("error", "The group name field can't be empty.");
       setModalVisible(false);
-      return;
     } else {
       //prayers for production
       //prayers_test for testing
       const pin = Math.floor(Math.random() * 900000) + 100000;
-      const { data, error } = await supabase.from("groups").insert({
+      const { error } = await supabase.from("groups").insert({
         name: groupName,
         color: "grey",
         admin_id: user.id,
@@ -77,7 +78,7 @@ const CreateGroupModal = ({
         showToast("error", "Something went wrong. Try again.");
       }
 
-      const { data: insertedData, error: fetchError } = await supabase
+      const { data: insertedData } = await supabase
         .from("groups")
         .select("id")
         .eq("code", pin)
@@ -108,7 +109,7 @@ const CreateGroupModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!"
+          "We need camera roll permissions to make this work!",
         );
       } else {
         pickImage();
@@ -118,7 +119,7 @@ const CreateGroupModal = ({
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -128,7 +129,7 @@ const CreateGroupModal = ({
     if (!result.canceled) {
       setGroupImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
+        result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -141,7 +142,7 @@ const CreateGroupModal = ({
         type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
       });
 
-      let { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("group")
         .upload(filePath, formData);
 
@@ -157,19 +158,6 @@ const CreateGroupModal = ({
       if (getUrlError) {
         throw getUrlError;
       }
-
-      // const { data, error } = await supabase
-      //   .from("groups")
-      //   .update({
-      //     avatar_url: imageData.signedUrl,
-      //   })
-      //   .eq("id", user.id);
-
-      if (error) {
-        throw error;
-      }
-      // getProfile();
-      // getPrayers();
     }
   };
 
@@ -177,27 +165,27 @@ const CreateGroupModal = ({
     <SafeAreaProvider>
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent
         visible={modalVisible}
         onRequestClose={handleCloseModal}
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
               : {
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "center",
                   paddingTop: insets.top,
-                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
           }
         >
@@ -212,22 +200,22 @@ const CreateGroupModal = ({
               <AntDesign
                 name="left"
                 size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={theme === "dark" ? "white" : "#2f2d51"}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={groupName.length == 0 ? true : false}
+              disabled={groupName.length === 0}
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
                 backgroundColor:
-                  theme == "dark"
-                    ? groupName.length == 0
+                  theme === "dark"
+                    ? groupName.length === 0
                       ? "#212121"
                       : "#a5c9ff"
-                    : groupName.length == 0
-                    ? "grey"
-                    : "#2f2d51",
+                    : groupName.length === 0
+                      ? "grey"
+                      : "#2f2d51",
                 paddingVertical: 10,
                 paddingHorizontal: 14,
                 borderRadius: 20,
@@ -242,12 +230,12 @@ const CreateGroupModal = ({
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 16,
-                        color: groupName.length == 0 ? "grey" : "#121212",
+                        color: groupName.length === 0 ? "grey" : "#121212",
                       }
                     : {
                         fontFamily: "Inter-Bold",
                         fontSize: 16,
-                        color: groupName.length == 0 ? "white" : "white",
+                        color: groupName.length === 0 ? "white" : "white",
                       }
                 }
               >
@@ -263,9 +251,9 @@ const CreateGroupModal = ({
                 {
                   backgroundColor: groupImage
                     ? null
-                    : theme == "dark"
-                    ? "grey"
-                    : "#deebff",
+                    : theme === "dark"
+                      ? "grey"
+                      : "#deebff",
                 },
               ]}
               source={
@@ -279,7 +267,7 @@ const CreateGroupModal = ({
             <Text
               style={{
                 fontFamily: "Inter-Medium",
-                color: theme == "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "white" : "#2f2d51",
               }}
             >
               Choose group image from:
@@ -294,12 +282,12 @@ const CreateGroupModal = ({
             >
               <TouchableOpacity
                 style={{
-                  backgroundColor: theme == "dark" ? "#212121" : "#deebff",
+                  backgroundColor: theme === "dark" ? "#212121" : "#deebff",
                   flexDirection: "row",
                   padding: 10,
                   borderRadius: 10,
                   borderWidth: 1,
-                  borderColor: theme == "dark" ? "#212121" : "#2f2d51",
+                  borderColor: theme === "dark" ? "#212121" : "#2f2d51",
                   alignItems: "center",
                   gap: 10,
                 }}
@@ -308,13 +296,13 @@ const CreateGroupModal = ({
                 <Ionicons
                   name="images-outline"
                   size={20}
-                  color={theme == "dark" ? "white" : "black"}
+                  color={theme === "dark" ? "white" : "black"}
                 />
 
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
-                    color: theme == "dark" ? "white" : "#2f2d51",
+                    color: theme === "dark" ? "white" : "#2f2d51",
                   }}
                 >
                   Templates
@@ -330,13 +318,13 @@ const CreateGroupModal = ({
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: theme == "dark" ? "#212121" : "#deebff",
+                  backgroundColor: theme === "dark" ? "#212121" : "#deebff",
                   flexDirection: "row",
                   padding: 10,
                   borderRadius: 10,
                   alignItems: "center",
                   borderWidth: 1,
-                  borderColor: theme == "dark" ? "#212121" : "#2f2d51",
+                  borderColor: theme === "dark" ? "#212121" : "#2f2d51",
                   gap: 10,
                 }}
                 onPress={photoPermission}
@@ -344,12 +332,12 @@ const CreateGroupModal = ({
                 <AntDesign
                   name="plus"
                   size={20}
-                  color={theme == "dark" ? "white" : "black"}
+                  color={theme === "dark" ? "white" : "black"}
                 />
                 <Text
                   style={{
                     fontFamily: "Inter-Medium",
-                    color: theme == "dark" ? "white" : "#2f2d51",
+                    color: theme === "dark" ? "white" : "#2f2d51",
                   }}
                 >
                   Photo Library
@@ -360,11 +348,11 @@ const CreateGroupModal = ({
 
           <View style={styles.inputField}>
             <TextInput
-              style={theme == "dark" ? styles.nameDark : styles.name}
+              style={theme === "dark" ? styles.nameDark : styles.name}
               autoFocus={false}
               placeholder="Prayer group name"
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
-              selectionColor={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+              placeholderTextColor={theme === "dark" ? "#d6d6d6" : "#2f2d51"}
+              selectionColor={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
               value={groupName}
               onChangeText={(text) => setGroupName(text)}
             />
@@ -381,7 +369,7 @@ const CreateGroupModal = ({
               <View style={{ gap: 5 }}>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           color: "white",
                           fontFamily: "Inter-Medium",
@@ -398,7 +386,7 @@ const CreateGroupModal = ({
                 </Text>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           color: "#D2D2D2",
                           fontFamily: "Inter-Medium",
@@ -425,7 +413,7 @@ const CreateGroupModal = ({
             <View style={{ width: "100%" }}>
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         color: "#efefef",
                         fontFamily: "Inter-Regular",
@@ -443,7 +431,7 @@ const CreateGroupModal = ({
               </Text>
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         color: "white",
                         alignSelf: "flex-end",

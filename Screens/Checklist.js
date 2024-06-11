@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -5,19 +6,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import { Container } from "../styles/appStyles";
+import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   AntDesign,
   FontAwesome,
-  Ionicons,
-  Fontisto,
   FontAwesome5,
+  Fontisto,
+  Ionicons,
 } from "@expo/vector-icons";
+
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
-import uuid from "react-native-uuid";
 import { deletePrayer } from "../redux/prayerReducer";
+import { Container } from "../styles/appStyles";
 
 const Checklist = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -28,14 +30,14 @@ const Checklist = ({ navigation }) => {
   const [answeredAlready, setAnsweredAlready] = useState("");
   const dispatch = useDispatch();
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers
+    (state) => state.answered.answeredPrayers,
   );
 
   const handleAddToAnsweredPrayer = (prayer) => {
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
       )
     ) {
       console.log("exists");
@@ -44,9 +46,9 @@ const Checklist = ({ navigation }) => {
       dispatch(
         addToAnsweredPrayer({
           answeredDate: new Date().toDateString(),
-          prayer: prayer,
+          prayer,
           id: uuid.v4(),
-        })
+        }),
       );
       setAnsweredAlready("");
     }

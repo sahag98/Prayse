@@ -1,7 +1,9 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { ModalContainer } from "../styles/appStyles";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
+
+import { ModalContainer } from "../styles/appStyles";
 const ReminderModal = ({
   theme,
   reminder,
@@ -13,21 +15,21 @@ const ReminderModal = ({
     <Modal
       key={reminder.id}
       animationType="fade"
-      transparent={true}
+      transparent
       visible={reminderVisible}
       onRequestClose={() => setReminderVisible(false)}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.9)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.9)" }
         }
       >
         <View
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   borderRadius: 10,
                   position: "relative",
@@ -58,12 +60,12 @@ const ReminderModal = ({
             <AntDesign
               name="close"
               size={28}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={theme === "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     marginVertical: 20,
                     textAlign: "center",
@@ -87,7 +89,7 @@ const ReminderModal = ({
           <View>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       fontFamily: "Inter-Medium",
                       color: "white",
@@ -104,7 +106,7 @@ const ReminderModal = ({
             </Text>
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       fontFamily: "Inter-Regular",
                       color: "white",
@@ -125,7 +127,7 @@ const ReminderModal = ({
               <>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Medium",
                           color: "white",
@@ -143,7 +145,7 @@ const ReminderModal = ({
 
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           fontFamily: "Inter-Regular",
                           color: "white",
@@ -168,5 +170,3 @@ const ReminderModal = ({
 };
 
 export default ReminderModal;
-
-const styles = StyleSheet.create({});

@@ -1,26 +1,27 @@
+import React from "react";
+import { useFonts } from "expo-font";
 import {
+  ActivityIndicator,
+  Linking,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
+  View,
 } from "react-native";
-import React from "react";
-import { Container, HeaderTitle } from "../styles/appStyles";
 import { useSelector } from "react-redux";
+
 import {
-  MaterialCommunityIcons,
-  Ionicons,
   AntDesign,
   Feather,
+  Ionicons,
+  MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
-import { Platform } from "react-native";
-import { Linking } from "react-native";
 
 import SettingsItems from "../components/SettingsItems";
+import { Container, HeaderTitle } from "../styles/appStyles";
 
 const More = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -28,12 +29,12 @@ const More = ({ navigation }) => {
   function giveFeedback(market) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${process.env.EXPO_PUBLIC_ANDROID_PACKAGE_NAME}&showAllReviews=true`
+        `market://details?id=${process.env.EXPO_PUBLIC_ANDROID_PACKAGE_NAME}&showAllReviews=true`,
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.EXPO_PUBLIC_IOS_ITEM_ID}?action=write-review`
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.EXPO_PUBLIC_IOS_ITEM_ID}?action=write-review`,
       );
     }
   }
@@ -132,7 +133,7 @@ const More = ({ navigation }) => {
     },
   ];
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),

@@ -1,9 +1,9 @@
 import React from "react";
-import { View, ActivityIndicator, ImageBackground } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { useSelector } from "react-redux";
+
 import Home from "../components/Home";
 import useIsReady from "../hooks/useIsReady";
-import bgImg from "../assets/bgImage5.png";
 
 const PrayerPage = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);

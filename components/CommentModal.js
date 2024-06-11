@@ -1,29 +1,30 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   FlatList,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
-import { Modal } from "react-native";
-import Toast from "react-native-toast-message";
-import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { HeaderView, ModalContainer } from "../styles/appStyles";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import axios from "axios";
-import { TextInput } from "react-native";
-import CommentItem from "./CommentItem";
 import { Divider } from "react-native-paper";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+
+import { HeaderView, ModalContainer } from "../styles/appStyles";
+
+import CommentItem from "./CommentItem";
 
 const CommentModal = ({
   commentVisible,
@@ -88,14 +89,13 @@ const CommentModal = ({
     if (comment.length <= 0) {
       showToast("error", "The response field can't be left empty.");
       setCommentVisible(false);
-      return;
     } else {
       //prayer_id for production
       //prayertest_id for testing
-      const { data, error } = await supabase.from("comments").insert({
+      const { error } = await supabase.from("comments").insert({
         prayer_id: id,
         user_id: user.id,
-        comment: comment,
+        comment,
       });
       showToast("success", "Response shared successfully. ✔️");
       if (expoToken.length > 0) {
@@ -119,7 +119,7 @@ const CommentModal = ({
       <Modal
         animationType="slide"
         onShow={onModalShow}
-        transparent={true}
+        transparent
         visible={commentVisible}
         onRequestClose={handleCloseModal}
       >
@@ -129,22 +129,22 @@ const CommentModal = ({
         >
           <ModalContainer
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     position: "relative",
                     backgroundColor: "#121212",
                     justifyContent: "flex-start",
                     alignItems: "flex-start",
-                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                    paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                   }
                 : {
                     position: "relative",
                     backgroundColor: "#F2F7FF",
                     justifyContent: "flex-start",
                     alignItems: "flex-start",
-                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                    paddingBottom: Platform.OS == "ios" ? insets.bottom : 0,
+                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                   }
             }
           >
@@ -157,12 +157,12 @@ const CommentModal = ({
                 <AntDesign
                   name="left"
                   size={30}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
+                  color={theme === "dark" ? "white" : "#2f2d51"}
                 />
               </TouchableOpacity>
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         color: "white",
                         fontSize: 20,
@@ -189,7 +189,7 @@ const CommentModal = ({
               }}
             >
               <View style={{ flex: 1, width: "100%" }}>
-                {commentsArray.length == 0 ? (
+                {commentsArray.length === 0 ? (
                   <View
                     style={{
                       flex: 1,
@@ -200,11 +200,11 @@ const CommentModal = ({
                     <FontAwesome5
                       name="comment-dots"
                       size={60}
-                      color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                      color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
                     />
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               fontFamily: "Inter-Medium",
                               marginTop: 10,
@@ -223,14 +223,14 @@ const CommentModal = ({
                 ) : (
                   <FlatList
                     data={commentsArray}
-                    keyExtractor={(e, i) => i.toString()}
+                    keyExtractor={(i) => i.toString()}
                     onEndReachedThreshold={0}
                     scrollEventThrottle={16}
                     showsVerticalScrollIndicator={false}
                     ItemSeparatorComponent={() => (
                       <Divider
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? { backgroundColor: "#525252", marginBottom: 10 }
                             : { backgroundColor: "#2f2d51", marginBottom: 10 }
                         }
@@ -259,12 +259,12 @@ const CommentModal = ({
                   style={styles.inputField}
                 >
                   <TextInput
-                    style={theme == "dark" ? styles.inputDark : styles.input}
+                    style={theme === "dark" ? styles.inputDark : styles.input}
                     placeholder="Add your response..."
                     placeholderTextColor={
-                      theme == "dark" ? "#b8b8b8" : "#2f2d51"
+                      theme === "dark" ? "#b8b8b8" : "#2f2d51"
                     }
-                    selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+                    selectionColor={theme === "dark" ? "white" : "#2f2d51"}
                     value={comment}
                     onChangeText={(text) => setComment(text)}
                     onContentSizeChange={handleContentSizeChange}
@@ -287,7 +287,7 @@ const CommentModal = ({
                   >
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               color: "#A5C9FF",
                               fontFamily: "Inter-Medium",

@@ -1,3 +1,5 @@
+import React from "react";
+import * as Notifications from "expo-notifications";
 import {
   FlatList,
   StyleSheet,
@@ -5,12 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { useDispatch, useSelector } from "react-redux";
-import * as Notifications from "expo-notifications";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+
 import { deleteReminder } from "../redux/remindersReducer";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const Reminder = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
@@ -126,7 +128,7 @@ const Reminder = ({ navigation }) => {
               };
               timeOptions = options;
             } else if (item.ocurrence === "None") {
-              let options = {
+              const options = {
                 month: "numeric",
                 day: "numeric",
                 year: "2-digit",
@@ -137,7 +139,7 @@ const Reminder = ({ navigation }) => {
             }
             const formattedDate = timestamp.toLocaleString(
               "en-US",
-              timeOptions
+              timeOptions,
             );
 
             return (

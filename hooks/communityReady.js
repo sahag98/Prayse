@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const communityReady = () => {
+const CommunityIsReady = () => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -10,4 +10,4 @@ const communityReady = () => {
   return isReady;
 };
 
-export default communityReady;
+export default CommunityIsReady;

@@ -1,27 +1,28 @@
+import React, { useState } from "react";
+import * as Device from "expo-device";
+import * as ImagePicker from "expo-image-picker";
+import * as Notifications from "expo-notifications";
 import {
+  Image,
+  Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { Modal } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import uuid from "react-native-uuid";
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import Toast from "react-native-toast-message";
+import uuid from "react-native-uuid";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Image } from "react-native";
-import { TextInput } from "react-native";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
-import * as ImagePicker from "expo-image-picker";
+
+import { Feather } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
-import { Keyboard } from "react-native";
+
 import { useSupabase } from "../context/useSupabase";
+import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
 const WelcomeModal = ({
   user,
@@ -59,7 +60,7 @@ const WelcomeModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!"
+          "We need camera roll permissions to make this work!",
         );
       } else {
         pickImage();
@@ -68,7 +69,7 @@ const WelcomeModal = ({
   };
 
   async function getProfile() {
-    const { data: profiles, error: profileError } = await supabase
+    const { data: profiles } = await supabase
       .from("profiles")
       .select()
       .eq("id", user?.id);
@@ -77,7 +78,7 @@ const WelcomeModal = ({
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -87,7 +88,7 @@ const WelcomeModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
+        result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -100,7 +101,7 @@ const WelcomeModal = ({
         type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
       });
 
-      let { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, formData);
 
@@ -116,7 +117,7 @@ const WelcomeModal = ({
         throw getUrlError;
       }
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({
           avatar_url: imageData.signedUrl,
@@ -127,12 +128,11 @@ const WelcomeModal = ({
         throw error;
       }
       getProfile();
-      // getPrayers();
     }
   };
 
   const checkIfUnique = async () => {
-    const { data: profiles, profileError } = await supabase
+    const { data: profiles } = await supabase
       .from("profiles")
       .select("full_name")
       .neq("id", user.id);
@@ -157,7 +157,7 @@ const WelcomeModal = ({
     }
 
     if (isUniqueName) {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("profiles")
         .update({
           full_name: name,
@@ -175,9 +175,9 @@ const WelcomeModal = ({
     const newId = id.substring(0, 3);
     setName(`Anonymous${newId}`);
     setImage(
-      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559"
+      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
     );
-    const { data, error } = await supabase
+    await supabase
       .from("profiles")
       .update({
         full_name: `Anonymous${newId}`,
@@ -189,7 +189,7 @@ const WelcomeModal = ({
   }
 
   async function sendToken(expoPushToken) {
-    const { data, error } = await supabase
+    await supabase
       .from("profiles")
       .update({ expoToken: expoPushToken })
       .eq("id", user?.id)
@@ -230,7 +230,7 @@ const WelcomeModal = ({
     <Modal
       onShow={getPermission}
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isShowingWelcome}
       onRequestClose={handleCloseModal}
     >
@@ -240,7 +240,7 @@ const WelcomeModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   backgroundColor: "#121212",
                   justifyContent: "center",
@@ -264,7 +264,7 @@ const WelcomeModal = ({
           >
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       fontFamily: "Inter-Bold",
                       textAlign: "center",
@@ -286,10 +286,10 @@ const WelcomeModal = ({
             <TouchableOpacity
               onPress={photoPermission}
               style={
-                theme == "dark" ? styles.featherIconDark : styles.featherIcon
+                theme === "dark" ? styles.featherIconDark : styles.featherIcon
               }
             >
-              {image.length == 0 ? (
+              {image.length === 0 ? (
                 <Text
                   style={
                     theme == "dark"
@@ -319,7 +319,7 @@ const WelcomeModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
                     : {
                         color: "#2f2d51",
@@ -333,7 +333,7 @@ const WelcomeModal = ({
               <TouchableOpacity onPress={() => Keyboard.dismiss()}>
                 <Text
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           color: "#ff6262",
                           fontFamily: "Inter-Regular",
@@ -351,8 +351,8 @@ const WelcomeModal = ({
               </TouchableOpacity>
             </View>
             <TextInput
-              style={theme == "dark" ? styles.inputDark : styles.input}
-              selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+              style={theme === "dark" ? styles.inputDark : styles.input}
+              selectionColor={theme === "dark" ? "white" : "#2f2d51"}
               value={name}
               onChangeText={(text) => setName(text)}
             />
@@ -374,7 +374,7 @@ const WelcomeModal = ({
           >
             <View
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { height: 1, width: "100%", backgroundColor: "#a5c9ff" }
                   : { height: 1, width: "100%", backgroundColor: "#2f2d51" }
               }
@@ -382,7 +382,7 @@ const WelcomeModal = ({
 
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       position: "absolute",
                       backgroundColor: "#121212",
@@ -414,7 +414,7 @@ const WelcomeModal = ({
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Medium",
                         textDecorationLine: "underline",
@@ -456,7 +456,7 @@ const WelcomeModal = ({
             <TouchableOpacity
               onPress={handleNext}
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       backgroundColor: "#a5c9ff",
                       width: "100%",
@@ -477,7 +477,7 @@ const WelcomeModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { color: "#121212", fontFamily: "Inter-Bold" }
                     : { color: "white", fontFamily: "Inter-Bold" }
                 }
@@ -488,7 +488,7 @@ const WelcomeModal = ({
             <TouchableOpacity
               onPress={logout}
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       backgroundColor: "#212121",
                       width: "100%",
@@ -510,7 +510,7 @@ const WelcomeModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { color: "white", fontFamily: "Inter-Bold" }
                     : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                 }
@@ -518,50 +518,6 @@ const WelcomeModal = ({
                 Back to Sign in
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={(handleNext)}
-              style={
-                theme == "dark"
-                  ? {
-                      backgroundColor: "#a5c9ff",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-                  : {
-                      borderColor: "#2f2d51",
-                      borderWidth: 1,
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-              }
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "#121212", fontFamily: "Inter-Bold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                }
-              >
-                Not Now
-              </Text>
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
-              <Text
-                style={{
-                  color: "#ff4e4e",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                }}
-              >
-                Dismiss Keyboard
-              </Text>
-            </TouchableOpacity> */}
           </View>
         </ModalContainer>
       </KeyboardAvoidingView>

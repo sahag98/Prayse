@@ -1,17 +1,18 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Moment from "moment";
 import {
+  Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Image } from "react-native";
-import Moment from "moment";
-import { FontAwesome5, AntDesign } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
-import axios from "axios";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 
 const CommentItem = ({
   item,
@@ -73,10 +74,9 @@ const CommentItem = ({
   const addReply = async (id) => {
     if (reply.length <= 0) {
       showToast("error", "The reply field can't be left empty.");
-      setCommentVisible(false);
-      return;
+      setIsShowingReplies(false);
     } else {
-      const { data, error } = await supabase.from("comments").insert({
+      const { error } = await supabase.from("comments").insert({
         // prayer_id: prayerId,
         user_id: user.id,
         comment: reply,
@@ -110,17 +110,17 @@ const CommentItem = ({
           />
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
                 : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Bold" }
             }
           >
             {item.profiles.full_name}
           </Text>
-          {item.profiles.admin == true && (
+          {item.profiles.admin === true && (
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       backgroundColor: "#ff4e4e",
                       paddingVertical: 3,
@@ -150,7 +150,7 @@ const CommentItem = ({
 
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   color: "#d6d6d6",
                   fontFamily: "Inter-Light",
@@ -170,7 +170,7 @@ const CommentItem = ({
       </View>
       <Text
         style={
-          theme == "dark"
+          theme === "dark"
             ? {
                 fontSize: 14,
                 color: "white",
@@ -191,7 +191,7 @@ const CommentItem = ({
       >
         {item.comment}
       </Text>
-      {isReplying != item.id ? (
+      {isReplying !== item.id ? (
         <TouchableOpacity
           onPress={() => setIsReplying(item.id)}
           style={{
@@ -204,7 +204,7 @@ const CommentItem = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#A5C9FF",
                     fontSize: 13,
@@ -222,7 +222,7 @@ const CommentItem = ({
           <FontAwesome5
             name="reply"
             size={17}
-            color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+            color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
           />
         </TouchableOpacity>
       ) : (
@@ -238,7 +238,7 @@ const CommentItem = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "#A5C9FF",
                     fontSize: 13,
@@ -256,11 +256,11 @@ const CommentItem = ({
           <AntDesign
             name="close"
             size={17}
-            color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+            color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
           />
         </TouchableOpacity>
       )}
-      {isReplying == item.id && (
+      {isReplying === item.id && (
         <Animated.View
           entering={FadeIn.duration(500)}
           exiting={FadeOut.duration(500)}
@@ -268,7 +268,7 @@ const CommentItem = ({
         >
           <TextInput
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     backgroundColor: "#212121",
                     padding: 10,
@@ -286,13 +286,13 @@ const CommentItem = ({
                   }
             }
             placeholder="Write a reply"
-            placeholderTextColor={theme == "dark" ? "#b8b8b8" : "#2f2d51"}
+            placeholderTextColor={theme === "dark" ? "#b8b8b8" : "#2f2d51"}
             value={reply}
             onChangeText={(text) => setReply(text)}
           />
           <TouchableOpacity
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     backgroundColor: "#A5C9FF",
                     padding: 12,
@@ -314,7 +314,7 @@ const CommentItem = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { color: "#121212", fontFamily: "Inter-Medium" }
                   : { color: "white", fontFamily: "Inter-Medium" }
               }
@@ -331,7 +331,7 @@ const CommentItem = ({
           {isShowingReplies ? (
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontSize: 13,
@@ -349,7 +349,7 @@ const CommentItem = ({
           ) : (
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "white",
                       fontSize: 13,
@@ -372,7 +372,7 @@ const CommentItem = ({
           entering={FadeIn.duration(500)}
           exiting={FadeOut.duration(500)}
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   backgroundColor: "#212121",
                   gap: 10,
@@ -391,7 +391,7 @@ const CommentItem = ({
         >
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     textAlign: "center",
                     fontFamily: "Inter-Bold",
@@ -406,7 +406,7 @@ const CommentItem = ({
           >
             Replies
           </Text>
-          {replyArray.lengh == 0 ? (
+          {replyArray.lengh === 0 ? (
             <Text style={{ backgroundColor: "red", height: 10, width: 20 }}>
               No replies yet.
             </Text>
@@ -441,7 +441,7 @@ const CommentItem = ({
                       />
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 color: "white",
 
@@ -459,7 +459,7 @@ const CommentItem = ({
                     </View>
                     <Text
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               color: "#d6d6d6",
                               fontFamily: "Inter-Light",
@@ -479,7 +479,7 @@ const CommentItem = ({
                   </View>
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             fontFamily: "Inter-Regular",
                             color: "white",

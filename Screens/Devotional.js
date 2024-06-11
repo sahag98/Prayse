@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   ActivityIndicator,
-  ScrollView,
   Image,
   RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { client } from "../lib/client";
-import "react-native-url-polyfill/auto";
-import { Container } from "../styles/appStyles";
+import { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-import { Divider } from "react-native-paper";
-import useIsReady from "../hooks/useIsReady";
-import { TouchableOpacity } from "react-native";
-import { useIsFocused } from "@react-navigation/native";
-import tbf from "../assets/tbf-logo.jpg";
-import NetInfo from "@react-native-community/netinfo";
 
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-} from "react-native-reanimated";
+import NetInfo from "@react-native-community/netinfo";
+import { useIsFocused } from "@react-navigation/native";
+
+import tbf from "../assets/tbf-logo.jpg";
+import useIsReady from "../hooks/useIsReady";
+import { client } from "../lib/client";
+import { Container } from "../styles/appStyles";
+
+import "react-native-url-polyfill/auto";
 
 const Devotional = ({ navigation }) => {
   const isFocused = useIsFocused();

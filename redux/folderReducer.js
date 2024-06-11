@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 export const folderSlice = createSlice({
   name: "folder",
@@ -22,19 +21,19 @@ export const folderSlice = createSlice({
     editFolderName: (state, action) => {
       const newFolders = [...state.folders];
       const folderIndex = state.folders.findIndex(
-        (folder) => folder.id === action.payload.id
+        (folder) => folder.id === action.payload.id,
       );
       newFolders.splice(folderIndex, 1, action.payload);
       state.folders = newFolders;
     },
     deleteFolder: (state, action) => {
       state.folders = state.folders.filter(
-        (folder) => folder.id !== action.payload
+        (folder) => folder.id !== action.payload,
       );
     },
     deleteQuickFolder: (state, action) => {
       state.folders = state.folders.filter(
-        (folder) => folder.id !== action.payload
+        (folder) => folder.id !== action.payload,
       );
       state.quickFolderExists = false;
     },

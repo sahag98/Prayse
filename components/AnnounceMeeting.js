@@ -1,9 +1,11 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { ModalContainer, ModalView } from "../styles/appStyles";
-import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
+
+import { useNavigation } from "@react-navigation/native";
+
+import { ModalContainer, ModalView } from "../styles/appStyles";
 const AnnounceMeeting = ({
   theme,
   currGroup,
@@ -31,7 +33,7 @@ const AnnounceMeeting = ({
   };
 
   const sendAnnounceMent = async () => {
-    let { data: members, error } = await supabase
+    const { data: members, error } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
       .eq("group_id", currGroup.groups?.id)
@@ -46,8 +48,8 @@ const AnnounceMeeting = ({
           body: `Join prayer meeting 🙏`,
           data: {
             screen: "Community",
-            currGroup: currGroup,
-            allGroups: allGroups,
+            currGroup,
+            allGroups,
           },
         };
         await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -67,10 +69,10 @@ const AnnounceMeeting = ({
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isAnnouncingMeeting}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={

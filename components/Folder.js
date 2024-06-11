@@ -1,47 +1,34 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Platform,
-  FlatList,
-  Dimensions,
-} from "react-native";
-import {
-  HeaderTitle,
-  ModalContainer,
-  ModalView,
-  ModalAction,
-  ModalActionGroup,
-  ModalIcon,
-  TodoText,
-  ListView2,
-} from "../styles/appStyles";
-import { useDispatch, useSelector } from "react-redux";
-import { TouchableOpacity, Animated } from "react-native";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { AnimatedFAB, Divider } from "react-native-paper";
-import { Modal } from "react-native";
-import {
-  addFolder,
-  deleteFolder,
-  deleteQuickFolder,
-} from "../redux/folderReducer";
-import uuid from "react-native-uuid";
+import React, { useEffect, useRef, useState } from "react";
 import { useFonts } from "expo-font";
-import { useRef } from "react";
-import AnsweredPrayer from "./AnsweredPrayer";
-import { SectionList } from "react-native";
-import FolderItem from "./FolderItem";
-import AddFolderModal from "./AddFolderModal";
+import {
+  Animated,
+  FlatList,
+  Platform,
+  SectionList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { AnimatedFAB } from "react-native-paper";
+import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { deletePrayerByFolderId } from "../redux/prayerReducer";
+
+import { addFolder } from "../redux/folderReducer";
+import { HeaderTitle, ListView2, TodoText } from "../styles/appStyles";
+
+import AddFolderModal from "./AddFolderModal";
+import AnsweredPrayer from "./AnsweredPrayer";
+import FolderItem from "./FolderItem";
 
 const Folder = ({ navigation, todos }) => {
   const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers
+    (state) => state.answered.answeredPrayers,
   );
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
@@ -86,7 +73,7 @@ const Folder = ({ navigation, todos }) => {
   answeredPrayers?.forEach((prayer) => {
     const date = prayer.answeredDate;
     const sectionIndex = sections.findIndex(
-      (section) => section.title === date
+      (section) => section.title === date,
     );
     if (sectionIndex === -1) {
       sections.push({
@@ -106,7 +93,7 @@ const Folder = ({ navigation, todos }) => {
     }
     setExtended(currentScrollPosition <= 0);
   };
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
@@ -130,7 +117,7 @@ const Folder = ({ navigation, todos }) => {
         id: uuid.v4(),
         name: folderName,
         prayers: [],
-      })
+      }),
     );
     setTimeout(() => {
       setAddVisible(false);
@@ -140,23 +127,12 @@ const Folder = ({ navigation, todos }) => {
     // setFolderName("");
   }
 
-  function deleteF() {
-    if (idToDelete == 4044) {
-      dispatch(deleteQuickFolder(idToDelete));
-      setOpen(false);
-    } else {
-      dispatch(deleteFolder(idToDelete));
-      dispatch(deletePrayerByFolderId(idToDelete));
-      setOpen(false);
-    }
-  }
-
   const renderSectionHeader = ({ section }) => {
     return (
       <View>
         <Text
           style={
-            theme == "dark"
+            theme === "dark"
               ? {
                   fontFamily: "Inter-Medium",
                   fontSize: 15,
@@ -177,11 +153,11 @@ const Folder = ({ navigation, todos }) => {
     );
   };
 
-  const renderAnsweredPrayers = ({ item, index }) => {
+  const renderAnsweredPrayers = ({ item }) => {
     return <AnsweredPrayer item={item} theme={theme} />;
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     return (
       <FolderItem
         item={item}
@@ -211,7 +187,7 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
-              backgroundColor: theme == "dark" ? "#3b3b3b" : "#d1e3ff",
+              backgroundColor: theme === "dark" ? "#3b3b3b" : "#d1e3ff",
               borderRadius: 20,
               paddingVertical: 5,
               alignItems: "center",
@@ -220,7 +196,7 @@ const Folder = ({ navigation, todos }) => {
           >
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -241,7 +217,7 @@ const Folder = ({ navigation, todos }) => {
           >
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -250,15 +226,6 @@ const Folder = ({ navigation, todos }) => {
             </HeaderTitle>
           </TouchableOpacity>
         )}
-        {/* <Divider
-          style={
-            theme == "dark"
-              ? { width: 1.5, backgroundColor: "white", height: "100%" }
-              : theme == "BlackWhite"
-              ? { width: 1.5, backgroundColor: "black", height: "100%" }
-              : { width: 1.5, backgroundColor: "#2f2d51", height: "100%" }
-          }
-        /> */}
         {folderClicked ? (
           <TouchableOpacity
             style={{
@@ -271,7 +238,7 @@ const Folder = ({ navigation, todos }) => {
           >
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -284,7 +251,7 @@ const Folder = ({ navigation, todos }) => {
             style={{
               width: "50%",
               justifyContent: "center",
-              backgroundColor: theme == "dark" ? "#3b3b3b" : "#d1e3ff",
+              backgroundColor: theme === "dark" ? "#3b3b3b" : "#d1e3ff",
               borderRadius: 20,
               paddingVertical: 5,
               alignItems: "center",
@@ -293,7 +260,7 @@ const Folder = ({ navigation, todos }) => {
           >
             <HeaderTitle
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       fontFamily: "Inter-Bold",
                       fontSize: 18,
@@ -307,16 +274,16 @@ const Folder = ({ navigation, todos }) => {
           </TouchableOpacity>
         )}
       </View>
-      {todos.length != 0 && folderClicked && (
+      {todos.length !== 0 && folderClicked && (
         <ListView2
           style={
-            theme == "dark"
+            theme === "dark"
               ? [styles.elevationDark, { backgroundColor: "#212121" }]
-              : theme == "BlackWhite"
-              ? [styles.elevationDark, { backgroundColor: "black" }]
-              : [styles.elevation, { backgroundColor: "#2f2d51" }]
+              : theme === "BlackWhite"
+                ? [styles.elevationDark, { backgroundColor: "black" }]
+                : [styles.elevation, { backgroundColor: "#2f2d51" }]
           }
-          underlayColor={theme == "dark" ? "#121212" : "#F2F7FF"}
+          underlayColor={theme === "dark" ? "#121212" : "#F2F7FF"}
           onPress={goToOrignalPrayer}
         >
           <View
@@ -335,7 +302,7 @@ const Folder = ({ navigation, todos }) => {
           </View>
         </ListView2>
       )}
-      {folders.length == 0 && folderClicked && (
+      {folders.length === 0 && folderClicked && (
         <View
           style={{
             flex: 1,
@@ -348,14 +315,14 @@ const Folder = ({ navigation, todos }) => {
           <AntDesign
             name="folder1"
             size={60}
-            color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
+            color={theme === "dark" ? "#e8bb4e" : "#2f2d51"}
           />
-          <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
+          <TodoText style={theme === "dark" ? styles.pressDark : styles.press}>
             Create a prayer folder.
           </TodoText>
           <Text
             style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+              color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               fontSize: 12,
               fontFamily: "Inter-Regular",
             }}
@@ -380,7 +347,7 @@ const Folder = ({ navigation, todos }) => {
             ListFooterComponent={() => (
               <View
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         height: 80,
                       }
@@ -398,22 +365,22 @@ const Folder = ({ navigation, todos }) => {
 
           <View style={styles.actionButtons}>
             <AnimatedFAB
-              icon={"plus"}
-              label={"Create Folder"}
+              icon="plus"
+              label="Create Folder"
               extended={isExtended}
               onPress={() => {
                 setAddVisible(true);
               }}
               visible={fabvisible}
-              animateFrom={"left"}
-              iconMode={"dynamic"}
-              color={theme == "dark" ? "#121212" : "white"}
+              animateFrom="left"
+              iconMode="dynamic"
+              color={theme === "dark" ? "#121212" : "white"}
               style={
-                theme == "dark"
+                theme === "dark"
                   ? styles.fabStyleDark
-                  : theme == "BlackWhite"
-                  ? styles.fabStyleBlack
-                  : styles.fabStyle
+                  : theme === "BlackWhite"
+                    ? styles.fabStyleBlack
+                    : styles.fabStyle
               }
             />
             <View>
@@ -433,29 +400,29 @@ const Folder = ({ navigation, todos }) => {
               ) : null}
 
               <AnimatedFAB
-                icon={"hands-pray"}
-                label={"Prayer Room"}
+                icon="hands-pray"
+                label="Prayer Room"
                 extended={isExtended}
                 onPress={() => {
                   navigation.navigate("PrayerRoom");
                 }}
                 visible={fabvisible}
-                animateFrom={"right"}
-                iconMode={"dynamic"}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                animateFrom="right"
+                iconMode="dynamic"
+                color={theme === "dark" ? "white" : "#2f2d51"}
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? [styles.fabStyleDark, { backgroundColor: "#212121" }]
-                    : theme == "BlackWhite"
-                    ? styles.fabStyleBlack
-                    : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]
+                    : theme === "BlackWhite"
+                      ? styles.fabStyleBlack
+                      : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]
                 }
               />
             </View>
           </View>
         </>
       )}
-      {!folderClicked && answeredPrayers.length != 0 && (
+      {!folderClicked && answeredPrayers.length !== 0 && (
         <SectionList
           sections={sections}
           // keyExtractor={[(item, index) => item.id.toString()]}
@@ -475,7 +442,7 @@ const Folder = ({ navigation, todos }) => {
           <FontAwesome name="check-circle-o" size={70} color="#00b400" />
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? { color: "white", fontSize: 15, fontFamily: "Inter-Medium" }
                 : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Medium" }
             }
@@ -497,8 +464,6 @@ const Folder = ({ navigation, todos }) => {
     </View>
   );
 };
-
-const width = Dimensions.get("window").width - 30;
 
 const styles = StyleSheet.create({
   fabStyleDark: {

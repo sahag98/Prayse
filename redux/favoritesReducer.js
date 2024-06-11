@@ -1,33 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGlobalStyle } from "styled-components";
 
 const initialState = {
-  favoriteVerses: []
-}
+  favoriteVerses: [],
+};
 
 export const favoritesSlice = createSlice({
-  name: 'favorites',
+  name: "favorites",
   initialState,
   reducers: {
     addToFavorites: (state, action) => {
-      const Favorites = [action.payload, ...state.favoriteVerses]
-      state.favoriteVerses = Favorites
+      const Favorites = [action.payload, ...state.favoriteVerses];
+      state.favoriteVerses = Favorites;
     },
-    deleteFavorites: (state, action) => {
-      state.favoriteVerses = []
+    deleteFavorites: (state) => {
+      state.favoriteVerses = [];
     },
     deleteFavoriteVerse: (state, action) => {
-      state.favoriteVerses = state.favoriteVerses.filter((verse) => verse.id !== action.payload)
+      state.favoriteVerses = state.favoriteVerses.filter(
+        (verse) => verse.id !== action.payload,
+      );
     },
-  }
-},
+  },
+});
 
-)
+export const { addToFavorites, deleteFavorites, deleteFavoriteVerse } =
+  favoritesSlice.actions;
 
-export const {
-  addToFavorites,
-  deleteFavorites,
-  deleteFavoriteVerse
-} = favoritesSlice.actions
-
-export default favoritesSlice.reducer
+export default favoritesSlice.reducer;

@@ -1,23 +1,11 @@
-import {
-  SectionList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 import React, { useEffect, useState } from "react";
-import GroupPrayerModal from "./GroupPrayerModal";
 import Moment from "moment";
+import { Image, SectionList, Text, TouchableOpacity, View } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
-const GroupPrayerList = ({
-  theme,
-  currentUser,
-  onlineUsers,
-  supabase,
-  currGroup,
-  allGroups,
-}) => {
+
+import GroupPrayerModal from "./GroupPrayerModal";
+const GroupPrayerList = ({ theme, currentUser, supabase, currGroup }) => {
   const [groupPrayers, setGroupPrayers] = useState([]);
   const [isShowingModal, setIsShowingModal] = useState(false);
   useEffect(() => {
@@ -81,7 +69,7 @@ const GroupPrayerList = ({
           </View>
         )}
         sections={groupPrayers}
-        keyExtractor={(item, index) => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View
             style={{
@@ -194,5 +182,3 @@ const GroupPrayerList = ({
 };
 
 export default GroupPrayerList;
-
-const styles = StyleSheet.create({});

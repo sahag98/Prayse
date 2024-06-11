@@ -1,21 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Modal,
-  Linking,
-} from "react-native";
+import { Linking, Modal, Text, TouchableOpacity, View } from "react-native";
+
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   HeaderTitle,
   ModalContainer,
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 const DonationModal = ({
   theme,
   donationModal,
@@ -28,28 +21,28 @@ const DonationModal = ({
   const stopReminder = async () => {
     setDonationModal(false);
     await AsyncStorage.removeItem("AppOpenings");
-    const reminder = await AsyncStorage.setItem("ReminderOn", "false");
+    await AsyncStorage.setItem("ReminderOn", "false");
     setIsReminderOff(false);
   };
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={donationModal}
       onRequestClose={handleCloseModal}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <ModalContainer
         style={
-          theme == "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
         }
       >
         <ModalView
           style={
-            theme == "dark"
+            theme === "dark"
               ? { backgroundColor: "#212121", width: "100%" }
               : { backgroundColor: "#b7d3ff", width: "100%" }
           }
@@ -60,7 +53,7 @@ const DonationModal = ({
             >
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? {
                         fontFamily: "Inter-Bold",
                         letterSpacing: 1,
@@ -78,13 +71,13 @@ const DonationModal = ({
               <AntDesign
                 name="heart"
                 size={24}
-                color={theme == "dark" ? "#ff6262" : "#ff6262"}
+                color={theme === "dark" ? "#ff6262" : "#ff6262"}
               />
             </View>
           </ModalIcon>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
@@ -107,7 +100,7 @@ const DonationModal = ({
           </Text>
           <Text
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     color: "white",
                     fontFamily: "Inter-Regular",
@@ -135,7 +128,7 @@ const DonationModal = ({
             <TouchableOpacity
               onPress={() => setDonationModal(false)}
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       width: "48%",
                       borderWidth: 1,
@@ -160,7 +153,7 @@ const DonationModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { color: "white", fontFamily: "Inter-Bold" }
                     : { color: "#2f2d51", fontFamily: "Inter-Bold" }
                 }
@@ -174,7 +167,7 @@ const DonationModal = ({
                 Linking.openURL("https://www.buymeacoffee.com/prayse")
               }
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       width: "48%",
                       flexDirection: "row",
@@ -200,7 +193,7 @@ const DonationModal = ({
             >
               <Text
                 style={
-                  theme == "dark"
+                  theme === "dark"
                     ? { color: "white", fontFamily: "Inter-Bold" }
                     : { color: "white", fontFamily: "Inter-Bold" }
                 }
@@ -213,7 +206,7 @@ const DonationModal = ({
           <TouchableOpacity
             onPress={stopReminder}
             style={
-              theme == "dark"
+              theme === "dark"
                 ? {
                     width: "100%",
 
@@ -235,7 +228,7 @@ const DonationModal = ({
           >
             <Text
               style={
-                theme == "dark"
+                theme === "dark"
                   ? {
                       color: "#bebebe",
                       fontSize: 13,

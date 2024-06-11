@@ -1,27 +1,29 @@
 import React, { useState } from "react";
+import { useFonts } from "expo-font";
+import LottieView from "lottie-react-native";
 import {
-  View,
-  FlatList,
   ActivityIndicator,
-  Text,
+  FlatList,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
+import { useSelector } from "react-redux";
+
+import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import { Motion } from "@legendapp/motion";
+import { useNavigation } from "@react-navigation/native";
+
 import {
   ListView,
-  TodoText,
-  TodoDate,
   TodoCategory,
+  TodoDate,
+  TodoText,
 } from "../styles/appStyles";
-import { useFonts } from "expo-font";
 
-import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
-import { Motion } from "@legendapp/motion";
 import CategoryTabs from "./CategoryTabs";
 import SearchBar from "./SearchBar";
-import { useSelector } from "react-redux";
-import LottieView from "lottie-react-native";
-import { useNavigation } from "@react-navigation/native";
 
 const ListItems = ({
   pickedPrayer,
@@ -32,7 +34,7 @@ const ListItems = ({
 }) => {
   const theme = useSelector((state) => state.user.theme);
   const navigation = useNavigation();
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
@@ -51,7 +53,7 @@ const ListItems = ({
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
 
-  let value = 0;
+  const value = 0;
 
   const All = "All";
   const General = "General";
@@ -69,10 +71,10 @@ const ListItems = ({
     .filter((item) => (search !== "" ? item.prayer.includes(search) : true));
 
   const list = prayers.filter((item) =>
-    search !== "" ? item.prayer.includes(search) : true
+    search !== "" ? item.prayer.includes(search) : true,
   );
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     const RowText = TodoText;
     const categoryItem = item.category;
 
@@ -96,7 +98,7 @@ const ListItems = ({
         >
           <ListView
             style={
-              theme == "dark"
+              theme === "dark"
                 ? [{ backgroundColor: "#212121", position: "relative" }]
                 : [
                     {
@@ -123,7 +125,7 @@ const ListItems = ({
               >
                 <RowText
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           paddingRight: 5,
                           fontFamily: "Inter-Regular",
@@ -140,7 +142,7 @@ const ListItems = ({
                   {item.prayer}
                 </RowText>
               </View>
-              {search.length == 0 && (
+              {search.length === 0 && (
                 <TouchableOpacity
                   onPress={() => pickedPrayer(item)}
                   style={{ position: "absolute", top: 9, right: 3, padding: 5 }}
@@ -164,7 +166,7 @@ const ListItems = ({
                 <TouchableOpacity
                   onPress={() => addReminder(item.prayer)}
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           flexDirection: "row",
                           alignItems: "center",
@@ -188,11 +190,11 @@ const ListItems = ({
                   <AntDesign
                     name="pluscircleo"
                     size={15}
-                    color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                    color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
                   />
                   <Text
                     style={
-                      theme == "dark"
+                      theme === "dark"
                         ? {
                             color: "#A5C9FF",
                             fontSize: 12,
@@ -215,10 +217,10 @@ const ListItems = ({
                     gap: 15,
                   }}
                 >
-                  {categoryItem == "General" && (
+                  {categoryItem === "General" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               paddingVertical: 5,
                               paddingHorizontal: 12,
@@ -239,7 +241,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -256,10 +258,10 @@ const ListItems = ({
                       </Text>
                     </TodoCategory>
                   )}
-                  {categoryItem == "People" && (
+                  {categoryItem === "People" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               paddingVertical: 5,
                               paddingHorizontal: 12,
@@ -284,7 +286,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -301,10 +303,10 @@ const ListItems = ({
                       </Text>
                     </TodoCategory>
                   )}
-                  {categoryItem == "Praise" && (
+                  {categoryItem === "Praise" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               paddingVertical: 5,
                               paddingHorizontal: 12,
@@ -329,7 +331,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -346,10 +348,10 @@ const ListItems = ({
                       </Text>
                     </TodoCategory>
                   )}
-                  {categoryItem == "Personal" && (
+                  {categoryItem === "Personal" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               paddingVertical: 5,
                               paddingHorizontal: 12,
@@ -374,7 +376,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -391,10 +393,10 @@ const ListItems = ({
                       </Text>
                     </TodoCategory>
                   )}
-                  {categoryItem == "Other" && (
+                  {categoryItem === "Other" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
                               paddingVertical: 5,
                               paddingHorizontal: 12,
@@ -419,7 +421,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -436,13 +438,11 @@ const ListItems = ({
                       </Text>
                     </TodoCategory>
                   )}
-                  {categoryItem == "None" && (
+                  {categoryItem === "None" && (
                     <TodoCategory
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? {
-                              // flex: 1,
-                              // height: 23,
                               paddingVertical: 5,
                               paddingHorizontal: 12,
                               justifyContent: "center",
@@ -454,8 +454,6 @@ const ListItems = ({
                               color: "black",
                             }
                           : {
-                              // flex: 1,
-                              // height: 23,
                               paddingVertical: 5,
                               paddingHorizontal: 12,
                               justifyContent: "center",
@@ -470,7 +468,7 @@ const ListItems = ({
                     >
                       <Text
                         style={
-                          theme == "dark"
+                          theme === "dark"
                             ? {
                                 fontSize: 11,
                                 fontFamily: "Inter-SemiBold",
@@ -490,7 +488,7 @@ const ListItems = ({
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TodoDate
                       style={
-                        theme == "dark"
+                        theme === "dark"
                           ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
                           : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
                       }
@@ -513,7 +511,7 @@ const ListItems = ({
 
   return (
     <>
-      {prayers.length == 0 && (
+      {prayers.length === 0 && (
         <View
           style={{
             flex: 1,
@@ -526,9 +524,9 @@ const ListItems = ({
           <FontAwesome
             name="list-alt"
             size={50}
-            color={theme == "dark" ? "white" : "#2f2d51"}
+            color={theme === "dark" ? "white" : "#2f2d51"}
           />
-          <TodoText style={theme == "dark" ? styles.pressDark : styles.press}>
+          <TodoText style={theme === "dark" ? styles.pressDark : styles.press}>
             No prayers added yet!
           </TodoText>
         </View>
@@ -540,7 +538,7 @@ const ListItems = ({
         status={status}
         setStatus={setStatus}
       />
-      {prayers.length != 0 && (
+      {prayers.length !== 0 && (
         <>
           <SearchBar theme={theme} search={search} setSearch={setSearch} />
           {loading == true && (
@@ -561,9 +559,9 @@ const ListItems = ({
               />
             </View>
           )}
-          {loading == false && (
+          {loading === false && (
             <FlatList
-              data={status == "All" ? list : filteredList}
+              data={status === "All" ? list : filteredList}
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
@@ -573,7 +571,7 @@ const ListItems = ({
               ListFooterComponent={() => (
                 <View
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           height: 80,
                         }

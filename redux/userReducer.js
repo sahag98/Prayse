@@ -1,5 +1,6 @@
+import { Appearance } from "react-native";
+
 import { createSlice } from "@reduxjs/toolkit";
-import { View, Appearance, StyleSheet } from "react-native";
 
 const initialState = {
   userImg: "",
@@ -39,7 +40,7 @@ export const userSlice = createSlice({
     small: (state) => {
       state.fontSize = 12;
     },
-    didEnterGiveaway: (state, action) => {
+    didEnterGiveaway: (state) => {
       state.alreadyEnteredGiveaway = true;
       state.isShowingGiveawayModal = true;
     },
@@ -84,13 +85,13 @@ export const userSlice = createSlice({
         if (differenceInDays === 1) {
           state.appstreakNum = state.appstreakNum + 1;
           console.log(
-            "App streak oneBeforeLastItemDate is the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is the correct date before the lastItemDate.",
           );
           // Perform your function here
         } else {
           state.appstreakNum = 0;
           console.log(
-            "App streak oneBeforeLastItemDate is not the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is not the correct date before the lastItemDate.",
           );
         }
       }
@@ -108,19 +109,19 @@ export const userSlice = createSlice({
 
       // Find the index of the entry with the same date
       const dateIndex = state.completedItems.findIndex(
-        (entry) => entry.date === date
+        (entry) => entry.date === date,
       );
 
       if (dateIndex >= 0) {
         // If date exists, add the item to the items array of that date
 
-        if (state.completedItems[dateIndex].items.length == 3) {
+        if (state.completedItems[dateIndex].items.length === 3) {
           return;
         }
         state.completedItems[dateIndex].items.push(item);
       } else {
         // If date does not exist, create a new entry
-        state.completedItems.push({ date: date, items: [item] });
+        state.completedItems.push({ date, items: [item] });
       }
     },
     deletePreviousDayItems: (state, action) => {
@@ -128,14 +129,14 @@ export const userSlice = createSlice({
       const { yesterday } = action.payload;
       const currentDate = new Date().toLocaleDateString().split("T")[0];
       const dateIndex = state.completedItems.findIndex(
-        (entry) => entry?.date === yesterday
+        (entry) => entry?.date === yesterday,
       );
 
       console.log("current date: ", currentDate);
       console.log("yesterday date: ", yesterday);
 
       const currentDateIndex = state.completedItems.findIndex(
-        (entry) => entry?.date === currentDate
+        (entry) => entry?.date === currentDate,
       );
 
       if (dateIndex >= 0) {
@@ -154,10 +155,6 @@ export const userSlice = createSlice({
       if (lastItem !== currentDate) {
         state.hasIncreasedDevoStreak = false;
       }
-      // if (lastItem !== currentDate) {
-      //   console.log("yes same date");
-      //   state.hasIncreasedDevoStreak = false
-      // }
 
       function parseLocaleDateString(dateString, locale = "en-US") {
         const [month, day, year] = dateString.split(/[\/\-]/).map(Number);
@@ -168,9 +165,6 @@ export const userSlice = createSlice({
       if (lastItem && oneBeforeLastItem) {
         const lastItemDate = parseLocaleDateString(lastItem);
         const oneBeforeLastItemDate = parseLocaleDateString(oneBeforeLastItem);
-        console.log("will be adding devo streak");
-        // const lastItemDate = new Date(lastItem);
-        // const oneBeforeLastItemDate = new Date(oneBeforeLastItem);
 
         console.log("date: ", lastItemDate);
 
@@ -192,7 +186,7 @@ export const userSlice = createSlice({
           if (
             currentDate === lastItem &&
             lastItemData.items.length === 3 &&
-            state.hasIncreasedDevoStreak == false
+            state.hasIncreasedDevoStreak === false
           ) {
             console.log("should increase devo");
             state.devostreak += 1;
@@ -202,13 +196,13 @@ export const userSlice = createSlice({
           // state.devostreak = state.devostreak + 1;
           // state.hasIncreasedDevoStreak == true;
           console.log(
-            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate."
+            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate.",
           );
           // Perform your function here
         } else {
           state.devostreak = 0;
           console.log(
-            "The oneBeforeLastItemDate is not the correct date before the lastItemDate."
+            "The oneBeforeLastItemDate is not the correct date before the lastItemDate.",
           );
         }
       }
@@ -221,7 +215,7 @@ export const userSlice = createSlice({
     increaseStreakCounter: (state) => {
       if (
         state.completedItems.length === 3 &&
-        state.alreadyIncreasedStreak == false
+        state.alreadyIncreasedStreak === false
       ) {
         console.log("will increase devo streak");
         state.devostreak = state.devostreak + 1;

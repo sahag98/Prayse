@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Button, TextInput, FlatList } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import React, { useState } from "react";
 import * as Notifications from "expo-notifications";
+import { Button, FlatList, Text, TextInput, View } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import { Container } from "../styles/appStyles";
 // import * as Permissions from "expo-permissions";
 
