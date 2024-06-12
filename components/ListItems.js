@@ -52,7 +52,7 @@ const ListItems = ({
   const prayers = prayerList.filter((item) => item.folderId === folderId);
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
-
+  console.log(size);
   const value = 0;
 
   const All = "All";
@@ -71,7 +71,7 @@ const ListItems = ({
     .filter((item) => (search !== "" ? item.prayer.includes(search) : true));
 
   const list = prayers.filter((item) =>
-    search !== "" ? item.prayer.includes(search) : true,
+    search !== "" ? item.prayer.includes(search) : true
   );
 
   const renderItem = ({ item }) => {

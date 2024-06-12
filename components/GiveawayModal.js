@@ -23,6 +23,7 @@ const GiveawayModal = ({
 }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const { supabase } = useSupabase();
 
   const dispatch = useDispatch();
@@ -31,17 +32,33 @@ const GiveawayModal = ({
       setError("An email address is required. Try again");
       return;
     } else {
-      await supabase
+      const { data, error } = await supabase
         .from("giveaway_entries")
         .insert([{ email, streak: appstreak }])
         .select();
+
+      // console.log("data: ", data);
+
+      console.log("giveaway error: ", error);
+
+      if (data && data[0]?.email) {
+        setError("");
+        setSuccess(
+          "You have entered the giveaway! Be on the lookout for an email from prayse.app@gmail.com for further details."
+        );
+      }
+
+      if (error && error?.message?.includes("duplicate")) {
+        setSuccess("");
+        setError("You have already entered the giveaway.");
+      }
     }
-    console.log("submitting");
-    closeModal();
   }
 
   function closeModal() {
     dispatch(resetGiveaway());
+    setError("");
+    setSuccess("");
   }
   return (
     <Modal
@@ -78,7 +95,7 @@ const GiveawayModal = ({
             }
           >
             <AntDesign
-              onPress={() => setIsShowingGiveaway(false)}
+              onPress={closeModal}
               style={{ position: "absolute", right: 8, top: 8 }}
               name="close"
               size={22}
@@ -129,6 +146,17 @@ const GiveawayModal = ({
               }
               placeholder="Enter email"
             />
+            {success && (
+              <Text
+                style={{
+                  color: "#008900",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 13,
+                }}
+              >
+                {success}
+              </Text>
+            )}
             {error && (
               <Text
                 style={{
@@ -140,27 +168,49 @@ const GiveawayModal = ({
                 {error}
               </Text>
             )}
-
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={{
-                width: "100%",
-                backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                padding: 12,
-                borderRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
+            {success ? (
+              <TouchableOpacity
+                onPress={closeModal}
                 style={{
-                  color: theme === "dark" ? "#121212" : "white",
-                  fontFamily: "Inter-Bold",
+                  width: "100%",
+                  backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
+                  padding: 12,
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                Submit
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: theme === "dark" ? "#121212" : "white",
+                    fontFamily: "Inter-Bold",
+                  }}
+                >
+                  Okay
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={{
+                  width: "100%",
+                  backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
+                  padding: 12,
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme === "dark" ? "#121212" : "white",
+                    fontFamily: "Inter-Bold",
+                  }}
+                >
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            )}
           </ModalView2>
         </ModalContainer>
       </KeyboardAvoidingView>
