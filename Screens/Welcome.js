@@ -26,6 +26,8 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import uuid from "react-native-uuid";
@@ -34,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AntDesign,
   Feather,
+  FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
@@ -54,7 +57,10 @@ import { addQuickFolder } from "../redux/folderReducer";
 import { addNoti } from "../redux/notiReducer";
 import { addPrayer } from "../redux/prayerReducer";
 import { deleteReminder } from "../redux/remindersReducer";
-import { increaseAppStreakCounter } from "../redux/userReducer";
+import {
+  deleteAppStreakCounter,
+  increaseAppStreakCounter,
+} from "../redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -117,7 +123,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings.",
+        "To recieve notifications in the future, enable Notifications from the App Settings."
       );
       return;
     }
@@ -156,7 +162,7 @@ const Welcome = ({ navigation }) => {
   const notis = useSelector((state) => state.noti.notifications);
 
   const quickFolderExists = useSelector(
-    (state) => state.folder.quickFolderExists,
+    (state) => state.folder.quickFolderExists
   );
 
   const welcomeFadeIn = useSharedValue(0);
@@ -175,6 +181,14 @@ const Welcome = ({ navigation }) => {
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
   const [notiVisible, setNotiVisible] = useState(false);
   const [isShowingStreak, setIsShowingStreak] = useState(false);
+  const streakScale = useSharedValue(1);
+
+  const animatedStreakStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: streakScale.value }],
+    };
+  });
+
   const doFadeInAnimation = () => {
     welcomeFadeIn.value = withTiming(1, {
       duration: 2000,
@@ -223,7 +237,7 @@ const Welcome = ({ navigation }) => {
             id: 4044,
             name: "Quick Prayers",
             prayers: [],
-          }),
+          })
         );
       } catch (error) {
         console.log(error);
@@ -245,7 +259,7 @@ const Welcome = ({ navigation }) => {
         category: quickcategoryvalue,
         date: new Date().toLocaleString(),
         id: uuid.v4(),
-      }),
+      })
     );
     setQuickModal(false);
     setQuickprayervalue("");
@@ -283,11 +297,11 @@ const Welcome = ({ navigation }) => {
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
           );
         } else if (Platform.OS === "android") {
           Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
           );
         }
       }
@@ -339,7 +353,7 @@ const Welcome = ({ navigation }) => {
       // console.log("app streak:", appstreak);
 
       const today = new Date().toLocaleDateString("en-CA");
-      console.log(today);
+      console.log("today: ", today);
 
       dispatch(increaseAppStreakCounter({ today }));
 
@@ -385,7 +399,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />,
+          />
         );
       } else if (currentHour >= 12 && currentHour < 18) {
         setGreeting("Good afternoon ");
@@ -394,7 +408,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />,
+          />
         );
       } else {
         setGreeting("Good Evening ");
@@ -403,7 +417,7 @@ const Welcome = ({ navigation }) => {
             name="moon"
             size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
-          />,
+          />
         );
       }
     }
@@ -477,7 +491,7 @@ const Welcome = ({ navigation }) => {
               question_id: notification.request.content.data?.question_id,
               prayerId: notification.request.content.data?.prayerId,
               identifier: notification.request.identifier,
-            }),
+            })
           );
         }
 
@@ -494,7 +508,7 @@ const Welcome = ({ navigation }) => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current,
+        notificationListener.current
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -629,15 +643,22 @@ const Welcome = ({ navigation }) => {
             onPress={() => setIsShowingStreak((prev) => !prev)}
             style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
           >
-            <MaterialCommunityIcons
+            <FontAwesome
+              name="calendar-check-o"
+              size={20}
+              color={theme === "dark" ? "white" : "#2f2d51"}
+            />
+            {/* <MaterialCommunityIcons
+              style={{ zIndex: 10 }}
               name="hands-pray"
               size={20}
               color={theme == "dark" ? "white" : "#2f2d51"}
-            />
+            /> */}
+
             <Text
               style={{
                 color: theme == "dark" ? "white" : "#2f2d51",
-                fontSize: 12,
+
                 fontFamily: "Inter-Bold",
               }}
             >
@@ -900,7 +921,7 @@ const Welcome = ({ navigation }) => {
                   }
                   const formattedDate = timestamp.toLocaleString(
                     "en-US",
-                    timeOptions,
+                    timeOptions
                   );
 
                   return (
@@ -1222,7 +1243,7 @@ const Welcome = ({ navigation }) => {
               }
               onPress={() =>
                 Linking.openURL(
-                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
                 )
               }
             >
@@ -1286,7 +1307,7 @@ const Welcome = ({ navigation }) => {
               style={theme == "dark" ? styles.refreshDark : styles.refresh}
               onPress={() =>
                 Linking.openURL(
-                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
                 )
               }
             >

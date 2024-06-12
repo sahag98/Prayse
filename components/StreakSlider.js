@@ -21,14 +21,14 @@ const StreakSlider = ({
   appstreak,
 }) => {
   const isShowingGiveawayModal = useSelector(
-    (state) => state.user.isShowingGiveawayModal,
+    (state) => state.user.isShowingGiveawayModal
   );
 
   const dispatch = useDispatch();
   useEffect(() => {
     console.log("app streak check: ", appstreak);
-
-    if (appstreak === 3 && isShowingGiveawayModal === false) {
+    console.log("is Showing Giveaway modal: ", isShowingGiveawayModal);
+    if (appstreak === 1 && isShowingGiveawayModal === false) {
       console.log("entering giveaway!!");
       dispatch(didEnterGiveaway());
     }
@@ -115,15 +115,14 @@ const StreakSlider = ({
               style={{
                 width: "50%",
                 alignItems: "center",
-                gap: 5,
               }}
             >
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
               >
                 <FontAwesome
                   name="calendar-check-o"
-                  size={30}
+                  size={22}
                   color={theme === "dark" ? "white" : "#2f2d51"}
                 />
 
@@ -131,6 +130,7 @@ const StreakSlider = ({
                   style={{
                     color: theme === "dark" ? "white" : "#2f2d51",
                     fontFamily: "Inter-Bold",
+                    fontSize: 35,
                   }}
                 >
                   {appstreak}
@@ -140,7 +140,7 @@ const StreakSlider = ({
                 style={{
                   color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                   fontFamily: "Inter-Bold",
-                  fontSize: 12,
+                  fontSize: 13,
                 }}
               >
                 App Streak
@@ -150,21 +150,21 @@ const StreakSlider = ({
               style={{
                 width: "50%",
                 alignItems: "center",
-                gap: 5,
               }}
             >
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
               >
                 <MaterialCommunityIcons
                   name="hands-pray"
-                  size={30}
+                  size={22}
                   color={theme === "dark" ? "white" : "#2f2d51"}
                 />
                 <Text
                   style={{
                     color: theme === "dark" ? "white" : "#2f2d51",
                     fontFamily: "Inter-Bold",
+                    fontSize: 35,
                   }}
                 >
                   {streak}
@@ -174,7 +174,7 @@ const StreakSlider = ({
                 style={{
                   color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
                   fontFamily: "Inter-Bold",
-                  fontSize: 12,
+                  fontSize: 13,
                 }}
               >
                 Devotions Streak
@@ -207,11 +207,11 @@ const StreakSlider = ({
                 fontSize: 16,
               }}
             >
-              {((appstreak / 3) * 100).toFixed(1)}%
+              {((appstreak / 1) * 100).toFixed(1)}%
             </Text>
             <ProgressBar
               style={{ height: 8, borderRadius: 10 }}
-              progress={appstreak / 3}
+              progress={appstreak / 1}
               color="green"
             />
           </View>
@@ -224,7 +224,7 @@ const StreakSlider = ({
               marginBottom: 10,
             }}
           >
-            Reach 3 days for a chance to win a special gift!
+            Reach 1 day for to win a special gift!
           </Text>
 
           <TouchableOpacity

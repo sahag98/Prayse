@@ -18,9 +18,8 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
   const hasEnteredGiveaway = useSelector(
-    (state) => state.user.alreadyEnteredGiveaway,
+    (state) => state.user.alreadyEnteredGiveaway
   );
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,7 +38,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       addtoCompletedItems({
         item: selected,
         date: currentDate,
-      }),
+      })
     );
 
     navigation.navigate(selected, {
@@ -115,9 +114,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               width: 5,
               height: "75%",
               top: "50%",
-              left: 11,
+              left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom"),
+                completedItem.items.find((item) => item === "PrayerRoom")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -131,7 +130,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom"),
+                completedItem.items.find((item) => item === "PrayerRoom")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -200,9 +199,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               width: 5,
               height: "50%",
               bottom: "50%",
-              left: 11,
+              left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay"),
+                completedItem.items.find((item) => item === "VerseOfTheDay")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -218,9 +217,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               width: 5,
               height: "75%",
               top: "50%",
-              left: 11,
+              left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay"),
+                completedItem.items.find((item) => item === "VerseOfTheDay")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -234,7 +233,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay"),
+                completedItem.items.find((item) => item === "VerseOfTheDay")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -302,9 +301,9 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               width: 5,
               height: "50%",
               bottom: "50%",
-              left: 11,
+              left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList"),
+                completedItem.items.find((item) => item === "DevoList")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -318,7 +317,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList"),
+                completedItem.items.find((item) => item === "DevoList")
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
