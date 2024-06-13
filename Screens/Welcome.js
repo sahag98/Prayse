@@ -26,20 +26,12 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  Ionicons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -52,15 +44,13 @@ import NewFeaturesModal from "../components/NewFeaturesModal";
 import QuestionoftheWeek from "../components/QuestionoftheWeek";
 import StreakSlider from "../components/StreakSlider";
 import UpdateModal from "../components/UpdateModal";
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { addQuickFolder } from "../redux/folderReducer";
 import { addNoti } from "../redux/notiReducer";
 import { addPrayer } from "../redux/prayerReducer";
 import { deleteReminder } from "../redux/remindersReducer";
-import {
-  deleteAppStreakCounter,
-  increaseAppStreakCounter,
-} from "../redux/userReducer";
+import { increaseAppStreakCounter } from "../redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -91,7 +81,7 @@ async function sendToken(expoPushToken) {
     body: "And here is the body!",
     data: { someData: "goes here" },
   };
-  await fetch(process.env.EXPO_PUBLIC_NOTIFICATION_API, {
+  await fetch(config.notificationApi, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -130,7 +120,7 @@ async function registerForPushNotificationsAsync() {
 
     token = (
       await Notifications.getExpoPushTokenAsync({
-        projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+        projectId: config.projectId,
       })
     ).data;
   } else {

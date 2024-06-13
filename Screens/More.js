@@ -21,6 +21,7 @@ import {
 } from "@expo/vector-icons";
 
 import SettingsItems from "../components/SettingsItems";
+import config from "../config";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const More = ({ navigation }) => {
@@ -29,12 +30,12 @@ const More = ({ navigation }) => {
   function giveFeedback(market) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${process.env.EXPO_PUBLIC_ANDROID_PACKAGE_NAME}&showAllReviews=true`,
+        `market://details?id=${config.androidPackageName}&showAllReviews=true`,
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${process.env.EXPO_PUBLIC_IOS_ITEM_ID}?action=write-review`,
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`,
       );
     }
   }

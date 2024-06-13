@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
+import config from "../config";
 import { deleteAnsweredPrayers } from "../redux/answeredReducer";
 import { deleteAllFolders } from "../redux/folderReducer";
 import { clearPrayerData } from "../redux/prayerReducer";
@@ -58,7 +59,7 @@ const Settings = ({ navigation }) => {
       body: "And here is the body!",
       data: { someData: "goes here" },
     };
-    await fetch(process.env.EXPO_PUBLIC_NOTIFICATION_API, {
+    await fetch(config.notificationApi, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -88,7 +89,7 @@ const Settings = ({ navigation }) => {
       console.log("permission granted");
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+          projectId: config.projectId,
         })
       ).data;
       setIsEnabled(true);

@@ -4,6 +4,8 @@ import Toast from "react-native-toast-message";
 
 import { createClient } from "@supabase/supabase-js";
 
+import config from "../config";
+
 import { SupabaseContext } from "./SupabaseContext";
 
 import "react-native-url-polyfill/auto";
@@ -42,18 +44,14 @@ export const SupabaseProvider = (props) => {
   const [refreshAnswers, setRefreshAnswers] = useState(false);
   const [refreshReflections, setRefreshReflections] = useState(false);
   const [latestQuestion, setLatestQuestion] = useState(null);
-  const supabase = createClient(
-    process.env.EXPO_PUBLIC_SUPABASE_URL,
-    process.env.EXPO_PUBLIC_SUPABASE_ANON,
-    {
-      auth: {
-        storage: ExpoSecureStoreAdapter,
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: false,
-      },
+  const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+    auth: {
+      storage: ExpoSecureStoreAdapter,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
     },
-  );
+  });
 
   const getGoogleOAuthUrl = async () => {
     const result = await supabase.auth.signInWithOAuth({
