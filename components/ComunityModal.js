@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
 
+import config from "../config";
 import { ModalContainer } from "../styles/appStyles";
 
 const CommunityModal = ({
@@ -91,7 +92,7 @@ const CommunityModal = ({
         data: { screen: "PublicCommunity", public: true, verseTitle: "" },
       };
 
-      fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+      fetch(config.publicMessage, {
         method: "POST",
         headers: {
           Accept: "application/json",

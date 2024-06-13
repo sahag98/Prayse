@@ -24,6 +24,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import tbf from "../assets/tbf-logo.jpg";
 import DevoItem from "../components/DevoItem";
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import useIsReady from "../hooks/useIsReady";
 import { client } from "../lib/client";
@@ -134,7 +135,7 @@ const DevoList = ({ navigation, route }) => {
       data: { screen: "DevoList", verseTitle: "" },
     };
 
-    fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+    fetch(config.prayseMessage, {
       method: "POST",
       headers: {
         Accept: "application/json",

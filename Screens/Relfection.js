@@ -18,6 +18,7 @@ import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
 import ReflectionItem from "../components/ReflectionItem";
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderView } from "../styles/appStyles";
 
@@ -113,7 +114,7 @@ const Relfection = ({ navigation, route }) => {
       },
     };
 
-    fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+    fetch(config.prayseMessage, {
       method: "POST",
       headers: {
         Accept: "application/json",
