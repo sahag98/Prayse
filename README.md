@@ -8,5 +8,5 @@ Features:
 -	Redux for efficient CRUD operations on most app features such as prayers, reminders,etc.., ensuring accessible storage.
 -	Available both App Store and Play Store.
 
-![Component 14](https://user-images.githubusercontent.com/89553922/202275219-968e651f-3316-4568-921b-23e2adb04719.png)
-![Component 16](https://user-images.githubusercontent.com/89553922/202275232-c7b58ce1-4d3b-407e-b1fb-681aa63c103e.png)
+![1](https://github.com/sahag98/Prayse/assets/89553922/60265178-f802-4bce-8a8b-14a5a399d1c2)
+![2](https://github.com/sahag98/Prayse/assets/89553922/81f71d4b-4ddd-4404-8adc-cf532890c7fd)
