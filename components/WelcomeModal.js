@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { Feather } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
@@ -217,7 +218,7 @@ const WelcomeModal = ({
       console.log("permission granted");
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+          projectId: config.projectId,
         })
       ).data;
     } else {

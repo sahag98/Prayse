@@ -11,6 +11,7 @@ import Toast from "react-native-toast-message";
 
 import { AntDesign } from "@expo/vector-icons";
 
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import {
   ModalAction,
@@ -81,7 +82,7 @@ const QuestionModal = ({
         },
       };
 
-      fetch(process.env.EXPO_PUBLIC_PRAYSE_MESSAGE, {
+      fetch(config.prayseMessage, {
         method: "POST",
         headers: {
           Accept: "application/json",

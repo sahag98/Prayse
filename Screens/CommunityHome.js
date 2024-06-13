@@ -46,6 +46,7 @@ import CreateGroupModal from "../components/CreateGroupModal";
 import JoinModal from "../components/JoinModal";
 import ProfileModal from "../components/ProfileModal";
 import WelcomeModal from "../components/WelcomeModal";
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
@@ -224,7 +225,7 @@ const CommunityHome = ({ route }) => {
 
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+          projectId: config.projectId,
         })
       ).data;
     } else {

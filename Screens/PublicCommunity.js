@@ -23,6 +23,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import CommunityPrayers from "../components/CommunityPrayers";
 import CommunityModal from "../components/ComunityModal";
+import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
@@ -136,7 +137,7 @@ const PublicCommunity = ({ route }) => {
       console.log("permission granted");
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+          projectId: config.projectId,
         })
       ).data;
     } else {
