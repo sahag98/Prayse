@@ -10,7 +10,6 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "@legendapp/motion": "^2.3.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
     "@react-navigation/bottom-tabs": "^6.5.7",
@@ -44,7 +43,6 @@
     "expo-web-browser": "~13.0.3",
     "lottie-react-native": "6.7.0",
     "moment": "^2.29.4",
-    "native-notify": "^3.0.4",
     "nativewind": "^4.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
