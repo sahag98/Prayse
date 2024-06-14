@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Share, Text, TouchableOpacity, View } from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,14 +23,17 @@ const StreakSlider = ({
   const isShowingGiveawayModal = useSelector(
     (state) => state.user.isShowingGiveawayModal
   );
-
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     console.log("app streak check: ", appstreak);
     console.log("is Showing Giveaway modal: ", isShowingGiveawayModal);
     if (appstreak === 1 && isShowingGiveawayModal === false) {
-      console.log("entering giveaway!!");
-      dispatch(didEnterGiveaway());
+      console.log("entering giveaway in 4 secs!!");
+      setTimeout(() => {
+        setLoading(true);
+        dispatch(didEnterGiveaway());
+      }, 4000);
     }
   }, [appstreak]);
 

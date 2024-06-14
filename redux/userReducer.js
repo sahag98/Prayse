@@ -10,6 +10,7 @@ const initialState = {
   theme: Appearance.getColorScheme(),
   completedItems: [],
   devostreak: 0,
+  isAppReady: false,
   appstreak: [],
   appstreakNum: 0,
   expoToken: "",
@@ -49,6 +50,7 @@ export const userSlice = createSlice({
       // state.isShowingGiveawayModal = false;
     },
     increaseAppStreakCounter: (state, action) => {
+      // state.isAppReady = false;
       // state.alreadyEnteredGiveaway = false;
       // state.isShowingGiveawayModal = false;
       if (

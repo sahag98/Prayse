@@ -50,7 +50,10 @@ import { addQuickFolder } from "../redux/folderReducer";
 import { addNoti } from "../redux/notiReducer";
 import { addPrayer } from "../redux/prayerReducer";
 import { deleteReminder } from "../redux/remindersReducer";
-import { increaseAppStreakCounter } from "../redux/userReducer";
+import {
+  deleteAppStreakCounter,
+  increaseAppStreakCounter,
+} from "../redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -136,6 +139,7 @@ const Welcome = ({ navigation }) => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
+  const isAppReady = useSelector((state) => state.user.isAppReady);
   // const appstreak = useSelector((state) => state.user.appstreak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
@@ -340,25 +344,10 @@ const Welcome = ({ navigation }) => {
   useEffect(() => {
     async function appStreak() {
       // dispatch(deleteAppStreakCounter());
-      // console.log("app streak:", appstreak);
-
       const today = new Date().toLocaleDateString("en-CA");
-      console.log("today: ", today);
+      console.log("today's date: ", today);
 
       dispatch(increaseAppStreakCounter({ today }));
-
-      // console.log("getting app streak");
-      // const keys = await AsyncStorage.getAllKeys();
-      // const todayStreak = keys.filter((key) =>
-      //   key.startsWith(`appStreak_${currentDate}`)
-      // );
-      // console.log("today streak: ", todayStreak);
-      // // await AsyncStorage.removeItem(`appStreak_${currentDate}`);
-      // // dispatch(deleteAppStreakCounter());
-      // if (todayStreak.length === 0) {
-      //   await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
-      //   dispatch(increaseAppStreakCounter());
-      // }
     }
     appStreak();
 
