@@ -54,8 +54,6 @@ const Navigation = () => {
   const { isLoggedIn, currentUser, supabase } = useSupabase();
   const [showNewBadge, setShowNewBadge] = useState(false);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     // getUserGroups();
     const checkFirstTime = async () => {
@@ -155,7 +153,7 @@ const Navigation = () => {
             // Listen to incoming links from deep linking
             const eventListenerSubscription = Linking.addEventListener(
               "url",
-              onReceiveURL,
+              onReceiveURL
             );
 
             // Listen to expo push notifications
@@ -169,7 +167,7 @@ const Navigation = () => {
 
                   // Let React Navigation handle the URL
                   listener(url);
-                },
+                }
               );
 
             return () => {
