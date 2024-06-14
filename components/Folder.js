@@ -17,10 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AddFolderModal from "../modals/AddFolderModal";
 import { addFolder } from "../redux/folderReducer";
 import { HeaderTitle, ListView2, TodoText } from "../styles/appStyles";
 
-import AddFolderModal from "./AddFolderModal";
 import AnsweredPrayer from "./AnsweredPrayer";
 import FolderItem from "./FolderItem";
 

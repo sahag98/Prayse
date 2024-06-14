@@ -11,9 +11,9 @@ import { useSelector } from "react-redux";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
-import QuestionHelpModal from "../components/QuestionHelpModal";
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
+import QuestionHelpModal from "../modals/QuestionHelpModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 const QuestionList = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);

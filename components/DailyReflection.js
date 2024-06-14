@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
+import GiveawayModal from "../modals/GiveawayModal";
 import {
   addtoCompletedItems,
   deletePreviousDayItems,
 } from "../redux/userReducer";
 
-import GiveawayModal from "./GiveawayModal";
 import StreakSlider from "./StreakSlider";
 
 const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
@@ -18,7 +18,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
   const hasEnteredGiveaway = useSelector(
-    (state) => state.user.alreadyEnteredGiveaway
+    (state) => state.user.alreadyEnteredGiveaway,
   );
   const dispatch = useDispatch();
 
@@ -38,7 +38,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       addtoCompletedItems({
         item: selected,
         date: currentDate,
-      })
+      }),
     );
 
     navigation.navigate(selected, {
@@ -116,7 +116,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               top: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom")
+                completedItem.items.find((item) => item === "PrayerRoom"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -130,7 +130,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "PrayerRoom")
+                completedItem.items.find((item) => item === "PrayerRoom"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -201,7 +201,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               bottom: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -219,7 +219,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               top: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -233,7 +233,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "VerseOfTheDay")
+                completedItem.items.find((item) => item === "VerseOfTheDay"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -303,7 +303,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
               bottom: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList")
+                completedItem.items.find((item) => item === "DevoList"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -317,7 +317,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === "DevoList")
+                completedItem.items.find((item) => item === "DevoList"),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"

@@ -13,7 +13,7 @@ import Animated, {
 
 import { useIsFocused } from "@react-navigation/native";
 
-import ReactionModal from "./ReactionModal";
+import ReactionModal from "../modals/ReactionModal";
 
 const GroupPrayerItem = ({
   allGroups,

@@ -21,7 +21,7 @@ const StreakSlider = ({
   appstreak,
 }) => {
   const isShowingGiveawayModal = useSelector(
-    (state) => state.user.isShowingGiveawayModal
+    (state) => state.user.isShowingGiveawayModal,
   );
 
   const dispatch = useDispatch();

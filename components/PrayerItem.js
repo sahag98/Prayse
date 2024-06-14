@@ -14,8 +14,7 @@ import { useSelector } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
-
-import CommentModal from "./CommentModal";
+import CommentModal from "../modals/CommentModal";
 
 const PrayerItem = ({ prayers, session, item }) => {
   const theme = useSelector((state) => state.user.theme);

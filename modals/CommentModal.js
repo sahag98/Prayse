@@ -22,9 +22,8 @@ import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 
+import CommentItem from "../components/CommentItem";
 import { HeaderView, ModalContainer } from "../styles/appStyles";
-
-import CommentItem from "./CommentItem";
 
 const CommentModal = ({
   commentVisible,

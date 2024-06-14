@@ -22,9 +22,9 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import CommunityPrayers from "../components/CommunityPrayers";
-import CommunityModal from "../components/ComunityModal";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
+import CommunityModal from "../modals/ComunityModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const PublicCommunity = ({ route }) => {

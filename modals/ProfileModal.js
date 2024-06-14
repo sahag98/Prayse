@@ -21,9 +21,8 @@ import { useSelector } from "react-redux";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
+import ProfilePrayers from "../components/ProfilePrayers";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
-
-import ProfilePrayers from "./ProfilePrayers";
 
 const ProfileModal = ({
   logout,

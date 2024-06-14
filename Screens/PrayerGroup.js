@@ -17,10 +17,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
-import GroupInfoModal from "../components/GroupInfoModal";
 import GroupPrayerList from "../components/GroupPrayerList";
-import RemovedGroupModal from "../components/RemovedGroupModal";
 import { useSupabase } from "../context/useSupabase";
+import GroupInfoModal from "../modals/GroupInfoModal";
+import RemovedGroupModal from "../modals/RemovedGroupModal";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroup = ({ route, navigation }) => {

@@ -4,7 +4,7 @@ import { Image, SectionList, Text, TouchableOpacity, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 
-import GroupPrayerModal from "./GroupPrayerModal";
+import GroupPrayerModal from "../modals/GroupPrayerModal";
 const GroupPrayerList = ({ theme, currentUser, supabase, currGroup }) => {
   const [groupPrayers, setGroupPrayers] = useState([]);
   const [isShowingModal, setIsShowingModal] = useState(false);

@@ -13,8 +13,8 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
 import AnswerItem from "../components/AnswerItem";
-import QuestionModal from "../components/QuestionModal";
 import { useSupabase } from "../context/useSupabase";
+import QuestionModal from "../modals/QuestionModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const Question = ({ navigation, route }) => {

@@ -42,12 +42,12 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import globeBg from "../assets/globe-bg.png";
 import groupBg from "../assets/group-bg.png";
 import questionBg from "../assets/question-bg.png";
-import CreateGroupModal from "../components/CreateGroupModal";
-import JoinModal from "../components/JoinModal";
-import ProfileModal from "../components/ProfileModal";
-import WelcomeModal from "../components/WelcomeModal";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
+import CreateGroupModal from "../modals/CreateGroupModal";
+import JoinModal from "../modals/JoinModal";
+import ProfileModal from "../modals/ProfileModal";
+import WelcomeModal from "../modals/WelcomeModal";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 Notifications.setNotificationHandler({

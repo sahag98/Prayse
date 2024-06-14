@@ -30,7 +30,6 @@ const GiveawayModal = ({
   async function handleSubmit() {
     if (email.length === 0) {
       setError("An email address is required. Try again");
-      return;
     } else {
       const { data, error } = await supabase
         .from("giveaway_entries")
@@ -44,7 +43,7 @@ const GiveawayModal = ({
       if (data && data[0]?.email) {
         setError("");
         setSuccess(
-          "You have entered the giveaway! Be on the lookout for an email from prayse.app@gmail.com for further details."
+          "You have entered the giveaway! Be on the lookout for an email from prayse.app@gmail.com for further details.",
         );
       }
 

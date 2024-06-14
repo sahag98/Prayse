@@ -70,7 +70,7 @@ const ListItems = ({
     .filter((item) => (search !== "" ? item.prayer.includes(search) : true));
 
   const list = prayers.filter((item) =>
-    search !== "" ? item.prayer.includes(search) : true
+    search !== "" ? item.prayer.includes(search) : true,
   );
 
   const renderItem = ({ item }) => {
@@ -92,18 +92,18 @@ const ListItems = ({
             theme === "dark"
               ? [{ backgroundColor: "#212121", position: "relative" }]
               : [
-                {
-                  backgroundColor: "#b7d3ff",
-                  shadowColor: "#bdbdbd",
-                  shadowOffset: {
-                    width: 0,
-                    height: 5,
+                  {
+                    backgroundColor: "#b7d3ff",
+                    shadowColor: "#bdbdbd",
+                    shadowOffset: {
+                      width: 0,
+                      height: 5,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 5.62,
+                    elevation: 7,
                   },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 5.62,
-                  elevation: 7,
-                },
-              ]
+                ]
           }
         >
           <>
@@ -118,16 +118,16 @@ const ListItems = ({
                 style={
                   theme === "dark"
                     ? {
-                      paddingRight: 5,
-                      fontFamily: "Inter-Regular",
-                      color: "white",
-                      fontSize: size,
-                    }
+                        paddingRight: 5,
+                        fontFamily: "Inter-Regular",
+                        color: "white",
+                        fontSize: size,
+                      }
                     : {
-                      fontFamily: "Inter-Regular",
-                      color: "#2F2D51",
-                      fontSize: size,
-                    }
+                        fontFamily: "Inter-Regular",
+                        color: "#2F2D51",
+                        fontSize: size,
+                      }
                 }
               >
                 {item.prayer}
@@ -159,23 +159,23 @@ const ListItems = ({
                 style={
                   theme === "dark"
                     ? {
-                      flexDirection: "row",
-                      alignItems: "center",
-                      borderColor: "#A5C9FF",
-                      borderWidth: 1,
-                      padding: 5,
-                      borderRadius: 5,
-                      gap: 8,
-                    }
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderColor: "#A5C9FF",
+                        borderWidth: 1,
+                        padding: 5,
+                        borderRadius: 5,
+                        gap: 8,
+                      }
                     : {
-                      flexDirection: "row",
-                      alignItems: "center",
-                      borderColor: "#2f2d51",
-                      borderWidth: 1,
-                      padding: 5,
-                      borderRadius: 5,
-                      gap: 8,
-                    }
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderColor: "#2f2d51",
+                        borderWidth: 1,
+                        padding: 5,
+                        borderRadius: 5,
+                        gap: 8,
+                      }
                 }
               >
                 <AntDesign
@@ -187,15 +187,15 @@ const ListItems = ({
                   style={
                     theme === "dark"
                       ? {
-                        color: "#A5C9FF",
-                        fontSize: 12,
-                        fontFamily: "Inter-Medium",
-                      }
+                          color: "#A5C9FF",
+                          fontSize: 12,
+                          fontFamily: "Inter-Medium",
+                        }
                       : {
-                        color: "#2f2d51",
-                        fontSize: 12,
-                        fontFamily: "Inter-Medium",
-                      }
+                          color: "#2f2d51",
+                          fontSize: 12,
+                          fontFamily: "Inter-Medium",
+                        }
                   }
                 >
                   Reminder
@@ -213,36 +213,36 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#FFDAA5",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FFDAA5",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#FFBF55",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FFBF55",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                       }
                     >
                       {item.category}
@@ -254,40 +254,40 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#A5C9FF",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#A5C9FF",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#6B7EFF",
-                          fontFamily: "Inter-Regular",
-                          color: "white",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#6B7EFF",
+                            fontFamily: "Inter-Regular",
+                            color: "white",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "white",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "white",
+                            }
                       }
                     >
                       {item.category}
@@ -299,40 +299,40 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#A5FFC9",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#A5FFC9",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#65FFA2",
-                          fontFamily: "Inter-Regular",
-                          color: "white",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#65FFA2",
+                            fontFamily: "Inter-Regular",
+                            color: "white",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "#2F2D51",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "#2F2D51",
+                            }
                       }
                     >
                       {item.category}
@@ -344,40 +344,40 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#FFB2B2",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FFB2B2",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "#FF5858",
-                          fontFamily: "Inter-Regular",
-                          color: "white",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "#FF5858",
+                            fontFamily: "Inter-Regular",
+                            color: "white",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "white",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "white",
+                            }
                       }
                     >
                       {item.category}
@@ -389,40 +389,40 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "white",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "white",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
-                          backgroundColor: "white",
-                          fontFamily: "Inter-Regular",
-                          color: "white",
-                        }
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
+                            backgroundColor: "white",
+                            fontFamily: "Inter-Regular",
+                            color: "white",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                       }
                     >
                       {item.category}
@@ -434,42 +434,42 @@ const ListItems = ({
                     style={
                       theme === "dark"
                         ? {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
 
-                          backgroundColor: "#8C8C8C",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            backgroundColor: "#8C8C8C",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                         : {
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 15,
+                            paddingVertical: 5,
+                            paddingHorizontal: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 15,
 
-                          backgroundColor: "#8C8C8C",
-                          fontFamily: "Inter-SemiBold",
-                          color: "black",
-                        }
+                            backgroundColor: "#8C8C8C",
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                     }
                   >
                     <Text
                       style={
                         theme === "dark"
                           ? {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "black",
+                            }
                           : {
-                            fontSize: 11,
-                            fontFamily: "Inter-SemiBold",
-                            color: "white",
-                          }
+                              fontSize: 11,
+                              fontFamily: "Inter-SemiBold",
+                              color: "white",
+                            }
                       }
                     >
                       {item.category}
@@ -563,11 +563,11 @@ const ListItems = ({
                   style={
                     theme === "dark"
                       ? {
-                        height: 80,
-                      }
+                          height: 80,
+                        }
                       : {
-                        height: 80,
-                      }
+                          height: 80,
+                        }
                   }
                 />
               )}

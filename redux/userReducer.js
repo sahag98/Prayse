@@ -86,13 +86,13 @@ export const userSlice = createSlice({
         if (differenceInDays === 1) {
           state.appstreakNum = state.appstreakNum + 1;
           console.log(
-            "App streak oneBeforeLastItemDate is the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is the correct date before the lastItemDate.",
           );
           // Perform your function here
         } else {
           state.appstreakNum = 0;
           console.log(
-            "App streak oneBeforeLastItemDate is not the correct date before the lastItemDate."
+            "App streak oneBeforeLastItemDate is not the correct date before the lastItemDate.",
           );
         }
       }
@@ -110,7 +110,7 @@ export const userSlice = createSlice({
 
       // Find the index of the entry with the same date
       const dateIndex = state.completedItems.findIndex(
-        (entry) => entry.date === date
+        (entry) => entry.date === date,
       );
 
       if (dateIndex >= 0) {
@@ -130,14 +130,14 @@ export const userSlice = createSlice({
       const { yesterday } = action.payload;
       const currentDate = new Date().toLocaleDateString().split("T")[0];
       const dateIndex = state.completedItems.findIndex(
-        (entry) => entry?.date === yesterday
+        (entry) => entry?.date === yesterday,
       );
 
       console.log("current date: ", currentDate);
       console.log("yesterday date: ", yesterday);
 
       const currentDateIndex = state.completedItems.findIndex(
-        (entry) => entry?.date === currentDate
+        (entry) => entry?.date === currentDate,
       );
 
       if (dateIndex >= 0) {
@@ -197,13 +197,13 @@ export const userSlice = createSlice({
           // state.devostreak = state.devostreak + 1;
           // state.hasIncreasedDevoStreak == true;
           console.log(
-            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate."
+            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate.",
           );
           // Perform your function here
         } else {
           state.devostreak = 0;
           console.log(
-            "The oneBeforeLastItemDate is not the correct date before the lastItemDate."
+            "The oneBeforeLastItemDate is not the correct date before the lastItemDate.",
           );
         }
       }

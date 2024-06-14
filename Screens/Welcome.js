@@ -37,15 +37,15 @@ import { useIsFocused } from "@react-navigation/native";
 
 import noreminder from "../assets/noreminders.png";
 import DailyReflection from "../components/DailyReflection";
-import DonationModal from "../components/DonationModal";
 import GospelofJesus from "../components/GospelofJesus";
 import MerchComponent from "../components/MerchComponent";
-import NewFeaturesModal from "../components/NewFeaturesModal";
 import QuestionoftheWeek from "../components/QuestionoftheWeek";
 import StreakSlider from "../components/StreakSlider";
-import UpdateModal from "../components/UpdateModal";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
+import DonationModal from "../modals/DonationModal";
+import NewFeaturesModal from "../modals/NewFeaturesModal";
+import UpdateModal from "../modals/UpdateModal";
 import { addQuickFolder } from "../redux/folderReducer";
 import { addNoti } from "../redux/notiReducer";
 import { addPrayer } from "../redux/prayerReducer";
@@ -113,7 +113,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings."
+        "To recieve notifications in the future, enable Notifications from the App Settings.",
       );
       return;
     }
@@ -152,7 +152,7 @@ const Welcome = ({ navigation }) => {
   const notis = useSelector((state) => state.noti.notifications);
 
   const quickFolderExists = useSelector(
-    (state) => state.folder.quickFolderExists
+    (state) => state.folder.quickFolderExists,
   );
 
   const welcomeFadeIn = useSharedValue(0);
@@ -227,7 +227,7 @@ const Welcome = ({ navigation }) => {
             id: 4044,
             name: "Quick Prayers",
             prayers: [],
-          })
+          }),
         );
       } catch (error) {
         console.log(error);
@@ -249,7 +249,7 @@ const Welcome = ({ navigation }) => {
         category: quickcategoryvalue,
         date: new Date().toLocaleString(),
         id: uuid.v4(),
-      })
+      }),
     );
     setQuickModal(false);
     setQuickprayervalue("");
@@ -287,11 +287,11 @@ const Welcome = ({ navigation }) => {
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
           );
         } else if (Platform.OS === "android") {
           Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
           );
         }
       }
@@ -389,7 +389,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else if (currentHour >= 12 && currentHour < 18) {
         setGreeting("Good afternoon ");
@@ -398,7 +398,7 @@ const Welcome = ({ navigation }) => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else {
         setGreeting("Good Evening ");
@@ -407,7 +407,7 @@ const Welcome = ({ navigation }) => {
             name="moon"
             size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
-          />
+          />,
         );
       }
     }
@@ -481,7 +481,7 @@ const Welcome = ({ navigation }) => {
               question_id: notification.request.content.data?.question_id,
               prayerId: notification.request.content.data?.prayerId,
               identifier: notification.request.identifier,
-            })
+            }),
           );
         }
 
@@ -498,7 +498,7 @@ const Welcome = ({ navigation }) => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current
+        notificationListener.current,
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -911,7 +911,7 @@ const Welcome = ({ navigation }) => {
                   }
                   const formattedDate = timestamp.toLocaleString(
                     "en-US",
-                    timeOptions
+                    timeOptions,
                   );
 
                   return (
@@ -1233,7 +1233,7 @@ const Welcome = ({ navigation }) => {
               }
               onPress={() =>
                 Linking.openURL(
-                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
                 )
               }
             >
@@ -1297,7 +1297,7 @@ const Welcome = ({ navigation }) => {
               style={theme == "dark" ? styles.refreshDark : styles.refresh}
               onPress={() =>
                 Linking.openURL(
-                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
                 )
               }
             >
