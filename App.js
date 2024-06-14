@@ -98,14 +98,13 @@ export default function App() {
 
   return (
     <>
-      {/* <NotiTest /> */}
       <AnimatedSplash
         translucent
         isLoaded={loading}
-        logoImage={require("./assets/prayer.png")}
+        logoImage={require("./assets/prayse-transparent.png")}
         backgroundColor="white"
-        logoHeight={200}
-        logoWidth={200}
+        logoHeight={150}
+        logoWidth={150}
       >
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Provider store={store}>
