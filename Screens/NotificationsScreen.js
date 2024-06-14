@@ -3,13 +3,12 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { NavigationProp } from "@react-navigation/native";
 
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
 import { Container } from "../styles/appStyles";
 
-const Notifications = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Notifications = ({ navigation  }) => {
   const dispatch = useDispatch();
   const notis = useSelector((state: any) => state.noti.notifications);
   const theme = useSelector((state: any) => state.user.theme);
