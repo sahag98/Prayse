@@ -345,7 +345,7 @@ const Welcome = ({ navigation }) => {
     async function appStreak() {
       // dispatch(deleteAppStreakCounter());
       const today = new Date().toLocaleDateString("en-CA");
-      console.log("today: ", today);
+      console.log("today's date: ", today);
 
       dispatch(increaseAppStreakCounter({ today }));
     }
