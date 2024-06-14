@@ -12,7 +12,6 @@ import {
 import { useSelector } from "react-redux";
 
 import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
-import { Motion } from "@legendapp/motion";
 import { useNavigation } from "@react-navigation/native";
 
 import {
@@ -88,419 +87,410 @@ const ListItems = ({
     };
     return (
       <>
-        <Motion.View
-          onPointerEnter={() => console.log("pointer")}
-          initial={{ y: -50 }}
-          animate={{ x: value * 100, y: 0 }}
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ y: 20 }}
-          transition={{ type: "spring" }}
+        <ListView
+          style={
+            theme === "dark"
+              ? [{ backgroundColor: "#212121", position: "relative" }]
+              : [
+                {
+                  backgroundColor: "#b7d3ff",
+                  shadowColor: "#bdbdbd",
+                  shadowOffset: {
+                    width: 0,
+                    height: 5,
+                  },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5.62,
+                  elevation: 7,
+                },
+              ]
+          }
         >
-          <ListView
-            style={
-              theme === "dark"
-                ? [{ backgroundColor: "#212121", position: "relative" }]
-                : [
-                    {
-                      backgroundColor: "#b7d3ff",
-                      shadowColor: "#bdbdbd",
-                      shadowOffset: {
-                        width: 0,
-                        height: 5,
-                      },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 5.62,
-                      elevation: 7,
-                    },
-                  ]
-            }
-          >
-            <>
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <RowText
+                style={
+                  theme === "dark"
+                    ? {
+                      paddingRight: 5,
+                      fontFamily: "Inter-Regular",
+                      color: "white",
+                      fontSize: size,
+                    }
+                    : {
+                      fontFamily: "Inter-Regular",
+                      color: "#2F2D51",
+                      fontSize: size,
+                    }
+                }
+              >
+                {item.prayer}
+              </RowText>
+            </View>
+            {search.length === 0 && (
+              <TouchableOpacity
+                onPress={() => pickedPrayer(item)}
+                style={{ position: "absolute", top: 9, right: 3, padding: 5 }}
+              >
+                <Entypo
+                  name="dots-three-vertical"
+                  size={16}
+                  color={theme == "dark" ? "white" : "#2F2D51"}
+                />
+              </TouchableOpacity>
+            )}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 20,
+                gap: 20,
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => addReminder(item.prayer)}
+                style={
+                  theme === "dark"
+                    ? {
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderColor: "#A5C9FF",
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 5,
+                      gap: 8,
+                    }
+                    : {
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderColor: "#2f2d51",
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 5,
+                      gap: 8,
+                    }
+                }
+              >
+                <AntDesign
+                  name="pluscircleo"
+                  size={15}
+                  color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
+                />
+                <Text
+                  style={
+                    theme === "dark"
+                      ? {
+                        color: "#A5C9FF",
+                        fontSize: 12,
+                        fontFamily: "Inter-Medium",
+                      }
+                      : {
+                        color: "#2f2d51",
+                        fontSize: 12,
+                        fontFamily: "Inter-Medium",
+                      }
+                  }
+                >
+                  Reminder
+                </Text>
+              </TouchableOpacity>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 15,
                 }}
               >
-                <RowText
-                  style={
-                    theme === "dark"
-                      ? {
-                          paddingRight: 5,
-                          fontFamily: "Inter-Regular",
-                          color: "white",
-                          fontSize: size,
-                        }
-                      : {
-                          fontFamily: "Inter-Regular",
-                          color: "#2F2D51",
-                          fontSize: size,
-                        }
-                  }
-                >
-                  {item.prayer}
-                </RowText>
-              </View>
-              {search.length === 0 && (
-                <TouchableOpacity
-                  onPress={() => pickedPrayer(item)}
-                  style={{ position: "absolute", top: 9, right: 3, padding: 5 }}
-                >
-                  <Entypo
-                    name="dots-three-vertical"
-                    size={16}
-                    color={theme == "dark" ? "white" : "#2F2D51"}
-                  />
-                </TouchableOpacity>
-              )}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginTop: 20,
-                  gap: 20,
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => addReminder(item.prayer)}
-                  style={
-                    theme === "dark"
-                      ? {
-                          flexDirection: "row",
-                          alignItems: "center",
-                          borderColor: "#A5C9FF",
-                          borderWidth: 1,
-                          padding: 5,
-                          borderRadius: 5,
-                          gap: 8,
-                        }
-                      : {
-                          flexDirection: "row",
-                          alignItems: "center",
-                          borderColor: "#2f2d51",
-                          borderWidth: 1,
-                          padding: 5,
-                          borderRadius: 5,
-                          gap: 8,
-                        }
-                  }
-                >
-                  <AntDesign
-                    name="pluscircleo"
-                    size={15}
-                    color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
-                  />
-                  <Text
+                {categoryItem === "General" && (
+                  <TodoCategory
                     style={
                       theme === "dark"
                         ? {
-                            color: "#A5C9FF",
-                            fontSize: 12,
-                            fontFamily: "Inter-Medium",
-                          }
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#FFDAA5",
+                        }
                         : {
-                            color: "#2f2d51",
-                            fontSize: 12,
-                            fontFamily: "Inter-Medium",
-                          }
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#FFBF55",
+                        }
                     }
                   >
-                    Reminder
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 15,
-                  }}
-                >
-                  {categoryItem === "General" && (
-                    <TodoCategory
+                    <Text
                       style={
                         theme === "dark"
                           ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#FFDAA5",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                           : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#FFBF55",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                       }
                     >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                {categoryItem === "People" && (
+                  <TodoCategory
+                    style={
+                      theme === "dark"
+                        ? {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#A5C9FF",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
                         }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  {categoryItem === "People" && (
-                    <TodoCategory
+                        : {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#6B7EFF",
+                          fontFamily: "Inter-Regular",
+                          color: "white",
+                        }
+                    }
+                  >
+                    <Text
                       style={
                         theme === "dark"
                           ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#A5C9FF",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                           : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#6B7EFF",
-                              fontFamily: "Inter-Regular",
-                              color: "white",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "white",
+                          }
                       }
                     >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "white",
-                              }
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                {categoryItem === "Praise" && (
+                  <TodoCategory
+                    style={
+                      theme === "dark"
+                        ? {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#A5FFC9",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
                         }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  {categoryItem === "Praise" && (
-                    <TodoCategory
+                        : {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#65FFA2",
+                          fontFamily: "Inter-Regular",
+                          color: "white",
+                        }
+                    }
+                  >
+                    <Text
                       style={
                         theme === "dark"
                           ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#A5FFC9",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                           : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#65FFA2",
-                              fontFamily: "Inter-Regular",
-                              color: "white",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "#2F2D51",
+                          }
                       }
                     >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "#2F2D51",
-                              }
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                {categoryItem === "Personal" && (
+                  <TodoCategory
+                    style={
+                      theme === "dark"
+                        ? {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#FFB2B2",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
                         }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  {categoryItem === "Personal" && (
-                    <TodoCategory
+                        : {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "#FF5858",
+                          fontFamily: "Inter-Regular",
+                          color: "white",
+                        }
+                    }
+                  >
+                    <Text
                       style={
                         theme === "dark"
                           ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#FFB2B2",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                           : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "#FF5858",
-                              fontFamily: "Inter-Regular",
-                              color: "white",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "white",
+                          }
                       }
                     >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "white",
-                              }
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                {categoryItem === "Other" && (
+                  <TodoCategory
+                    style={
+                      theme === "dark"
+                        ? {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "white",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
                         }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  {categoryItem === "Other" && (
-                    <TodoCategory
+                        : {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+                          backgroundColor: "white",
+                          fontFamily: "Inter-Regular",
+                          color: "white",
+                        }
+                    }
+                  >
+                    <Text
                       style={
                         theme === "dark"
                           ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "white",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                           : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-                              backgroundColor: "white",
-                              fontFamily: "Inter-Regular",
-                              color: "white",
-                            }
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
                       }
                     >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                        }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  {categoryItem === "None" && (
-                    <TodoCategory
-                      style={
-                        theme === "dark"
-                          ? {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                {categoryItem === "None" && (
+                  <TodoCategory
+                    style={
+                      theme === "dark"
+                        ? {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
 
-                              backgroundColor: "#8C8C8C",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              paddingVertical: 5,
-                              paddingHorizontal: 12,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 15,
-
-                              backgroundColor: "#8C8C8C",
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                      }
-                    >
-                      <Text
-                        style={
-                          theme === "dark"
-                            ? {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "black",
-                              }
-                            : {
-                                fontSize: 11,
-                                fontFamily: "Inter-SemiBold",
-                                color: "white",
-                              }
+                          backgroundColor: "#8C8C8C",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
                         }
-                      >
-                        {item.category}
-                      </Text>
-                    </TodoCategory>
-                  )}
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TodoDate
+                        : {
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 15,
+
+                          backgroundColor: "#8C8C8C",
+                          fontFamily: "Inter-SemiBold",
+                          color: "black",
+                        }
+                    }
+                  >
+                    <Text
                       style={
                         theme === "dark"
-                          ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
-                          : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
+                          ? {
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "black",
+                          }
+                          : {
+                            fontSize: 11,
+                            fontFamily: "Inter-SemiBold",
+                            color: "white",
+                          }
                       }
                     >
-                      {item.date.split(",")[0]}
-                    </TodoDate>
-                  </View>
+                      {item.category}
+                    </Text>
+                  </TodoCategory>
+                )}
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TodoDate
+                    style={
+                      theme === "dark"
+                        ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
+                        : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
+                    }
+                  >
+                    {item.date.split(",")[0]}
+                  </TodoDate>
                 </View>
               </View>
-            </>
-          </ListView>
-        </Motion.View>
+            </View>
+          </>
+        </ListView>
       </>
     );
   };
@@ -573,11 +563,11 @@ const ListItems = ({
                   style={
                     theme === "dark"
                       ? {
-                          height: 80,
-                        }
+                        height: 80,
+                      }
                       : {
-                          height: 80,
-                        }
+                        height: 80,
+                      }
                   }
                 />
               )}

@@ -12,6 +12,8 @@ import { SupabaseProvider } from "./context/SupabaseProvider";
 import { store } from "./redux/store";
 import Navigation from "./Navigation";
 
+import "./global.css";
+
 import "react-native-url-polyfill/auto";
 import "expo-dev-client";
 global.Buffer = Buffer;
