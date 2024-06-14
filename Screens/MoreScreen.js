@@ -24,7 +24,7 @@ import SettingsItems from "../components/SettingsItems";
 import config from "../config";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const More = ({ navigation }) => {
+const MoreScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
 
   function giveFeedback(market) {
@@ -305,7 +305,7 @@ const More = ({ navigation }) => {
   );
 };
 
-export default More;
+export default MoreScreen;
 
 const styles = StyleSheet.create({
   inputDark: {

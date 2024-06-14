@@ -26,7 +26,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const Gospel = ({ navigation }) => {
+const GospelScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -483,4 +483,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Gospel;
+export default GospelScreen;

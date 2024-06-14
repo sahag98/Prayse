@@ -22,7 +22,7 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderView } from "../styles/appStyles";
 
-const Relfection = ({ navigation, route }) => {
+const RelfectionScreen = ({ navigation, route }) => {
   const theme = useSelector((state) => state.user.theme);
   const [reflectionsArray, setReflectionsArray] = useState([]);
   const [reflection, setReflection] = useState("");
@@ -349,7 +349,7 @@ const Relfection = ({ navigation, route }) => {
   );
 };
 
-export default Relfection;
+export default RelfectionScreen;
 
 const styles = StyleSheet.create({
   signInButton: {

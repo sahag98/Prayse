@@ -28,7 +28,7 @@ import {
 } from "../redux/remindersReducer";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-export default function Reminder({ route, navigation }) {
+export default function TestScreen({ route, navigation }) {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const [reminders, setReminders] = useState([]);

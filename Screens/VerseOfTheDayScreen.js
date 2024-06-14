@@ -17,7 +17,7 @@ import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const VerseOfTheDay = ({ route }) => {
+const VerseOfTheDayScreen = ({ route }) => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
@@ -310,7 +310,7 @@ const VerseOfTheDay = ({ route }) => {
   );
 };
 
-export default VerseOfTheDay;
+export default VerseOfTheDayScreen;
 
 const styles = StyleSheet.create({
   utiltiesDark: {

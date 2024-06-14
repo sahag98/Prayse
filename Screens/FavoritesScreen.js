@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import FavoriteVerses from "../components/FavoriteVerses";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const Favorites = ({ navigation }) => {
+const FavoritesScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
@@ -87,6 +87,6 @@ const Favorites = ({ navigation }) => {
   );
 };
 
-export default Favorites;
+export default FavoritesScreen;
 
 const styles = StyleSheet.create({});

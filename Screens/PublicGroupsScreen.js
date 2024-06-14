@@ -19,7 +19,7 @@ import groupBg from "../assets/group-bg.png";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const PublicGroups = ({ navigation }) => {
+const PublicGroupsScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const { publicGroups, currentUser, supabase } = useSupabase();
   const [search, setSearch] = useState("");
@@ -324,7 +324,7 @@ const PublicGroups = ({ navigation }) => {
   );
 };
 
-export default PublicGroups;
+export default PublicGroupsScreen;
 
 const styles = StyleSheet.create({
   joinedUserImg: {

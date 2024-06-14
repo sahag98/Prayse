@@ -31,7 +31,7 @@ import { client } from "../lib/client";
 import { Container, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
-const DevoList = ({ navigation, route }) => {
+const DevoListScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -511,4 +511,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DevoList;
+export default DevoListScreen;

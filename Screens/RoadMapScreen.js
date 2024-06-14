@@ -15,7 +15,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import { Container } from "../styles/appStyles";
 
-const RoadMap = ({ navigation }) => {
+const RoadMapScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [roadmap, setRoadmap] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,6 +132,6 @@ const RoadMap = ({ navigation }) => {
   );
 };
 
-export default RoadMap;
+export default RoadMapScreen;
 
 const styles = StyleSheet.create({});

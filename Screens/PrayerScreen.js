@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Home from "../components/Home";
 import useIsReady from "../hooks/useIsReady";
 
-const PrayerPage = ({ route, navigation }) => {
+const PrayerScreen = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const prayerList = useSelector((state) => state.prayer.prayer);
@@ -44,4 +44,4 @@ const PrayerPage = ({ route, navigation }) => {
   );
 };
 
-export default PrayerPage;
+export default PrayerScreen;

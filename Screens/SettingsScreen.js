@@ -37,7 +37,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const Settings = ({ navigation }) => {
+const SettingsScreen = ({ navigation }) => {
   const [active, setActive] = useState(false);
   const theme = useSelector((state) => state.user.theme);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -800,4 +800,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default SettingsScreen;

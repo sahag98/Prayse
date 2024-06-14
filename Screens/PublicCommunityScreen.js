@@ -27,7 +27,7 @@ import { useSupabase } from "../context/useSupabase";
 import CommunityModal from "../modals/ComunityModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const PublicCommunity = ({ route }) => {
+const PublicCommunityScreen = ({ route }) => {
   const navigation = useNavigation();
   const {
     currentUser,
@@ -324,7 +324,7 @@ const PublicCommunity = ({ route }) => {
   );
 };
 
-export default PublicCommunity;
+export default PublicCommunityScreen;
 
 const styles = StyleSheet.create({
   question: {

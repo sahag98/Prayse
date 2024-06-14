@@ -19,7 +19,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const OldPrayerPage = ({ navigation }) => {
+const OldPrayerScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [todos, setTodos] = useState([]);
 
@@ -237,4 +237,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OldPrayerPage;
+export default OldPrayerScreen;

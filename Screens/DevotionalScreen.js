@@ -22,7 +22,7 @@ import { Container } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
 
-const Devotional = ({ navigation }) => {
+const DevotionalScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -305,4 +305,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Devotional;
+export default DevotionalScreen;

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import { Container } from "../styles/appStyles";
 
-const OurPresentation = () => {
+const OurPresentationScreen = () => {
   const theme = useSelector((state) => state.user.theme);
 
   const Message = [
@@ -77,6 +77,6 @@ const OurPresentation = () => {
   );
 };
 
-export default OurPresentation;
+export default OurPresentationScreen;
 
 const styles = StyleSheet.create({});

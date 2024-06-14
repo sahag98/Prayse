@@ -14,7 +14,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { deleteReminder } from "../redux/remindersReducer";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const Reminder = ({ navigation }) => {
+const ReminderScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const reminders = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();
@@ -366,6 +366,6 @@ const Reminder = ({ navigation }) => {
   );
 };
 
-export default Reminder;
+export default ReminderScreen;
 
 const styles = StyleSheet.create({});

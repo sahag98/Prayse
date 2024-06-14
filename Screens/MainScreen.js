@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Folder from "../components/Folder";
 import useIsReady from "../hooks/useIsReady";
 import { Container } from "../styles/appStyles";
-export default function Main({ navigation }) {
+export default function MainScreen({ navigation }) {
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const [todos, setTodos] = useState([]);

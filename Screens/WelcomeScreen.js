@@ -131,7 +131,7 @@ async function registerForPushNotificationsAsync() {
 
 const image = { uri: "https://legacy.reactjs.org/logo-og.png" };
 
-const Welcome = ({ navigation }) => {
+const WelcomeScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
@@ -1479,7 +1479,7 @@ const Welcome = ({ navigation }) => {
   );
 };
 
-export default Welcome;
+export default WelcomeScreen;
 
 const styles = StyleSheet.create({
   container: {

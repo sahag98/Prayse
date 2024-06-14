@@ -21,7 +21,7 @@ import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
 import { Container } from "../styles/appStyles";
 
-const Checklist = ({ navigation }) => {
+const ChecklistScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [selectKeepAction, setSelectKeepAction] = useState("");
@@ -342,6 +342,6 @@ const Checklist = ({ navigation }) => {
   );
 };
 
-export default Checklist;
+export default ChecklistScreen;
 
 const styles = StyleSheet.create({});

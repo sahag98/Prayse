@@ -27,7 +27,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const Login = () => {
+const LoginScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const [forgotModal, setForgotModal] = useState(false);
   const [email, setEmail] = useState("");
@@ -676,7 +676,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   anonDark: {

@@ -17,7 +17,7 @@ import { useSupabase } from "../context/useSupabase";
 import QuestionModal from "../modals/QuestionModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const Question = ({ navigation, route }) => {
+const QuestionScreen = ({ navigation, route }) => {
   const {
     answers,
     currentUser,
@@ -204,7 +204,7 @@ const Question = ({ navigation, route }) => {
   );
 };
 
-export default Question;
+export default QuestionScreen;
 
 const styles = StyleSheet.create({
   questionDark: {

@@ -17,34 +17,62 @@ import {
 } from "@react-navigation/native";
 
 import { useSupabase } from "./context/useSupabase";
-import Checklist from "./screens/Checklist";
-import CommunityHome from "./screens/CommunityHome";
-import DevoList from "./screens/DevoList";
-import Devotional from "./screens/Devotional";
-import Favorites from "./screens/Favorites";
-import Gospel from "./screens/Gospel";
-import Login from "./screens/Login";
-import Main from "./screens/Main";
-import More from "./screens/More";
+import ChecklistScreen from "./screens/ChecklistScreen";
+import CommunityHomeScreen from "./screens/CommunityHomeScreen";
+import DevoListScreen from "./screens/DevoListScreen";
+import DevotionalScreen from "./screens/DevotionalScreen";
+import FavoritesScreen from "./screens/FavoritesScreen";
+import GospelScreen from "./screens/GospelScreen";
+import LoginScreen from "./screens/LoginScreen";
+import MainScreen from "./screens/MainScreen";
+import MoreScreen from "./screens/MoreScreen";
 import NotificationScreen from "./screens/NotificationsScreen";
-import OldPrayerPage from "./screens/oldPrayerPage";
-import OnboardingScreen from "./screens/Onboarding";
-import OurPresentation from "./screens/OurPresentation";
-import PrayerGroup from "./screens/PrayerGroup";
-import PrayerPage from "./screens/PrayerPage";
-import PrayerRoom from "./screens/PrayerRoom";
-import PublicCommunity from "./screens/PublicCommunity";
-import PublicGroups from "./screens/PublicGroups";
-import Question from "./screens/Question";
-import QuestionList from "./screens/QuestionList";
-import Relfection from "./screens/Relfection";
+import OldPrayerScreen from "./screens/OldPrayerScreen";
+import OnboardingScreen from "./screens/OnboardingScreen";
+import OurPresentationScreen from "./screens/OurPresentationScreen";
+import PrayerGroupScreen from "./screens/PrayerGroupScreen";
+import PrayerRoomScreen from "./screens/PrayerRoomScreen";
+import PrayerScreen from "./screens/PrayerScreen";
+import PublicCommunityScreen from "./screens/PublicCommunityScreen";
+import PublicGroupsScreen from "./screens/PublicGroupsScreen";
+import QuestionListScreen from "./screens/QuestionListScreen";
+import QuestionScreen from "./screens/QuestionScreen";
+import RelfectionScreen from "./screens/RelfectionScreen";
 // import * as Linking from "expo-linking";
-import Reminder from "./screens/Reminder";
-import RoadMap from "./screens/RoadMap";
-import Settings from "./screens/Settings";
-import Test from "./screens/Test";
-import VerseOfTheDay from "./screens/VerseOfTheDay";
-import Welcome from "./screens/Welcome";
+import ReminderScreen from "./screens/ReminderScreen";
+import RoadMapScreen from "./screens/RoadMapScreen";
+import {
+  CHECKLIST_SCREEN,
+  COMMUNITY_SCREEN,
+  DEVO_LIST_SCREEN,
+  DEVOTIONAL_SCREEN,
+  FAVORITES_SCREEN,
+  GOSPEL_SCREEN,
+  HOME_SCREEN,
+  MORE_SCREEN,
+  NOTIFICATION_SCREEN,
+  OLD_PRAYER_SCREEN,
+  ONBOARDING_SCREEN,
+  OUR_PRESENTATION_SCREEN,
+  PRAYER_GROUP_SCREEN,
+  PRAYER_PAGE_SCREEN,
+  PRAYER_ROOM_SCREEN,
+  PRAYER_SCREEN,
+  PUBLIC_COMMUNITY_SCREEN,
+  PUBLIC_GROUPS_SCREEN,
+  QUESTION_LIST_SCREEN,
+  QUESTION_SCREEN,
+  REFLECTION_SCREEN,
+  REMINDER_SCREEN,
+  ROADMAP_SCREEN,
+  SETTINGS_SCREEN,
+  TEST_SCREEN,
+  VERSE_OF_THE_DAY_SCREEN,
+} from "./screens/routes";
+import SettingsScreen from "./screens/SettingsScreen";
+import TestScreen from "./screens/TestScreen";
+import VerseOfTheDayScreen from "./screens/VerseOfTheDayScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
@@ -188,19 +216,26 @@ const Navigation = () => {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
               let Color;
-              if (route.name === "Home") {
-                iconName = focused ? "home" : "home-outline";
-              } else if (route.name === "More") {
-                iconName = focused ? "list" : "list-outline";
-              } else if (route.name === "Prayer") {
-                iconName = focused ? "hands-pray" : "hands-pray";
-              } else if (route.name === "Devotional") {
-                iconName = focused ? "bookmarks" : "bookmarks-outline";
-              } else if (route.name === "Community") {
-                iconName = focused ? "globe" : "globe-outline";
+
+              switch (route.name) {
+                case HOME_SCREEN:
+                  iconName = focused ? "home" : "home-outline";
+                  break;
+                case MORE_SCREEN:
+                  iconName = focused ? "list" : "list-outline";
+                  break;
+                case PRAYER_SCREEN:
+                  iconName = focused ? "hands-pray" : "hands-pray";
+                  break;
+                case DEVOTIONAL_SCREEN:
+                  iconName = focused ? "bookmarks" : "bookmarks-outline";
+                  break;
+                case COMMUNITY_SCREEN:
+                  iconName = focused ? "globe" : "globe-outline";
+                  break;
               }
 
-              if (route.name === "Prayer") {
+              if (route.name === PRAYER_SCREEN) {
                 return (
                   <MaterialIcons name={iconName} size={size} color={color} />
                 );
@@ -219,69 +254,69 @@ const Navigation = () => {
           })}
         >
           <Tab.Screen
-            name="Home"
+            name={HOME_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
             })}
-            component={Welcome}
+            component={WelcomeScreen}
           />
           <Tab.Screen
-            name="Prayer"
+            name={PRAYER_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
               tabBarBadge: showNewBadge ? "New" : null,
               tabBarBadgeStyle: { paddingHorizontal: 5, fontSize: 10 },
             })}
-            component={Main}
+            component={MainScreen}
           />
           <Tab.Screen
-            name="Devotional"
+            name={DEVOTIONAL_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
             })}
-            component={Devotional}
+            component={DevotionalScreen}
           />
           <Tab.Screen
-            name="DevoList"
+            name={DEVO_LIST_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={DevoList}
+            component={DevoListScreen}
           />
           <Tab.Screen
-            name="Roadmap"
+            name={ROADMAP_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={RoadMap}
+            component={RoadMapScreen}
           />
           <Tab.Screen
-            name="PublicGroups"
+            name={PUBLIC_GROUPS_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={PublicGroups}
+            component={PublicGroupsScreen}
           />
           <Tab.Screen
-            name="OldPrayerPage"
+            name={OLD_PRAYER_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={OldPrayerPage}
+            component={OldPrayerScreen}
           />
           <Tab.Screen
-            name="Onboarding"
+            name={ONBOARDING_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
@@ -290,112 +325,112 @@ const Navigation = () => {
             component={OnboardingScreen}
           />
           <Tab.Screen
-            name="Reminder"
+            name={REMINDER_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Reminder}
+            component={ReminderScreen}
           />
           <Tab.Screen
-            name="QuestionList"
+            name={QUESTION_LIST_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={isLoggedIn ? QuestionList : Login}
+            component={isLoggedIn ? QuestionListScreen : LoginScreen}
           />
           <Tab.Screen
-            name="Question"
+            name={QUESTION_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={isLoggedIn ? Question : Login}
+            component={isLoggedIn ? QuestionScreen : LoginScreen}
           />
           <Tab.Screen
-            name="Settings"
+            name={SETTINGS_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Settings}
+            component={SettingsScreen}
           />
           <Tab.Screen
-            name="Reflection"
+            name={REFLECTION_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Relfection}
+            component={RelfectionScreen}
           />
           <Tab.Screen
-            name="Favorites"
+            name={FAVORITES_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Favorites}
+            component={FavoritesScreen}
           />
           <Tab.Screen
-            name="VerseOfTheDay"
+            name={VERSE_OF_THE_DAY_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={VerseOfTheDay}
+            component={VerseOfTheDayScreen}
           />
           <Tab.Screen
-            name="Gospel"
+            name={GOSPEL_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Gospel}
+            component={GospelScreen}
           />
           <Tab.Screen
-            name="OurPresentation"
+            name={OUR_PRESENTATION_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={OurPresentation}
+            component={OurPresentationScreen}
           />
           <Tab.Screen
-            name="PrayerPage"
+            name={PRAYER_PAGE_SCREEN}
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={PrayerPage}
+            component={PrayerScreen}
           />
           <Tab.Screen
-            name="Test"
+            name={TEST_SCREEN}
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Test}
+            component={TestScreen}
           />
           <Tab.Screen
-            name="Checklist"
+            name={CHECKLIST_SCREEN}
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={Checklist}
+            component={ChecklistScreen}
           />
           <Tab.Screen
-            name="NotificationScreen"
+            name={NOTIFICATION_SCREEN}
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
@@ -403,46 +438,46 @@ const Navigation = () => {
             component={NotificationScreen}
           />
           <Tab.Screen
-            name="PrayerRoom"
+            name={PRAYER_ROOM_SCREEN}
             options={() => ({
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={PrayerRoom}
+            component={PrayerRoomScreen}
           />
           <Tab.Screen
-            name="PublicCommunity"
-            options={() => ({
-              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-              tabBarStyle: { display: "none" },
-              tabBarButton: () => null,
-            })}
-            component={isLoggedIn ? PublicCommunity : Login}
-          />
-          <Tab.Screen
-            name="PrayerGroup"
+            name={PUBLIC_COMMUNITY_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { display: "none" },
               tabBarButton: () => null,
             })}
-            component={isLoggedIn ? PrayerGroup : Login}
+            component={isLoggedIn ? PublicCommunityScreen : LoginScreen}
           />
           <Tab.Screen
-            name="Community"
+            name={PRAYER_GROUP_SCREEN}
+            options={() => ({
+              tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+              tabBarStyle: { display: "none" },
+              tabBarButton: () => null,
+            })}
+            component={isLoggedIn ? PrayerGroupScreen : LoginScreen}
+          />
+          <Tab.Screen
+            name={COMMUNITY_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
             })}
-            component={isLoggedIn ? CommunityHome : Login}
+            component={isLoggedIn ? CommunityHomeScreen : LoginScreen}
           />
           <Tab.Screen
-            name="More"
+            name={MORE_SCREEN}
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
             })}
-            component={More}
+            component={MoreScreen}
           />
         </Tab.Navigator>
       </NavigationContainer>

@@ -13,7 +13,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
 import { Container } from "../styles/appStyles";
-const Notifications = ({ navigation }) => {
+const NotificationsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const notis = useSelector((state) => state.noti.notifications);
   const theme = useSelector((state) => state.user.theme);
@@ -251,6 +251,6 @@ const Notifications = ({ navigation }) => {
   );
 };
 
-export default Notifications;
+export default NotificationsScreen;
 
 const styles = StyleSheet.create({});

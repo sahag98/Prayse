@@ -60,7 +60,7 @@ Notifications.setNotificationHandler({
 const duration = 2000;
 const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
-const CommunityHome = ({ route }) => {
+const CommunityHomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const {
     currentUser,
@@ -1439,7 +1439,7 @@ const CommunityHome = ({ route }) => {
   );
 };
 
-export default CommunityHome;
+export default CommunityHomeScreen;
 
 const styles = StyleSheet.create({
   joinedUserImg: {

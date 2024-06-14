@@ -15,7 +15,7 @@ import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
 import QuestionHelpModal from "../modals/QuestionHelpModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-const QuestionList = ({ navigation }) => {
+const QuestionListScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   const isFocused = useIsFocused();
@@ -101,6 +101,6 @@ const QuestionList = ({ navigation }) => {
   );
 };
 
-export default QuestionList;
+export default QuestionListScreen;
 
 const styles = StyleSheet.create({});

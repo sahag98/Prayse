@@ -23,7 +23,7 @@ import GroupInfoModal from "../modals/GroupInfoModal";
 import RemovedGroupModal from "../modals/RemovedGroupModal";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
-const PrayerGroup = ({ route, navigation }) => {
+const PrayerGroupScreen = ({ route, navigation }) => {
   const theme = useSelector((state) => state.user.theme);
   const msgs = useSelector((state) => state.message.messages);
   const [toggle, setToggle] = useState("chat");
@@ -519,4 +519,4 @@ const PrayerGroup = ({ route, navigation }) => {
   );
 };
 
-export default PrayerGroup;
+export default PrayerGroupScreen;
