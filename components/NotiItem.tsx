@@ -9,7 +9,6 @@ import { deleteNoti } from "../redux/notiReducer";
 const NotiItem = ({ item, theme, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
-
   const viewNotification = (screen) => {
     if (!screen) {
       dismissNotification(item);
