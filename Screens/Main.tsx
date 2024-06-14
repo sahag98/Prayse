@@ -9,7 +9,7 @@ import Folder from "../components/Folder";
 import useIsReady from "../hooks/useIsReady";
 import { Container } from "../styles/appStyles";
 export default function Main({ navigation }) {
-  const theme = useSelector((state) => state.user.theme);
+  const theme = useSelector((state: any) => state.user.theme);
   const isReady = useIsReady();
   const [todos, setTodos] = useState([]);
 
@@ -57,7 +57,7 @@ export default function Main({ navigation }) {
               : { backgroundColor: "#F2F7FF" }
         }
       >
-        <Folder todos={todos} setTodos={setTodos} navigation={navigation} />
+        <Folder todos={todos} navigation={navigation} />
       </Container>
     </>
   );

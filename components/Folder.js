@@ -28,7 +28,7 @@ const Folder = ({ navigation, todos }) => {
   const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
+    (state) => state.answered.answeredPrayers
   );
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
@@ -73,7 +73,7 @@ const Folder = ({ navigation, todos }) => {
   answeredPrayers?.forEach((prayer) => {
     const date = prayer.answeredDate;
     const sectionIndex = sections.findIndex(
-      (section) => section.title === date,
+      (section) => section.title === date
     );
     if (sectionIndex === -1) {
       sections.push({
@@ -117,7 +117,7 @@ const Folder = ({ navigation, todos }) => {
         id: uuid.v4(),
         name: folderName,
         prayers: [],
-      }),
+      })
     );
     setTimeout(() => {
       setAddVisible(false);

@@ -8,7 +8,7 @@ import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
 import { Container } from "../styles/appStyles";
 
-const Notifications = ({ navigation  }) => {
+const Notifications = ({ navigation }) => {
   const dispatch = useDispatch();
   const notis = useSelector((state: any) => state.noti.notifications);
   const theme = useSelector((state: any) => state.user.theme);
@@ -18,102 +18,6 @@ const Notifications = ({ navigation  }) => {
   //     noti_id: 0,
   //     date: "today",
   //     notification: "testing notification layout 0",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 1,
-  //     date: "today",
-  //     notification: "testing notification layout 1",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 2,
-  //     date: "today",
-  //     notification: "testing notification layout 2",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 3,
-  //     date: "today",
-  //     notification: "testing notification layout 3",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 4,
-  //     date: "today",
-  //     notification: "testing notification layout 4",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 5,
-  //     date: "today",
-  //     notification: "testing notification layout 5",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 6,
-  //     date: "today",
-  //     notification: "testing notification layout 6",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 7,
-  //     date: "today",
-  //     notification: "testing notification layout 7",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 8,
-  //     date: "today",
-  //     notification: "testing notification layout 8",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 9,
-  //     date: "today",
-  //     notification: "testing notification layout 9",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 9,
-  //     date: "today",
-  //     notification: "testing notification layout 9",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 9,
-  //     date: "today",
-  //     notification: "testing notification layout 9",
-  //     screen: "Home",
-  //     prayerId: 0,
-  //     identifier: 123,
-  //   },
-  //   {
-  //     noti_id: 9,
-  //     date: "today",
-  //     notification: "testing notification layout 9",
   //     screen: "Home",
   //     prayerId: 0,
   //     identifier: 123,

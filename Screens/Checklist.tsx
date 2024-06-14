@@ -20,24 +20,25 @@ import {
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
 import { Container } from "../styles/appStyles";
+import { AnsweredPrayer, Prayer } from "../types/reduxTypes";
 
 const Checklist = ({ navigation }) => {
-  const theme = useSelector((state) => state.user.theme);
-  const prayers = useSelector((state) => state.prayer.prayer);
+  const theme = useSelector((state: any) => state.user.theme);
+  const prayers: Prayer[] = useSelector((state: any) => state.prayer.prayer);
   const [selectKeepAction, setSelectKeepAction] = useState("");
   const [selectAnswerAction, setSelectAnswerAction] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [answeredAlready, setAnsweredAlready] = useState("");
   const dispatch = useDispatch();
-  const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
+  const answeredPrayers: AnsweredPrayer[] = useSelector(
+    (state: any) => state.answered.answeredPrayers
   );
 
-  const handleAddToAnsweredPrayer = (prayer) => {
+  const handleAddToAnsweredPrayer = (prayer: Prayer) => {
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
       )
     ) {
       console.log("exists");
@@ -48,18 +49,14 @@ const Checklist = ({ navigation }) => {
           answeredDate: new Date().toDateString(),
           prayer,
           id: uuid.v4(),
-        }),
+        })
       );
       setAnsweredAlready("");
     }
   };
 
-  const handleKeepPrayer = (prayer) => {
-    setSelectKeepAction("keep");
-  };
-
-  const handleDelete = (prayer) => {
-    dispatch(deletePrayer(prayer));
+  const handleDelete = (prayerId: string) => {
+    dispatch(deletePrayer(prayerId));
   };
 
   if (prayers.length == 0) {
@@ -69,15 +66,9 @@ const Checklist = ({ navigation }) => {
           theme == "dark"
             ? {
                 backgroundColor: "#121212",
-
-                // justifyContent: "center",
-                // alignItems: "center",
               }
             : {
                 backgroundColor: "#F2F7FF",
-
-                // justifyContent: "center",
-                // alignItems: "center",
               }
         }
       >
@@ -195,7 +186,7 @@ const Checklist = ({ navigation }) => {
         contentContainerStyle={{ paddingTop: 10 }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Prayer }) => (
           <View
             style={{
               backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
@@ -215,6 +206,7 @@ const Checklist = ({ navigation }) => {
             >
               {item.prayer}
             </Text>
+
             {selectedItems.includes(item.id) ||
             (selectAnswerAction == item.id &&
               selectedItems.includes(item.id)) ? (
