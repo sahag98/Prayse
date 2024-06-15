@@ -37,7 +37,7 @@
       "expo-secure-store"
     ],
     "splash": {
-      "image": "./assets/prayer-splash.png",
+      "image": "./assets/prayse-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
