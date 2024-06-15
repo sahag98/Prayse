@@ -7,7 +7,9 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import {
   addtoCompletedItems,
+  deleteCompletedItems,
   deletePreviousDayItems,
+  deleteStreakCounter,
 } from "../redux/userReducer";
 
 import GiveawayModal from "./GiveawayModal";
