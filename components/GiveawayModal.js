@@ -15,12 +15,7 @@ import { useSupabase } from "../context/useSupabase";
 import { resetGiveaway } from "../redux/userReducer";
 import { ModalContainer, ModalView2 } from "../styles/appStyles";
 
-const GiveawayModal = ({
-  isShowingGiveaway,
-  setIsShowingGiveaway,
-  theme,
-  appstreak,
-}) => {
+const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -34,7 +29,7 @@ const GiveawayModal = ({
     } else {
       const { data, error } = await supabase
         .from("giveaway_entries")
-        .insert([{ email, streak: appstreak }])
+        .insert([{ email, streak: streak }])
         .select();
 
       // console.log("data: ", data);
@@ -109,7 +104,7 @@ const GiveawayModal = ({
                 color: theme === "dark" ? "white" : "#2f2d51",
               }}
             >
-              You have reached 30 days!
+              Great job! You have reached 60 days.
             </Text>
             <Text
               style={{
