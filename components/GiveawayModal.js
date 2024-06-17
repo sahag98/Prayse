@@ -100,17 +100,26 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
               style={{
                 textAlign: "center",
                 fontFamily: "Inter-Bold",
-                fontSize: 17,
+                fontSize: 18,
                 color: theme === "dark" ? "white" : "#2f2d51",
               }}
             >
-              Great job! You have reached 60 days.
+              Great job!
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                fontSize: 15,
+                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
+              }}
+            >
+              You have done the daily devotions for 60 straight days.
             </Text>
             <Text
               style={{
                 fontFamily: "Inter-Medium",
 
-                color: theme === "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               }}
             >
               Enter your email for a chance to win a prayse merch item of your

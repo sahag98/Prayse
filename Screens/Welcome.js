@@ -352,7 +352,7 @@ const Welcome = ({ navigation }) => {
       const today = new Date().toLocaleDateString("en-CA");
       console.log("today's date: ", today);
 
-      dispatch(increaseAppStreakCounter({ today: "2024-06-17" }));
+      dispatch(increaseAppStreakCounter({ today }));
     }
     appStreak();
 

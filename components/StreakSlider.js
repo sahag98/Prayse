@@ -10,7 +10,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-import { didEnterGiveaway } from "../redux/userReducer";
+import { didEnterGiveaway, resetGiveaway } from "../redux/userReducer";
 import { ModalContainer, ModalView2 } from "../styles/appStyles";
 
 const StreakSlider = ({
@@ -29,11 +29,11 @@ const StreakSlider = ({
     console.log("devo streak check: ", streak);
     console.log("is Showing Giveaway modal: ", isShowingGiveawayModal);
     if (streak === 1 && isShowingGiveawayModal === false) {
-      console.log("entering giveaway in 4 secs!!");
+      console.log("entering giveaway in 2 secs!!");
       setTimeout(() => {
         setLoading(true);
         dispatch(didEnterGiveaway());
-      }, 3000);
+      }, 2000);
     }
   }, [streak]);
 

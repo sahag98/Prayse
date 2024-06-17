@@ -10,6 +10,7 @@ import {
   deleteCompletedItems,
   deletePreviousDayItems,
   deleteStreakCounter,
+  resetGiveaway,
 } from "../redux/userReducer";
 
 import GiveawayModal from "./GiveawayModal";
@@ -34,18 +35,19 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
     console.log("currrr: ", currentDate);
-    dispatch(deleteCompletedItems());
-    dispatch(deleteStreakCounter());
-    // dispatch(
-    //   addtoCompletedItems({
-    //     item: selected,
-    //     date: "6/16/2024",
-    //   })
-    // );
+    // dispatch(resetGiveaway());
+    // dispatch(deleteCompletedItems());
+    // dispatch(deleteStreakCounter());
+    dispatch(
+      addtoCompletedItems({
+        item: selected,
+        date: currentDate,
+      })
+    );
 
-    // navigation.navigate(selected, {
-    //   previousScreen: "Home",
-    // });
+    navigation.navigate(selected, {
+      previousScreen: "Home",
+    });
   }
 
   async function clearPreviousDayCompletion() {
