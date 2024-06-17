@@ -10,12 +10,13 @@ import {
   deleteCompletedItems,
   deletePreviousDayItems,
   deleteStreakCounter,
+  resetGiveaway,
 } from "../redux/userReducer";
 
 import GiveawayModal from "./GiveawayModal";
 import StreakSlider from "./StreakSlider";
 
-const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
+const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
@@ -33,7 +34,8 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
-    console.log("curr: ", currentDate);
+    console.log("currrr: ", currentDate);
+    // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
     dispatch(
@@ -83,11 +85,11 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
         isShowingGiveaway={hasEnteredGiveaway}
         theme={theme}
         appstreak={appStreak}
-        streak={streak}
+        streak={devoStreak}
       />
       <StreakSlider
         appstreak={appStreak}
-        streak={streak}
+        streak={devoStreak}
         theme={theme}
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}

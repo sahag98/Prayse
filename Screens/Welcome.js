@@ -31,7 +31,12 @@ import Animated, {
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -622,17 +627,17 @@ const Welcome = ({ navigation }) => {
             onPress={() => setIsShowingStreak((prev) => !prev)}
             style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
           >
-            <FontAwesome
+            {/* <FontAwesome
               name="calendar-check-o"
               size={20}
               color={theme === "dark" ? "white" : "#2f2d51"}
-            />
-            {/* <MaterialCommunityIcons
+            /> */}
+            <MaterialCommunityIcons
               style={{ zIndex: 10 }}
               name="hands-pray"
               size={20}
               color={theme == "dark" ? "white" : "#2f2d51"}
-            /> */}
+            />
 
             <Text
               style={{
@@ -641,7 +646,7 @@ const Welcome = ({ navigation }) => {
                 fontFamily: "Inter-Bold",
               }}
             >
-              {appstreak ?? 0}
+              {streak ?? 0}
             </Text>
           </TouchableOpacity>
 
@@ -696,7 +701,7 @@ const Welcome = ({ navigation }) => {
       /> */}
       <DailyReflection
         completedItems={completedItems}
-        streak={streak}
+        devoStreak={streak}
         appStreak={appstreak}
         theme={theme}
       />
