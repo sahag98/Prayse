@@ -23,17 +23,12 @@ const StreakSlider = ({
   const isShowingGiveawayModal = useSelector(
     (state) => state.user.isShowingGiveawayModal
   );
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     console.log("devo streak check: ", streak);
     console.log("is Showing Giveaway modal: ", isShowingGiveawayModal);
-    if (streak === 1 && isShowingGiveawayModal === false) {
-      console.log("entering giveaway in 2 secs!!");
-      setTimeout(() => {
-        setLoading(true);
-        dispatch(didEnterGiveaway());
-      }, 2000);
+    if (streak === 60 && isShowingGiveawayModal === false) {
+      dispatch(didEnterGiveaway());
     }
   }, [streak]);
 
@@ -44,7 +39,7 @@ const StreakSlider = ({
           "Hey! Check out my Prayse streaks: " +
           "\n" +
           "\n" +
-          `App Streak: ${0}` +
+          `App Streak: ${appstreak}` +
           "\n" +
           `Daily Devotions Streak: ${streak}` +
           "\n" +
@@ -202,7 +197,7 @@ const StreakSlider = ({
               gap: 10,
             }}
           >
-            {streak > 1 ? null : (
+            {streak > 60 ? null : (
               <>
                 <Text
                   style={{
@@ -212,11 +207,11 @@ const StreakSlider = ({
                     fontSize: 16,
                   }}
                 >
-                  Devotions Streak: {((streak / 1) * 100).toFixed(1)}%
+                  Devotions Streak: {((streak / 60) * 100).toFixed(1)}%
                 </Text>
                 <ProgressBar
                   style={{ height: 8, borderRadius: 10 }}
-                  progress={streak / 1}
+                  progress={streak / 60}
                   color="green"
                 />
                 <Text
