@@ -3,14 +3,13 @@ import { Tabs } from "expo-router";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
-
 import {
   COMMUNITY_SCREEN,
   DEVOTIONAL_SCREEN,
   MORE_SCREEN,
   PRAYER_SCREEN,
   WELCOME_SCREEN,
-} from "../../routes";
+} from "@routes";
 
 export default function TabLayout() {
   const theme = useSelector((state: any) => state?.user?.theme);

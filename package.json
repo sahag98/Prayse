@@ -8,8 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint . --fix",
-    "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "prepare": "husky"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
