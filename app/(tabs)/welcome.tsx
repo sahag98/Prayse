@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { nativeApplicationVersion } from "expo-application";
 import * as Device from "expo-device";
@@ -32,26 +33,26 @@ import Animated, {
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
+import DailyReflection from "@components/DailyReflection";
+import GospelofJesus from "@components/GospelofJesus";
+import MerchComponent from "@components/MerchComponent";
+import QuestionoftheWeek from "@components/QuestionoftheWeek";
+import StreakSlider from "@components/StreakSlider";
+
+import DonationModal from "@modals/DonationModal";
+import NewFeaturesModal from "@modals/NewFeaturesModal";
+import UpdateModal from "@modals/UpdateModal";
+
+import config from "@config";
+import { useSupabase } from "@context/useSupabase";
 import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useIsFocused } from "@react-navigation/native";
-
-import noreminder from "../../assets/noreminders.png";
-import DailyReflection from "../../components/DailyReflection";
-import GospelofJesus from "../../components/GospelofJesus";
-import MerchComponent from "../../components/MerchComponent";
-import QuestionoftheWeek from "../../components/QuestionoftheWeek";
-import StreakSlider from "../../components/StreakSlider";
-import config from "../../config";
-import { useSupabase } from "../../context/useSupabase";
-import DonationModal from "../../modals/DonationModal";
-import NewFeaturesModal from "../../modals/NewFeaturesModal";
-import UpdateModal from "../../modals/UpdateModal";
-import { addQuickFolder } from "../../redux/folderReducer";
-import { addNoti } from "../../redux/notiReducer";
-import { addPrayer } from "../../redux/prayerReducer";
-import { deleteReminder } from "../../redux/remindersReducer";
-import { increaseAppStreakCounter } from "../../redux/userReducer";
+import { addQuickFolder } from "@redux/folderReducer";
+import { addNoti } from "@redux/notiReducer";
+import { addPrayer } from "@redux/prayerReducer";
+import { deleteReminder } from "@redux/remindersReducer";
+import { increaseAppStreakCounter } from "@redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -61,7 +62,9 @@ import {
   ModalView,
   StyledInput,
   WelcomeContainer,
-} from "../../styles/appStyles";
+} from "@styles/appStyles";
+
+import noreminder from "../../assets/noreminders.png";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -115,7 +118,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings.",
+        "To recieve notifications in the future, enable Notifications from the App Settings."
       );
       return;
     }
@@ -155,7 +158,7 @@ const WelcomeScreen = () => {
   const notis = useSelector((state) => state.noti.notifications);
 
   const quickFolderExists = useSelector(
-    (state) => state.folder.quickFolderExists,
+    (state) => state.folder.quickFolderExists
   );
 
   const welcomeFadeIn = useSharedValue(0);
@@ -230,7 +233,7 @@ const WelcomeScreen = () => {
             id: 4044,
             name: "Quick Prayers",
             prayers: [],
-          }),
+          })
         );
       } catch (error) {
         console.log("quick prayer", error);
@@ -252,7 +255,7 @@ const WelcomeScreen = () => {
         category: quickcategoryvalue,
         date: new Date().toLocaleString(),
         id: uuid.v4(),
-      }),
+      })
     );
     setQuickModal(false);
     setQuickprayervalue("");
@@ -290,11 +293,11 @@ const WelcomeScreen = () => {
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
           );
         } else if (Platform.OS === "android") {
           Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
           );
         }
       }
@@ -392,7 +395,7 @@ const WelcomeScreen = () => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />,
+          />
         );
       } else if (currentHour >= 12 && currentHour < 18) {
         setGreeting("Good afternoon ");
@@ -401,7 +404,7 @@ const WelcomeScreen = () => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />,
+          />
         );
       } else {
         setGreeting("Good Evening ");
@@ -410,7 +413,7 @@ const WelcomeScreen = () => {
             name="moon"
             size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
-          />,
+          />
         );
       }
     }
@@ -484,7 +487,7 @@ const WelcomeScreen = () => {
               question_id: notification.request.content.data?.question_id,
               prayerId: notification.request.content.data?.prayerId,
               identifier: notification.request.identifier,
-            }),
+            })
           );
         }
 
@@ -501,7 +504,7 @@ const WelcomeScreen = () => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current,
+        notificationListener.current
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -915,7 +918,7 @@ const WelcomeScreen = () => {
                   }
                   const formattedDate = timestamp.toLocaleString(
                     "en-US",
-                    timeOptions,
+                    timeOptions
                   );
 
                   return (
@@ -1237,7 +1240,7 @@ const WelcomeScreen = () => {
               }
               onPress={() =>
                 Linking.openURL(
-                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
                 )
               }
             >
@@ -1301,7 +1304,7 @@ const WelcomeScreen = () => {
               style={theme == "dark" ? styles.refreshDark : styles.refresh}
               onPress={() =>
                 Linking.openURL(
-                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
                 )
               }
             >

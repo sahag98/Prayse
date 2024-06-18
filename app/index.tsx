@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function HomeScreen() {
   return (
     <SafeAreaView>
-      <View className="flex flex-row items-center gap-2 text-slate-500">
-        <Text>Index</Text>
+      <View className="flex flex-row items-center gap-2">
+        <Text className="text-red-300 text-lg">Index</Text>
         <Link href="welcome">
           <Text>Welcome</Text>
         </Link>

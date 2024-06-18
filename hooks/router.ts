@@ -60,7 +60,7 @@ export function useRouterNotifications() {
         } catch (error) {
           console.error("Error processing received notification", error);
         }
-      }
+      },
     );
 
     return () => {

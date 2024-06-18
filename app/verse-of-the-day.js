@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import * as Speech from "expo-speech";
 import {
   ActivityIndicator,
@@ -16,7 +17,6 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
 import { Container, HeaderTitle } from "../styles/appStyles";
-import { useLocalSearchParams } from "expo-router";
 
 const VerseOfTheDayScreen = () => {
   const theme = useSelector((state) => state.user.theme);

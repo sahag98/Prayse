@@ -1,9 +1,7 @@
 import React from "react";
 import { Buffer } from "buffer";
 import { useFonts } from "expo-font";
-import * as Notifications from "expo-notifications";
-import { SplashScreen, Stack, useNavigation } from "expo-router";
-import { Linking } from "react-native";
+import { SplashScreen, Stack } from "expo-router";
 import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -12,26 +10,20 @@ import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
-import splashScreenIcon from "../assets/prayer.png";
-import { SupabaseProvider } from "../context/SupabaseProvider";
-import { useRouterNotifications } from "../hooks/router";
-import { store } from "../redux/store";
+import { SupabaseProvider } from "@context/SupabaseProvider";
+import { useRouterNotifications } from "@hooks/router";
+import { store } from "@redux/store";
 import {
   CHECKLIST_SCREEN,
-  COMMUNITY_SCREEN,
   DEVO_LIST_SCREEN,
-  DEVOTIONAL_SCREEN,
   FAVORITES_SCREEN,
   GOSPEL_SCREEN,
-  HOME_SCREEN,
-  MORE_SCREEN,
   NOTIFICATIONS_SCREEN,
   OLD_PRAYER_SCREEN,
   ONBOARDING_SCREEN,
   OUR_PRESENTATION_SCREEN,
   PRAYER_GROUP_SCREEN,
   PRAYER_ROOM_SCREEN,
-  PRAYER_SCREEN,
   PUBLIC_COMMUNITY_SCREEN,
   PUBLIC_GROUPS_SCREEN,
   QUESTION_LIST_SCREEN,
@@ -42,8 +34,9 @@ import {
   SETTINGS_SCREEN,
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
-  WELCOME_SCREEN,
-} from "../routes";
+} from "@routes";
+
+import splashScreenIcon from "../assets/prayer.png";
 
 import "../global.css";
 

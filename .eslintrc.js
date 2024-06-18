@@ -29,7 +29,9 @@ module.exports = {
               // `react` first, then packages starting with a character
               ["^react$", "^[a-z]"],
               // Lib imports
-              ["^@components", "@Screens"],
+              ["^@components"],
+              // Modals
+              ["^@modals"],
               // Other packages starting with `@`
               ["^@"],
               // Imports starting with `../`

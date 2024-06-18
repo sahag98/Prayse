@@ -27,8 +27,8 @@ import {
   deleteReminder,
   editReminder,
 } from "../redux/remindersReducer";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import { REMINDER_SCREEN } from "../routes";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 export default function TestScreen() {
   const navigation = useNavigation();
@@ -79,7 +79,7 @@ export default function TestScreen() {
       const date = new Date(
         dateObject.getFullYear(),
         dateObject.getMonth(),
-        dateObject.getDate()
+        dateObject.getDate(),
       );
       setReminderDate(date);
       const time = new Date(0); // Initialize with the epoch
@@ -134,7 +134,7 @@ export default function TestScreen() {
 
   const scheduleNotification = async (reminder, combinedDate, type) => {
     const secondsUntilNotification = Math.floor(
-      (combinedDate.getTime() - Date.now()) / 1000
+      (combinedDate.getTime() - Date.now()) / 1000,
     );
 
     if (repeatOption == "daily" && isRepeat) {
@@ -156,7 +156,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Daily",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -164,7 +164,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Daily",
-          })
+          }),
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "ios") {
@@ -188,7 +188,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -196,12 +196,12 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "android") {
       const newDate = new Date(
-        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
+        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000,
       );
       const seconds = newDate.getTime() / 1000;
       const identifier = await Notifications.scheduleNotificationAsync({
@@ -222,7 +222,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -230,7 +230,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          })
+          }),
         );
       }
     } else {
@@ -251,7 +251,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "None",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -259,7 +259,7 @@ export default function TestScreen() {
             reminder,
             identifier,
             ocurrence: "None",
-          })
+          }),
         );
       }
     }
@@ -271,7 +271,7 @@ export default function TestScreen() {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes()
+      reminderTime.getMinutes(),
     );
 
     const newReminderObj = {
@@ -282,7 +282,7 @@ export default function TestScreen() {
     };
 
     await Notifications.cancelScheduledNotificationAsync(
-      routeParams.reminderIdentifier
+      routeParams.reminderIdentifier,
     );
 
     dispatch(deleteReminder(routeParams.reminderEditId));
@@ -290,7 +290,7 @@ export default function TestScreen() {
     scheduleNotification(
       newReminderObj,
       combinedDate,
-      "add"
+      "add",
       // reminderTime.getHours(),
       // reminderTime.getMinutes()
     );
@@ -317,7 +317,7 @@ export default function TestScreen() {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes()
+      reminderTime.getMinutes(),
     );
 
     const newReminderObj = {

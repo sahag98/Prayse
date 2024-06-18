@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -72,11 +73,21 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
+    "@types/react": "^18.3.3",
+    "@types/react-native-vector-icons": "^6.4.18",
     "@types/styled-components-react-native": "^5.2.1",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^13.0.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
-    "eslint-plugin-unused-imports": "^3.2.0"
+    "eslint-plugin-unused-imports": "^3.2.0",
+    "git-exec-and-restage": "^1.1.1",
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "git-exec-and-restage eslint --fix --"
+    ]
   },
   "private": true
 }
