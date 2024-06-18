@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -22,6 +22,7 @@ const Question = ({ navigation, route }) => {
     answers,
     currentUser,
     setQuestions,
+    fetchAnswers,
     fetchUpdatedAnswers,
     supabase,
     newAnswer,
@@ -29,9 +30,13 @@ const Question = ({ navigation, route }) => {
   const [answersVisible, setAnswersVisible] = useState(false);
   const itemTitle = route?.params?.title;
   const itemId = route.params?.question_id;
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    fetchAnswers();
+  }, [isFocused]);
 
   const theme = useSelector((state) => state.user.theme);
-  const isFocused = useIsFocused();
+
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
 
@@ -44,7 +49,7 @@ const Question = ({ navigation, route }) => {
   };
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === itemId,
+    (answer) => answer.question_id === itemId
   );
 
   return (

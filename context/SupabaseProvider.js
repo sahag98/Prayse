@@ -232,7 +232,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setNewPost(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -248,7 +248,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setNewAnswer(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -269,7 +269,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 fetchPublicGroups();
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -284,7 +284,7 @@ export const SupabaseProvider = (props) => {
               setNewMsgGroupId(payload.new.group_id);
 
               setUserofSentMessage(payload.new.user_id);
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -300,7 +300,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setRefreshMembers(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -317,14 +317,14 @@ export const SupabaseProvider = (props) => {
                 console.log("refresh payload");
                 setRefreshMsgLikes(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
             {
               event: "*",
               schema: "public",
-              table: "questions_test",
+              table: "questions",
             },
             (payload) => {
               if (
@@ -336,7 +336,7 @@ export const SupabaseProvider = (props) => {
                 fetchQuestions();
                 fetchAnswers();
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -355,7 +355,7 @@ export const SupabaseProvider = (props) => {
                 setRefreshAnswers(true);
                 fetchAnswers();
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -371,7 +371,7 @@ export const SupabaseProvider = (props) => {
               ) {
                 setRefreshLikes(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -384,7 +384,7 @@ export const SupabaseProvider = (props) => {
               if (payload.eventType === "INSERT") {
                 setRefreshComments(true);
               }
-            },
+            }
           )
           .on(
             "postgres_changes",
@@ -398,7 +398,7 @@ export const SupabaseProvider = (props) => {
                 console.log(payload);
                 setRefreshReflections(true);
               }
-            },
+            }
           )
           .subscribe();
 

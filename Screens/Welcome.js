@@ -26,6 +26,8 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import uuid from "react-native-uuid";
@@ -34,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AntDesign,
   Feather,
+  MaterialIcons,
   MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
@@ -180,13 +183,6 @@ const Welcome = ({ navigation }) => {
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
   const [notiVisible, setNotiVisible] = useState(false);
   const [isShowingStreak, setIsShowingStreak] = useState(false);
-  const streakScale = useSharedValue(1);
-
-  const animatedStreakStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: streakScale.value }],
-    };
-  });
 
   const doFadeInAnimation = () => {
     welcomeFadeIn.value = withTiming(1, {
@@ -284,6 +280,20 @@ const Welcome = ({ navigation }) => {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
+
+  const scaleStreak = useSharedValue(1);
+  const animatedStreakStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleStreak.value }],
+    };
+  });
+
+  useEffect(() => {
+    scaleStreak.value = withSequence(
+      withSpring(1.2, { damping: 5, stiffness: 40 }),
+      withSpring(1, { damping: 5, stiffness: 40 })
+    );
+  }, [streak]);
 
   useEffect(() => {
     if (
@@ -623,31 +633,34 @@ const Welcome = ({ navigation }) => {
             theme={theme}
             setIsReminderOn={setIsReminderOff}
           />
+
           <TouchableOpacity
             onPress={() => setIsShowingStreak((prev) => !prev)}
             style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
           >
-            {/* <FontAwesome
-              name="calendar-check-o"
-              size={20}
-              color={theme === "dark" ? "white" : "#2f2d51"}
-            /> */}
-            <MaterialCommunityIcons
-              style={{ zIndex: 10 }}
-              name="hands-pray"
-              size={20}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            />
-
-            <Text
-              style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
-
-                fontFamily: "Inter-Bold",
-              }}
+            <Animated.View
+              style={[
+                animatedStreakStyle,
+                { flexDirection: "row", alignItems: "center", gap: 5 },
+              ]}
             >
-              {streak ?? 0}
-            </Text>
+              <MaterialCommunityIcons
+                style={{ zIndex: 10 }}
+                name="hands-pray"
+                size={20}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+
+                  fontFamily: "Inter-Bold",
+                }}
+              >
+                {streak ?? 0}
+              </Text>
+            </Animated.View>
           </TouchableOpacity>
 
           <StreakSlider
@@ -1201,7 +1214,7 @@ const Welcome = ({ navigation }) => {
                         }
                 }
               >
-                What's New in v9.4!
+                What's New in v9.5!
               </Text>
             </View>
             <AntDesign
