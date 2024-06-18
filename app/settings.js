@@ -3,6 +3,7 @@ import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
+import { useNavigation } from "expo-router";
 import {
   Modal,
   Platform,
@@ -37,7 +38,8 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = () => {
+  const navigation = useNavigation();
   const [active, setActive] = useState(false);
   const theme = useSelector((state) => state.user.theme);
   const [isEnabled, setIsEnabled] = useState(false);

@@ -3,6 +3,7 @@ import { nativeApplicationVersion } from "expo-application";
 import * as Device from "expo-device";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
+import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import {
   ActivityIndicator,
@@ -33,24 +34,24 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
-import noreminder from "../assets/noreminders.png";
-import DailyReflection from "../components/DailyReflection";
-import GospelofJesus from "../components/GospelofJesus";
-import MerchComponent from "../components/MerchComponent";
-import QuestionoftheWeek from "../components/QuestionoftheWeek";
-import StreakSlider from "../components/StreakSlider";
-import config from "../config";
-import { useSupabase } from "../context/useSupabase";
-import DonationModal from "../modals/DonationModal";
-import NewFeaturesModal from "../modals/NewFeaturesModal";
-import UpdateModal from "../modals/UpdateModal";
-import { addQuickFolder } from "../redux/folderReducer";
-import { addNoti } from "../redux/notiReducer";
-import { addPrayer } from "../redux/prayerReducer";
-import { deleteReminder } from "../redux/remindersReducer";
-import { increaseAppStreakCounter } from "../redux/userReducer";
+import noreminder from "../../assets/noreminders.png";
+import DailyReflection from "../../components/DailyReflection";
+import GospelofJesus from "../../components/GospelofJesus";
+import MerchComponent from "../../components/MerchComponent";
+import QuestionoftheWeek from "../../components/QuestionoftheWeek";
+import StreakSlider from "../../components/StreakSlider";
+import config from "../../config";
+import { useSupabase } from "../../context/useSupabase";
+import DonationModal from "../../modals/DonationModal";
+import NewFeaturesModal from "../../modals/NewFeaturesModal";
+import UpdateModal from "../../modals/UpdateModal";
+import { addQuickFolder } from "../../redux/folderReducer";
+import { addNoti } from "../../redux/notiReducer";
+import { addPrayer } from "../../redux/prayerReducer";
+import { deleteReminder } from "../../redux/remindersReducer";
+import { increaseAppStreakCounter } from "../../redux/userReducer";
 import {
   HeaderTitle,
   ModalAction,
@@ -60,7 +61,8 @@ import {
   ModalView,
   StyledInput,
   WelcomeContainer,
-} from "../styles/appStyles";
+} from "../../styles/appStyles";
+
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -131,7 +133,8 @@ async function registerForPushNotificationsAsync() {
 
 const image = { uri: "https://legacy.reactjs.org/logo-og.png" };
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
@@ -202,7 +205,7 @@ const WelcomeScreen = ({ navigation }) => {
         setIsUpdateAvailable(false);
       }
     } catch (error) {
-      console.log(error);
+      console.log("fetchUpdate", error);
     }
   }
 
@@ -230,7 +233,7 @@ const WelcomeScreen = ({ navigation }) => {
           }),
         );
       } catch (error) {
-        console.log(error);
+        console.log("quick prayer", error);
       }
 
       handleSubmit();
@@ -256,7 +259,7 @@ const WelcomeScreen = ({ navigation }) => {
   }
 
   function handleCloseTooltip() {
-    setToolVisible(false);
+    // setToolVisible(false);
   }
 
   const dismissKeyboard = () => {
@@ -424,7 +427,7 @@ const WelcomeScreen = ({ navigation }) => {
           setIsFirst(false);
         }
       } catch (error) {
-        console.log(error);
+        console.log("isTime", error);
       }
     };
     storedData();
@@ -456,7 +459,7 @@ const WelcomeScreen = ({ navigation }) => {
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => sendToken(token))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("push notification", err));
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         const date = Date();
@@ -530,10 +533,10 @@ const WelcomeScreen = ({ navigation }) => {
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   const [fontsLoaded] = useFonts({
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
+    "Inter-Bold": require("../../assets/fonts/Inter-Bold.ttf"),
+    "Inter-Regular": require("../../assets/fonts/Inter-Regular.ttf"),
+    "Inter-Medium": require("../../assets/fonts/Inter-Medium.ttf"),
+    "Inter-Light": require("../../assets/fonts/Inter-Light.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -761,67 +764,68 @@ const WelcomeScreen = ({ navigation }) => {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
             >
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 5,
-                }}
-                onPress={() => navigation.navigate("Reminder")}
-              >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 16,
-                          color: "white",
-                        }
-                      : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 16,
-                          color: "#444444",
-                        }
-                  }
+              <Link to="/reminder">
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
                 >
-                  View All
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 5,
-                }}
-                onPress={() =>
-                  navigation.navigate("Test", {
-                    type: "Add",
-                  })
-                }
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Medium",
+                            fontSize: 16,
+                            color: "white",
+                          }
+                        : {
+                            fontFamily: "Inter-Medium",
+                            fontSize: 16,
+                            color: "#444444",
+                          }
+                    }
+                  >
+                    View All
+                  </Text>
+                </View>
+              </Link>
+              <Link
+                to="/test?type=Add"
+                // href={{ screen: "test", params: { type: "Add" } }}
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 16,
-                          color: "#A5C9FF",
-                        }
-                      : {
-                          fontFamily: "Inter-Medium",
-                          fontSize: 16,
-                          color: "#2f2d51",
-                        }
-                  }
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
                 >
-                  Add
-                </Text>
-                <Ionicons
-                  name="add-circle-outline"
-                  size={30}
-                  color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-                />
-              </TouchableOpacity>
+                  <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Medium",
+                            fontSize: 16,
+                            color: "#A5C9FF",
+                          }
+                        : {
+                            fontFamily: "Inter-Medium",
+                            fontSize: 16,
+                            color: "#2f2d51",
+                          }
+                    }
+                  >
+                    Add
+                  </Text>
+                  <Ionicons
+                    name="add-circle-outline"
+                    size={30}
+                    color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                  />
+                </View>
+              </Link>
             </View>
           </View>
           {reminders.length == 0 ? (

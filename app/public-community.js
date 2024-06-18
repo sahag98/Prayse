@@ -27,7 +27,7 @@ import { useSupabase } from "../context/useSupabase";
 import CommunityModal from "../modals/ComunityModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const PublicCommunityScreen = ({ route }) => {
+const PublicCommunityScreen = () => {
   const navigation = useNavigation();
   const {
     currentUser,

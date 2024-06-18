@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -15,14 +16,15 @@ import { useSelector } from "react-redux";
 import NetInfo from "@react-native-community/netinfo";
 import { useIsFocused } from "@react-navigation/native";
 
-import tbf from "../assets/tbf-logo.jpg";
-import useIsReady from "../hooks/useIsReady";
-import { client } from "../lib/client";
-import { Container } from "../styles/appStyles";
+import tbf from "../../assets/tbf-logo.jpg";
+import useIsReady from "../../hooks/useIsReady";
+import { client } from "../../lib/client";
+import { Container } from "../../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
 
-const DevotionalScreen = ({ navigation }) => {
+const DevotionalScreen = () => {
+  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();

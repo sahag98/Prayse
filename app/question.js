@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -17,7 +18,8 @@ import { useSupabase } from "../context/useSupabase";
 import QuestionModal from "../modals/QuestionModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const QuestionScreen = ({ navigation, route }) => {
+const QuestionScreen = ({ route }) => {
+  const navigation = useNavigation();
   const {
     answers,
     currentUser,
@@ -28,7 +30,8 @@ const QuestionScreen = ({ navigation, route }) => {
   } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
   const itemTitle = route?.params?.title;
-  const itemId = route.params?.question_id;
+  const routeParams = useLocalSearchParams();
+  const itemId = routeParams?.question_id;
 
   const theme = useSelector((state) => state.user.theme);
   const isFocused = useIsFocused();

@@ -16,8 +16,9 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
 import { Container, HeaderTitle } from "../styles/appStyles";
+import { useLocalSearchParams } from "expo-router";
 
-const VerseOfTheDayScreen = ({ route }) => {
+const VerseOfTheDayScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const VerseOfTheDayScreen = ({ route }) => {
   const [verseTitle, setVerseTitle] = useState("");
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const routeParams = useLocalSearchParams();
   const speak = async (verse, chapter) => {
     if (verse && chapter) {
       const speakVerse = verse + " - " + chapter;
@@ -34,9 +36,9 @@ const VerseOfTheDayScreen = ({ route }) => {
   };
   useEffect(() => {
     loadDailyVerse();
-    // if (route.params) {
-    //   AsyncStorage.setItem("storedVerse", route.params.verse);
-    //   AsyncStorage.setItem("storedVerseTitle", route.params.title);
+    // if (routeParams) {
+    //   AsyncStorage.setItem("storedVerse", routeParams.verse);
+    //   AsyncStorage.setItem("storedVerseTitle", routeParams.title);
     //   loadDailyVerse();
     // }
   }, [isFocused]);
@@ -116,7 +118,7 @@ const VerseOfTheDayScreen = ({ route }) => {
         <TouchableOpacity
           style={{ marginRight: 5 }}
           onPress={() => {
-            if (route.params?.previousScreen) {
+            if (routeParams?.previousScreen) {
               navigation.goBack();
             } else {
               navigation.navigate("More");

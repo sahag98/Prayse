@@ -1,5 +1,6 @@
 import React from "react";
 import { useFonts } from "expo-font";
+import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Linking,
@@ -20,11 +21,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
-import SettingsItems from "../components/SettingsItems";
-import config from "../config";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import SettingsItems from "../../components/SettingsItems";
+import config from "../../config";
+import { Container, HeaderTitle } from "../../styles/appStyles";
 
-const MoreScreen = ({ navigation }) => {
+const MoreScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
 
   function giveFeedback(market) {
@@ -135,10 +137,10 @@ const MoreScreen = ({ navigation }) => {
   ];
 
   const [fontsLoaded] = useFonts({
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-    "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
+    "Inter-Medium": require("../../assets/fonts/Inter-Medium.ttf"),
+    "Inter-Bold": require("../../assets/fonts/Inter-Bold.ttf"),
+    "Inter-SemiBold": require("../../assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Regular": require("../../assets/fonts/Inter-Regular.ttf"),
   });
 
   const BusyIndicator = () => {

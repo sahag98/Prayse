@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useFonts } from "expo-font";
+import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Alert,
@@ -25,8 +26,10 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
+import { HOME_SCREEN } from "../routes";
 
-const GospelScreen = ({ navigation }) => {
+const GospelScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -142,7 +145,7 @@ const GospelScreen = ({ navigation }) => {
           onPress: () =>
             Linking.openURL("https://www.instagram.com/prayse.app/"),
         },
-      ],
+      ]
     );
   };
 
@@ -176,7 +179,7 @@ const GospelScreen = ({ navigation }) => {
         <HeaderView
           style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons
               name="chevron-back"
               size={30}

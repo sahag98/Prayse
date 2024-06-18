@@ -39,16 +39,16 @@ import {
 } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
-import globeBg from "../assets/globe-bg.png";
-import groupBg from "../assets/group-bg.png";
-import questionBg from "../assets/question-bg.png";
-import config from "../config";
-import { useSupabase } from "../context/useSupabase";
-import CreateGroupModal from "../modals/CreateGroupModal";
-import JoinModal from "../modals/JoinModal";
-import ProfileModal from "../modals/ProfileModal";
-import WelcomeModal from "../modals/WelcomeModal";
-import { HeaderTitle, HeaderView } from "../styles/appStyles";
+import globeBg from "../../assets/globe-bg.png";
+import groupBg from "../../assets/group-bg.png";
+import questionBg from "../../assets/question-bg.png";
+import config from "../../config";
+import { useSupabase } from "../../context/useSupabase";
+import CreateGroupModal from "../../modals/CreateGroupModal";
+import JoinModal from "../../modals/JoinModal";
+import ProfileModal from "../../modals/ProfileModal";
+import WelcomeModal from "../../modals/WelcomeModal";
+import { HeaderTitle, HeaderView } from "../../styles/appStyles";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -60,7 +60,7 @@ Notifications.setNotificationHandler({
 const duration = 2000;
 const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
-const CommunityHomeScreen = ({ route }) => {
+const CommunityHomeScreen = () => {
   const navigation = useNavigation();
   const {
     currentUser,
@@ -93,6 +93,7 @@ const CommunityHomeScreen = ({ route }) => {
   const [hasConnection, setHasConnection] = useState(true);
   const [isFetchingUserGroups, setIsFetchingUserGroups] = useState(false);
   const rotation = useSharedValue(0);
+  // const routeParams = useLocalSearchParams();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -134,10 +135,10 @@ const CommunityHomeScreen = ({ route }) => {
   }, [isFocused]);
 
   // useEffect(() => {
-  //   if (route.params !== undefined) {
+  //   if (routeParams !== undefined) {
   //     navigation.navigate("PrayerGroup", {
-  //       group: route.params.group,
-  //       allGroups: route.params.allGroups,
+  //       group: routeParams.group,
+  //       allGroups: routeParams.allGroups,
   //     });
   //   }
   // }, [route?.params]);
@@ -242,10 +243,10 @@ const CommunityHomeScreen = ({ route }) => {
 
   const width = Dimensions.get("window").width - 30;
 
-  // if (route.params !== undefined) {
+  // if (routeParams !== undefined) {
   //   navigation.navigate("PrayerGroup", {
-  //     group: route.params.group,
-  //     allGroups: route.params.allGroups,
+  //     group: routeParams.group,
+  //     allGroups: routeParams.allGroups,
   //   });
   // }
 

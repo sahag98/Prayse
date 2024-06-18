@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -8,7 +9,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Folder from "../components/Folder";
 import useIsReady from "../hooks/useIsReady";
 import { Container } from "../styles/appStyles";
-export default function MainScreen({ navigation }) {
+
+export default function MainScreen() {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
   const [todos, setTodos] = useState([]);

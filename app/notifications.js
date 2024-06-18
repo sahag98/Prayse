@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -13,7 +14,9 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
 import { Container } from "../styles/appStyles";
-const NotificationsScreen = ({ navigation }) => {
+
+const NotificationsScreen = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const notis = useSelector((state) => state.noti.notifications);
   const theme = useSelector((state) => state.user.theme);

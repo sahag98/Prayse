@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "expo-router";
 import {
   Alert,
   FlatList,
@@ -22,7 +23,8 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderView } from "../styles/appStyles";
 
-const RelfectionScreen = ({ navigation, route }) => {
+const ReflectionScreen = ({ route }) => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [reflectionsArray, setReflectionsArray] = useState([]);
   const [reflection, setReflection] = useState("");
@@ -349,7 +351,7 @@ const RelfectionScreen = ({ navigation, route }) => {
   );
 };
 
-export default RelfectionScreen;
+export default ReflectionScreen;
 
 const styles = StyleSheet.create({
   signInButton: {

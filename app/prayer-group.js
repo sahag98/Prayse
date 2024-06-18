@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -23,7 +24,10 @@ import GroupInfoModal from "../modals/GroupInfoModal";
 import RemovedGroupModal from "../modals/RemovedGroupModal";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
-const PrayerGroupScreen = ({ route, navigation }) => {
+const PrayerGroupScreen = () => {
+  const navigation = useNavigation();
+  const params = useLocalSearchParams();
+
   const theme = useSelector((state) => state.user.theme);
   const msgs = useSelector((state) => state.message.messages);
   const [toggle, setToggle] = useState("chat");
@@ -33,8 +37,8 @@ const PrayerGroupScreen = ({ route, navigation }) => {
   const [inputHeight, setInputHeight] = useState(45);
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
-  const currGroup = route.params.group;
-  const allGroups = route.params.allGroups;
+  const currGroup = params.group;
+  const allGroups = params.allGroups;
   const [isGroupRemoved, setIsGroupRemoved] = useState(false);
   const [countdown, setCountdown] = useState(300);
   const [onlineUsers, setOnlineUsers] = useState([]);

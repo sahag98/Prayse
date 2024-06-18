@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -15,7 +16,9 @@ import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
 import QuestionHelpModal from "../modals/QuestionHelpModal";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
-const QuestionListScreen = ({ navigation }) => {
+
+const QuestionListScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   const isFocused = useIsFocused();

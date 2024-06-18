@@ -1,5 +1,6 @@
 import React from "react";
 import * as Notifications from "expo-notifications";
+import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -14,7 +15,8 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { deleteReminder } from "../redux/remindersReducer";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const ReminderScreen = ({ navigation }) => {
+const ReminderScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const reminders = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();

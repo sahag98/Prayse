@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
+import { useNavigation } from "expo-router";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useSelector } from "react-redux";
@@ -19,7 +20,8 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const OldPrayerScreen = ({ navigation }) => {
+const OldPrayerScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [todos, setTodos] = useState([]);
 

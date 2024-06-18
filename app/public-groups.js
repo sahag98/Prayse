@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "expo-router";
 import {
   FlatList,
   Image,
@@ -19,7 +20,8 @@ import groupBg from "../assets/group-bg.png";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const PublicGroupsScreen = ({ navigation }) => {
+const PublicGroupsScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const { publicGroups, currentUser, supabase } = useSupabase();
   const [search, setSearch] = useState("");

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
 import Constants from "expo-constants";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import {
@@ -41,12 +42,14 @@ import darkGradient from "../assets/video/dark-gradient.mp4";
 import gradient from "../assets/video/gradient.mp4";
 import { Container } from "../styles/appStyles";
 
-const PrayerRoom = ({ navigation, route }) => {
+const PrayerRoom = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
   const [isPraying, setIsPraying] = useState(false);
+  const routeParams = useLocalSearchParams();
   const data = prayers[screenIndex];
 
   const pulse = useSharedValue(0);
@@ -306,8 +309,8 @@ const PrayerRoom = ({ navigation, route }) => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              console.log(route.params?.previousScreen);
-              if (route.params?.previousScreen) {
+              console.log(routeParams?.previousScreen);
+              if (routeParams?.previousScreen) {
                 console.log("previous screen:");
                 navigation.goBack();
               } else {
@@ -431,8 +434,8 @@ const PrayerRoom = ({ navigation, route }) => {
                   <TouchableOpacity
                     style={{ marginRight: 10 }}
                     onPress={() => {
-                      console.log(route.params?.previousScreen);
-                      if (route.params?.previousScreen) {
+                      console.log(routeParams?.previousScreen);
+                      if (routeParams?.previousScreen) {
                         navigation.goBack();
                       } else {
                         navigation.navigate("Prayer");
@@ -630,7 +633,7 @@ const PrayerRoom = ({ navigation, route }) => {
                   <TouchableOpacity
                     style={{ marginRight: 10 }}
                     onPress={() => {
-                      if (route.params?.previousScreen) {
+                      if (routeParams?.previousScreen) {
                         console.log("previous screen:");
                         navigation.goBack();
                       } else {
@@ -827,7 +830,7 @@ const PrayerRoom = ({ navigation, route }) => {
             <TouchableOpacity
               style={{ marginRight: 10 }}
               onPress={() => {
-                if (route.params?.previousScreen) {
+                if (routeParams?.previousScreen) {
                   navigation.goBack();
                 } else {
                   navigation.navigate("Prayer");

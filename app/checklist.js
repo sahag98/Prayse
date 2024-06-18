@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -21,7 +22,8 @@ import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
 import { Container } from "../styles/appStyles";
 
-const ChecklistScreen = ({ navigation }) => {
+const ChecklistScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [selectKeepAction, setSelectKeepAction] = useState("");

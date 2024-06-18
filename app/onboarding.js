@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
@@ -46,7 +47,8 @@ const onboardingSteps = [
   },
 ];
 
-export default function OnboardingScreen({ navigation }) {
+export default function OnboardingScreen() {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);

@@ -145,7 +145,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             }}
           />
           <TouchableOpacity
-            onPress={() => handleComplete("PrayerRoom")}
+            onPress={() => handleComplete("prayer-room")}
             style={{
               backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Alert,
@@ -31,7 +32,9 @@ import { client } from "../lib/client";
 import { Container, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
-const DevoListScreen = ({ navigation, route }) => {
+const DevoListScreen = () => {
+  const navigation = useNavigation();
+  const routeParams = useLocalSearchParams();
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -237,7 +240,7 @@ const DevoListScreen = ({ navigation, route }) => {
         >
           <TouchableOpacity
             onPress={() => {
-              if (route.params?.previousScreen) {
+              if (routeParams?.previousScreen) {
                 navigation.goBack();
               } else {
                 navigation.navigate("Devotional");

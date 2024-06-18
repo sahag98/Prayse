@@ -3,11 +3,13 @@ import { Text, TouchableOpacity } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { GOSPEL_SCREEN } from "../routes";
+
 const GospelofJesus = ({ theme }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Gospel")}
+      onPress={() => navigation.navigate(GOSPEL_SCREEN)}
       style={{
         backgroundColor: theme === "dark" ? "#212121" : "white",
         marginBottom: 15,

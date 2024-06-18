@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,7 +16,8 @@ import { useIsFocused } from "@react-navigation/native";
 
 import { Container } from "../styles/appStyles";
 
-const RoadMapScreen = ({ navigation }) => {
+const RoadMapScreen = () => {
+  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [roadmap, setRoadmap] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

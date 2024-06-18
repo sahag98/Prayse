@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   Image,
   Keyboard,
@@ -27,8 +28,11 @@ import {
   editReminder,
 } from "../redux/remindersReducer";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { REMINDER_SCREEN } from "../routes";
 
-export default function TestScreen({ route, navigation }) {
+export default function TestScreen() {
+  const navigation = useNavigation();
+  const routeParams = useLocalSearchParams();
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const [reminders, setReminders] = useState([]);
@@ -49,15 +53,15 @@ export default function TestScreen({ route, navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (route.params.reminder != undefined && route.params.type == "Add") {
+    if (routeParams.reminder != undefined && routeParams.type == "Add") {
       setReminderDate("");
       setRepeatOption("");
       setIsRepeat(false);
       setReminderTime("");
-      setNewReminder(route?.params?.reminder);
+      setNewReminder(routeParams?.reminder);
     }
 
-    if (route.params.reminder == undefined && route.params.type == "Add") {
+    if (routeParams.reminder == undefined && routeParams.type == "Add") {
       setNewReminder("");
       setNewNote("");
       setReminderDate("");
@@ -66,16 +70,16 @@ export default function TestScreen({ route, navigation }) {
       setReminderTime("");
     }
 
-    if (route.params.reminderToEditTitle && route.params.type != "Add") {
-      setNewReminder(route.params.reminderToEditTitle);
-      setNewNote(route.params.reminderToEditNote);
-      const originalTimestamp = route.params.reminderToEditTime;
+    if (routeParams.reminderToEditTitle && routeParams.type != "Add") {
+      setNewReminder(routeParams.reminderToEditTitle);
+      setNewNote(routeParams.reminderToEditNote);
+      const originalTimestamp = routeParams.reminderToEditTime;
 
       const dateObject = new Date(originalTimestamp);
       const date = new Date(
         dateObject.getFullYear(),
         dateObject.getMonth(),
-        dateObject.getDate(),
+        dateObject.getDate()
       );
       setReminderDate(date);
       const time = new Date(0); // Initialize with the epoch
@@ -84,20 +88,20 @@ export default function TestScreen({ route, navigation }) {
 
       setReminderTime(time);
 
-      if (route.params.ocurrence != "None") {
+      if (routeParams.ocurrence != "None") {
         setIsRepeat(true);
-        setRepeatOption(route.params.ocurrence.toLowerCase());
+        setRepeatOption(routeParams.ocurrence.toLowerCase());
       }
 
-      if (route.params.ocurrence == "None") {
+      if (routeParams.ocurrence == "None") {
         setIsRepeat(false);
         setRepeatOption("");
       }
     }
 
     // if (
-    //   route.params.reminderToEditTitle.length < 0 &&
-    //   route.params.type != "Add"
+    //   params.reminderToEditTitle.length < 0 &&
+    //   params.type != "Add"
     // ) {
     //   setNewReminder("");
     //   setNewNote("");
@@ -130,7 +134,7 @@ export default function TestScreen({ route, navigation }) {
 
   const scheduleNotification = async (reminder, combinedDate, type) => {
     const secondsUntilNotification = Math.floor(
-      (combinedDate.getTime() - Date.now()) / 1000,
+      (combinedDate.getTime() - Date.now()) / 1000
     );
 
     if (repeatOption == "daily" && isRepeat) {
@@ -138,7 +142,7 @@ export default function TestScreen({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
-          data: { screen: "Reminder" },
+          data: { url: REMINDER_SCREEN },
         },
         trigger: {
           hour: combinedDate.getHours(),
@@ -152,7 +156,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Daily",
-          }),
+          })
         );
       } else {
         dispatch(
@@ -160,7 +164,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Daily",
-          }),
+          })
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "ios") {
@@ -168,7 +172,7 @@ export default function TestScreen({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
-          data: { screen: "Reminder" },
+          data: { url: REMINDER_SCREEN },
         },
         trigger: {
           weekday: combinedDate.getDay() + 1,
@@ -184,7 +188,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          }),
+          })
         );
       } else {
         dispatch(
@@ -192,19 +196,19 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          }),
+          })
         );
       }
     } else if (repeatOption == "weekly" && Platform.OS == "android") {
       const newDate = new Date(
-        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000,
+        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
       );
       const seconds = newDate.getTime() / 1000;
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
           body: reminder.message,
-          data: { screen: "Reminder" },
+          data: { url: REMINDER_SCREEN },
         },
         trigger: {
           seconds,
@@ -218,7 +222,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          }),
+          })
         );
       } else {
         dispatch(
@@ -226,7 +230,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "Weekly",
-          }),
+          })
         );
       }
     } else {
@@ -234,7 +238,7 @@ export default function TestScreen({ route, navigation }) {
         content: {
           title: "Reminder",
           body: reminder.message,
-          data: { screen: "Reminder" },
+          data: { url: REMINDER_SCREEN },
         },
         trigger: {
           seconds: secondsUntilNotification,
@@ -247,7 +251,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "None",
-          }),
+          })
         );
       } else {
         dispatch(
@@ -255,7 +259,7 @@ export default function TestScreen({ route, navigation }) {
             reminder,
             identifier,
             ocurrence: "None",
-          }),
+          })
         );
       }
     }
@@ -267,7 +271,7 @@ export default function TestScreen({ route, navigation }) {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes(),
+      reminderTime.getMinutes()
     );
 
     const newReminderObj = {
@@ -278,15 +282,15 @@ export default function TestScreen({ route, navigation }) {
     };
 
     await Notifications.cancelScheduledNotificationAsync(
-      route.params.reminderIdentifier,
+      routeParams.reminderIdentifier
     );
 
-    dispatch(deleteReminder(route.params.reminderEditId));
+    dispatch(deleteReminder(routeParams.reminderEditId));
 
     scheduleNotification(
       newReminderObj,
       combinedDate,
-      "add",
+      "add"
       // reminderTime.getHours(),
       // reminderTime.getMinutes()
     );
@@ -313,7 +317,7 @@ export default function TestScreen({ route, navigation }) {
       reminderDate.getMonth(),
       reminderDate.getDate(),
       reminderTime.getHours(),
-      reminderTime.getMinutes(),
+      reminderTime.getMinutes()
     );
 
     const newReminderObj = {
@@ -418,13 +422,11 @@ export default function TestScreen({ route, navigation }) {
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
           >
-            {route.params.type} Reminder
+            {routeParams.type} Reminder
           </HeaderTitle>
         </View>
         <TouchableOpacity
-          onPress={
-            route.params.type == "Add" ? addReminder : handleEditReminder
-          }
+          onPress={routeParams.type == "Add" ? addReminder : handleEditReminder}
           disabled={newReminder.length == 0}
           style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
         >
@@ -445,9 +447,9 @@ export default function TestScreen({ route, navigation }) {
                   }
             }
           >
-            {route.params.type}
+            {routeParams.type}
           </Text>
-          {route.params.type == "Edit" ? (
+          {routeParams.type == "Edit" ? (
             <Feather
               name="edit-2"
               size={23}
