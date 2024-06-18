@@ -29,7 +29,7 @@ const AddFolderModal = ({
 }) => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent
       visible={addVisible}
       onRequestClose={handleCloseModal}

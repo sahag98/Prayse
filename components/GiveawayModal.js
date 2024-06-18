@@ -23,7 +23,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
 
   const dispatch = useDispatch();
   async function handleSubmit() {
-    if (email.length === 0) {
+    if (email.length === 0 || !email.includes("@")) {
       setError("An email address is required. Try again");
       return;
     } else {

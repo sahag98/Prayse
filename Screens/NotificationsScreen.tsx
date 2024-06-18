@@ -8,7 +8,7 @@ import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
 import { Container } from "../styles/appStyles";
 
-const Notifications = ({ navigation }) => {
+const Notifications = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const notis = useSelector((state: any) => state.noti.notifications);
   const theme = useSelector((state: any) => state.user.theme);

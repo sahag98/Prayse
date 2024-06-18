@@ -384,21 +384,6 @@ const Folder = ({ navigation, todos }) => {
               }
             />
             <View>
-              {showNewBadge ? (
-                <Text
-                  style={{
-                    color: "red",
-                    alignSelf: "flex-start",
-                    position: "absolute",
-                    top: -20,
-                    fontFamily: "Inter-Medium",
-                    right: 5,
-                  }}
-                >
-                  New
-                </Text>
-              ) : null}
-
               <AnimatedFAB
                 icon="hands-pray"
                 label="Prayer Room"

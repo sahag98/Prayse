@@ -56,7 +56,7 @@ const FolderItem = ({ item, theme, navigation }) => {
       editFolderName({
         name: newFolderName,
         id,
-      }),
+      })
     );
     setOpenEdit(false);
   }
@@ -120,7 +120,7 @@ const FolderItem = ({ item, theme, navigation }) => {
                   fontSize: 12,
                 }}
               >
-                No prayers yet!
+                No prayers yet.
               </Text>
             </View>
           ) : (
@@ -142,7 +142,7 @@ const FolderItem = ({ item, theme, navigation }) => {
                       fontSize: 12,
                     }}
                   >
-                    {truncateWords(item.prayer)}
+                    - {truncateWords(item.prayer)}
                   </Text>
                 </View>
               )}

@@ -24,7 +24,7 @@ import SettingsItems from "../components/SettingsItems";
 import config from "../config";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
-const More = ({ navigation }) => {
+const More = ({ navigation }: { navigation: any }) => {
   const theme = useSelector((state: any) => state.user.theme);
 
   function giveFeedback(market: string) {
@@ -84,19 +84,6 @@ const More = ({ navigation }) => {
       id: 4,
       icon: (
         <Feather
-          name="map"
-          style={{ marginRight: 10 }}
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      ),
-      title: "Roadmap",
-      screen: "Roadmap",
-    },
-    {
-      id: 5,
-      icon: (
-        <Feather
           name="shield"
           style={{ marginRight: 10 }}
           size={24}
@@ -107,7 +94,7 @@ const More = ({ navigation }) => {
       link: "https://www.prayse.app/privacy",
     },
     {
-      id: 6,
+      id: 5,
       icon: (
         <MaterialCommunityIcons
           name="email-edit-outline"
@@ -120,7 +107,7 @@ const More = ({ navigation }) => {
       link: "mailto:arzsahag@gmail.com",
     },
     {
-      id: 7,
+      id: 6,
       icon: (
         <AntDesign
           name="instagram"
@@ -215,7 +202,7 @@ const More = ({ navigation }) => {
               color: theme == "dark" ? "white" : "#2f2d51",
             }}
           >
-            Give to Prayse
+            Give
           </Text>
         </TouchableOpacity>
       </View>

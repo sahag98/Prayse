@@ -38,10 +38,10 @@ const GospelofJesus = ({ theme }) => {
       <Text
         style={{
           color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-          fontFamily: "Inter-Bold",
+          fontFamily: "Inter-Medium",
           textDecorationLine: "underline",
           lineHeight: 24,
-          fontSize: 14,
+          fontSize: 13,
         }}
       >
         Click here to learn more

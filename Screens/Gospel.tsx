@@ -26,7 +26,7 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const Gospel = ({ navigation }) => {
+const Gospel = ({ navigation }: { navigation: any }) => {
   const theme = useSelector((state: any) => state.user.theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -36,7 +36,7 @@ const Gospel = ({ navigation }) => {
       id: 1,
       title: "GOD LOVES YOU",
       content:
-        "Friend, God loves you so much that He sent His only Son for you.",
+        "God loves you so much that He sent His one and only Son to save you.",
       verse:
         "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
       chapter: "John 3:16",
@@ -44,7 +44,7 @@ const Gospel = ({ navigation }) => {
     {
       id: 2,
       title: "EVERYONE NEEDS A SAVIOR",
-      content: "We all sin and are in need of a savior from our sins.",
+      content: "We all sin and are in need of a Savior from our sins.",
       verse: "For all have sinned, and come short of the glory of God.",
       chapter: "Romans 3:23",
     },
@@ -77,7 +77,7 @@ const Gospel = ({ navigation }) => {
     },
   ];
 
-  const Item = ({ title, verse, chapter, content }) => (
+  const Item = ({ title, verse, chapter, content }: any) => (
     <View style={styles.item}>
       <View>
         <Text style={theme == "dark" ? styles.titleDark : styles.title}>
@@ -95,7 +95,7 @@ const Gospel = ({ navigation }) => {
       </Text>
     </View>
   );
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: any) => (
     <Item
       title={item.title}
       verse={item.verse}
@@ -173,9 +173,7 @@ const Gospel = ({ navigation }) => {
           justifyContent: "space-between",
         }}
       >
-        <HeaderView
-          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-        >
+        <HeaderView style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
             <Ionicons
               name="chevron-back"
@@ -233,11 +231,11 @@ const Gospel = ({ navigation }) => {
           <ModalView
             style={
               theme == "dark"
-                ? { backgroundColor: "#212121", gap: 5, width: "95%" }
-                : { backgroundColor: "#b7d3ff", gap: 5, width: "95%" }
+                ? { backgroundColor: "#212121", width: "95%" }
+                : { backgroundColor: "#b7d3ff", width: "95%" }
             }
           >
-            <ModalIcon style={{ gap: 5 }}>
+            <ModalIcon>
               <Text
                 style={
                   theme == "dark" ? styles.prayTitleDark : styles.prayTitle

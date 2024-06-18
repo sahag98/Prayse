@@ -52,26 +52,6 @@ const Navigation = () => {
   const theme = useSelector((state) => state.user.theme);
 
   const { isLoggedIn, currentUser, supabase } = useSupabase();
-  const [showNewBadge, setShowNewBadge] = useState(false);
-
-  useEffect(() => {
-    // getUserGroups();
-    const checkFirstTime = async () => {
-      // await AsyncStorage.removeItem("hasPressedPrayerTab");
-      try {
-        const value = await AsyncStorage.getItem("hasPressedPrayerTab");
-        if (value === null) {
-          // First time pressing the "Prayer" tab
-          setShowNewBadge(true);
-          AsyncStorage.setItem("hasPressedPrayerTab", "true");
-        }
-      } catch (error) {
-        console.error("Error retrieving data from AsyncStorage:", error);
-      }
-    };
-
-    checkFirstTime();
-  }, []);
 
   // const prefix = Linking.createURL("/");
   // const linking = {
@@ -229,8 +209,6 @@ const Navigation = () => {
             options={() => ({
               tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
               tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
-              tabBarBadge: showNewBadge ? "New" : null,
-              tabBarBadgeStyle: { paddingHorizontal: 5, fontSize: 10 },
             })}
             component={Main}
           />

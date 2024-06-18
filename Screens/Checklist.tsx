@@ -22,7 +22,7 @@ import { deletePrayer } from "../redux/prayerReducer";
 import { Container } from "../styles/appStyles";
 import { AnsweredPrayer, Prayer } from "../types/reduxTypes";
 
-const Checklist = ({ navigation }) => {
+const Checklist = ({ navigation }: any) => {
   const theme = useSelector((state: any) => state.user.theme);
   const prayers: Prayer[] = useSelector((state: any) => state.prayer.prayer);
   const [selectKeepAction, setSelectKeepAction] = useState("");
