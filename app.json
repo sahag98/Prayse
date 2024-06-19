@@ -3,10 +3,10 @@
     "name": "Prayse",
     "slug": "prayer-app",
     "scheme": "prayseapp",
-    "version": "9.4.0",
+    "version": "9.5.0",
     "orientation": "portrait",
     "owner": "sahag98",
-    "icon": "./assets/prayer.png",
+    "icon": "./assets/prayse-logo.png",
     "userInterfaceStyle": "automatic",
     "notification": {
       "icon": "./assets/noti-image.png",
@@ -37,7 +37,7 @@
       "expo-secure-store"
     ],
     "splash": {
-      "image": "./assets/prayer-splash.png",
+      "image": "./assets/prayse-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -52,7 +52,7 @@
       "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "53",
+      "buildNumber": "54",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -104,7 +104,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 53
+      "versionCode": 54
     },
     "web": {
       "favicon": "./assets/favicon.png"

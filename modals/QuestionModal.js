@@ -11,7 +11,6 @@ import Toast from "react-native-toast-message";
 
 import { AntDesign } from "@expo/vector-icons";
 
-import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import {
   ModalAction,
@@ -55,7 +54,7 @@ const QuestionModal = ({
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
     } else {
-      const { error } = await supabase.from("answers").insert({
+      const { error } = await supabase.from("answers_test").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
@@ -82,16 +81,17 @@ const QuestionModal = ({
         },
       };
 
-      fetch(config.prayseMessage, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
+      // fetch(config.prayseMessage, {
+      //   method: "POST",
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Accept-encoding": "gzip, deflate",
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(message),
+      // });
       if (error) {
+        console.log("ERROR insert answer: ", error);
         showToast("error", "Something went wrong. Try again.");
       }
       handleCloseModal();

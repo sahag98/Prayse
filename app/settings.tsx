@@ -265,9 +265,8 @@ const SettingsScreen = () => {
                 <View style={styles.darkButton}>
                   <Text
                     style={{
-                      color: "black",
+                      color: theme == "dark" ? "white" : "black",
                       paddingLeft: 5,
-                      color: "white",
                       fontFamily: "Inter-Medium",
                     }}
                   >
@@ -294,9 +293,8 @@ const SettingsScreen = () => {
                 <View style={styles.systemDark}>
                   <Text
                     style={{
-                      color: "black",
+                      color: theme == "dark" ? "white" : "black",
                       paddingLeft: 5,
-                      color: "white",
                       fontFamily: "Inter-Medium",
                     }}
                   >

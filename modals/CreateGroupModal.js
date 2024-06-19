@@ -183,7 +183,6 @@ const CreateGroupModal = ({
                   backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  paddingTop: insets.top,
                   paddingTop: Platform.OS === "ios" ? insets.top : 0,
                   paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
@@ -532,12 +531,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  profileImg: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-
   featherIconDark: {
     position: "absolute",
     backgroundColor: "#3e3e3e",

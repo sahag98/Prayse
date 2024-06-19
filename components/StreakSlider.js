@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { Modal, Share, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  Share,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,16 +30,14 @@ const StreakSlider = ({
   const isShowingGiveawayModal = useSelector(
     (state) => state.user.isShowingGiveawayModal,
   );
-
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("app streak check: ", appstreak);
+    console.log("devo streak check: ", streak);
     console.log("is Showing Giveaway modal: ", isShowingGiveawayModal);
-    if (appstreak === 1 && isShowingGiveawayModal === false) {
-      console.log("entering giveaway!!");
+    if (streak === 60 && isShowingGiveawayModal === false) {
       dispatch(didEnterGiveaway());
     }
-  }, [appstreak]);
+  }, [streak]);
 
   const onShare = async () => {
     try {
@@ -41,7 +46,7 @@ const StreakSlider = ({
           "Hey! Check out my Prayse streaks: " +
           "\n" +
           "\n" +
-          `App Streak: ${0}` +
+          `App Streak: ${appstreak}` +
           "\n" +
           `Daily Devotions Streak: ${streak}` +
           "\n" +
@@ -118,7 +123,7 @@ const StreakSlider = ({
               }}
             >
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
               >
                 <FontAwesome
                   name="calendar-check-o"
@@ -153,7 +158,7 @@ const StreakSlider = ({
               }}
             >
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
               >
                 <MaterialCommunityIcons
                   name="hands-pray"
@@ -196,36 +201,40 @@ const StreakSlider = ({
             style={{
               width: "100%",
               marginTop: 10,
-              gap: 5,
+              gap: 10,
             }}
           >
-            <Text
-              style={{
-                textAlign: "center",
-                color: theme === "dark" ? "white" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-                fontSize: 16,
-              }}
-            >
-              {((appstreak / 1) * 100).toFixed(1)}%
-            </Text>
-            <ProgressBar
-              style={{ height: 8, borderRadius: 10 }}
-              progress={appstreak / 1}
-              color="green"
-            />
+            {streak > 60 ? null : (
+              <>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: theme === "dark" ? "white" : "#2f2d51",
+                    fontFamily: "Inter-Medium",
+                    fontSize: 16,
+                  }}
+                >
+                  Devotions Streak: {((streak / 60) * 100).toFixed(1)}%
+                </Text>
+                <ProgressBar
+                  style={{ height: 8, borderRadius: 10 }}
+                  progress={streak / 60}
+                  color="green"
+                />
+                <Text
+                  style={{
+                    color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
+                    fontFamily: "Inter-Medium",
+                    fontSize: 13,
+                    textAlign: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  Reach 60 days to win a free merch item of your choice!
+                </Text>
+              </>
+            )}
           </View>
-          <Text
-            style={{
-              color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-              fontFamily: "Inter-Medium",
-              fontSize: 13,
-              textAlign: "center",
-              marginBottom: 10,
-            }}
-          >
-            Reach 1 day for to win a special gift!
-          </Text>
 
           <TouchableOpacity
             onPress={onShare}
@@ -239,7 +248,7 @@ const StreakSlider = ({
             <Text
               style={{
                 color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                fontSize: 13,
+                fontSize: 15,
                 fontFamily: "Inter-Bold",
               }}
             >

@@ -21,16 +21,15 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   Container,
   HeaderView,
-  ModalAction2,
   ModalActionGroup2,
   ModalContainer,
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
 
-const GospelScreen = () => {
+const Gospel = () => {
   const navigation = useNavigation();
-  const theme = useSelector((state) => state.user.theme);
+  const theme = useSelector((state: any) => state.user.theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -145,7 +144,7 @@ const GospelScreen = () => {
           onPress: () =>
             Linking.openURL("https://www.instagram.com/prayse.app/"),
         },
-      ]
+      ],
     );
   };
 
@@ -195,7 +194,7 @@ const GospelScreen = () => {
         showsVerticalScrollIndicator={false}
         data={Message}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         ListFooterComponent={() => (
           <View
             style={{
@@ -207,7 +206,6 @@ const GospelScreen = () => {
           >
             <TouchableOpacity
               style={theme == "dark" ? styles.buttonDark : styles.button}
-              title="Create a prayer list"
               onPress={() => {
                 setClearModalVisible(true);
               }}
@@ -266,15 +264,8 @@ const GospelScreen = () => {
               </Text>
             </ModalIcon>
             <ModalActionGroup2>
-              {/* <ModalAction2
-                color={theme == "dark" ? "#121212" : ""}
-                onPress={handleCloseModal}
-              >
-                <Text style={{ color: "white" }}>Not ready yet</Text>
-              </ModalAction2> */}
-              <ModalAction2
-                style={{ width: "100%" }}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+              <TouchableOpacity
+                style={theme == "dark" ? styles.buttonDark : styles.button}
                 onPress={handleSubmit}
               >
                 <Text
@@ -294,7 +285,7 @@ const GospelScreen = () => {
                 >
                   Just prayed that!
                 </Text>
-              </ModalAction2>
+              </TouchableOpacity>
             </ModalActionGroup2>
           </ModalView>
         </ModalContainer>
@@ -486,4 +477,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GospelScreen;
+export default Gospel;

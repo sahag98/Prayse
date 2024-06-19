@@ -254,7 +254,7 @@ const GroupInfoModal = ({
     setShowMenu(false);
   };
 
-  handleEditUser = (user) => {
+  const handleEditUser = (user) => {
     setUserToEdit(user);
     setShowMenu(true);
   };

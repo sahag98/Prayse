@@ -143,7 +143,7 @@ const ReminderScreen = () => {
             }
             const formattedDate = timestamp.toLocaleString(
               "en-US",
-              timeOptions
+              timeOptions,
             );
 
             return (

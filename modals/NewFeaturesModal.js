@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ProgressBar } from "react-native-paper";
 import Animated, { FadeIn } from "react-native-reanimated";
 
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import googleIcon from "../assets/google-icon.png";
 import { ModalContainer } from "../styles/appStyles";
@@ -89,12 +88,6 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
           >
             What's new!
           </Text>
-          <ProgressBar
-            animatedValue={0.5}
-            style={{ height: 10, borderRadius: 10 }}
-            // progress={15 / 30}
-            color="green"
-          />
           <View ref={ref}>
             {page === 0 && (
               <View style={{ alignItems: "center", gap: 10 }}>
@@ -119,7 +112,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Prayer Room
+                  Streaks
                 </Text>
                 <Text
                   style={
@@ -136,7 +129,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Be able to go through all your prayers, and pray for each one!
+                  Go through the daily devotions every day to receive a free
+                  Prayse merch item!
                 </Text>
 
                 <View
@@ -211,7 +205,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
                     >
-                      Continue
+                      Next
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -219,10 +213,10 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
             )}
             {page === 1 && (
               <View style={{ alignItems: "center", gap: 10 }}>
-                <MaterialCommunityIcons
-                  name="cross"
+                <Feather
+                  name="layout"
                   size={100}
-                  color={theme === "BlackWhite" ? "black" : "#8cbaff"}
+                  color={theme === "dark" ? "white" : "#2f2d51"}
                 />
 
                 <Text
@@ -240,7 +234,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  Gospel of Jesus
+                  Improved UI
                 </Text>
                 <Text
                   style={
@@ -257,7 +251,8 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                         }
                   }
                 >
-                  How can someone receive Jesus and get saved?
+                  Updated layout of Home and Prayer screen for better
+                  readability and usability.
                 </Text>
 
                 <View
@@ -332,7 +327,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
                     >
-                      Continue
+                      Next
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -440,7 +435,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                             alignItems: "center",
                           }
                     }
-                    onPress={onNextPage}
+                    onPress={StartOver}
                   >
                     <Text
                       style={
@@ -449,13 +444,13 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                           : { color: "white", fontFamily: "Inter-Bold" }
                       }
                     >
-                      Continue
+                      Got it
                     </Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
-            {page === 3 && (
+            {/* {page === 3 && (
               <View style={{ alignItems: "center", gap: 10 }}>
                 <MaterialIcons
                   name="published-with-changes"
@@ -651,7 +646,7 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-            )}
+            )} */}
           </View>
         </Animated.View>
       </ModalContainer>

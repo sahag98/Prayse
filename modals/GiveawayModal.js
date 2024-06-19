@@ -15,12 +15,7 @@ import { useSupabase } from "../context/useSupabase";
 import { resetGiveaway } from "../redux/userReducer";
 import { ModalContainer, ModalView2 } from "../styles/appStyles";
 
-const GiveawayModal = ({
-  isShowingGiveaway,
-  setIsShowingGiveaway,
-  theme,
-  appstreak,
-}) => {
+const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -33,7 +28,7 @@ const GiveawayModal = ({
     } else {
       const { data, error } = await supabase
         .from("giveaway_entries")
-        .insert([{ email, streak: appstreak }])
+        .insert([{ email, streak }])
         .select();
 
       // console.log("data: ", data);
@@ -104,17 +99,26 @@ const GiveawayModal = ({
               style={{
                 textAlign: "center",
                 fontFamily: "Inter-Bold",
-                fontSize: 17,
+                fontSize: 18,
                 color: theme === "dark" ? "white" : "#2f2d51",
               }}
             >
-              You have reached 30 days!
+              Great job!
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                fontSize: 15,
+                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
+              }}
+            >
+              You have done the daily devotions for 60 straight days.
             </Text>
             <Text
               style={{
                 fontFamily: "Inter-Medium",
 
-                color: theme === "dark" ? "white" : "#2f2d51",
+                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               }}
             >
               Enter your email for a chance to win a prayse merch item of your

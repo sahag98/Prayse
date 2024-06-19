@@ -324,7 +324,7 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "questions_test",
+              table: "questions",
             },
             (payload) => {
               if (

@@ -84,7 +84,7 @@ const LoginScreen = () => {
         //prayseapp://google-auth
         {
           showInRecents: true,
-        }
+        },
       );
 
       if (result.type === "success") {

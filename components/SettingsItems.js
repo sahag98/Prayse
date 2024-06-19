@@ -79,7 +79,7 @@ const SettingsItems = ({ options, theme }) => {
               />
             </View>
           </Link>
-        )
+        ),
       )}
     </>
   );

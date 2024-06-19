@@ -26,7 +26,7 @@ const RoadMapScreen = () => {
       try {
         setIsLoading(true);
         const roadmapItems = await fetch(
-          `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`
+          `https://projectplannerai.com/api/roadmap?projectId=j576dgzhs2esx5xr7cb0arvch56rqmfp`,
         ).then(async (res) => res.json());
 
         setRoadmap(roadmapItems);

@@ -38,7 +38,7 @@ const PublicGroupsScreen = () => {
     setGroups(groups);
   }
   const list = publicGroups.filter((item) =>
-    search !== "" ? item.name.includes(search) : true
+    search !== "" ? item.name.includes(search) : true,
   );
 
   useEffect(() => {
@@ -306,7 +306,7 @@ const PublicGroupsScreen = () => {
                             >
                               +
                               {groups.filter(
-                                (g) => g.group_id === item.group_id
+                                (g) => g.group_id === item.group_id,
                               )?.length - 3}
                             </Text>
                           )}

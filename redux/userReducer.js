@@ -10,6 +10,7 @@ const initialState = {
   theme: Appearance.getColorScheme(),
   completedItems: [],
   devostreak: 0,
+  isAppReady: false,
   appstreak: [],
   appstreakNum: 0,
   expoToken: "",
@@ -45,10 +46,14 @@ export const userSlice = createSlice({
       state.isShowingGiveawayModal = true;
     },
     resetGiveaway: (state) => {
+      console.log("reseting giveaway");
       state.alreadyEnteredGiveaway = false;
+      state.isShowingGiveawayModal = false;
       // state.isShowingGiveawayModal = false;
     },
     increaseAppStreakCounter: (state, action) => {
+      console.log("increasing app streak counter");
+      // state.isAppReady = false;
       // state.alreadyEnteredGiveaway = false;
       // state.isShowingGiveawayModal = false;
       if (
@@ -153,6 +158,8 @@ export const userSlice = createSlice({
       const oneBeforeLastItem =
         state.completedItems[state.completedItems.length - 2]?.date;
 
+      console.log("last item: ", lastItem);
+
       if (lastItem !== currentDate) {
         state.hasIncreasedDevoStreak = false;
       }
@@ -231,8 +238,8 @@ export const userSlice = createSlice({
     deleteAppStreakCounter: (state) => {
       state.appstreak = [];
       state.appstreakNum = 0;
-      state.alreadyEnteredGiveaway = false;
-      state.isShowingGiveawayModal = false;
+      // state.alreadyEnteredGiveaway = false;
+      // state.isShowingGiveawayModal = false;
     },
     openCheckmark: (state, action) => {
       state.checkmarkVisible = action.payload;

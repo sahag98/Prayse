@@ -75,7 +75,7 @@ const VerseOfTheDayScreen = () => {
     dispatch(
       addToFavorites({
         verse,
-      })
+      }),
     );
   };
 

@@ -110,7 +110,7 @@ const DevoListScreen = () => {
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
+        withSpring(1, { damping: 2, stiffness: 80 }),
       );
       const { data, error } = await supabase
         .from("devo_likes")
@@ -130,7 +130,7 @@ const DevoListScreen = () => {
     }
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
+      withSpring(1, { damping: 2, stiffness: 80 }),
     );
 
     const { data, error } = await supabase.from("devo_likes").insert({
@@ -204,7 +204,7 @@ const DevoListScreen = () => {
   }
 
   const isLikedByMe = !!likesArray?.find(
-    (like) => like.user_id == currentUser?.id
+    (like) => like.user_id == currentUser?.id,
   );
 
   const BusyIndicator = () => {

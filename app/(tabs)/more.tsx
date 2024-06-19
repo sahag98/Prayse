@@ -31,17 +31,17 @@ import {
 import { Container, HeaderTitle } from "../../styles/appStyles";
 
 const MoreScreen = () => {
-  const theme = useSelector((state) => state.user.theme);
+  const theme = useSelector((state: any) => state.user.theme);
 
-  function giveFeedback(market) {
+  function giveFeedback(market: string) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${config.androidPackageName}&showAllReviews=true`
+        `market://details?id=${config.androidPackageName}&showAllReviews=true`,
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`,
       );
     }
   }

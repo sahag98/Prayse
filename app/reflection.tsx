@@ -17,7 +17,7 @@ import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import ReflectionItem from "../components/ReflectionItem";
 import config from "../config";

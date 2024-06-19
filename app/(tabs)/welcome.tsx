@@ -28,6 +28,8 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import uuid from "react-native-uuid";
@@ -45,7 +47,12 @@ import UpdateModal from "@modals/UpdateModal";
 
 import config from "@config";
 import { useSupabase } from "@context/useSupabase";
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useIsFocused } from "@react-navigation/native";
 import { addQuickFolder } from "@redux/folderReducer";
@@ -152,6 +159,7 @@ const WelcomeScreen = () => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
+  const isAppReady = useSelector((state) => state.user.isAppReady);
   // const appstreak = useSelector((state) => state.user.appstreak);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.expoToken);
@@ -187,13 +195,6 @@ const WelcomeScreen = () => {
   const [quickcategoryvalue, setQuickcategoryvalue] = useState("");
   const [notiVisible, setNotiVisible] = useState(false);
   const [isShowingStreak, setIsShowingStreak] = useState(false);
-  const streakScale = useSharedValue(1);
-
-  const animatedStreakStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: streakScale.value }],
-    };
-  });
 
   const doFadeInAnimation = () => {
     welcomeFadeIn.value = withTiming(1, {
@@ -292,6 +293,20 @@ const WelcomeScreen = () => {
     }
   };
 
+  const scaleStreak = useSharedValue(1);
+  const animatedStreakStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleStreak.value }],
+    };
+  });
+
+  useEffect(() => {
+    scaleStreak.value = withSequence(
+      withSpring(1.2, { damping: 5, stiffness: 40 }),
+      withSpring(1, { damping: 5, stiffness: 40 }),
+    );
+  }, [streak]);
+
   useEffect(() => {
     if (
       lastNotificationResponse &&
@@ -360,25 +375,10 @@ const WelcomeScreen = () => {
   useEffect(() => {
     async function appStreak() {
       // dispatch(deleteAppStreakCounter());
-      // console.log("app streak:", appstreak);
-
       const today = new Date().toLocaleDateString("en-CA");
-      console.log("today: ", today);
+      console.log("today's date: ", today);
 
       dispatch(increaseAppStreakCounter({ today }));
-
-      // console.log("getting app streak");
-      // const keys = await AsyncStorage.getAllKeys();
-      // const todayStreak = keys.filter((key) =>
-      //   key.startsWith(`appStreak_${currentDate}`)
-      // );
-      // console.log("today streak: ", todayStreak);
-      // // await AsyncStorage.removeItem(`appStreak_${currentDate}`);
-      // // dispatch(deleteAppStreakCounter());
-      // if (todayStreak.length === 0) {
-      //   await AsyncStorage.setItem(`appStreak_${currentDate}`, "streak");
-      //   dispatch(increaseAppStreakCounter());
-      // }
     }
     appStreak();
 
@@ -662,31 +662,34 @@ const WelcomeScreen = () => {
             theme={theme}
             setIsReminderOn={setIsReminderOff}
           />
+
           <TouchableOpacity
             onPress={() => setIsShowingStreak((prev) => !prev)}
             style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
           >
-            <FontAwesome
-              name="calendar-check-o"
-              size={20}
-              color={theme === "dark" ? "white" : "#2f2d51"}
-            />
-            {/* <MaterialCommunityIcons
-              style={{ zIndex: 10 }}
-              name="hands-pray"
-              size={20}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            /> */}
-
-            <Text
-              style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
-
-                fontFamily: "Inter-Bold",
-              }}
+            <Animated.View
+              style={[
+                animatedStreakStyle,
+                { flexDirection: "row", alignItems: "center", gap: 5 },
+              ]}
             >
-              {appstreak ?? 0}
-            </Text>
+              <MaterialCommunityIcons
+                style={{ zIndex: 10 }}
+                name="hands-pray"
+                size={20}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+
+              <Text
+                style={{
+                  color: theme == "dark" ? "white" : "#2f2d51",
+
+                  fontFamily: "Inter-Bold",
+                }}
+              >
+                {streak ?? 0}
+              </Text>
+            </Animated.View>
           </TouchableOpacity>
 
           <StreakSlider
@@ -741,7 +744,7 @@ const WelcomeScreen = () => {
       /> */}
       <DailyReflection
         completedItems={completedItems}
-        streak={streak}
+        devoStreak={streak}
         appStreak={appstreak}
         theme={theme}
       />
@@ -1239,7 +1242,7 @@ const WelcomeScreen = () => {
                         }
                 }
               >
-                What's New in v9.4!
+                What's New in v9.5!
               </Text>
             </View>
             <AntDesign

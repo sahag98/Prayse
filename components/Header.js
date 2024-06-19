@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFonts } from "expo-font";
 import {
   ActivityIndicator,
+  Alert,
   Modal,
   Share,
   StyleSheet,

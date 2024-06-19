@@ -14,22 +14,27 @@ import QuestionModal from "../modals/QuestionModal";
 import { QUESTION_LIST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const QuestionScreen = ({ route }) => {
+const QuestionScreen = () => {
   const {
     answers,
     currentUser,
     setQuestions,
+    fetchAnswers,
     fetchUpdatedAnswers,
     supabase,
     newAnswer,
   } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
-  const itemTitle = route?.params?.title;
   const routeParams = useLocalSearchParams();
+  const itemTitle = routeParams?.title;
   const itemId = routeParams?.question_id;
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    fetchAnswers();
+  }, [isFocused]);
 
   const theme = useSelector((state) => state.user.theme);
-  const isFocused = useIsFocused();
+
   const [inputHeight, setInputHeight] = useState(60);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
 
@@ -42,7 +47,7 @@ const QuestionScreen = ({ route }) => {
   };
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === itemId
+    (answer) => answer.question_id === itemId,
   );
 
   return (
