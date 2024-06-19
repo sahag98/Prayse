@@ -17,6 +17,9 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      sceneContainerStyle={{
+        backgroundColor: theme == "dark" ? "#121212" : "#F2F7FF",
+      }}
       screenOptions={{
         headerBackgroundContainerStyle: {
           backgroundColor: theme == "dark" ? "#121212" : "white",
@@ -36,7 +39,12 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-          tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+          tabBarStyle: {
+            height: 58,
+            paddingBottom: 5,
+            paddingTop: 2,
+            backgroundColor: theme == "dark" ? "#121212" : "white",
+          },
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -51,7 +59,12 @@ export default function TabLayout() {
         options={{
           title: "Prayer",
           tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-          tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+          tabBarStyle: {
+            height: 58,
+            paddingBottom: 5,
+            paddingTop: 2,
+            backgroundColor: theme == "dark" ? "#121212" : "white",
+          },
           tabBarIcon: ({ color, size, focused }) => (
             <MaterialIcons
               name={focused ? "hands-pray" : "hands-pray"}
@@ -66,7 +79,12 @@ export default function TabLayout() {
         options={{
           title: "Devotional",
           tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-          tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+          tabBarStyle: {
+            height: 58,
+            paddingBottom: 5,
+            paddingTop: 2,
+            backgroundColor: theme == "dark" ? "#121212" : "white",
+          },
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "bookmarks" : "bookmarks-outline"}
@@ -81,7 +99,12 @@ export default function TabLayout() {
         options={{
           title: "Community",
           tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-          tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+          tabBarStyle: {
+            height: 58,
+            paddingBottom: 5,
+            paddingTop: 2,
+            backgroundColor: theme == "dark" ? "#121212" : "white",
+          },
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "globe" : "globe-outline"}
@@ -96,7 +119,12 @@ export default function TabLayout() {
         options={{
           title: "More",
           tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-          tabBarStyle: { height: 58, paddingBottom: 5, paddingTop: 2 },
+          tabBarStyle: {
+            height: 58,
+            paddingBottom: 5,
+            paddingTop: 2,
+            backgroundColor: theme == "dark" ? "#121212" : "white",
+          },
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "list" : "list-outline"}

@@ -152,24 +152,10 @@ export default function App() {
                   <Stack initialRouteName="(tabs)">
                     <Stack.Screen
                       name="(tabs)"
-                      options={{ headerShown: false }}
+                      options={{
+                        headerShown: false,
+                      }}
                     />
-                    {/* <Stack.Screen
-                      name={WELCOME_SCREEN}
-                      options={{ headerShown: false }}
-                    /> */}
-                    {/* <Stack.Screen
-                      name={HOME_SCREEN}
-                      options={{ headerShown: false }}
-                    /> */}
-                    {/* <Stack.Screen
-                      name={PRAYER_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={DEVOTIONAL_SCREEN}
-                      options={{ headerShown: false }}
-                    /> */}
                     <Stack.Screen
                       name={DEVO_LIST_SCREEN}
                       options={{ headerShown: false }}

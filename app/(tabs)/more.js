@@ -1,6 +1,5 @@
 import React from "react";
 import { useFonts } from "expo-font";
-import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Linking,
@@ -23,21 +22,25 @@ import {
 
 import SettingsItems from "../../components/SettingsItems";
 import config from "../../config";
+import {
+  ROADMAP_SCREEN,
+  SETTINGS_SCREEN,
+  VERSE_OF_THE_DAY_SCREEN,
+} from "../../routes";
 import { Container, HeaderTitle } from "../../styles/appStyles";
 
 const MoreScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
 
   function giveFeedback(market) {
     if (market == "android") {
       Linking.openURL(
-        `market://details?id=${config.androidPackageName}&showAllReviews=true`,
+        `market://details?id=${config.androidPackageName}&showAllReviews=true`
       );
     }
     if (market == "ios") {
       Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`,
+        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`
       );
     }
   }
@@ -54,7 +57,7 @@ const MoreScreen = () => {
         />
       ),
       title: "Verse of the Day",
-      screen: "VerseOfTheDay",
+      screen: VERSE_OF_THE_DAY_SCREEN,
     },
     {
       id: 2,
@@ -67,7 +70,7 @@ const MoreScreen = () => {
         />
       ),
       title: "Settings",
-      screen: "Settings",
+      screen: SETTINGS_SCREEN,
     },
     {
       id: 3,
@@ -93,7 +96,7 @@ const MoreScreen = () => {
         />
       ),
       title: "Roadmap",
-      screen: "Roadmap",
+      screen: ROADMAP_SCREEN,
     },
     {
       id: 5,
@@ -222,11 +225,7 @@ const MoreScreen = () => {
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <SettingsItems
-          options={options}
-          theme={theme}
-          navigation={navigation}
-        />
+        <SettingsItems options={options} theme={theme} />
         {Platform.OS === "ios" ? (
           <TouchableOpacity
             onPress={() => giveFeedback("ios")}
