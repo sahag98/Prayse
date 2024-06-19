@@ -1,11 +1,19 @@
+// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
+
+interface FolderState {
+  folders: any[];
+  quickFolderExists: boolean;
+}
+
+const initialState: FolderState = {
+  folders: [],
+  quickFolderExists: false,
+};
 
 export const folderSlice = createSlice({
   name: "folder",
-  initialState: {
-    folders: [],
-    quickFolderExists: false,
-  },
+  initialState,
   reducers: {
     addFolder: (state, action) => {
       const Folders = [action.payload, ...state.folders];

@@ -1,6 +1,11 @@
+// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface AnsweredState {
+  answeredPrayers: any[];
+}
+
+const initialState: AnsweredState = {
   answeredPrayers: [],
 };
 

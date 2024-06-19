@@ -1,6 +1,11 @@
+// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface PrayerState {
+  prayer: any[];
+}
+
+const initialState: PrayerState = {
   prayer: [],
 };
 

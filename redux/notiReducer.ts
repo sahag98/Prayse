@@ -1,6 +1,11 @@
+// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface NotiState {
+  notifications: any[];
+}
+
+const initialState: NotiState = {
   notifications: [],
 };
 

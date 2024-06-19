@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 

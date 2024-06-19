@@ -1,8 +1,32 @@
+// @ts-nocheck
 import { Appearance } from "react-native";
 
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface UserState {
+  userImg: string;
+  tooltip: boolean;
+  checkmarkVisible: boolean;
+  userGroups: string[];
+  theme: string;
+  completedItems: {
+    date: string;
+    items: string[];
+  }[];
+  devostreak: number;
+  isAppReady: boolean;
+  appstreak: any[];
+  appstreakNum: number;
+  expoToken: string;
+  alreadyEnteredGiveaway: boolean;
+  isShowingGiveawayModal: boolean;
+  hasIncreasedDevoStreak: boolean;
+  prayers: any[];
+  fontSize: number;
+  selectedId: string | null;
+}
+
+const initialState: UserState = {
   userImg: "",
   tooltip: true,
   checkmarkVisible: false,

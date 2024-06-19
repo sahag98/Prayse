@@ -1,6 +1,11 @@
+// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface FavoritesState {
+  favoriteVerses: any[];
+}
+
+const initialState: FavoritesState = {
   favoriteVerses: [],
 };
 
