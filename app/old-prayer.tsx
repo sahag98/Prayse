@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";

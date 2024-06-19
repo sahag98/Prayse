@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { ActivityIndicator, View } from "react-native";

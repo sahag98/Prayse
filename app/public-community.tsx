@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";

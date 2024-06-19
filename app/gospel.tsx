@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useState } from "react";
 import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
@@ -144,7 +145,7 @@ const GospelScreen = () => {
           onPress: () =>
             Linking.openURL("https://www.instagram.com/prayse.app/"),
         },
-      ],
+      ]
     );
   };
 

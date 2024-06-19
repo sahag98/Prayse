@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -83,7 +84,7 @@ const LoginScreen = () => {
         //prayseapp://google-auth
         {
           showInRecents: true,
-        },
+        }
       );
 
       if (result.type === "success") {

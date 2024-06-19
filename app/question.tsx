@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";

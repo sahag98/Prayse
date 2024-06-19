@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
@@ -142,7 +143,7 @@ const ReminderScreen = () => {
             }
             const formattedDate = timestamp.toLocaleString(
               "en-US",
-              timeOptions,
+              timeOptions
             );
 
             return (

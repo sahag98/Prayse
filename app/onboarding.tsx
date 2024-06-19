@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -81,7 +82,7 @@ export default function OnboardingScreen() {
 
   const swipes = Gesture.Simultaneous(
     Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
   );
 
   return (

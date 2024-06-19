@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";

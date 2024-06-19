@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";

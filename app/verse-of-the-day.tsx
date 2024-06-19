@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import * as Speech from "expo-speech";

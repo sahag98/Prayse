@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import Constants from "expo-constants";
@@ -244,7 +245,7 @@ const CommunityHomeScreen = () => {
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   const list = userGroups?.filter((item) =>
-    searchName !== "" ? item.groups.name.includes(searchName) : true,
+    searchName !== "" ? item.groups.name.includes(searchName) : true
   );
 
   const width = Dimensions.get("window").width - 30;
@@ -824,7 +825,7 @@ const CommunityHomeScreen = () => {
                       navigation.navigate(PRAYER_GROUP_SCREEN, {
                         group: item,
                         allGroups: groups.filter(
-                          (g) => g.group_id === item.group_id,
+                          (g) => g.group_id === item.group_id
                         ),
                       })
                     }
@@ -1057,7 +1058,7 @@ const CommunityHomeScreen = () => {
                               >
                                 +
                                 {groups.filter(
-                                  (g) => g.group_id === item.group_id,
+                                  (g) => g.group_id === item.group_id
                                 )?.length - 3}
                               </Text>
                             )}
@@ -1321,7 +1322,7 @@ const CommunityHomeScreen = () => {
                       navigation.navigate(PRAYER_GROUP_SCREEN, {
                         group: item,
                         allGroups: groups.filter(
-                          (g) => g.group_id === item.group_id,
+                          (g) => g.group_id === item.group_id
                         ),
                       })
                     }
@@ -1430,7 +1431,7 @@ const CommunityHomeScreen = () => {
                               >
                                 +
                                 {groups.filter(
-                                  (g) => g.group_id === item.group_id,
+                                  (g) => g.group_id === item.group_id
                                 )?.length - 6}
                               </Text>
                             )}

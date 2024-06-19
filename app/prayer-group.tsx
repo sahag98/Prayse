@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";

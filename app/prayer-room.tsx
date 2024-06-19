@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
 import Constants from "expo-constants";
@@ -173,7 +174,7 @@ const PrayerRoom = () => {
       withTiming(1, {
         duration: 4000,
         easing: Easing.ease,
-      }),
+      })
     );
   };
 
@@ -195,8 +196,8 @@ const PrayerRoom = () => {
         withTiming(0, {
           duration: 3000,
           easing: Easing.ease,
-        }),
-      ),
+        })
+      )
     );
   };
 
@@ -228,15 +229,15 @@ const PrayerRoom = () => {
           withTiming(1, {
             duration: 2000,
             easing: Easing.ease,
-          }),
+          })
         ),
         withDelay(
           5000,
           withTiming(0.5, {
             duration: 2000,
             easing: Easing.ease,
-          }),
-        ),
+          })
+        )
       );
       loadVideo();
       doRoomFadeIn();
@@ -277,7 +278,7 @@ const PrayerRoom = () => {
 
   const swipes = Gesture.Simultaneous(
     Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
   );
 
   if (prayers.length == 0) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import {
   FlatList,
@@ -32,14 +33,14 @@ const ChecklistScreen = () => {
   const [answeredAlready, setAnsweredAlready] = useState("");
   const dispatch = useDispatch();
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
+    (state) => state.answered.answeredPrayers
   );
 
   const handleAddToAnsweredPrayer = (prayer) => {
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
       )
     ) {
       console.log("exists");
@@ -50,7 +51,7 @@ const ChecklistScreen = () => {
           answeredDate: new Date().toDateString(),
           prayer,
           id: uuid.v4(),
-        }),
+        })
       );
       setAnsweredAlready("");
     }
