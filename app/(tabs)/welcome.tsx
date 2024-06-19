@@ -59,6 +59,7 @@ import {
   PRAYER_GROUP_SCREEN,
   QUESTION_SCREEN,
   REFLECTION_SCREEN,
+  REMINDER_SCREEN,
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
 } from "@routes";
@@ -697,26 +698,27 @@ const WelcomeScreen = () => {
           />
 
           <View style={{ position: "relative", padding: 8 }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(NOTIFICATIONS_SCREEN)}
-              style={
-                theme == "dark"
-                  ? {
-                      borderRadius: 50,
-                      padding: 8,
-                    }
-                  : {
-                      borderRadius: 50,
-                      padding: 8,
-                    }
-              }
-            >
-              <Ionicons
-                name="notifications-outline"
-                size={20}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-            </TouchableOpacity>
+            <Link to={`/${NOTIFICATIONS_SCREEN}`}>
+              <View
+                style={
+                  theme == "dark"
+                    ? {
+                        borderRadius: 50,
+                        padding: 8,
+                      }
+                    : {
+                        borderRadius: 50,
+                        padding: 8,
+                      }
+                }
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={20}
+                  color={theme == "dark" ? "white" : "#2f2d51"}
+                />
+              </View>
+            </Link>
             <Badge
               size={14}
               style={{
@@ -793,7 +795,7 @@ const WelcomeScreen = () => {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
             >
-              <Link to="/reminder">
+              <Link to={`/${REMINDER_SCREEN}`}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -820,10 +822,7 @@ const WelcomeScreen = () => {
                   </Text>
                 </View>
               </Link>
-              <Link
-                to="/test?type=Add"
-                // href={{ screen: "test", params: { type: "Add" } }}
-              >
+              <Link to={`/${TEST_SCREEN}?type=Add`}>
                 <View
                   style={{
                     flexDirection: "row",

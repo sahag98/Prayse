@@ -18,7 +18,7 @@ import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
@@ -815,51 +815,53 @@ export default function TestScreen() {
           </View>
         )}
         <View style={{ marginTop: 5, flex: 1 }}>
-          <Text
-            onPress={() => navigation.navigate(SETTINGS_SCREEN)}
-            style={
-              theme == "dark"
-                ? {
-                    color: "#ff3b3b",
+          <Link to={`/${SETTINGS_SCREEN}`}>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#ff3b3b",
 
-                    marginBottom: 5,
-                    fontFamily: "Inter-Medium",
-                  }
-                : {
-                    color: "#ff3b3b",
-                    marginBottom: 5,
+                      marginBottom: 5,
+                      fontFamily: "Inter-Medium",
+                    }
+                  : {
+                      color: "#ff3b3b",
+                      marginBottom: 5,
 
-                    fontFamily: "Inter-Medium",
-                  }
-            }
-          >
-            Required fields: Title, date and time.
-          </Text>
-          <Text
-            onPress={() => navigation.navigate(SETTINGS_SCREEN)}
-            style={
-              theme == "dark"
-                ? {
-                    color: "#d2d2d2",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                  }
-                : {
-                    color: "#2f2d51",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                  }
-            }
-          >
-            To receive the reminders, make sure to enable notifications in both
-            your phone and Prayse settings{" "}
-            <Feather
-              name="external-link"
-              size={14}
-              color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
-            />
-            .
-          </Text>
+                      fontFamily: "Inter-Medium",
+                    }
+              }
+            >
+              Required fields: Title, date and time.
+            </Text>
+          </Link>
+          <Link to={`/${SETTINGS_SCREEN}`}>
+            <Text
+              style={
+                theme == "dark"
+                  ? {
+                      color: "#d2d2d2",
+                      fontSize: 13,
+                      fontFamily: "Inter-Regular",
+                    }
+                  : {
+                      color: "#2f2d51",
+                      fontSize: 13,
+                      fontFamily: "Inter-Regular",
+                    }
+              }
+            >
+              To receive the reminders, make sure to enable notifications in
+              both your phone and Prayse settings{" "}
+              <Feather
+                name="external-link"
+                size={14}
+                color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+              />
+              .
+            </Text>
+          </Link>
 
           <View style={{ marginTop: "auto", marginBottom: 20, width: "100%" }}>
             <Text

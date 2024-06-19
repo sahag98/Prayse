@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSupabase } from "../context/useSupabase";
 import { QUESTION_SCREEN } from "../routes";
+
 const QuestionInfo = ({ item, theme }) => {
   const navigation = useNavigation();
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -7,14 +6,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 import NetInfo from "@react-native-community/netinfo";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import tbf from "../../assets/tbf-logo.jpg";
 import useIsReady from "../../hooks/useIsReady";
@@ -25,7 +23,6 @@ import { Container } from "../../styles/appStyles";
 import "react-native-url-polyfill/auto";
 
 const DevotionalScreen = () => {
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const theme = useSelector((state) => state.user.theme);
   const isReady = useIsReady();
@@ -184,28 +181,29 @@ const DevotionalScreen = () => {
           >
             {devotionals[0]?.description}
           </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(DEVO_LIST_SCREEN)}
-            style={{
-              width: "100%",
-              marginTop: 10,
-              padding: 15,
-              borderRadius: 10,
-              backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
+          <Link to={`/${DEVO_LIST_SCREEN}`}>
+            <View
               style={{
-                fontFamily: "Inter-Bold",
-                fontSize: 15,
-                color: theme == "dark" ? "#a5c9ff" : "white",
+                width: "100%",
+                marginTop: 10,
+                padding: 15,
+                borderRadius: 10,
+                backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              View
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: "Inter-Bold",
+                  fontSize: 15,
+                  color: theme == "dark" ? "#a5c9ff" : "white",
+                }}
+              >
+                View
+              </Text>
+            </View>
+          </Link>
         </View>
         <Text
           onPress={loadDevotionals}

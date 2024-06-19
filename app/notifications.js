@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Link } from "@react-navigation/native";
 
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
@@ -150,18 +151,15 @@ const NotificationsScreen = () => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
-            style={{ marginRight: 10 }}
-            onPress={() => {
-              navigation.navigate(HOME_SCREEN);
-            }}
-          >
-            <Ionicons
-              name="chevron-back"
-              size={35}
-              color={theme == "light" ? "#2f2d51" : "white"}
-            />
-          </TouchableOpacity>
+          <Link to={`/${HOME_SCREEN}`}>
+            <View style={{ marginRight: 10 }}>
+              <Ionicons
+                name="chevron-back"
+                size={35}
+                color={theme == "light" ? "#2f2d51" : "white"}
+              />
+            </View>
+          </Link>
           <Text
             style={{
               fontFamily: "Inter-Bold",

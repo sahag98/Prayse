@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
 import Animated, {
   FadeIn,
@@ -19,7 +13,7 @@ import Animated, {
 import { useSelector } from "react-redux";
 
 import { AntDesign, Entypo } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import CommunityPrayers from "../components/CommunityPrayers";
 import config from "../config";
@@ -29,7 +23,6 @@ import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const PublicCommunityScreen = () => {
-  const navigation = useNavigation();
   const {
     currentUser,
     setCurrentUser,
@@ -159,15 +152,13 @@ const PublicCommunityScreen = () => {
           entering={FadeIn.duration(500)}
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
-          >
+          <Link to={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-          </TouchableOpacity>
+          </Link>
           <HeaderTitle
             style={
               theme == "dark"

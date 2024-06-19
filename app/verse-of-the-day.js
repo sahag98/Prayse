@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { Link, useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
@@ -74,7 +74,7 @@ const VerseOfTheDayScreen = () => {
     dispatch(
       addToFavorites({
         verse,
-      }),
+      })
     );
   };
 
@@ -164,26 +164,25 @@ const VerseOfTheDayScreen = () => {
         Welcome to the Verse of the Day page! Our goal is to provide you with a
         daily reminder of God's love, grace, and wisdom.
       </Text>
-      <TouchableOpacity
-        onPress={() => navigation.navigate(FAVORITES_SCREEN)}
-        style={theme == "dark" ? styles.favoritesDark : styles.favorites}
-      >
-        <Text
-          style={
-            theme == "dark"
-              ? { fontFamily: "Inter-Medium", color: "white", fontSize: 16 }
-              : { fontFamily: "Inter-Medium", color: "#2f2d51", fontSize: 16 }
-          }
-        >
-          Favorite Verses
-        </Text>
-        <AntDesign
-          style={{ marginLeft: 10 }}
-          name="right"
-          size={20}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      </TouchableOpacity>
+      <Link to={`/${FAVORITES_SCREEN}`}>
+        <View style={theme == "dark" ? styles.favoritesDark : styles.favorites}>
+          <Text
+            style={
+              theme == "dark"
+                ? { fontFamily: "Inter-Medium", color: "white", fontSize: 16 }
+                : { fontFamily: "Inter-Medium", color: "#2f2d51", fontSize: 16 }
+            }
+          >
+            Favorite Verses
+          </Text>
+          <AntDesign
+            style={{ marginLeft: 10 }}
+            name="right"
+            size={20}
+            color={theme == "dark" ? "white" : "#2f2d51"}
+          />
+        </View>
+      </Link>
 
       <View
         style={

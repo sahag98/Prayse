@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import { MORE_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const RoadMapScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [roadmap, setRoadmap] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,13 +43,13 @@ const RoadMapScreen = () => {
     <Container
       style={{ backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff" }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate(MORE_SCREEN)}>
+      <Link to={`/${MORE_SCREEN}`}>
         <AntDesign
           name="left"
           size={24}
           color={theme == "dark" ? "white" : "#2f2d51"}
         />
-      </TouchableOpacity>
+      </Link>
       <Text
         style={{
           color: theme == "dark" ? "white" : "#2f2d51",

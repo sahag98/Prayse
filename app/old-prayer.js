@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
-import { useNavigation } from "expo-router";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link } from "@react-navigation/native";
 
 import { FOLDERS_SCREEN } from "../routes";
 import {
@@ -22,7 +22,6 @@ import {
 } from "../styles/appStyles";
 
 const OldPrayerScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [todos, setTodos] = useState([]);
 
@@ -121,13 +120,13 @@ const OldPrayerScreen = () => {
     >
       <HeaderView style={{ display: "flex", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.navigate(FOLDERS_SCREEN)}>
+          <Link to={`/${FOLDERS_SCREEN}`}>
             <Ionicons
               name="chevron-back"
               size={30}
               color={theme == "light" ? "#2f2d51" : "grey"}
             />
-          </TouchableOpacity>
+          </Link>
           <HeaderTitle
             style={
               theme == "dark"

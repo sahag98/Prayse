@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import NetInfo from "@react-native-community/netinfo";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import tbf from "../assets/tbf-logo.jpg";
 import DevoItem from "../components/DevoItem";
@@ -378,34 +378,31 @@ const DevoListScreen = () => {
                     width: 1,
                   }}
                 />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate(REFLECTION_SCREEN, {
-                      devoTitle: d.title,
-                    })
-                  }
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
-                  <FontAwesome
-                    style={{ marginBottom: 4 }}
-                    name="comment-o"
-                    size={24}
-                    color={theme == "dark" ? "white" : "#2f2d51"}
-                  />
-                  <Text
+                <Link to={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}>
+                  <View
                     style={{
-                      fontSize: 16,
-                      color: theme == "dark" ? "white" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
                     }}
                   >
-                    {reflectionsArray?.length}
-                  </Text>
-                </TouchableOpacity>
+                    <FontAwesome
+                      style={{ marginBottom: 4 }}
+                      name="comment-o"
+                      size={24}
+                      color={theme == "dark" ? "white" : "#2f2d51"}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: theme == "dark" ? "white" : "#2f2d51",
+                        fontFamily: "Inter-Medium",
+                      }}
+                    >
+                      {reflectionsArray?.length}
+                    </Text>
+                  </View>
+                </Link>
                 <View
                   style={{
                     height: "100%",

@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
 import { useSelector } from "react-redux";
 
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
@@ -20,7 +14,6 @@ import { QUESTION_LIST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionScreen = ({ route }) => {
-  const navigation = useNavigation();
   const {
     answers,
     currentUser,
@@ -48,7 +41,7 @@ const QuestionScreen = ({ route }) => {
   };
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === itemId,
+    (answer) => answer.question_id === itemId
   );
 
   return (
@@ -67,15 +60,13 @@ const QuestionScreen = ({ route }) => {
             gap: 10,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
-          >
+          <Link to={`/${QUESTION_LIST_SCREEN}}`}>
             <AntDesign
               name="left"
               size={24}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-          </TouchableOpacity>
+          </Link>
           <HeaderTitle
             style={
               theme == "dark"

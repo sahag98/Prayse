@@ -14,7 +14,7 @@ import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
 import { AntDesign, EvilIcons } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import groupBg from "../assets/group-bg.png";
 import { useSupabase } from "../context/useSupabase";
@@ -37,7 +37,7 @@ const PublicGroupsScreen = () => {
     setGroups(groups);
   }
   const list = publicGroups.filter((item) =>
-    search !== "" ? item.name.includes(search) : true,
+    search !== "" ? item.name.includes(search) : true
   );
 
   useEffect(() => {
@@ -102,13 +102,13 @@ const PublicGroupsScreen = () => {
           gap: 10,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate(COMMUNITY_SCREEN)}>
+        <Link to={`/${COMMUNITY_SCREEN}`}>
           <AntDesign
             name="left"
             size={24}
             color={theme == "dark" ? "white" : "#2f2d51"}
           />
-        </TouchableOpacity>
+        </Link>
 
         <HeaderTitle
           style={
@@ -305,7 +305,7 @@ const PublicGroupsScreen = () => {
                             >
                               +
                               {groups.filter(
-                                (g) => g.group_id === item.group_id,
+                                (g) => g.group_id === item.group_id
                               )?.length - 3}
                             </Text>
                           )}

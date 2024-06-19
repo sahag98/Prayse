@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -19,7 +18,6 @@ import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionListScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   const isFocused = useIsFocused();
@@ -54,15 +52,13 @@ const QuestionListScreen = () => {
             gap: 10,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
-          >
+          <View to={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-          </TouchableOpacity>
+          </View>
           <HeaderTitle
             style={
               theme == "dark"

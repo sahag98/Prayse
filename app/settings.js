@@ -3,7 +3,6 @@ import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
-import { useNavigation } from "expo-router";
 import {
   Modal,
   Platform,
@@ -16,6 +15,7 @@ import { Divider, Text } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Link } from "@react-navigation/native";
 
 import config from "../config";
 import { deleteAnsweredPrayers } from "../redux/answeredReducer";
@@ -40,7 +40,6 @@ import {
 } from "../styles/appStyles";
 
 const SettingsScreen = () => {
-  const navigation = useNavigation();
   const [active, setActive] = useState(false);
   const theme = useSelector((state) => state.user.theme);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -173,16 +172,15 @@ const SettingsScreen = () => {
               alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              style={{ marginRight: 5 }}
-              onPress={() => navigation.navigate(MORE_SCREEN)}
-            >
-              <Ionicons
-                name="chevron-back"
-                size={30}
-                color={theme == "light" ? "#2f2d51" : "white"}
-              />
-            </TouchableOpacity>
+            <Link to={`/${MORE_SCREEN}`}>
+              <View style={{ marginRight: 5 }}>
+                <Ionicons
+                  name="chevron-back"
+                  size={30}
+                  color={theme == "light" ? "#2f2d51" : "white"}
+                />
+              </View>
+            </Link>
             <HeaderTitle
               style={
                 theme == "dark"

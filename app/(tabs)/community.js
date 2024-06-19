@@ -37,7 +37,7 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { Link, useIsFocused, useNavigation } from "@react-navigation/native";
 
 import globeBg from "../../assets/globe-bg.png";
 import groupBg from "../../assets/group-bg.png";
@@ -400,238 +400,244 @@ const CommunityHomeScreen = () => {
               alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              onPress={() => navigation.navigate(PUBLIC_COMMUNITY_SCREEN)}
-              style={
-                theme == "dark"
-                  ? {
-                      flex: 1,
-                      // minHeight: 130,
-                      // maxHeightheight: 150,
-                      justifyContent: "space-between",
-                      padding: 10,
-                      gap: 20,
-                      borderRadius: 10,
-                      backgroundColor: "#212121",
-                      position: "relative",
-                    }
-                  : {
-                      flex: 1,
-                      position: "relative",
-                      // minHeight: 130,
-                      gap: 20,
-                      justifyContent: "space-between",
-                      shadowColor: "#bdbdbd",
-                      shadowOffset: {
-                        width: 0,
-                        height: 3,
-                      },
-                      shadowOpacity: 0.17,
-                      shadowRadius: 3.05,
-                      elevation: 4,
-                      padding: 10,
-                      borderRadius: 10,
-                      backgroundColor: "#b7d3ff",
-                    }
-              }
-            >
-              <Image
-                source={globeBg}
-                style={{
-                  position: "absolute",
-                  tintColor: theme == "dark" ? "#5c5c5c" : "#9693c3",
-                  bottom: 0,
-                  right: 0,
-                  width: 100,
-                  height: 100,
-                }}
-              />
+            <Link to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
               <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        flex: 1,
+                        // minHeight: 130,
+                        // maxHeightheight: 150,
+                        justifyContent: "space-between",
+                        padding: 10,
+                        gap: 20,
+                        borderRadius: 10,
+                        backgroundColor: "#212121",
+                        position: "relative",
+                      }
+                    : {
+                        flex: 1,
+                        position: "relative",
+                        // minHeight: 130,
+                        gap: 20,
+                        justifyContent: "space-between",
+                        shadowColor: "#bdbdbd",
+                        shadowOffset: {
+                          width: 0,
+                          height: 3,
+                        },
+                        shadowOpacity: 0.17,
+                        shadowRadius: 3.05,
+                        elevation: 4,
+                        padding: 10,
+                        borderRadius: 10,
+                        backgroundColor: "#b7d3ff",
+                      }
+                }
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          color: "#a5c9ff",
-                          fontSize: 16,
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          color: "#2f2d51",
-                          fontSize: 16,
-                        }
-                  }
-                >
-                  Public Prayers
-                </Text>
-                <Entypo
-                  name="globe"
-                  size={24}
-                  color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-                />
-              </View>
-              <View style={{ gap: 10 }}>
-                <Text
+                <Image
+                  source={globeBg}
                   style={{
-                    fontFamily: "Inter-Regular",
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                    fontSize: 13,
+                    position: "absolute",
+                    tintColor: theme == "dark" ? "#5c5c5c" : "#9693c3",
+                    bottom: 0,
+                    right: 0,
+                    width: 100,
+                    height: 100,
                   }}
-                >
-                  Public prayers posted by our users.
-                </Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate(PUBLIC_COMMUNITY_SCREEN)}
+                />
+                <View
                   style={{
                     flexDirection: "row",
+                    gap: 10,
                     alignItems: "center",
-                    borderRadius: 5,
                     justifyContent: "space-between",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    width: "100%",
-                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
                   }}
                 >
                   <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Bold",
+                            color: "#a5c9ff",
+                            fontSize: 16,
+                          }
+                        : {
+                            fontFamily: "Inter-Bold",
+                            color: "#2f2d51",
+                            fontSize: 16,
+                          }
+                    }
+                  >
+                    Public Prayers
+                  </Text>
+                  <Entypo
+                    name="globe"
+                    size={24}
+                    color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                  />
+                </View>
+                <View style={{ gap: 10 }}>
+                  <Text
                     style={{
-                      color: theme == "dark" ? "#121212" : "white",
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "Inter-Regular",
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontSize: 13,
                     }}
                   >
-                    View
+                    Public prayers posted by our users.
                   </Text>
-                  <AntDesign
-                    name="right"
-                    size={24}
-                    color={theme == "dark" ? "#121212" : "white"}
-                  />
-                </TouchableOpacity>
+                  <Link to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        justifyContent: "space-between",
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        width: "100%",
+                        backgroundColor:
+                          theme == "dark" ? "#a5c9ff" : "#2f2d51",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: theme == "dark" ? "#121212" : "white",
+                          fontFamily: "Inter-Medium",
+                        }}
+                      >
+                        View
+                      </Text>
+                      <AntDesign
+                        name="right"
+                        size={24}
+                        color={theme == "dark" ? "#121212" : "white"}
+                      />
+                    </View>
+                  </Link>
+                </View>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
-              style={
-                theme == "dark"
-                  ? {
-                      width: "50%",
-                      position: "relative",
-                      flex: 1,
-                      // height: 130,
-                      gap: 20,
-                      padding: 10,
-                      borderRadius: 10,
-                      justifyContent: "space-between",
-                      backgroundColor: "#212121",
-                    }
-                  : {
-                      width: "50%",
-                      position: "relative",
-                      flex: 1,
-                      // height: 130,
-                      gap: 20,
-                      padding: 10,
-                      shadowColor: "#bdbdbd",
-                      shadowOffset: {
-                        width: 0,
-                        height: 3,
-                      },
-                      shadowOpacity: 0.17,
-                      shadowRadius: 3.05,
-                      elevation: 4,
-                      borderRadius: 10,
-                      justifyContent: "space-between",
-                      backgroundColor: "#ffcd8b",
-                    }
-              }
-            >
-              <Image
-                source={questionBg}
-                style={{
-                  position: "absolute",
-                  tintColor: theme == "dark" ? "#353535" : "#ffd59f",
-                  bottom: 0,
-                  right: 0,
-                  width: 100,
-                  height: 100,
-                }}
-              />
+            </Link>
+
+            <Link to={`/${QUESTION_LIST_SCREEN}`}>
               <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
+                style={
+                  theme == "dark"
+                    ? {
+                        width: "50%",
+                        position: "relative",
+                        flex: 1,
+                        // height: 130,
+                        gap: 20,
+                        padding: 10,
+                        borderRadius: 10,
+                        justifyContent: "space-between",
+                        backgroundColor: "#212121",
+                      }
+                    : {
+                        width: "50%",
+                        position: "relative",
+                        flex: 1,
+                        // height: 130,
+                        gap: 20,
+                        padding: 10,
+                        shadowColor: "#bdbdbd",
+                        shadowOffset: {
+                          width: 0,
+                          height: 3,
+                        },
+                        shadowOpacity: 0.17,
+                        shadowRadius: 3.05,
+                        elevation: 4,
+                        borderRadius: 10,
+                        justifyContent: "space-between",
+                        backgroundColor: "#ffcd8b",
+                      }
+                }
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          color: "#e8bb4e",
-                          fontSize: 16,
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          color: "#2f2d51",
-                          fontSize: 16,
-                        }
-                  }
-                >
-                  Questions
-                </Text>
-                <MaterialCommunityIcons
-                  name="frequently-asked-questions"
-                  size={24}
-                  color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
-                />
-              </View>
-              <View style={{ gap: 10 }}>
-                <Text
+                <Image
+                  source={questionBg}
                   style={{
-                    fontFamily: "Inter-Regular",
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                    fontSize: 13,
+                    position: "absolute",
+                    tintColor: theme == "dark" ? "#353535" : "#ffd59f",
+                    bottom: 0,
+                    right: 0,
+                    width: 100,
+                    height: 100,
                   }}
-                >
-                  Weekly questions to reflect on.
-                </Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
+                />
+                <View
                   style={{
                     flexDirection: "row",
-                    alignItems: "center",
-                    borderRadius: 5,
                     justifyContent: "space-between",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    width: "100%",
-                    backgroundColor: theme == "dark" ? "#e8bb4e" : "white",
+                    alignItems: "center",
                   }}
                 >
                   <Text
+                    style={
+                      theme == "dark"
+                        ? {
+                            fontFamily: "Inter-Bold",
+                            color: "#e8bb4e",
+                            fontSize: 16,
+                          }
+                        : {
+                            fontFamily: "Inter-Bold",
+                            color: "#2f2d51",
+                            fontSize: 16,
+                          }
+                    }
+                  >
+                    Questions
+                  </Text>
+                  <MaterialCommunityIcons
+                    name="frequently-asked-questions"
+                    size={24}
+                    color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
+                  />
+                </View>
+                <View style={{ gap: 10 }}>
+                  <Text
                     style={{
-                      color: theme == "dark" ? "#121212" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "Inter-Regular",
+                      color: theme == "dark" ? "white" : "#2f2d51",
+                      fontSize: 13,
                     }}
                   >
-                    View
+                    Weekly questions to reflect on.
                   </Text>
-                  <AntDesign
-                    name="right"
-                    size={24}
-                    color={theme == "dark" ? "#121212" : "#2f2d51"}
-                  />
-                </TouchableOpacity>
+                  <Link to={`/${QUESTION_LIST_SCREEN}`}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        justifyContent: "space-between",
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        width: "100%",
+                        backgroundColor: theme == "dark" ? "#e8bb4e" : "white",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: theme == "dark" ? "#121212" : "#2f2d51",
+                          fontFamily: "Inter-Medium",
+                        }}
+                      >
+                        View
+                      </Text>
+                      <AntDesign
+                        name="right"
+                        size={24}
+                        color={theme == "dark" ? "#121212" : "#2f2d51"}
+                      />
+                    </View>
+                  </Link>
+                </View>
               </View>
-            </TouchableOpacity>
+            </Link>
           </View>
           <View
             style={{
@@ -707,31 +713,32 @@ const CommunityHomeScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(PUBLIC_GROUPS_SCREEN)}
-            style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-              padding: 12,
-              borderRadius: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text
+          <Link to={`/${PUBLIC_GROUPS_SCREEN}`}>
+            <View
               style={{
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
+                backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
+                padding: 12,
+                borderRadius: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              Search for Public Groups
-            </Text>
-            <EvilIcons
-              name="search"
-              size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            />
-          </TouchableOpacity>
+              <Text
+                style={{
+                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                Search for Public Groups
+              </Text>
+              <EvilIcons
+                name="search"
+                size={24}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+            </View>
+          </Link>
 
           {/* {userGroups?.length != 0 && isFetchingUserGroups && (
             <View

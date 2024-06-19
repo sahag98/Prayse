@@ -24,6 +24,7 @@ import {
   Feather,
   Ionicons,
 } from "@expo/vector-icons";
+import { Link } from "@react-navigation/native";
 
 import { PRAYER_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
@@ -31,7 +32,7 @@ import { HeaderTitle, HeaderView } from "../styles/appStyles";
 import DeleteFolder from "./DeleteFolder";
 import EditFolder from "./EditFolder";
 
-const Header = ({ navigation, folderName, folderId, theme }) => {
+const Header = ({ folderName, folderId, theme }) => {
   const [isShowingModal, setIsShowingModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -110,18 +111,15 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              style={{ marginRight: 10 }}
-              onPress={() => {
-                navigation.navigate(PRAYER_SCREEN);
-              }}
-            >
-              <Ionicons
-                name="chevron-back"
-                size={30}
-                color={theme === "light" ? "#2f2d51" : "white"}
-              />
-            </TouchableOpacity>
+            <Link to={`/${PRAYER_SCREEN}`}>
+              <View style={{ marginRight: 10 }}>
+                <Ionicons
+                  name="chevron-back"
+                  size={30}
+                  color={theme === "light" ? "#2f2d51" : "white"}
+                />
+              </View>
+            </Link>
             <HeaderTitle
               style={
                 theme === "dark"

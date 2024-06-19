@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
 import GroupPrayerList from "../components/GroupPrayerList";
@@ -26,7 +26,6 @@ import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroupScreen = () => {
-  const navigation = useNavigation();
   const params = useLocalSearchParams();
 
   const theme = useSelector((state) => state.user.theme);
@@ -351,15 +350,13 @@ const PrayerGroupScreen = () => {
           <View
             style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
           >
-            <TouchableOpacity
-              onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
-            >
+            <Link to={`/${COMMUNITY_SCREEN}`}>
               <AntDesign
                 name="left"
                 size={24}
                 color={theme == "dark" ? "white" : "#2f2d51"}
               />
-            </TouchableOpacity>
+            </Link>
 
             <TouchableOpacity
               onPress={openGroupInfo}

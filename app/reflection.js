@@ -148,24 +148,25 @@ const ReflectionScreen = ({ route }) => {
             justifyContent: "flex-start",
           }}
         >
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              backgroundColor: theme == "dark" ? "#212121" : "#d2d2d2",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 100,
-              padding: 5,
-              gap: 5,
-            }}
-            onPress={() => navigation.navigate(DEVO_LIST_SCREEN)}
-          >
-            <AntDesign
-              name="left"
-              size={28}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            />
-          </TouchableOpacity>
+          <Link to={`/${DEVO_LIST_SCREEN}`}>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: theme == "dark" ? "#212121" : "#d2d2d2",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 100,
+                padding: 5,
+                gap: 5,
+              }}
+            >
+              <AntDesign
+                name="left"
+                size={28}
+                color={theme == "dark" ? "white" : "#2f2d51"}
+              />
+            </View>
+          </Link>
         </HeaderView>
         <Text
           style={

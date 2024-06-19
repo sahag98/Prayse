@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigation } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -17,6 +16,7 @@ import {
   Fontisto,
   Ionicons,
 } from "@expo/vector-icons";
+import { Link } from "@react-navigation/native";
 
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
@@ -24,7 +24,6 @@ import { PRAYER_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const ChecklistScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
   const [selectKeepAction, setSelectKeepAction] = useState("");
@@ -92,18 +91,15 @@ const ChecklistScreen = () => {
             alignItems: "center",
           }}
         >
-          <TouchableOpacity
-            style={{ marginRight: 10 }}
-            onPress={() => {
-              navigation.navigate(PRAYER_SCREEN);
-            }}
-          >
-            <Ionicons
-              name="chevron-back"
-              size={35}
-              color={theme == "light" ? "#2f2d51" : "white"}
-            />
-          </TouchableOpacity>
+          <Link to={`/${PRAYER_SCREEN}`}>
+            <View style={{ marginRight: 10 }}>
+              <Ionicons
+                name="chevron-back"
+                size={35}
+                color={theme == "light" ? "#2f2d51" : "white"}
+              />
+            </View>
+          </Link>
           <Text
             style={{
               fontFamily: "Inter-Bold",
@@ -166,18 +162,15 @@ const ChecklistScreen = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity
-          style={{ marginRight: 10 }}
-          onPress={() => {
-            navigation.navigate(PRAYER_SCREEN);
-          }}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={35}
-            color={theme == "light" ? "#2f2d51" : "white"}
-          />
-        </TouchableOpacity>
+        <Link to={`/${PRAYER_SCREEN}`}>
+          <View style={{ marginRight: 10 }}>
+            <Ionicons
+              name="chevron-back"
+              size={35}
+              color={theme == "light" ? "#2f2d51" : "white"}
+            />
+          </View>
+        </Link>
         <Text
           style={{
             fontFamily: "Inter-Bold",

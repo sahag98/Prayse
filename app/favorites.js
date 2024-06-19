@@ -1,12 +1,6 @@
 import React from "react";
-import { useNavigation } from "expo-router";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Link } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -16,7 +10,6 @@ import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const FavoritesScreen = () => {
-  const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
@@ -38,16 +31,15 @@ const FavoritesScreen = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity
-          style={{ marginRight: 5 }}
-          onPress={() => navigation.navigate(VERSE_OF_THE_DAY_SCREEN)}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={30}
-            color={theme == "dark" ? "white" : "#2f2d51"}
-          />
-        </TouchableOpacity>
+        <Link to={`/${VERSE_OF_THE_DAY_SCREEN}`}>
+          <View style={{ marginRight: 5 }}>
+            <Ionicons
+              name="chevron-back"
+              size={30}
+              color={theme == "dark" ? "white" : "#2f2d51"}
+            />
+          </View>
+        </Link>
         <HeaderTitle
           style={
             theme == "dark"
