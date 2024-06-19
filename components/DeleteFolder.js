@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
 import { deletePrayerByFolderId } from "../redux/prayerReducer";
+import { PRAYER_SCREEN } from "../routes";
 import {
   HeaderTitle,
   ModalAction,
@@ -22,11 +23,11 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
   function deleteFolderById() {
     if (folderId == 4044) {
       dispatch(deleteQuickFolder(folderId));
-      navigation.navigate("Prayer");
+      navigation.navigate(PRAYER_SCREEN);
     } else {
       dispatch(deleteFolder(folderId));
       dispatch(deletePrayerByFolderId(folderId));
-      navigation.navigate("Prayer");
+      navigation.navigate(PRAYER_SCREEN);
     }
 
     setOpenDelete(false);

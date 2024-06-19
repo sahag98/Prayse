@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 
 import { editFolderName } from "../redux/folderReducer";
+import { PRAYER_SCREEN } from "../routes";
 import {
   HeaderTitle,
   ModalAction,
@@ -31,7 +32,7 @@ const FolderItem = ({ item, theme, navigation }) => {
   const [newFolderName, setNewFolderName] = useState(item.name);
   const prayerList = useSelector((state) => state.prayer.prayer);
   const handleOpen = (item) => {
-    navigation.navigate("PrayerPage", {
+    navigation.navigate(PRAYER_SCREEN, {
       title: item.name,
       prayers: item.prayers,
       id: item.id,

@@ -5,24 +5,29 @@ import { useDispatch } from "react-redux";
 
 import { useSupabase } from "../context/useSupabase";
 import { deleteNoti } from "../redux/notiReducer";
+import { QUESTION_SCREEN } from "../routes";
 
 const NotiItem = ({ item, theme, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
 
-  const viewNotification = (screen) => {
-    if (!screen) {
+  const viewNotification = (url) => {
+    if (!url) {
       dismissNotification(item);
       dispatch(deleteNoti(item.noti_id));
 
       return;
     }
-    if (screen === "Question" && !isLoggedIn) {
-      navigation.navigate(screen);
+    if (["Question", QUESTION_SCREEN].includes(url) && !isLoggedIn) {
+      navigation.navigate(QUESTION_SCREEN);
     }
 
-    if (screen === "Question" && isLoggedIn && item.question_id) {
-      navigation.navigate(screen, {
+    if (
+      ["Question", QUESTION_SCREEN].includes(url) &&
+      isLoggedIn &&
+      item.question_id
+    ) {
+      navigation.navigate(QUESTION_SCREEN, {
         title: item.title,
         question_id: item.question_id,
       });
@@ -31,7 +36,7 @@ const NotiItem = ({ item, theme, navigation }) => {
     }
 
     dismissNotification(item);
-    navigation.navigate(screen);
+    navigation.navigate(url);
     dispatch(deleteNoti(item.noti_id));
   };
 
@@ -66,7 +71,7 @@ const NotiItem = ({ item, theme, navigation }) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => viewNotification(item.screen)}
+        onPress={() => viewNotification(item.url || item.screen)}
         style={
           theme === "dark"
             ? {

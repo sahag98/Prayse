@@ -3,6 +3,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { COMMUNITY_SCREEN } from "../routes";
 import { ModalContainer, ModalView } from "../styles/appStyles";
 
 const RemovedGroupModal = ({
@@ -15,7 +16,7 @@ const RemovedGroupModal = ({
   const handleCloseModal = () => {
     setIsGroupRemoved(false);
     setRefreshGroup(false);
-    navigation.navigate("Community");
+    navigation.navigate(COMMUNITY_SCREEN);
   };
 
   return (

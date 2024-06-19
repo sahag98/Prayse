@@ -213,7 +213,7 @@ const GroupPrayerItem = ({
         console.log("likesError: ", likesError);
       }
     } catch (error) {
-      console.log(error);
+      console.log("fetchLikes" + error);
     }
     setLoadingLikes(false);
   }
@@ -280,7 +280,7 @@ const GroupPrayerItem = ({
         console.log("likesError: ", praisesError);
       }
     } catch (error) {
-      console.log(error);
+      console.log("fetchPraise", error);
     }
     setLoadingPraises(false);
   }

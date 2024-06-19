@@ -26,6 +26,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import groupBg from "../assets/group-bg.png";
+import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
 import EditGroupModal from "./EditGroupModal";
@@ -240,7 +241,7 @@ const GroupInfoModal = ({
       .delete()
       .eq("group_id", group.group_id)
       .eq("user_id", currentUser.id);
-    navigation.navigate("Community");
+    navigation.navigate(COMMUNITY_SCREEN);
     setGroupInfoVisible(false);
   };
 
@@ -274,7 +275,7 @@ const GroupInfoModal = ({
     if (error) {
       console.log(error);
     }
-    navigation.navigate("Community");
+    navigation.navigate(COMMUNITY_SCREEN);
     setGroupInfoVisible(false);
   };
 

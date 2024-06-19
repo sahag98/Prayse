@@ -1,13 +1,14 @@
 {
   "name": "prayerlist",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -35,6 +36,7 @@
     "expo-localization": "^15.0.3",
     "expo-network": "~6.0.1",
     "expo-notifications": "~0.28.7",
+    "expo-router": "^3.5.16",
     "expo-secure-store": "~13.0.1",
     "expo-speech": "~12.0.2",
     "expo-splash-screen": "~0.27.5",
@@ -66,16 +68,27 @@
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
-    "tailwindcss": "^3.4.3",
-    "styled-components": "^5.3.9"
+    "styled-components": "^5.3.9",
+    "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
+    "@types/react": "^18.3.3",
+    "@types/react-native-vector-icons": "^6.4.18",
     "@types/styled-components-react-native": "^5.2.1",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^13.0.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
-    "eslint-plugin-unused-imports": "^3.2.0"
+    "eslint-plugin-unused-imports": "^3.2.0",
+    "git-exec-and-restage": "^1.1.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "git-exec-and-restage eslint --fix --"
+    ]
   },
   "private": true
 }

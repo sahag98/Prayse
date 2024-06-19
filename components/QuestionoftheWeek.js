@@ -2,6 +2,7 @@ import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { QUESTION_SCREEN } from "@routes";
 
 import { useSupabase } from "../context/useSupabase";
 
@@ -35,7 +36,7 @@ const QuestionoftheWeek = ({ theme }) => {
       ) : (
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("Question", {
+            navigation.navigate(QUESTION_SCREEN, {
               title: latestQuestion?.title,
               question_id: latestQuestion?.id,
             })
