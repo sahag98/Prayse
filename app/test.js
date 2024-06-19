@@ -27,7 +27,7 @@ import {
   deleteReminder,
   editReminder,
 } from "../redux/remindersReducer";
-import { REMINDER_SCREEN } from "../routes";
+import { HOME_SCREEN, REMINDER_SCREEN, SETTINGS_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 export default function TestScreen() {
@@ -117,7 +117,7 @@ export default function TestScreen() {
       text2: "View",
       visibilityTime: 3000,
       position: "bottom",
-      onPress: () => navigation.navigate("Home"),
+      onPress: () => navigation.navigate(HOME_SCREEN),
     });
   };
 
@@ -128,7 +128,7 @@ export default function TestScreen() {
       text2: "View",
       visibilityTime: 3000,
       position: "bottom",
-      onPress: () => navigation.navigate("Home"),
+      onPress: () => navigation.navigate(HOME_SCREEN),
     });
   };
 
@@ -816,7 +816,7 @@ export default function TestScreen() {
         )}
         <View style={{ marginTop: 5, flex: 1 }}>
           <Text
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => navigation.navigate(SETTINGS_SCREEN)}
             style={
               theme == "dark"
                 ? {
@@ -836,7 +836,7 @@ export default function TestScreen() {
             Required fields: Title, date and time.
           </Text>
           <Text
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => navigation.navigate(SETTINGS_SCREEN)}
             style={
               theme == "dark"
                 ? {

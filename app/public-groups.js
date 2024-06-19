@@ -18,6 +18,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import groupBg from "../assets/group-bg.png";
 import { useSupabase } from "../context/useSupabase";
+import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const PublicGroupsScreen = () => {
@@ -79,7 +80,7 @@ const PublicGroupsScreen = () => {
             user_id: currentUser.id,
           });
           showToast("success", "Prayer group joined successfully.");
-          navigation.navigate("Community");
+          navigation.navigate(COMMUNITY_SCREEN);
         }
       }
     }
@@ -101,7 +102,7 @@ const PublicGroupsScreen = () => {
           gap: 10,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+        <TouchableOpacity onPress={() => navigation.navigate(COMMUNITY_SCREEN)}>
           <AntDesign
             name="left"
             size={24}

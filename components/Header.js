@@ -25,6 +25,7 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 
+import { PRAYER_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import DeleteFolder from "./DeleteFolder";
@@ -112,7 +113,7 @@ const Header = ({ navigation, folderName, folderId, theme }) => {
             <TouchableOpacity
               style={{ marginRight: 10 }}
               onPress={() => {
-                navigation.navigate("Prayer");
+                navigation.navigate(PRAYER_SCREEN);
               }}
             >
               <Ionicons

@@ -22,6 +22,7 @@ import GroupPrayerList from "../components/GroupPrayerList";
 import { useSupabase } from "../context/useSupabase";
 import GroupInfoModal from "../modals/GroupInfoModal";
 import RemovedGroupModal from "../modals/RemovedGroupModal";
+import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroupScreen = () => {
@@ -350,7 +351,9 @@ const PrayerGroupScreen = () => {
           <View
             style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
           >
-            <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
+            >
               <AntDesign
                 name="left"
                 size={24}

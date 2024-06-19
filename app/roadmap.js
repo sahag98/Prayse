@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
+import { MORE_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const RoadMapScreen = () => {
@@ -45,7 +46,7 @@ const RoadMapScreen = () => {
     <Container
       style={{ backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff" }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("More")}>
+      <TouchableOpacity onPress={() => navigation.navigate(MORE_SCREEN)}>
         <AntDesign
           name="left"
           size={24}

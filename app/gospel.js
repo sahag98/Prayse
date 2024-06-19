@@ -26,7 +26,6 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
-import { HOME_SCREEN } from "../routes";
 
 const GospelScreen = () => {
   const navigation = useNavigation();
@@ -145,7 +144,7 @@ const GospelScreen = () => {
           onPress: () =>
             Linking.openURL("https://www.instagram.com/prayse.app/"),
         },
-      ]
+      ],
     );
   };
 

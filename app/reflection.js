@@ -21,6 +21,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ReflectionItem from "../components/ReflectionItem";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
+import { COMMUNITY_SCREEN, DEVO_LIST_SCREEN } from "../routes";
 import { Container, HeaderView } from "../styles/appStyles";
 
 const ReflectionScreen = ({ route }) => {
@@ -60,7 +61,7 @@ const ReflectionScreen = ({ route }) => {
       },
       {
         text: "Sign in",
-        onPress: () => navigation.navigate("Community"),
+        onPress: () => navigation.navigate(COMMUNITY_SCREEN),
       },
     ]);
 
@@ -157,7 +158,7 @@ const ReflectionScreen = ({ route }) => {
               padding: 5,
               gap: 5,
             }}
-            onPress={() => navigation.navigate("DevoList")}
+            onPress={() => navigation.navigate(DEVO_LIST_SCREEN)}
           >
             <AntDesign
               name="left"
@@ -334,7 +335,7 @@ const ReflectionScreen = ({ route }) => {
           }
         >
           <Text
-            onPress={() => navigation.navigate("Community")}
+            onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
             style={
               (styles.signIn,
               {

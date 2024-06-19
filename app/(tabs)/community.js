@@ -48,6 +48,12 @@ import CreateGroupModal from "../../modals/CreateGroupModal";
 import JoinModal from "../../modals/JoinModal";
 import ProfileModal from "../../modals/ProfileModal";
 import WelcomeModal from "../../modals/WelcomeModal";
+import {
+  PRAYER_GROUP_SCREEN,
+  PUBLIC_COMMUNITY_SCREEN,
+  PUBLIC_GROUPS_SCREEN,
+  QUESTION_LIST_SCREEN,
+} from "../../routes";
 import { HeaderTitle, HeaderView } from "../../styles/appStyles";
 
 Notifications.setNotificationHandler({
@@ -136,7 +142,7 @@ const CommunityHomeScreen = () => {
 
   // useEffect(() => {
   //   if (routeParams !== undefined) {
-  //     navigation.navigate("PrayerGroup", {
+  //     navigation.navigate(PRAYER_GROUP_SCREEN, {
   //       group: routeParams.group,
   //       allGroups: routeParams.allGroups,
   //     });
@@ -244,7 +250,7 @@ const CommunityHomeScreen = () => {
   const width = Dimensions.get("window").width - 30;
 
   // if (routeParams !== undefined) {
-  //   navigation.navigate("PrayerGroup", {
+  //   navigation.navigate(PRAYER_GROUP_SCREEN, {
   //     group: routeParams.group,
   //     allGroups: routeParams.allGroups,
   //   });
@@ -395,7 +401,7 @@ const CommunityHomeScreen = () => {
             }}
           >
             <TouchableOpacity
-              onPress={() => navigation.navigate("PublicCommunity")}
+              onPress={() => navigation.navigate(PUBLIC_COMMUNITY_SCREEN)}
               style={
                 theme == "dark"
                   ? {
@@ -482,7 +488,7 @@ const CommunityHomeScreen = () => {
                   Public prayers posted by our users.
                 </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("PublicCommunity")}
+                  onPress={() => navigation.navigate(PUBLIC_COMMUNITY_SCREEN)}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -511,7 +517,7 @@ const CommunityHomeScreen = () => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("QuestionList")}
+              onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
               style={
                 theme == "dark"
                   ? {
@@ -598,7 +604,7 @@ const CommunityHomeScreen = () => {
                   Weekly questions to reflect on.
                 </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("QuestionList")}
+                  onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -702,7 +708,7 @@ const CommunityHomeScreen = () => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("PublicGroups")}
+            onPress={() => navigation.navigate(PUBLIC_GROUPS_SCREEN)}
             style={{
               backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
               padding: 12,
@@ -808,7 +814,7 @@ const CommunityHomeScreen = () => {
                 return (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("PrayerGroup", {
+                      navigation.navigate(PRAYER_GROUP_SCREEN, {
                         group: item,
                         allGroups: groups.filter(
                           (g) => g.group_id === item.group_id,
@@ -1305,7 +1311,7 @@ const CommunityHomeScreen = () => {
                 return (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("PrayerGroup", {
+                      navigation.navigate(PRAYER_GROUP_SCREEN, {
                         group: item,
                         allGroups: groups.filter(
                           (g) => g.group_id === item.group_id,

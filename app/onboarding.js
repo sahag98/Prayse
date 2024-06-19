@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import bible from "../assets/Bible.png";
 import cm2 from "../assets/cm2.png";
 import prayseIcon from "../assets/prayer.png";
+import { HOME_SCREEN } from "../routes";
 
 const onboardingSteps = [
   {
@@ -74,7 +75,7 @@ export default function OnboardingScreen() {
 
   const endOnboarding = () => {
     setScreenIndex(0);
-    navigation.navigate("Home");
+    navigation.navigate(HOME_SCREEN);
     // router.push("/");
   };
 

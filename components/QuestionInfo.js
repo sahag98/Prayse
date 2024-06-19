@@ -5,6 +5,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSupabase } from "../context/useSupabase";
+import { QUESTION_SCREEN } from "../routes";
 const QuestionInfo = ({ item, theme }) => {
   const navigation = useNavigation();
 
@@ -108,7 +109,7 @@ const QuestionInfo = ({ item, theme }) => {
       </View>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("Question", {
+          navigation.navigate(QUESTION_SCREEN, {
             title: item.title,
             question_id: item.id,
           })

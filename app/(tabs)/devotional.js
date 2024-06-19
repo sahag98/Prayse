@@ -19,6 +19,7 @@ import { useIsFocused } from "@react-navigation/native";
 import tbf from "../../assets/tbf-logo.jpg";
 import useIsReady from "../../hooks/useIsReady";
 import { client } from "../../lib/client";
+import { DEVO_LIST_SCREEN } from "../../routes";
 import { Container } from "../../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
@@ -184,7 +185,7 @@ const DevotionalScreen = () => {
             {devotionals[0]?.description}
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("DevoList")}
+            onPress={() => navigation.navigate(DEVO_LIST_SCREEN)}
             style={{
               width: "100%",
               marginTop: 10,

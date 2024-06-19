@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { FOLDERS_SCREEN } from "../routes";
 import {
   Container,
   HeaderTitle,
@@ -120,7 +121,7 @@ const OldPrayerScreen = () => {
     >
       <HeaderView style={{ display: "flex", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Folders")}>
+          <TouchableOpacity onPress={() => navigation.navigate(FOLDERS_SCREEN)}>
             <Ionicons
               name="chevron-back"
               size={30}

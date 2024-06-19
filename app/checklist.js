@@ -20,6 +20,7 @@ import {
 
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
+import { PRAYER_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const ChecklistScreen = () => {
@@ -94,7 +95,7 @@ const ChecklistScreen = () => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              navigation.navigate("Prayer");
+              navigation.navigate(PRAYER_SCREEN);
             }}
           >
             <Ionicons
@@ -168,7 +169,7 @@ const ChecklistScreen = () => {
         <TouchableOpacity
           style={{ marginRight: 10 }}
           onPress={() => {
-            navigation.navigate("Prayer");
+            navigation.navigate(PRAYER_SCREEN);
           }}
         >
           <Ionicons

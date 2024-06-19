@@ -4,6 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  DEVO_LIST_SCREEN,
+  HOME_SCREEN,
+  PRAYER_ROOM_SCREEN,
+  VERSE_OF_THE_DAY_SCREEN,
+} from "@routes";
 
 import GiveawayModal from "../modals/GiveawayModal";
 import {
@@ -42,7 +48,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
     );
 
     navigation.navigate(selected, {
-      previousScreen: "Home",
+      previousScreen: HOME_SCREEN,
     });
   }
 
@@ -101,7 +107,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
       </Text>
       <View style={{ gap: 12, width: "100%" }}>
         <TouchableOpacity
-          onPress={() => handleComplete("PrayerRoom")}
+          onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -145,7 +151,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             }}
           />
           <TouchableOpacity
-            onPress={() => handleComplete("prayer-room")}
+            onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
             style={{
               backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,
@@ -186,7 +192,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           </TouchableOpacity>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleComplete("VerseOfTheDay")}
+          onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -248,7 +254,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             }}
           />
           <TouchableOpacity
-            onPress={() => handleComplete("VerseOfTheDay")}
+            onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
             style={{
               backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,
@@ -288,7 +294,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
           </TouchableOpacity>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleComplete("DevoList")}
+          onPress={() => handleComplete(DEVO_LIST_SCREEN)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -332,7 +338,7 @@ const DailyReflection = ({ completedItems, theme, streak, appStreak }) => {
             }}
           />
           <TouchableOpacity
-            onPress={() => handleComplete("DevoList")}
+            onPress={() => handleComplete(DEVO_LIST_SCREEN)}
             style={{
               backgroundColor: theme === "dark" ? "#212121" : "white",
               padding: 15,

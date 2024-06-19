@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 import { deleteReminder } from "../redux/remindersReducer";
+import { TEST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const ReminderScreen = () => {
@@ -297,7 +298,7 @@ const ReminderScreen = () => {
                 >
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Test", {
+                      navigation.navigate(TEST_SCREEN, {
                         type: "Edit",
                         reminderEditId: item.reminder.id,
                         reminderIdentifier: item.identifier,

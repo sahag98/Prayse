@@ -13,6 +13,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
+import { HOME_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const NotificationsScreen = () => {
@@ -152,7 +153,7 @@ const NotificationsScreen = () => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              navigation.navigate("Home");
+              navigation.navigate(HOME_SCREEN);
             }}
           >
             <Ionicons
@@ -174,7 +175,7 @@ const NotificationsScreen = () => {
         <TouchableOpacity
           onPress={() => {
             dispatch(deleteAll());
-            // navigation.navigate("Home");
+            // navigation.navigate(HOME_SCREEN);
           }}
           style={{ padding: 10, alignSelf: "flex-end" }}
         >
@@ -218,7 +219,7 @@ const NotificationsScreen = () => {
           //   <TouchableOpacity
           //     onPress={() => {
           //       dispatch(deleteAll());
-          //       navigation.navigate("Home");
+          //       navigation.navigate(HOME_SCREEN);
           //     }}
           //     style={{ padding: 10, alignSelf: "flex-end" }}
           //   >

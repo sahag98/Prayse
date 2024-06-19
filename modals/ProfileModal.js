@@ -22,6 +22,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import ProfilePrayers from "../components/ProfilePrayers";
+import { PUBLIC_COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
 const ProfileModal = ({
@@ -56,7 +57,7 @@ const ProfileModal = ({
 
   const addPrayer = () => {
     setProfileVisible(false);
-    navigation.navigate("PublicCommunity");
+    navigation.navigate(PUBLIC_COMMUNITY_SCREEN);
     setPrayerModal(true);
   };
 

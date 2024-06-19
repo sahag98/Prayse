@@ -54,6 +54,15 @@ import { addPrayer } from "@redux/prayerReducer";
 import { deleteReminder } from "@redux/remindersReducer";
 import { increaseAppStreakCounter } from "@redux/userReducer";
 import {
+  NOTIFICATIONS_SCREEN,
+  ONBOARDING_SCREEN,
+  PRAYER_GROUP_SCREEN,
+  QUESTION_SCREEN,
+  REFLECTION_SCREEN,
+  TEST_SCREEN,
+  VERSE_OF_THE_DAY_SCREEN,
+} from "@routes";
+import {
   HeaderTitle,
   ModalAction,
   ModalActionGroup,
@@ -118,7 +127,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings."
+        "To recieve notifications in the future, enable Notifications from the App Settings.",
       );
       return;
     }
@@ -158,7 +167,7 @@ const WelcomeScreen = () => {
   const notis = useSelector((state) => state.noti.notifications);
 
   const quickFolderExists = useSelector(
-    (state) => state.folder.quickFolderExists
+    (state) => state.folder.quickFolderExists,
   );
 
   const welcomeFadeIn = useSharedValue(0);
@@ -233,7 +242,7 @@ const WelcomeScreen = () => {
             id: 4044,
             name: "Quick Prayers",
             prayers: [],
-          })
+          }),
         );
       } catch (error) {
         console.log("quick prayer", error);
@@ -255,7 +264,7 @@ const WelcomeScreen = () => {
         category: quickcategoryvalue,
         date: new Date().toLocaleString(),
         id: uuid.v4(),
-      })
+      }),
     );
     setQuickModal(false);
     setQuickprayervalue("");
@@ -293,11 +302,11 @@ const WelcomeScreen = () => {
       if (data && data.updateLink) {
         if (Platform.OS === "ios") {
           Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
           );
         } else if (Platform.OS === "android") {
           Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
           );
         }
       }
@@ -306,38 +315,42 @@ const WelcomeScreen = () => {
         Linking.openURL(data.anyLink);
       }
 
-      if (data && data.screen) {
-        console.log("has screen");
+      const url = data?.url || data?.screen;
+
+      if (url) {
         //navigate to the screen specified in the data object
-        if (data.screen == "VerseOfTheDay") {
-          navigation.navigate(data.screen, {
+        if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
+          navigation.navigate(VERSE_OF_THE_DAY_SCREEN, {
             verse: body,
             title: data.verseTitle,
           });
         } else if (
-          data.screen == "PrayerGroup" &&
+          ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
           data.group &&
           data.allGroups
         ) {
-          navigation.navigate(data.screen, {
+          navigation.navigate(PRAYER_GROUP_SCREEN, {
             group: data.group,
             allGroups: data.allGroups,
           });
-        } else if (data.screen == "Reflection" && data.devoTitle) {
-          navigation.navigate(data.screen, {
+        } else if (
+          ["Reflection", REFLECTION_SCREEN].includes(url) &&
+          data.devoTitle
+        ) {
+          navigation.navigate(REFLECTION_SCREEN, {
             devoTitle: data.devoTitle,
           });
         } else if (
-          data.screen == "Question" &&
+          ["Question", QUESTION_SCREEN].includes(url) &&
           data.title &&
           data.question_id
         ) {
-          navigation.navigate(data.screen, {
+          navigation.navigate(QUESTION_SCREEN, {
             title: data.title,
             question_id: data.question_id,
           });
         } else {
-          navigation.navigate(data.screen);
+          navigation.navigate(url);
         }
       }
     }
@@ -395,7 +408,7 @@ const WelcomeScreen = () => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else if (currentHour >= 12 && currentHour < 18) {
         setGreeting("Good afternoon ");
@@ -404,7 +417,7 @@ const WelcomeScreen = () => {
             name="sun"
             size={25}
             color={theme == "dark" ? "#d8d800" : "#d8d800"}
-          />
+          />,
         );
       } else {
         setGreeting("Good Evening ");
@@ -413,7 +426,7 @@ const WelcomeScreen = () => {
             name="moon"
             size={25}
             color={theme == "dark" ? "#a6a6a6" : "#9a9a9a"}
-          />
+          />,
         );
       }
     }
@@ -477,17 +490,30 @@ const WelcomeScreen = () => {
         });
 
         if (!notification.request.content.data.group) {
+          const content = notification.request.content;
+          let url = context.data.url || content.data.screen;
+
+          if (url === "VerseOfTheDay") {
+            url = VERSE_OF_THE_DAY_SCREEN;
+          } else if (url === "PrayerGroup") {
+            url = PRAYER_GROUP_SCREEN;
+          } else if (url === "Reflection") {
+            url = REFLECTION_SCREEN;
+          } else if (url === "Question") {
+            url = QUESTION_SCREEN;
+          }
+
           dispatch(
             addNoti({
               noti_id: uuid.v4(),
               date: formattedDate,
-              notification: notification.request.content.body,
-              screen: notification.request.content.data?.screen,
-              title: notification.request.content.data?.title,
-              question_id: notification.request.content.data?.question_id,
-              prayerId: notification.request.content.data?.prayerId,
+              notification: content.body,
+              url,
+              title: content.data?.title,
+              question_id: content.data?.question_id,
+              prayerId: content.data?.prayerId,
               identifier: notification.request.identifier,
-            })
+            }),
           );
         }
 
@@ -504,7 +530,7 @@ const WelcomeScreen = () => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current
+        notificationListener.current,
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -553,7 +579,7 @@ const WelcomeScreen = () => {
   }
 
   if (isFirst == true) {
-    navigation.navigate("Onboarding");
+    navigation.navigate(ONBOARDING_SCREEN);
   }
 
   return (
@@ -672,7 +698,7 @@ const WelcomeScreen = () => {
 
           <View style={{ position: "relative", padding: 8 }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("NotificationScreen")}
+              onPress={() => navigation.navigate(NOTIFICATIONS_SCREEN)}
               style={
                 theme == "dark"
                   ? {
@@ -918,7 +944,7 @@ const WelcomeScreen = () => {
                   }
                   const formattedDate = timestamp.toLocaleString(
                     "en-US",
-                    timeOptions
+                    timeOptions,
                   );
 
                   return (
@@ -1059,7 +1085,7 @@ const WelcomeScreen = () => {
                       >
                         <TouchableOpacity
                           onPress={() =>
-                            navigation.navigate("Test", {
+                            navigation.navigate(TEST_SCREEN, {
                               type: "Edit",
                               reminderEditId: item.reminder.id,
                               reminderIdentifier: item.identifier,
@@ -1240,7 +1266,7 @@ const WelcomeScreen = () => {
               }
               onPress={() =>
                 Linking.openURL(
-                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
+                  "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
                 )
               }
             >
@@ -1304,7 +1330,7 @@ const WelcomeScreen = () => {
               style={theme == "dark" ? styles.refreshDark : styles.refresh}
               onPress={() =>
                 Linking.openURL(
-                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347"
+                  "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
                 )
               }
             >

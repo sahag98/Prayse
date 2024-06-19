@@ -3,6 +3,7 @@ import { Tabs } from "expo-router";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
+
 import {
   COMMUNITY_SCREEN,
   DEVOTIONAL_SCREEN,

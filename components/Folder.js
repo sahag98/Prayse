@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AddFolderModal from "../modals/AddFolderModal";
 import { addFolder } from "../redux/folderReducer";
+import { OLD_PRAYER_SCREEN, PRAYER_ROOM_SCREEN } from "../routes";
 import { HeaderTitle, ListView2, TodoText } from "../styles/appStyles";
 
 import AnsweredPrayer from "./AnsweredPrayer";
@@ -108,7 +109,7 @@ const Folder = ({ navigation, todos }) => {
   };
 
   function goToOrignalPrayer() {
-    navigation.navigate("OldPrayerPage");
+    navigation.navigate(OLD_PRAYER_SCREEN);
   }
 
   function addNewFolder() {
@@ -404,7 +405,7 @@ const Folder = ({ navigation, todos }) => {
                 label="Prayer Room"
                 extended={isExtended}
                 onPress={() => {
-                  navigation.navigate("PrayerRoom");
+                  navigation.navigate(PRAYER_ROOM_SCREEN);
                 }}
                 visible={fabvisible}
                 animateFrom="right"

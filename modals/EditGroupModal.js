@@ -9,6 +9,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
+import { COMMUNITY_SCREEN } from "../routes";
 import {
   HeaderTitle,
   ModalAction,
@@ -39,7 +40,7 @@ const EditGroupModal = ({
       .select();
 
     setGroupInfoVisible(false);
-    navigation.navigate("Community");
+    navigation.navigate(COMMUNITY_SCREEN);
 
     if (error) {
       console.log(error);

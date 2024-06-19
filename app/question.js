@@ -16,6 +16,7 @@ import { useIsFocused } from "@react-navigation/native";
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
 import QuestionModal from "../modals/QuestionModal";
+import { QUESTION_LIST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionScreen = ({ route }) => {
@@ -66,7 +67,9 @@ const QuestionScreen = ({ route }) => {
             gap: 10,
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("QuestionList")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(QUESTION_LIST_SCREEN)}
+          >
             <AntDesign
               name="left"
               size={24}

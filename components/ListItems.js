@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
+import { TEST_SCREEN } from "../routes";
 import {
   ListView,
   TodoCategory,
@@ -80,7 +81,7 @@ const ListItems = ({
     console.log(item.date.split(",")[0]);
 
     const addReminder = (item) => {
-      navigation.navigate("Test", {
+      navigation.navigate(TEST_SCREEN, {
         reminder: item,
         type: "Add",
       });

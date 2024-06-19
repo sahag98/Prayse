@@ -16,6 +16,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
+import { FAVORITES_SCREEN, MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const VerseOfTheDayScreen = () => {
@@ -121,7 +122,7 @@ const VerseOfTheDayScreen = () => {
             if (routeParams?.previousScreen) {
               navigation.goBack();
             } else {
-              navigation.navigate("More");
+              navigation.navigate(MORE_SCREEN);
             }
           }}
         >
@@ -164,7 +165,7 @@ const VerseOfTheDayScreen = () => {
         daily reminder of God's love, grace, and wisdom.
       </Text>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Favorites")}
+        onPress={() => navigation.navigate(FAVORITES_SCREEN)}
         style={theme == "dark" ? styles.favoritesDark : styles.favorites}
       >
         <Text

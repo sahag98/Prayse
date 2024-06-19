@@ -29,6 +29,11 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import useIsReady from "../hooks/useIsReady";
 import { client } from "../lib/client";
+import {
+  COMMUNITY_SCREEN,
+  DEVOTIONAL_SCREEN,
+  REFLECTION_SCREEN,
+} from "../routes";
 import { Container, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
@@ -65,7 +70,7 @@ const DevoListScreen = () => {
       },
       {
         text: "Sign in",
-        onPress: () => navigation.navigate("Community"),
+        onPress: () => navigation.navigate(COMMUNITY_SCREEN),
       },
     ]);
 
@@ -243,7 +248,7 @@ const DevoListScreen = () => {
               if (routeParams?.previousScreen) {
                 navigation.goBack();
               } else {
-                navigation.navigate("Devotional");
+                navigation.navigate(DEVOTIONAL_SCREEN);
               }
             }}
           >
@@ -375,7 +380,9 @@ const DevoListScreen = () => {
                 />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("Reflection", { devoTitle: d.title })
+                    navigation.navigate(REFLECTION_SCREEN, {
+                      devoTitle: d.title,
+                    })
                   }
                   style={{
                     flexDirection: "row",

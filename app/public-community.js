@@ -25,6 +25,7 @@ import CommunityPrayers from "../components/CommunityPrayers";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import CommunityModal from "../modals/ComunityModal";
+import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const PublicCommunityScreen = () => {
@@ -158,7 +159,9 @@ const PublicCommunityScreen = () => {
           entering={FadeIn.duration(500)}
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
+          >
             <AntDesign
               name="left"
               size={24}

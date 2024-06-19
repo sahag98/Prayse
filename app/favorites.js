@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
 import FavoriteVerses from "../components/FavoriteVerses";
+import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const FavoritesScreen = () => {
@@ -39,7 +40,7 @@ const FavoritesScreen = () => {
       >
         <TouchableOpacity
           style={{ marginRight: 5 }}
-          onPress={() => navigation.navigate("VerseOfTheDay")}
+          onPress={() => navigation.navigate(VERSE_OF_THE_DAY_SCREEN)}
         >
           <Ionicons
             name="chevron-back"

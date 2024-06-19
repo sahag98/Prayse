@@ -15,6 +15,7 @@ import { useIsFocused } from "@react-navigation/native";
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
 import QuestionHelpModal from "../modals/QuestionHelpModal";
+import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionListScreen = () => {
@@ -53,7 +54,9 @@ const QuestionListScreen = () => {
             gap: 10,
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Community")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(COMMUNITY_SCREEN)}
+          >
             <AntDesign
               name="left"
               size={24}

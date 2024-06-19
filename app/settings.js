@@ -28,6 +28,7 @@ import {
   small,
   systemTheme,
 } from "../redux/userReducer";
+import { MORE_SCREEN } from "../routes";
 import {
   Container,
   HeaderTitle,
@@ -174,7 +175,7 @@ const SettingsScreen = () => {
           >
             <TouchableOpacity
               style={{ marginRight: 5 }}
-              onPress={() => navigation.navigate("More")}
+              onPress={() => navigation.navigate(MORE_SCREEN)}
             >
               <Ionicons
                 name="chevron-back"
