@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React from "react";
 import { Buffer } from "buffer";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen } from "expo-router";
 import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -13,30 +14,10 @@ import { PersistGate } from "redux-persist/integration/react";
 import { SupabaseProvider } from "@context/SupabaseProvider";
 import { useRouterNotifications } from "@hooks/router";
 import { store } from "@redux/store";
-import {
-  CHECKLIST_SCREEN,
-  DEVO_LIST_SCREEN,
-  FAVORITES_SCREEN,
-  GOSPEL_SCREEN,
-  NOTIFICATIONS_SCREEN,
-  OLD_PRAYER_SCREEN,
-  ONBOARDING_SCREEN,
-  OUR_PRESENTATION_SCREEN,
-  PRAYER_GROUP_SCREEN,
-  PRAYER_ROOM_SCREEN,
-  PUBLIC_COMMUNITY_SCREEN,
-  PUBLIC_GROUPS_SCREEN,
-  QUESTION_LIST_SCREEN,
-  QUESTION_SCREEN,
-  REFLECTION_SCREEN,
-  REMINDER_SCREEN,
-  ROADMAP_SCREEN,
-  SETTINGS_SCREEN,
-  TEST_SCREEN,
-  VERSE_OF_THE_DAY_SCREEN,
-} from "@routes";
 
 import splashScreenIcon from "../assets/prayse-transparent.png";
+
+import StackContainer from "./Stack";
 
 import "../global.css";
 
@@ -54,7 +35,7 @@ export default function App() {
       Overwrite 'success' type,
       by modifying the existing `BaseToast` component
     */
-    success: (props) => (
+    success: (props: any) => (
       <BaseToast
         {...props}
         style={{
@@ -74,7 +55,7 @@ export default function App() {
         }}
       />
     ),
-    edit: (props) => (
+    edit: (props: any) => (
       <BaseToast
         {...props}
         style={{
@@ -98,7 +79,7 @@ export default function App() {
       Overwrite 'error' type,
       by modifying the existing `ErrorToast` component
     */
-    error: (props) => (
+    error: (props: any) => (
       <ErrorToast
         {...props}
         style={{
@@ -148,107 +129,7 @@ export default function App() {
             <PersistGate loading={null} persistor={persistor}>
               <SafeAreaProvider>
                 <SupabaseProvider>
-                  <Stack initialRouteName="(tabs)">
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name={DEVO_LIST_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={ROADMAP_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={PUBLIC_GROUPS_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={OLD_PRAYER_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={ONBOARDING_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={REMINDER_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={QUESTION_LIST_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={QUESTION_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={SETTINGS_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={REFLECTION_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={FAVORITES_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={VERSE_OF_THE_DAY_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={GOSPEL_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={OUR_PRESENTATION_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    {/* <Stack.Screen
-                      name="prayer"
-                      options={{ headerShown: false }}
-                    /> */}
-                    <Stack.Screen
-                      name={TEST_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={CHECKLIST_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={NOTIFICATIONS_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={PRAYER_ROOM_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={PUBLIC_COMMUNITY_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name={PRAYER_GROUP_SCREEN}
-                      options={{ headerShown: false }}
-                    />
-                    {/* <Stack.Screen
-                      name={COMMUNITY_SCREEN}
-                      options={{ headerShown: false }}
-                    /> */}
-                    {/* <Stack.Screen
-                      name={MORE_SCREEN}
-                      options={{ headerShown: false }}
-                    /> */}
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
+                  <StackContainer />
                 </SupabaseProvider>
               </SafeAreaProvider>
             </PersistGate>

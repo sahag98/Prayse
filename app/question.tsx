@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
@@ -20,9 +20,8 @@ const QuestionScreen = () => {
     currentUser,
     setQuestions,
     fetchAnswers,
-    fetchUpdatedAnswers,
+
     supabase,
-    newAnswer,
   } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
   const routeParams = useLocalSearchParams();

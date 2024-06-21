@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Folder from "../components/Folder";
-import useIsReady from "../hooks/useIsReady";
-import { Container } from "../styles/appStyles";
+import Folder from "../../components/Folder";
+import useIsReady from "../../hooks/useIsReady";
+import { Container } from "../../styles/appStyles";
 
 export default function MainScreen() {
   const navigation = useNavigation();

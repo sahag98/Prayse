@@ -23,11 +23,7 @@ import {
 
 import SettingsItems from "../../components/SettingsItems";
 import config from "../../config";
-import {
-  ROADMAP_SCREEN,
-  SETTINGS_SCREEN,
-  VERSE_OF_THE_DAY_SCREEN,
-} from "../../routes";
+import { SETTINGS_SCREEN, VERSE_OF_THE_DAY_SCREEN } from "../../routes";
 import { Container, HeaderTitle } from "../../styles/appStyles";
 
 const MoreScreen = () => {
@@ -90,19 +86,6 @@ const MoreScreen = () => {
       id: 4,
       icon: (
         <Feather
-          name="map"
-          style={{ marginRight: 10 }}
-          size={24}
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      ),
-      title: "Roadmap",
-      screen: ROADMAP_SCREEN,
-    },
-    {
-      id: 5,
-      icon: (
-        <Feather
           name="shield"
           style={{ marginRight: 10 }}
           size={24}
@@ -113,7 +96,7 @@ const MoreScreen = () => {
       link: "https://www.prayse.app/privacy",
     },
     {
-      id: 6,
+      id: 5,
       icon: (
         <MaterialCommunityIcons
           name="email-edit-outline"
@@ -126,7 +109,7 @@ const MoreScreen = () => {
       link: "mailto:arzsahag@gmail.com",
     },
     {
-      id: 7,
+      id: 6,
       icon: (
         <AntDesign
           name="instagram"

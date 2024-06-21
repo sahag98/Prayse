@@ -41,7 +41,7 @@ import Ebpad from "../assets/audio/Ebpad.mp3";
 import OrganicG from "../assets/audio/OrganicG.mp3";
 import darkGradient from "../assets/video/dark-gradient.mp4";
 import gradient from "../assets/video/gradient.mp4";
-import { CHECKLIST_SCREEN, PRAYER_SCREEN } from "../routes";
+import { CHECKLIST_SCREEN, FOLDER_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const PrayerRoom = () => {
@@ -311,12 +311,11 @@ const PrayerRoom = () => {
           <TouchableOpacity
             style={{ marginRight: 10 }}
             onPress={() => {
-              console.log(routeParams?.previousScreen);
               if (routeParams?.previousScreen) {
                 console.log("previous screen:");
                 navigation.goBack();
               } else {
-                navigation.navigate(PRAYER_SCREEN);
+                navigation.navigate(FOLDER_SCREEN);
               }
 
               if (sound) {
@@ -440,7 +439,7 @@ const PrayerRoom = () => {
                       if (routeParams?.previousScreen) {
                         navigation.goBack();
                       } else {
-                        navigation.navigate(PRAYER_SCREEN);
+                        navigation.navigate(FOLDER_SCREEN);
                       }
 
                       if (sound) {
@@ -639,7 +638,7 @@ const PrayerRoom = () => {
                         console.log("previous screen:");
                         navigation.goBack();
                       } else {
-                        navigation.navigate(PRAYER_SCREEN);
+                        navigation.navigate(FOLDER_SCREEN);
                       }
 
                       if (sound) {
@@ -835,7 +834,7 @@ const PrayerRoom = () => {
                 if (routeParams?.previousScreen) {
                   navigation.goBack();
                 } else {
-                  navigation.navigate(PRAYER_SCREEN);
+                  navigation.navigate(FOLDER_SCREEN);
                 }
                 if (sound) {
                   pauseSound();

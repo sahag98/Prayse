@@ -10,7 +10,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { Link, useIsFocused } from "@react-navigation/native";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
@@ -53,13 +53,13 @@ const QuestionListScreen = () => {
             gap: 10,
           }}
         >
-          <View to={`/${COMMUNITY_SCREEN}`}>
+          <Link to={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
               color={theme == "dark" ? "white" : "#2f2d51"}
             />
-          </View>
+          </Link>
           <HeaderTitle
             style={
               theme == "dark"

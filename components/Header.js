@@ -27,7 +27,7 @@ import {
 } from "@expo/vector-icons";
 import { Link } from "@react-navigation/native";
 
-import { PRAYER_SCREEN } from "../routes";
+import { FOLDER_SCREEN, PRAYER_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import DeleteFolder from "./DeleteFolder";
@@ -112,7 +112,7 @@ const Header = ({ folderName, folderId, theme }) => {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Link to={`/${PRAYER_SCREEN}`}>
+            <Link to={`/${FOLDER_SCREEN}`}>
               <View style={{ marginRight: 10 }}>
                 <Ionicons
                   name="chevron-back"

@@ -182,7 +182,7 @@ const DevotionalScreen = () => {
           >
             {devotionals[0]?.description}
           </Text>
-          <Link to={`/${DEVO_LIST_SCREEN}`}>
+          <Link style={{ width: "100%" }} to={`/${DEVO_LIST_SCREEN}`}>
             <View
               style={{
                 width: "100%",

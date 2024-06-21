@@ -401,14 +401,14 @@ const CommunityHomeScreen = () => {
               alignItems: "center",
             }}
           >
-            <Link to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
+            <Link style={{ width: "50%" }} to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
               <View
                 style={
                   theme == "dark"
                     ? {
                         flex: 1,
-                        // minHeight: 130,
-                        // maxHeightheight: 150,
+                        minHeight: 130,
+                        maxHeight: 150,
                         justifyContent: "space-between",
                         padding: 10,
                         gap: 20,
@@ -419,7 +419,8 @@ const CommunityHomeScreen = () => {
                     : {
                         flex: 1,
                         position: "relative",
-                        // minHeight: 130,
+                        minHeight: 130,
+                        maxHeight: 150,
                         gap: 20,
                         justifyContent: "space-between",
                         shadowColor: "#bdbdbd",
@@ -521,26 +522,26 @@ const CommunityHomeScreen = () => {
               </View>
             </Link>
 
-            <Link to={`/${QUESTION_LIST_SCREEN}`}>
+            <Link style={{ width: "50%" }} to={`/${QUESTION_LIST_SCREEN}`}>
               <View
                 style={
                   theme == "dark"
                     ? {
-                        width: "50%",
-                        position: "relative",
                         flex: 1,
-                        // height: 130,
-                        gap: 20,
-                        padding: 10,
-                        borderRadius: 10,
+                        minHeight: 130,
+                        maxHeight: 150,
                         justifyContent: "space-between",
+                        padding: 10,
+                        gap: 20,
+                        borderRadius: 10,
                         backgroundColor: "#212121",
+                        position: "relative",
                       }
                     : {
-                        width: "50%",
                         position: "relative",
                         flex: 1,
-                        // height: 130,
+                        minHeight: 130,
+                        maxHeight: 150,
                         gap: 20,
                         padding: 10,
                         shadowColor: "#bdbdbd",
@@ -714,9 +715,10 @@ const CommunityHomeScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <Link to={`/${PUBLIC_GROUPS_SCREEN}`}>
+          <Link style={{ width: "100%" }} to={`/${PUBLIC_GROUPS_SCREEN}`}>
             <View
               style={{
+                width: "100%",
                 backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
                 padding: 12,
                 borderRadius: 10,
@@ -811,10 +813,6 @@ const CommunityHomeScreen = () => {
                   }
                 />
               )}
-              // columnWrapperStyle={{
-              //   justifyContent: "space-between",
-              //   columnGap: 8,
-              // }}
               showsHorizontalScrollIndicator={false}
               data={userGroups}
               keyExtractor={(e, i) => i.toString()}
@@ -999,15 +997,6 @@ const CommunityHomeScreen = () => {
                           </TouchableOpacity>
                         )}
                       </View>
-                      {/* <Text
-                        style={{
-                          fontFamily: "Inter-Regular",
-                          fontSize: 13,
-                          color: "grey",
-                        }}
-                      >
-                        {item.groups.description}
-                      </Text> */}
                       <View
                         style={{
                           flexDirection: "row",
@@ -1018,7 +1007,7 @@ const CommunityHomeScreen = () => {
                       >
                         {groups
                           .filter((g) => g.group_id === item.group_id)
-                          .slice(0, 3) // Show only the first three joined users
+                          .slice(0, 3)
                           .map((g, index) => (
                             <View
                               key={index}
@@ -1071,105 +1060,6 @@ const CommunityHomeScreen = () => {
             />
           )}
 
-          {/* {userGroups?.length >= 3 && (
-            <TouchableOpacity
-              onPress={() => setIsViewingGroups(true)}
-              style={{
-                alignSelf: "center",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Medium" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-                }
-              >
-                View All
-              </Text>
-              <Entypo
-                name="chevron-small-down"
-                size={24}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
-              />
-            </TouchableOpacity>
-          )} */}
-          {/* <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-
-                        color: "white",
-                        fontSize: 18,
-                      }
-                    : {
-                        fontFamily: "Inter-Bold",
-                        color: "#2f2d51",
-                        fontSize: 18,
-                      }
-                }
-              >
-                Prayer Session
-              </Text>
-            </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-            >
-              <TouchableOpacity
-                onPress={() => setJoinVisible(true)}
-                style={{
-                  flexDirection: "row",
-
-                  alignItems: "center",
-                  gap: 5,
-                  padding: 5,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Bold",
-                    fontSize: 16,
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  Join
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={{
-                  flexDirection: "row",
-                  padding: 5,
-                  alignItems: "center",
-                  gap: 5,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Bold",
-                    textDecorationLine: "underline",
-                    fontSize: 16,
-                  }}
-                >
-                  Create
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
           <CreateGroupModal
             getUserGroups={getUserGroups}
             getGroupUsers={getGroupUsers}
@@ -1514,7 +1404,6 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "relative",
-    width: "100%",
     padding: 10,
     alignSelf: "flex-end",
     marginLeft: "auto",
