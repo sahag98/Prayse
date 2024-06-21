@@ -52,7 +52,7 @@
       "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "54",
+      "buildNumber": "55",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -104,7 +104,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 54
+      "versionCode": 55
     },
     "web": {
       "favicon": "./assets/favicon.png"

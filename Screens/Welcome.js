@@ -202,7 +202,7 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        // setIsUpdateAvailable(true);
+        setIsUpdateAvailable(true);
       } else {
         setIsUpdateAvailable(false);
       }
