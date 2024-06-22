@@ -40,6 +40,7 @@ import GospelofJesus from "@components/GospelofJesus";
 import MerchComponent from "@components/MerchComponent";
 import QuestionoftheWeek from "@components/QuestionoftheWeek";
 import StreakSlider from "@components/StreakSlider";
+import { Greeting } from "@components/welcome/greeting";
 
 import DonationModal from "@modals/DonationModal";
 import NewFeaturesModal from "@modals/NewFeaturesModal";
@@ -563,6 +564,7 @@ const WelcomeScreen = () => {
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   const [fontsLoaded] = useFonts({
+    inter: require("../../assets/fonts/inter.ttf"),
     "Inter-Bold": require("../../assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("../../assets/fonts/Inter-Regular.ttf"),
     "Inter-Medium": require("../../assets/fonts/Inter-Medium.ttf"),
@@ -622,25 +624,7 @@ const WelcomeScreen = () => {
           width: "100%",
         }}
       >
-        <Animated.View
-          style={[
-            { flexDirection: "row", alignItems: "center" },
-            animatedWelcomeFadeInStyle,
-          ]}
-        >
-          <Animated.Text
-            style={
-              theme == "dark"
-                ? styles.greetingDark
-                : theme == "BlackWhite"
-                  ? styles.greetingBlack
-                  : styles.greeting
-            }
-          >
-            {greeting}
-          </Animated.Text>
-          {icon}
-        </Animated.View>
+        <Greeting theme={theme} />
 
         <View
           style={{

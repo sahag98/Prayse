@@ -106,6 +106,7 @@ export default function App() {
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
     "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
+    inter: require("../assets/fonts/inter.ttf"),
   });
 
   React.useEffect(() => {

@@ -27,7 +27,7 @@ import {
 } from "@expo/vector-icons";
 import { Link } from "@react-navigation/native";
 
-import { FOLDER_SCREEN, PRAYER_SCREEN } from "../routes";
+import { FOLDER_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import DeleteFolder from "./DeleteFolder";

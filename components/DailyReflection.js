@@ -208,7 +208,9 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
               bottom: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === VERSE_OF_THE_DAY_SCREEN),
+                completedItem.items.find(
+                  (item) => item === VERSE_OF_THE_DAY_SCREEN,
+                ),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -226,7 +228,9 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
               top: "50%",
               left: 10,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === VERSE_OF_THE_DAY_SCREEN),
+                completedItem.items.find(
+                  (item) => item === VERSE_OF_THE_DAY_SCREEN,
+                ),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
@@ -240,7 +244,9 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
             style={{
               width: 25,
               backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === VERSE_OF_THE_DAY_SCREEN),
+                completedItem.items.find(
+                  (item) => item === VERSE_OF_THE_DAY_SCREEN,
+                ),
               )
                 ? theme === "dark"
                   ? "#a5c9ff"
