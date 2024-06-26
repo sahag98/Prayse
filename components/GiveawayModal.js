@@ -13,7 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
 import { resetGiveaway } from "../redux/userReducer";
-import { ModalContainer, ModalView2 } from "../styles/appStyles";
+import { HeaderTitle, ModalContainer, ModalView2 } from "../styles/appStyles";
 
 const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
   const [email, setEmail] = useState("");
@@ -96,16 +96,25 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
               size={22}
               color={theme === "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={{
-                textAlign: "center",
-                fontFamily: "Inter-Bold",
-                fontSize: 18,
-                color: theme === "dark" ? "white" : "#2f2d51",
-              }}
+            <HeaderTitle
+              style={
+                theme === "dark"
+                  ? {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      letterSpacing: 1,
+                      color: "white",
+                    }
+                  : {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      color: "#2f2d51",
+                      letterSpacing: 1,
+                    }
+              }
             >
-              Great job!
-            </Text>
+              Great Job!
+            </HeaderTitle>
             <Text
               style={{
                 fontFamily: "Inter-Medium",
@@ -113,7 +122,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
                 color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               }}
             >
-              You have done the daily devotions for 60 straight days.
+              You have done the daily devotions for 60 days straight.
             </Text>
             <Text
               style={{

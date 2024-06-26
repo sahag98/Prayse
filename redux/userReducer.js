@@ -14,8 +14,11 @@ const initialState = {
   appstreak: [],
   appstreakNum: 0,
   expoToken: "",
+  PercentValue: 25,
   alreadyEnteredGiveaway: false,
   isShowingGiveawayModal: false,
+  isShowingDonationModal: false,
+  isShowingCongratsModal: false,
   hasIncreasedDevoStreak: false,
   prayers: [],
   fontSize: 15,
@@ -26,6 +29,14 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setNeededValues: (state) => {
+      state.PercentValue = 25;
+      state.isShowingCongratsModal = false;
+      state.hasIncreasedDevoStreak = false;
+      state.isShowingDonationModal = false;
+      state.isShowingGiveawayModal = false;
+      state.alreadyEnteredGiveaway = false;
+    },
     closeTool: (state) => {
       state.tooltip = false;
     },
@@ -41,6 +52,30 @@ export const userSlice = createSlice({
     small: (state) => {
       state.fontSize = 12;
     },
+    changetoNull: (state) => {
+      state.PercentValue = 0;
+    },
+    changeto25: (state) => {
+      state.PercentValue = 25;
+    },
+    changeto50: (state) => {
+      state.PercentValue = 50;
+    },
+    changeto75: (state) => {
+      state.PercentValue = 75;
+    },
+    didEnterCongrats: (state) => {
+      state.isShowingCongratsModal = true;
+    },
+    resetCongrats: (state) => {
+      state.isShowingCongratsModal = false;
+    },
+    didShowDonationModal: (state) => {
+      state.isShowingDonationModal = true;
+    },
+    resetDonationModal: (state) => {
+      state.isShowingDonationModal = false;
+    },
     didEnterGiveaway: (state) => {
       state.alreadyEnteredGiveaway = true;
       state.isShowingGiveawayModal = true;
@@ -48,7 +83,7 @@ export const userSlice = createSlice({
     resetGiveaway: (state) => {
       console.log("reseting giveaway");
       state.alreadyEnteredGiveaway = false;
-      state.isShowingGiveawayModal = false;
+      // state.isShowingGiveawayModal = false;
       // state.isShowingGiveawayModal = false;
     },
     increaseAppStreakCounter: (state, action) => {
@@ -74,7 +109,6 @@ export const userSlice = createSlice({
       // console.log("one before last item: ", oneBeforeLastItem.today);
 
       if (lastItem && oneBeforeLastItem) {
-        console.log("will be adding streak");
         const lastItemDate = new Date(lastItem.today);
         const oneBeforeLastItemDate = new Date(oneBeforeLastItem.today);
 
@@ -110,7 +144,6 @@ export const userSlice = createSlice({
       // };
     },
     addtoCompletedItems: (state, action) => {
-      console.log("trying to add");
       const { date, item } = action.payload;
 
       // Find the index of the entry with the same date
@@ -120,7 +153,7 @@ export const userSlice = createSlice({
 
       if (dateIndex >= 0) {
         // If date exists, add the item to the items array of that date
-
+        // if (state.completedItems[0].items.length )
         if (state.completedItems[dateIndex].items.length === 3) {
           return;
         }
@@ -131,22 +164,17 @@ export const userSlice = createSlice({
       }
     },
     deletePreviousDayItems: (state, action) => {
-      console.log("payload: ", action.payload);
       const { yesterday } = action.payload;
       const currentDate = new Date().toLocaleDateString().split("T")[0];
       const dateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === yesterday
       );
 
-      console.log("current date: ", currentDate);
-      console.log("yesterday date: ", yesterday);
-
       const currentDateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === currentDate
       );
 
       if (dateIndex >= 0) {
-        console.log("length: ", state.completedItems[dateIndex].items.length);
         state.completedItems[dateIndex].items.length = 0;
       }
 
@@ -157,8 +185,6 @@ export const userSlice = createSlice({
         state.completedItems[state.completedItems.length - 1]?.date;
       const oneBeforeLastItem =
         state.completedItems[state.completedItems.length - 2]?.date;
-
-      console.log("last item: ", lastItem);
 
       if (lastItem !== currentDate) {
         state.hasIncreasedDevoStreak = false;
@@ -189,8 +215,6 @@ export const userSlice = createSlice({
 
         // Check if the difference is exactly one day
         if (differenceInDays === 1) {
-          console.log("check");
-          console.log("has increased already: ", state.hasIncreasedDevoStreak);
           if (
             currentDate === lastItem &&
             lastItemData.items.length === 3 &&
@@ -269,6 +293,15 @@ export const {
   addFolder,
   regular,
   small,
+  setNeededValues,
+  changetoNull,
+  changeto25,
+  changeto50,
+  changeto75,
+  didEnterCongrats,
+  resetCongrats,
+  didShowDonationModal,
+  resetDonationModal,
   resetGiveaway,
   didEnterGiveaway,
   addtoCompletedItems,

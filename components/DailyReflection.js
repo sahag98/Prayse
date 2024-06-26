@@ -26,8 +26,6 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("completed Items:  ", completedItems);
-
     clearPreviousDayCompletion();
   }, [isFocused]);
 

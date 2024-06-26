@@ -3,6 +3,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  FlatList,
   TextInput,
   TouchableOpacity,
   View,
@@ -129,7 +130,7 @@ const Chat = ({
                     }
                   />
                 )}
-                keyExtractor={(i) => i.toString()}
+                keyExtractor={(item) => item.id}
                 initialNumToRender={30}
                 renderItem={({ item }) => {
                   return (

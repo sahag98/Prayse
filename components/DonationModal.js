@@ -203,47 +203,6 @@ const DonationModal = ({
               <FontAwesome5 name="heart" size={20} color="white" />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={stopReminder}
-            style={
-              theme === "dark"
-                ? {
-                    width: "100%",
-
-                    marginTop: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingTop: 15,
-                    borderRadius: 10,
-                  }
-                : {
-                    width: "100%",
-                    marginTop: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingTop: 15,
-                    borderRadius: 10,
-                  }
-            }
-          >
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "#bebebe",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
-              Don't Remind me again
-            </Text>
-          </TouchableOpacity>
         </ModalView>
       </ModalContainer>
     </Modal>

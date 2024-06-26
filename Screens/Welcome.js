@@ -202,7 +202,7 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        setIsUpdateAvailable(true);
+        // setIsUpdateAvailable(true);
       } else {
         setIsUpdateAvailable(false);
       }
@@ -288,12 +288,13 @@ const Welcome = ({ navigation }) => {
     };
   });
 
-  useEffect(() => {
-    scaleStreak.value = withSequence(
-      withSpring(1.2, { damping: 5, stiffness: 40 }),
-      withSpring(1, { damping: 5, stiffness: 40 })
-    );
-  }, [streak]);
+  // useEffect(() => {
+  //   console.log("doing anim.");
+  //   scaleStreak.value = withSequence(
+  //     withSpring(1.2, { damping: 5, stiffness: 40 }),
+  //     withSpring(1, { damping: 5, stiffness: 40 })
+  //   );
+  // }, [streak]);
 
   useEffect(() => {
     if (
@@ -361,7 +362,6 @@ const Welcome = ({ navigation }) => {
       // dispatch(deleteAppStreakCounter());
       const today = new Date().toLocaleDateString("en-CA");
       console.log("today's date: ", today);
-
       dispatch(increaseAppStreakCounter({ today }));
     }
     appStreak();
@@ -432,24 +432,6 @@ const Welcome = ({ navigation }) => {
       }
     };
     storedData();
-
-    const saveOpenings = async () => {
-      const reminder = await AsyncStorage.getItem("ReminderOn");
-      if (reminder === null || reminder !== "false") {
-        try {
-          await AsyncStorage.setItem("appOpenings", (openings + 1).toString());
-        } catch (error) {
-          console.error("Error saving app openings", error);
-        }
-      }
-    };
-
-    saveOpenings();
-
-    // Check if it's the 20th opening
-    if (openings > 0 && openings % 20 === 0) {
-      setDonationModal(true);
-    }
   }, [isFocused]);
 
   const dismissNotification = async (item) => {
@@ -533,7 +515,7 @@ const Welcome = ({ navigation }) => {
 
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
     "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
@@ -541,22 +523,21 @@ const Welcome = ({ navigation }) => {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
+  if (!fontsLoaded && !fontError) {
+    return null;
   }
 
-  if (isFirst == true) {
+  if (isFirst === true) {
     navigation.navigate("Onboarding");
   }
 
   return (
     <WelcomeContainer
-      // contentContainerStyle={{ alignItems: "flex-start" }}
       onLayout={onLayoutRootView}
       style={
         theme == "dark"
@@ -627,12 +608,12 @@ const Welcome = ({ navigation }) => {
             isUpdateAvailable={isUpdateAvailable}
             setIsUpdateAvailable={setIsUpdateAvailable}
           />
-          <DonationModal
+          {/* <DonationModal
             donationModal={donationModal}
             setDonationModal={setDonationModal}
             theme={theme}
             setIsReminderOn={setIsReminderOff}
-          />
+          /> */}
 
           <TouchableOpacity
             onPress={() => setIsShowingStreak((prev) => !prev)}
