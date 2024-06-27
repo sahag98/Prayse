@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Dimensions,
@@ -42,9 +43,7 @@ import QuestionoftheWeek from "@components/QuestionoftheWeek";
 import StreakSlider from "@components/StreakSlider";
 import { Greeting } from "@components/welcome/greeting";
 
-import DonationModal from "@modals/DonationModal";
 import NewFeaturesModal from "@modals/NewFeaturesModal";
-import UpdateModal from "@modals/UpdateModal";
 
 import config from "@config";
 import { useSupabase } from "@context/useSupabase";
@@ -560,7 +559,7 @@ const WelcomeScreen = () => {
       value: "Other",
     },
   ];
-
+  const { colorScheme, setColorScheme } = useColorScheme();
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
   const [fontsLoaded] = useFonts({
@@ -589,36 +588,13 @@ const WelcomeScreen = () => {
     <WelcomeContainer
       // contentContainerStyle={{ alignItems: "flex-start" }}
       onLayout={onLayoutRootView}
-      style={
-        theme == "dark"
-          ? {
-              display: "flex",
-              position: "relative",
-              // flex: 1,
-              // alignItems: "center",
-
-              // backgroundColor: "#121212",
-            }
-          : theme == "BlackWhite"
-            ? {
-                display: "flex",
-                position: "relative",
-                // alignItems: "center",
-                backgroundColor: "white",
-              }
-            : {
-                display: "flex",
-                position: "relative",
-                flex: 1,
-                // alignItems: "center",
-                backgroundColor: "#F2F7FF",
-              }
-      }
+      className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
     >
       <View
         style={{
           alignItems: "center",
           marginBottom: 0,
+          // backgroundColor: "red",
           flexDirection: "row",
           justifyContent: "space-between",
           width: "100%",
@@ -626,16 +602,8 @@ const WelcomeScreen = () => {
       >
         <Greeting theme={theme} />
 
-        <View
-          style={{
-            position: "relative",
-            flexDirection: "row",
-            alignItems: "center",
-
-            gap: 0,
-          }}
-        >
-          <UpdateModal
+        <View className="relative flex-row items-center">
+          {/* <UpdateModal
             theme={theme}
             isUpdateAvailable={isUpdateAvailable}
             setIsUpdateAvailable={setIsUpdateAvailable}
@@ -645,36 +613,59 @@ const WelcomeScreen = () => {
             setDonationModal={setDonationModal}
             theme={theme}
             setIsReminderOn={setIsReminderOff}
-          />
-
-          <TouchableOpacity
-            onPress={() => setIsShowingStreak((prev) => !prev)}
-            style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-          >
-            <Animated.View
-              style={[
-                animatedStreakStyle,
-                { flexDirection: "row", alignItems: "center", gap: 5 },
-              ]}
+          /> */}
+          <View className="flex items-center flex-row">
+            <TouchableOpacity
+              onPress={() => setIsShowingStreak((prev) => !prev)}
+              className="flex-row  p-[8px] items-center"
             >
-              <MaterialCommunityIcons
-                style={{ zIndex: 10 }}
-                name="hands-pray"
-                size={20}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
+              <Animated.View
+                className="flex-row items-center gap-1"
+                style={[animatedStreakStyle]}
+              >
+                <MaterialCommunityIcons
+                  style={{ zIndex: 10 }}
+                  name="hands-pray"
+                  size={20}
+                  color={colorScheme == "dark" ? "white" : "#2f2d51"}
+                />
 
-              <Text
+                <Text
+                  style={{
+                    color: colorScheme == "dark" ? "white" : "#2f2d51",
+
+                    fontFamily: "Inter-Bold",
+                  }}
+                >
+                  {streak ?? 0}
+                </Text>
+              </Animated.View>
+            </TouchableOpacity>
+            <View className="p-[8px] relative">
+              {/* <Text>Hey</Text> */}
+              <Link className=" mt-1 " to={`/${NOTIFICATIONS_SCREEN}`}>
+                <View className="p-[8px] rounded-md">
+                  <Ionicons
+                    name="notifications-outline"
+                    size={20}
+                    color={colorScheme == "dark" ? "white" : "#2f2d51"}
+                  />
+                </View>
+              </Link>
+              <Badge
+                size={14}
                 style={{
-                  color: theme == "dark" ? "white" : "#2f2d51",
-
-                  fontFamily: "Inter-Bold",
+                  position: "absolute",
+                  fontFamily: "Inter-Medium",
+                  fontSize: 11,
+                  top: 10,
+                  right: 8,
                 }}
               >
-                {streak ?? 0}
-              </Text>
-            </Animated.View>
-          </TouchableOpacity>
+                {notis.length}
+              </Badge>
+            </View>
+          </View>
 
           <StreakSlider
             appstreak={appstreak}
@@ -683,42 +674,6 @@ const WelcomeScreen = () => {
             setIsShowingStreak={setIsShowingStreak}
             isShowingStreak={isShowingStreak}
           />
-
-          <View style={{ position: "relative", padding: 8 }}>
-            <Link to={`/${NOTIFICATIONS_SCREEN}`}>
-              <View
-                style={
-                  theme == "dark"
-                    ? {
-                        borderRadius: 50,
-                        padding: 8,
-                      }
-                    : {
-                        borderRadius: 50,
-                        padding: 8,
-                      }
-                }
-              >
-                <Ionicons
-                  name="notifications-outline"
-                  size={20}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
-                />
-              </View>
-            </Link>
-            <Badge
-              size={14}
-              style={{
-                position: "absolute",
-                fontFamily: "Inter-Medium",
-                fontSize: 11,
-                top: 10,
-                right: 8,
-              }}
-            >
-              {notis.length}
-            </Badge>
-          </View>
         </View>
       </View>
       {/* <ProgressBar

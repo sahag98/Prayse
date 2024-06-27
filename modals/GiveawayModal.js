@@ -13,7 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
 import { resetGiveaway } from "../redux/userReducer";
-import { ModalContainer, ModalView2 } from "../styles/appStyles";
+import { HeaderTitle, ModalContainer, ModalView2 } from "../styles/appStyles";
 
 const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
   const [email, setEmail] = useState("");
@@ -23,12 +23,13 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
 
   const dispatch = useDispatch();
   async function handleSubmit() {
-    if (email.length === 0) {
+    if (email.length === 0 || !email.includes("@")) {
       setError("An email address is required. Try again");
+      return;
     } else {
       const { data, error } = await supabase
         .from("giveaway_entries")
-        .insert([{ email, streak }])
+        .insert([{ email, streak: streak }])
         .select();
 
       // console.log("data: ", data);
@@ -38,7 +39,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
       if (data && data[0]?.email) {
         setError("");
         setSuccess(
-          "You have entered the giveaway! Be on the lookout for an email from prayse.app@gmail.com for further details.",
+          "You have entered the giveaway! Be on the lookout for an email from prayse.app@gmail.com for further details."
         );
       }
 
@@ -95,16 +96,25 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
               size={22}
               color={theme === "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={{
-                textAlign: "center",
-                fontFamily: "Inter-Bold",
-                fontSize: 18,
-                color: theme === "dark" ? "white" : "#2f2d51",
-              }}
+            <HeaderTitle
+              style={
+                theme === "dark"
+                  ? {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      letterSpacing: 1,
+                      color: "white",
+                    }
+                  : {
+                      fontFamily: "Inter-Bold",
+                      textAlign: "center",
+                      color: "#2f2d51",
+                      letterSpacing: 1,
+                    }
+              }
             >
-              Great job!
-            </Text>
+              Great Job!
+            </HeaderTitle>
             <Text
               style={{
                 fontFamily: "Inter-Medium",
@@ -112,7 +122,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
                 color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
               }}
             >
-              You have done the daily devotions for 60 straight days.
+              You have done the daily devotions for 60 days straight.
             </Text>
             <Text
               style={{

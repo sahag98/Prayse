@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import { useColorScheme } from "nativewind";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -15,6 +16,7 @@ interface GreetingProps {
 export const Greeting: React.FC<GreetingProps> = ({ theme }) => {
   const welcomeFadeIn = useSharedValue(0);
 
+  const { colorScheme, setColorScheme } = useColorScheme();
   const animatedWelcomeFadeInStyle = useAnimatedStyle(() => ({
     opacity: welcomeFadeIn.value * 1,
   }));
@@ -57,7 +59,20 @@ export const Greeting: React.FC<GreetingProps> = ({ theme }) => {
       className="flex flex-row items-center gap-2"
       style={[animatedWelcomeFadeInStyle]}
     >
-      <Animated.Text className="text-2xl tracking-wide font-inter font-bold text-[#2F2D51] dark:text-[#d2d2d2]">
+      {/* <Text
+        onPress={() =>
+          setColorScheme(colorScheme === "light" ? "dark" : "light")
+        }
+      >
+        {`The color scheme is ${colorScheme}`}
+      </Text> */}
+      {/* <Text className="dark:text-green-400 text-red-400">Hey</Text> */}
+      <Animated.Text
+        onPress={() => {
+          setColorScheme(colorScheme === "light" ? "dark" : "light");
+        }}
+        className="text-2xl tracking-wide font-inter font-bold text-[#2F2D51] dark:text-[#d2d2d2]"
+      >
         {greeting}
       </Animated.Text>
       {icon}

@@ -34,7 +34,7 @@ const StackContainer = () => {
       edges={["bottom"]}
       style={{
         flex: 1,
-        backgroundColor: theme === "dark" ? "#121212" : "#f2f7ff",
+        backgroundColor: theme === "dark" ? "#121212" : "white",
       }}
     >
       <Stack initialRouteName="(tabs)">
