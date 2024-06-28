@@ -5,46 +5,17 @@ import { Link } from "@react-navigation/native";
 
 import { GOSPEL_SCREEN } from "../routes";
 
-const GospelofJesus = ({ theme }) => {
+const GospelofJesus = ({ theme, colorScheme }) => {
   return (
     <Link to={`/${GOSPEL_SCREEN}`}>
-      <View
-        style={{
-          backgroundColor: theme === "dark" ? "#212121" : "white",
-          marginBottom: 15,
-          width: "100%",
-          padding: 15,
-          borderRadius: 10,
-          gap: 15,
-        }}
-      >
-        <Text
-          style={{
-            color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-            fontFamily: "Inter-Medium",
-          }}
-        >
+      <View className="bg-white dark:bg-[#212121] mb-[15px] w-full p-[15px] rounded-lg gap-[15px]">
+        <Text className="text-[#2f2d51] dark:text-[#d2d2d2] font-inter text-base font-medium">
           Gospel of Jesus
         </Text>
-        <Text
-          style={{
-            color: theme === "dark" ? "white" : "#2f2d51",
-            fontFamily: "Inter-Bold",
-            lineHeight: 24,
-            fontSize: 18,
-          }}
-        >
+        <Text className="leading-6 font-inter font-bold text-[#2f2d51] dark:text-white text-xl">
           How can someone receive Jesus and get saved?
         </Text>
-        <Text
-          style={{
-            color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-            fontFamily: "Inter-Bold",
-            textDecorationLine: "underline",
-            lineHeight: 24,
-            fontSize: 14,
-          }}
-        >
+        <Text className="leading-6 underline font-inter font-normal text-base text-[#2f2d51] dark:text-[#a5c9ff]">
           Click here to learn more
         </Text>
       </View>

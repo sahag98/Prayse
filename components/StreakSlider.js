@@ -28,6 +28,7 @@ import FirstCompletionModal from "../modals/FirstCompletionModal";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import PercentageModal from "../modals/PercentageModal";
 import { useNavigationState } from "@react-navigation/native";
+import { useColorScheme } from "nativewind";
 const StreakSlider = ({
   isShowingStreak,
   setIsShowingStreak,
@@ -35,6 +36,7 @@ const StreakSlider = ({
   streak,
   appstreak,
 }) => {
+  const { colorScheme } = useColorScheme();
   const isShowingGiveawayModal = useSelector(
     (state) => state.user.isShowingGiveawayModal
   );
@@ -172,7 +174,7 @@ const StreakSlider = ({
         >
           <ModalView2
             style={
-              theme === "dark"
+              colorScheme === "dark"
                 ? {
                     backgroundColor: "#212121",
                     width: "95%",
@@ -186,132 +188,55 @@ const StreakSlider = ({
             }
           >
             <AntDesign
+              className="self-end"
               onPress={() => setIsShowingStreak(false)}
-              style={{
-                alignSelf: "flex-end",
-              }}
               name="close"
               size={28}
-              color={theme === "dark" ? "white" : "#2f2d51"}
+              color={colorScheme === "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={{
-                textAlign: "center",
-                fontFamily: "Inter-Bold",
-                fontSize: 26,
-                color: theme === "dark" ? "white" : "#2f2d51",
-              }}
-            >
+            <Text className="text-center font-inter font-bold text-[26px] text-[#2f2d51] dark:text-white">
               Streaks
             </Text>
-            {congratsModal && <Text style={{ color: "red" }}>Show</Text>}
-            <View
-              style={{
-                width: "100%",
-                marginTop: 10,
-
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  width: "50%",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-                >
+            <View className="w-full mt-[10px] flex-row items-center">
+              <View className="w-1/2 items-center">
+                <View className="flex-row items-center gap-2">
                   <FontAwesome
                     name="calendar-check-o"
                     size={22}
-                    color={theme === "dark" ? "white" : "#2f2d51"}
+                    color={colorScheme === "dark" ? "white" : "#2f2d51"}
                   />
 
-                  <Text
-                    style={{
-                      color: theme === "dark" ? "white" : "#2f2d51",
-                      fontFamily: "Inter-Bold",
-                      fontSize: 35,
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-[#2f2d51] dark:text-white text-5xl">
                     {appstreak}
                   </Text>
                 </View>
-                <Text
-                  style={{
-                    color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-                    fontFamily: "Inter-Bold",
-                    fontSize: 13,
-                  }}
-                >
+                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:[#d2d2d2]">
                   App Streak
                 </Text>
               </View>
-              <View
-                style={{
-                  width: "50%",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-                >
+              <View className="w-1/2 items-center">
+                <View className="flex-row items-center gap-2">
                   <MaterialCommunityIcons
                     name="hands-pray"
                     size={22}
-                    color={theme === "dark" ? "white" : "#2f2d51"}
+                    color={colorScheme === "dark" ? "white" : "#2f2d51"}
                   />
-                  <Text
-                    style={{
-                      color: theme === "dark" ? "white" : "#2f2d51",
-                      fontFamily: "Inter-Bold",
-                      fontSize: 35,
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-[#2f2d51] dark:text-white text-5xl">
                     {streak}
                   </Text>
                 </View>
-                <Text
-                  style={{
-                    color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-                    fontFamily: "Inter-Bold",
-                    fontSize: 13,
-                  }}
-                >
+                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:[#d2d2d2]">
                   Devotions Streak
                 </Text>
               </View>
             </View>
-            <Text
-              style={{
-                color: theme === "dark" ? "white" : "#2f2d51",
-                fontFamily: "Inter-Regular",
-                textAlign: "center",
-                fontSize: 15,
-                marginTop: 5,
-              }}
-            >
+            <Text className="font-normal text-center font-inter text-base mt-[5px]">
               Thank you for praising God with us every day.
             </Text>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 10,
-                gap: 10,
-              }}
-            >
+            <View className="w-full mt-[10px] gap-[10px]">
               {streak > GOAL ? null : (
                 <>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: theme === "dark" ? "white" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 16,
-                    }}
-                  >
+                  <Text className="text-center text-[#2f2d51] dark:text-white font-inter font-medium text-lg">
                     Devotions Streak: {((streak / GOAL) * 100).toFixed(1)}%
                   </Text>
                   <ProgressBar
@@ -319,15 +244,7 @@ const StreakSlider = ({
                     progress={streak / GOAL}
                     color="green"
                   />
-                  <Text
-                    style={{
-                      color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 13,
-                      textAlign: "center",
-                      marginBottom: 10,
-                    }}
-                  >
+                  <Text className="font-inter font-medium text-[13px] text-center mb-[10px] text-[#2f2d51] dark:text-[#d2d2d2]">
                     Reach {GOAL} days to win a free merch item of your choice!
                   </Text>
                 </>
@@ -336,26 +253,15 @@ const StreakSlider = ({
 
             <TouchableOpacity
               onPress={onShare}
-              style={{
-                alignSelf: "flex-end",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
+              className="self-end flex-row items-center gap-[10px]"
             >
-              <Text
-                style={{
-                  color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                  fontSize: 15,
-                  fontFamily: "Inter-Bold",
-                }}
-              >
+              <Text className="text-[#2f2d51] dark:text-[#a5c9ff] text-lg font-inter font-bold">
                 Share
               </Text>
               <Feather
                 name="share"
                 size={20}
-                color={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
+                color={colorScheme === "dark" ? "#a5c9ff" : "#2f2d51"}
               />
             </TouchableOpacity>
           </ModalView2>

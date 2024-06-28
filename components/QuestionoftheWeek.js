@@ -6,29 +6,15 @@ import { QUESTION_SCREEN } from "@routes";
 
 import { useSupabase } from "../context/useSupabase";
 
-const QuestionoftheWeek = ({ theme }) => {
+const QuestionoftheWeek = ({ theme, colorScheme }) => {
   const navigation = useNavigation();
   const { latestQuestion } = useSupabase();
 
   return (
-    <View
-      style={{
-        backgroundColor: theme === "dark" ? "#212121" : "white",
-        marginBottom: 15,
-        width: "100%",
-        padding: 15,
-        borderRadius: 10,
-        gap: 15,
-      }}
-    >
+    <View className="bg-white dark:bg-[#212121] mb-[15px] w-full p-[15px] rounded-lg gap-[15px]">
       {!latestQuestion ? (
-        <View style={{ gap: 15 }}>
-          <Text
-            style={{
-              color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-              fontFamily: "Inter-Medium",
-            }}
-          >
+        <View className="gap-[15px]">
+          <Text className="font-inter font-medium text-[#2f2d51] dark:text-[#d2d2d2]">
             Question of the Week
           </Text>
           <ActivityIndicator />
@@ -41,63 +27,20 @@ const QuestionoftheWeek = ({ theme }) => {
               question_id: latestQuestion?.id,
             })
           }
-          style={{
-            backgroundColor: theme === "dark" ? "#212121" : "white",
-
-            width: "100%",
-
-            borderRadius: 10,
-            gap: 15,
-          }}
+          className="w-full rounded-lg gap-[15px]"
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text
-              style={{
-                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
-            >
+          <View className="flex-row items-center justify-between">
+            <Text className="font-inter text-base font-medium text-[#2f2d51] dark:text-[#d2d2d2]">
               Question of the Week
             </Text>
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "#ff3333",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : { color: "red", fontSize: 13, fontFamily: "Inter-Regular" }
-              }
-            >
+            <Text className="text-red-500 dark:text-[#ff3333] text-base font-inter font-medium">
               New
             </Text>
           </View>
-          <Text
-            style={{
-              color: theme === "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Bold",
-              lineHeight: 24,
-              fontSize: 18,
-            }}
-          >
+          <Text className="font-inter font-semibold text-xl leading-6 text-[#2f2d51] dark:text-white">
             {latestQuestion?.title}
           </Text>
-          <Text
-            style={{
-              color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-              fontFamily: "Inter-Bold",
-              textDecorationLine: "underline",
-              lineHeight: 24,
-              fontSize: 14,
-            }}
-          >
+          <Text className="text-base font-inter font-normal text-[#2f2d51] dark:text-[#a5c9ff] leading-6 underline">
             Click here to answer
           </Text>
         </TouchableOpacity>

@@ -1,8 +1,7 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { nativeApplicationVersion } from "expo-application";
 import * as Device from "expo-device";
-import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -25,7 +24,7 @@ import {
 } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Badge, Divider } from "react-native-paper";
-import Animated, {
+import {
   Easing,
   useAnimatedStyle,
   useSharedValue,
@@ -562,23 +561,22 @@ const WelcomeScreen = () => {
   const { colorScheme, setColorScheme } = useColorScheme();
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
 
-  const [fontsLoaded] = useFonts({
-    inter: require("../../assets/fonts/inter.ttf"),
-    "Inter-Bold": require("../../assets/fonts/Inter-Bold.ttf"),
-    "Inter-Regular": require("../../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Medium": require("../../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Light": require("../../assets/fonts/Inter-Light.ttf"),
-  });
+  // const [fontsLoaded, fontError] = useFonts({
+  //   "Inter-Bold": require("../../assets/fonts/Inter-Bold.ttf"),
+  //   "Inter-Regular": require("../../assets/fonts/Inter-Regular.ttf"),
+  //   "Inter-Medium": require("../../assets/fonts/Inter-Medium.ttf"),
+  //   "Inter-Light": require("../../assets/fonts/Inter-Light.ttf"),
+  // });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded || fontError) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
-  }
+  // if (!fontsLoaded && !fontError) {
+  //   return null;
+  // }
 
   if (isFirst == true) {
     navigation.navigate(ONBOARDING_SCREEN);
@@ -587,19 +585,9 @@ const WelcomeScreen = () => {
   return (
     <WelcomeContainer
       // contentContainerStyle={{ alignItems: "flex-start" }}
-      onLayout={onLayoutRootView}
       className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
     >
-      <View
-        style={{
-          alignItems: "center",
-          marginBottom: 0,
-          // backgroundColor: "red",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
+      <View className="items-center mb-0 flex-row justify-between w-full">
         <Greeting theme={theme} />
 
         <View className="relative flex-row items-center">
@@ -619,10 +607,7 @@ const WelcomeScreen = () => {
               onPress={() => setIsShowingStreak((prev) => !prev)}
               className="flex-row  p-[8px] items-center"
             >
-              <Animated.View
-                className="flex-row items-center gap-1"
-                style={[animatedStreakStyle]}
-              >
+              <View className="flex-row items-center gap-1">
                 <MaterialCommunityIcons
                   style={{ zIndex: 10 }}
                   name="hands-pray"
@@ -630,16 +615,10 @@ const WelcomeScreen = () => {
                   color={colorScheme == "dark" ? "white" : "#2f2d51"}
                 />
 
-                <Text
-                  style={{
-                    color: colorScheme == "dark" ? "white" : "#2f2d51",
-
-                    fontFamily: "Inter-Bold",
-                  }}
-                >
+                <Text className="text-[#2f2d51] dark:text-white font-inter font-bold">
                   {streak ?? 0}
                 </Text>
-              </Animated.View>
+              </View>
             </TouchableOpacity>
             <View className="p-[8px] relative">
               {/* <Text>Hey</Text> */}
@@ -687,154 +666,50 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={theme}
       />
-      <View style={{ width: "100%", flex: 1 }}>
-        <View
-          style={
-            theme == "dark"
-              ? {
-                  backgroundColor: "#212121",
-                  flex: 1,
-                  marginVertical: 5,
-                  borderWidth: 1,
-                  borderColor: "#474747",
-                  gap: 10,
-                  borderRadius: 10,
-                  padding: 10,
-                  marginBottom: 15,
-                }
-              : {
-                  backgroundColor: "#ffcd8b",
-                  gap: 10,
-
-                  flex: 1,
-                  marginVertical: 5,
-                  borderRadius: 10,
-                  padding: 10,
-                  marginBottom: 15,
-                }
-          }
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      fontSize: 18,
-                      color: "#2f2d51",
-                    }
-              }
-            >
+      <View className="w-full flex-1">
+        <View className="bg-[#ffcd8b] dark:bg-[#212121] my-[5px] flex-1 border-[1px] border-[#ffcd8b] dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]">
+          <View className="flex-row items-center justify-between">
+            <Text className="font-inter font-bold text-xl text-[#2f2d51] dark:text-white">
               Reminders
             </Text>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
-            >
+            <View className="flex-row items-center gap-3">
               <Link to={`/${REMINDER_SCREEN}`}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? {
-                            fontFamily: "Inter-Medium",
-                            fontSize: 16,
-                            color: "white",
-                          }
-                        : {
-                            fontFamily: "Inter-Medium",
-                            fontSize: 16,
-                            color: "#444444",
-                          }
-                    }
-                  >
-                    View All
+                <View className="flex-row items-center gap-[5px]">
+                  <Text className="font-inter font-semibold text-lg text-[#444444] dark:text-white">
+                    View all
                   </Text>
                 </View>
               </Link>
               <Link to={`/${TEST_SCREEN}?type=Add`}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
-                  <Text
-                    style={
-                      theme == "dark"
-                        ? {
-                            fontFamily: "Inter-Medium",
-                            fontSize: 16,
-                            color: "#A5C9FF",
-                          }
-                        : {
-                            fontFamily: "Inter-Medium",
-                            fontSize: 16,
-                            color: "#2f2d51",
-                          }
-                    }
-                  >
+                <View className="flex-row items-center gap-1">
+                  <Text className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-[#a5c9ff]">
                     Add
                   </Text>
                   <Ionicons
                     name="add-circle-outline"
                     size={30}
-                    color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
+                    color={colorScheme == "dark" ? "#A5C9FF" : "#2f2d51"}
                   />
                 </View>
               </Link>
             </View>
           </View>
           {reminders.length == 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
+            <View className="flex-1 justify-center items-center gap-[10px]">
               <Image
                 style={{
-                  tintColor: theme == "dark" ? "white" : "#2f2d51",
+                  tintColor: colorScheme == "dark" ? "white" : "#2f2d51",
                   width: 40,
                   height: 40,
                 }}
                 source={noreminder}
               />
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#d2d2d2",
-                        alignSelf: "center",
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        alignSelf: "center",
-                        fontFamily: "Inter-Medium",
-                      }
-                }
-              >
+              <Text className="text-[#2f2d51] dark:text-[#d2d2d2] self-center font-inter font-medium">
                 No reminders yet!
               </Text>
             </View>
           ) : (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView className="flex-1">
               <FlatList
                 pagingEnabled
                 snapToInterval={ITEM_WIDTH}
@@ -890,116 +765,39 @@ const WelcomeScreen = () => {
 
                   return (
                     <View
-                      style={
-                        theme == "dark"
-                          ? {
-                              padding: 10,
-                              marginRight: 15,
-                              gap: 5,
-                              borderRadius: 10,
-
-                              backgroundColor: "#121212",
-                              maxWidth: ITEM_WIDTH + 100,
-                            }
-                          : {
-                              marginRight: 15,
-                              gap: 5,
-                              justifyContent: "space-between",
-                              padding: 10,
-                              borderRadius: 10,
-                              backgroundColor: "#f2f7ff",
-                              maxWidth: ITEM_WIDTH + 100,
-                            }
-                      }
+                      className="p-[10px] mr-[15px] gap-[5px] rounded-lg bg-[#f2f7ff] dark:bg-[#121212]"
+                      style={{
+                        maxWidth: ITEM_WIDTH + 100,
+                      }}
                     >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 5,
-                        }}
-                      >
+                      <View className="flex-row items-center gap-[5px]">
                         <Ionicons
                           name="time-outline"
                           size={24}
-                          color={theme == "dark" ? "#f1d592" : "#dda41c"}
+                          color={colorScheme == "dark" ? "#f1d592" : "#dda41c"}
                         />
                         {item.ocurrence === "Daily" && (
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Medium",
-                                    color: "#f1d592",
-                                  }
-                                : {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Medium",
-                                    color: "#dda41c",
-                                  }
-                            }
-                          >
+                          <Text className="text-base font-inter font-medium text-[#dda41c] dark:text-[#f1d592]">
                             {item.ocurrence} at {formattedDate}
                           </Text>
                         )}
                         {item.ocurrence === "Weekly" && (
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Regular",
-                                    color: "#f1d592",
-                                  }
-                                : {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Regular",
-                                    color: "#dda41c",
-                                  }
-                            }
-                          >
+                          <Text className="text-base font-inter font-medium text-[#dda41c] dark:text-[#f1d592]">
                             {item.ocurrence} on {dayOfWeekName}s at{" "}
                             {formattedDate}
                           </Text>
                         )}
                         {item.ocurrence === "None" && (
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Regular",
-                                    color: "#f1d592",
-                                  }
-                                : {
-                                    fontSize: 14,
-                                    fontFamily: "Inter-Regular",
-                                    color: "#dda41c",
-                                  }
-                            }
-                          >
+                          <Text className="text-base font-inter font-medium text-[#dda41c] dark:text-[#f1d592]">
                             {formattedDate}
                           </Text>
                         )}
                       </View>
-                      <View style={{ gap: 5 }}>
+                      <View className="gap-[5px]">
                         <Text
                           numberOfLines={1}
                           lineBreakMode="tail"
-                          style={
-                            theme == "dark"
-                              ? {
-                                  fontFamily: "Inter-Regular",
-                                  fontSize: 15,
-                                  color: "white",
-                                }
-                              : {
-                                  fontFamily: "Inter-Regular",
-                                  fontSize: 15,
-                                  color: "#2f2d51",
-                                }
-                          }
+                          className="font-inter font-medium text-lg text-[#2f2d51] dark:text-white"
                         >
                           {item.reminder.message}
                         </Text>
@@ -1007,23 +805,12 @@ const WelcomeScreen = () => {
                         <Text
                           numberOfLines={2}
                           lineBreakMode="tail"
-                          style={{
-                            fontFamily: "Inter-Regular",
-                            fontSize: 13,
-                            color: "#bebebe",
-                          }}
+                          className="font-inter text-base font-normal text-[#bebebe]"
                         >
                           {item.reminder.note}
                         </Text>
                       </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 10,
-                          alignSelf: "flex-end",
-                          marginTop: "auto",
-                        }}
-                      >
+                      <View className="flex-row items-center gap-[10px] self-end mt-auto">
                         <TouchableOpacity
                           onPress={() =>
                             navigation.navigate(TEST_SCREEN, {
@@ -1037,49 +824,15 @@ const WelcomeScreen = () => {
                             })
                           }
                         >
-                          <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    fontFamily: "Inter-Medium",
-                                    fontSize: 13,
-                                    color: "white",
-                                  }
-                                : {
-                                    fontFamily: "Inter-Medium",
-                                    fontSize: 13,
-                                    color: "#2f2d51",
-                                  }
-                            }
-                          >
+                          <Text className="text-[#2f2d51] dark:text-white font-inter font-semibold text-base">
                             Edit
                           </Text>
                         </TouchableOpacity>
-                        <View
-                          style={
-                            theme == "dark"
-                              ? {
-                                  width: 1.2,
-                                  height: "100%",
-                                  backgroundColor: "white",
-                                }
-                              : {
-                                  width: 1.2,
-                                  height: "100%",
-                                  backgroundColor: "#2f2d51",
-                                }
-                          }
-                        />
+                        <View className="w-[1.2px] h-full bg-[#2f2d51] dark:bg-white" />
                         <TouchableOpacity
                           onPress={() => dismissNotification(item)}
                         >
-                          <Text
-                            style={{
-                              fontFamily: "Inter-Medium",
-                              fontSize: 13,
-                              color: "#ff3b3b",
-                            }}
-                          >
+                          <Text className="font-inter font-semibold text-base text-[#ff3b3b]">
                             Delete
                           </Text>
                         </TouchableOpacity>
@@ -1097,10 +850,9 @@ const WelcomeScreen = () => {
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
       />
-      <QuestionoftheWeek theme={theme} />
-      <GospelofJesus theme={theme} />
-
-      <MerchComponent theme={theme} />
+      <QuestionoftheWeek colorScheme={colorScheme} theme={theme} />
+      <GospelofJesus colorScheme={colorScheme} theme={theme} />
+      <MerchComponent colorScheme={colorScheme} theme={theme} />
       <View
         style={{
           width: "100%",

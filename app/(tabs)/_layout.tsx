@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "nativewind";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
@@ -15,10 +16,10 @@ import {
 
 export default function TabLayout() {
   const theme = useSelector((state: any) => state?.user?.theme);
-
+  const { colorScheme } = useColorScheme();
   return (
     <>
-      <StatusBar style={theme === "dark" ? "light" : "dark"} />
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <Tabs
         sceneContainerStyle={{
           backgroundColor: theme == "dark" ? "#121212" : "#F2F7FF",
