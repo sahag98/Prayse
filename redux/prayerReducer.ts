@@ -1,0 +1,73 @@
+// @ts-nocheck
+import { createSlice } from "@reduxjs/toolkit";
+
+interface PrayerState {
+  prayer: any[];
+}
+
+const initialState: PrayerState = {
+  prayer: [],
+};
+
+export const prayerSlice = createSlice({
+  name: "prayer",
+  initialState,
+  reducers: {
+    clearPrayerData: (state) => {
+      state.prayer = [];
+    },
+    deleteFavorites: (state) => {
+      state.favoriteVerses = [];
+    },
+    deleteFavoriteVerse: (state, action) => {
+      state.favoriteVerses = state.favoriteVerses.filter(
+        (verse) => verse.id !== action.payload,
+      );
+    },
+    addPrayer: (state, action) => {
+      const Prayers = [action.payload, ...state.prayer];
+      state.prayer = Prayers;
+    },
+    addNoteToPrayer: (state, action) => {
+      state.answeredPrayers = state.answeredPrayers.map((obj) =>
+        obj.id === action.payload.id
+          ? { ...obj, answerNoted: action.payload.answerNote }
+          : obj,
+      );
+    },
+    deletePrayer: (state, action) => {
+      state.prayer = state.prayer.filter(
+        (prayer) => prayer.id !== action.payload,
+      );
+    },
+    deletePrayerByFolderId: (state, action) => {
+      state.prayer = state.prayer.filter(
+        (prayer) => prayer.folderId !== action.payload,
+      );
+    },
+    editPrayer: (state, action) => {
+      const newPrayers = [...state.prayer];
+      const prayerIndex = state.prayer.findIndex(
+        (prayer) => prayer.id === action.payload.id,
+      );
+      newPrayers.splice(prayerIndex, 1, action.payload);
+      state.prayer = newPrayers;
+    },
+  },
+});
+
+export const {
+  addPrayer,
+  deletePrayer,
+  deletePrayerByFolderId,
+  editPrayer,
+  addAnswer,
+  setVerse,
+  addNoteToPrayer,
+  addToFavorites,
+  deleteFavorites,
+  clearPrayerData,
+  deleteFavoriteVerse,
+} = prayerSlice.actions;
+
+export default prayerSlice.reducer;

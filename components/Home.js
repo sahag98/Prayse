@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import InputModal from "../modals/InputModal";
 import { PrayerContainer } from "../styles/appStyles";
 
 import BottomBox from "./BottomBox";
 import Header from "./Header";
-import InputModal from "./InputModal";
 import ListItems from "./ListItems";
 
 const Home = ({

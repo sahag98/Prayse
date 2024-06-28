@@ -3,9 +3,8 @@ import axios from "axios";
 import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { useNavigation } from "@react-navigation/native";
-
 import { ModalContainer, ModalView } from "../styles/appStyles";
+
 const AnnounceMeeting = ({
   theme,
   currGroup,
@@ -18,8 +17,6 @@ const AnnounceMeeting = ({
   isAnnouncingMeeting,
   setIsAnnouncingMeeting,
 }) => {
-  const navigation = useNavigation();
-
   const handleCloseModal = () => {
     setIsAnnouncingMeeting(false);
   };

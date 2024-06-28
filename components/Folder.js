@@ -17,10 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AddFolderModal from "../modals/AddFolderModal";
 import { addFolder } from "../redux/folderReducer";
+import { OLD_PRAYER_SCREEN, PRAYER_ROOM_SCREEN } from "../routes";
 import { HeaderTitle, ListView2, TodoText } from "../styles/appStyles";
 
-import AddFolderModal from "./AddFolderModal";
 import AnsweredPrayer from "./AnsweredPrayer";
 import FolderItem from "./FolderItem";
 
@@ -28,7 +29,7 @@ const Folder = ({ navigation, todos }) => {
   const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers
+    (state) => state.answered.answeredPrayers,
   );
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
@@ -73,7 +74,7 @@ const Folder = ({ navigation, todos }) => {
   answeredPrayers?.forEach((prayer) => {
     const date = prayer.answeredDate;
     const sectionIndex = sections.findIndex(
-      (section) => section.title === date
+      (section) => section.title === date,
     );
     if (sectionIndex === -1) {
       sections.push({
@@ -108,7 +109,7 @@ const Folder = ({ navigation, todos }) => {
   };
 
   function goToOrignalPrayer() {
-    navigation.navigate("OldPrayerPage");
+    navigation.navigate(OLD_PRAYER_SCREEN);
   }
 
   function addNewFolder() {
@@ -117,7 +118,7 @@ const Folder = ({ navigation, todos }) => {
         id: uuid.v4(),
         name: folderName,
         prayers: [],
-      })
+      }),
     );
     setTimeout(() => {
       setAddVisible(false);
@@ -404,7 +405,7 @@ const Folder = ({ navigation, todos }) => {
                 label="Prayer Room"
                 extended={isExtended}
                 onPress={() => {
-                  navigation.navigate("PrayerRoom");
+                  navigation.navigate(PRAYER_ROOM_SCREEN);
                 }}
                 visible={fabvisible}
                 animateFrom="right"
