@@ -22,19 +22,15 @@ export default function TabLayout() {
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <Tabs
         sceneContainerStyle={{
-          backgroundColor: theme == "dark" ? "#121212" : "#F2F7FF",
+          backgroundColor: colorScheme == "dark" ? "#121212" : "#F2F7FF",
         }}
         screenOptions={{
           headerBackgroundContainerStyle: {
-            backgroundColor: theme == "dark" ? "#121212" : "white",
+            borderColor: "red",
+            backgroundColor: colorScheme == "dark" ? "#121212S" : "white",
           },
           headerShown: false,
-          tabBarActiveTintColor:
-            theme == "dark"
-              ? "white"
-              : theme == "BlackWhite"
-                ? "black"
-                : "#2f2d51",
+          tabBarActiveTintColor: colorScheme == "dark" ? "white" : "#2f2d51",
           tabBarInactiveTintColor: "gray",
         }}
       >
@@ -46,8 +42,7 @@ export default function TabLayout() {
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              paddingTop: 2,
-              backgroundColor: theme == "dark" ? "#121212" : "white",
+              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
@@ -67,7 +62,7 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: theme == "dark" ? "#121212" : "white",
+              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <MaterialIcons
@@ -87,7 +82,7 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: theme == "dark" ? "#121212" : "white",
+              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
@@ -107,7 +102,7 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: theme == "dark" ? "#121212" : "white",
+              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
@@ -127,7 +122,7 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: theme == "dark" ? "#121212" : "white",
+              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons

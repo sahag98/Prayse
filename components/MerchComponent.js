@@ -15,7 +15,7 @@ import merch from "../assets/merch.png";
 <AntDesign name="rightcircleo" size={24} color="black" />;
 const MerchComponent = ({ colorScheme, theme }) => {
   return (
-    <View className="flex-1 dark:bg-[#212121] bg-[#b7d3ff] mb-4 p-[10px] rounded-lg border-[#474747] border-2">
+    <View className="flex-1 dark:bg-[#212121] bg-[#b7d3ff] mb-4 p-[10px] rounded-lg dark:border-[#474747] dark:border-2">
       <View
         className="w-full justify-between items-center flex-1"
         style={{
