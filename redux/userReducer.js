@@ -165,6 +165,7 @@ export const userSlice = createSlice({
     },
     deletePreviousDayItems: (state, action) => {
       const { yesterday } = action.payload;
+      console.log("yesterday: ", yesterday);
       const currentDate = new Date().toLocaleDateString().split("T")[0];
       const dateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === yesterday
@@ -175,6 +176,7 @@ export const userSlice = createSlice({
       );
 
       if (dateIndex >= 0) {
+        console.log("should delete all items");
         state.completedItems[dateIndex].items.length = 0;
       }
 

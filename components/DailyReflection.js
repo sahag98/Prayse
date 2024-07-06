@@ -3,7 +3,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  useIsFocused,
+  useNavigation,
+  useNavigationState,
+} from "@react-navigation/native";
 
 import {
   addtoCompletedItems,
@@ -24,10 +28,13 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
     (state) => state.user.alreadyEnteredGiveaway
   );
   const dispatch = useDispatch();
-
+  const navigationState = useNavigationState((state) => state);
+  const isOnHomeScreen =
+    navigationState.routes[navigationState.index].name === "Home";
   useEffect(() => {
+    console.log("clearing previous day");
     clearPreviousDayCompletion();
-  }, [isFocused]);
+  }, [isFocused, isOnHomeScreen]);
 
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
@@ -62,10 +69,6 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
     //   .split("T")[0];
 
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
-
-    if (appStreak === 3) {
-      console.log("You are entering the giveaway!!");
-    }
   }
 
   return (

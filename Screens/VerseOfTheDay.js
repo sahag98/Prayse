@@ -71,7 +71,7 @@ const VerseOfTheDay = ({ route }) => {
     dispatch(
       addToFavorites({
         verse,
-      }),
+      })
     );
   };
 

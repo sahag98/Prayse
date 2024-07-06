@@ -72,6 +72,8 @@ import {
   StyledInput,
   WelcomeContainer,
 } from "../styles/appStyles";
+import { StatusBar } from "expo-status-bar";
+
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -202,7 +204,7 @@ const Welcome = ({ navigation }) => {
         .select("isUpdateAvailable");
 
       if (update[0].isUpdateAvailable != nativeApplicationVersion.toString()) {
-        // setIsUpdateAvailable(true);
+        setIsUpdateAvailable(true);
       } else {
         setIsUpdateAvailable(false);
       }
@@ -522,11 +524,21 @@ const Welcome = ({ navigation }) => {
     "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  useEffect(() => {
     if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  // if (!loaded && !error) {
+  //   return null;
+  // }
+
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded || fontError) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {
     return null;
@@ -538,7 +550,6 @@ const Welcome = ({ navigation }) => {
 
   return (
     <WelcomeContainer
-      onLayout={onLayoutRootView}
       style={
         theme == "dark"
           ? {
@@ -547,7 +558,7 @@ const Welcome = ({ navigation }) => {
               // flex: 1,
               // alignItems: "center",
 
-              // backgroundColor: "#121212",
+              backgroundColor: "#121212",
             }
           : theme == "BlackWhite"
             ? {
@@ -565,6 +576,7 @@ const Welcome = ({ navigation }) => {
               }
       }
     >
+      <StatusBar style={theme == "dark" ? "light" : "dark"} />
       <View
         style={{
           alignItems: "center",

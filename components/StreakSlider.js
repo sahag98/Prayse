@@ -49,7 +49,7 @@ const StreakSlider = ({
 
   const completedItems = useSelector((state) => state.user.completedItems);
   const PercentValue = useSelector((state) => state.user.PercentValue);
-  console.log(isShowingGiveawayModal);
+  // console.log(isShowingGiveawayModal);
   const isShowingDonationModal = useSelector(
     (state) => state.user.isShowingDonationModal
   );
@@ -63,13 +63,13 @@ const StreakSlider = ({
   useEffect(() => {
     // dispatch(setNeededValues());
     // dispatch(resetCongrats());
-    console.log(
-      "checking:   ",
-      completedItems.length,
-      completedItems[0]?.items?.length,
-      isShowingCongratsModal,
-      isOnHomeScreen
-    );
+    // console.log(
+    //   "checking:   ",
+    //   completedItems.length,
+    //   completedItems[0]?.items?.length,
+    //   isShowingCongratsModal,
+    //   isOnHomeScreen
+    // );
     if (
       completedItems.length === 1 &&
       completedItems[0].items.length === 3 &&
