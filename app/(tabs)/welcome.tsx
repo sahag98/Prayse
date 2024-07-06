@@ -43,6 +43,7 @@ import StreakSlider from "@components/StreakSlider";
 import { Greeting } from "@components/welcome/greeting";
 
 import NewFeaturesModal from "@modals/NewFeaturesModal";
+import UpdateModal from "@modals/UpdateModal";
 
 import config from "@config";
 import { useSupabase } from "@context/useSupabase";
@@ -591,17 +592,12 @@ const WelcomeScreen = () => {
         <Greeting theme={theme} />
 
         <View className="relative flex-row items-center">
-          {/* <UpdateModal
+          <UpdateModal
             theme={theme}
             isUpdateAvailable={isUpdateAvailable}
             setIsUpdateAvailable={setIsUpdateAvailable}
           />
-          <DonationModal
-            donationModal={donationModal}
-            setDonationModal={setDonationModal}
-            theme={theme}
-            setIsReminderOn={setIsReminderOff}
-          /> */}
+
           <View className="flex items-center flex-row">
             <TouchableOpacity
               onPress={() => setIsShowingStreak((prev) => !prev)}
