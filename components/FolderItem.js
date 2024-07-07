@@ -26,7 +26,7 @@ import {
   StyledInput,
 } from "../styles/appStyles";
 
-const FolderItem = ({ item, theme, navigation }) => {
+const FolderItem = ({ colorScheme, item, theme, navigation }) => {
   const dispatch = useDispatch();
   const [openEdit, setOpenEdit] = useState(false);
   const [newFolderName, setNewFolderName] = useState(item.name);
@@ -57,7 +57,7 @@ const FolderItem = ({ item, theme, navigation }) => {
       editFolderName({
         name: newFolderName,
         id,
-      }),
+      })
     );
     setOpenEdit(false);
   }
@@ -70,160 +70,38 @@ const FolderItem = ({ item, theme, navigation }) => {
     <TouchableOpacity onPress={() => handleOpen(item)} key={item.id}>
       <View
         style={
-          theme === "dark"
+          colorScheme === "dark"
             ? [styles.containerDark, styles.elevationDark]
-            : theme === "BlackWhite"
-              ? [styles.containerBlack, styles.elevationBlack]
-              : styles.container
+            : styles.container
         }
       >
-        <View
-          style={{
-            display: "flex",
-            position: "relative",
-            flex: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              display: "flex",
-              width: "100%",
-              flexDirection: "row",
-
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: theme === "dark" ? "white" : "#2f2d51",
-                fontSize: 18,
-                marginVertical: 5,
-                maxWidth: "90%",
-                fontFamily: "Inter-Bold",
-              }}
-            >
+        <View className="relative flex-1 justify-between">
+          <View className="w-full flex-row justify-between items-center">
+            <Text className="text-xl dark:text-white  text-[#2f2d51] my-1 max-w-[90%] font-inter font-bold">
               {item.name}
             </Text>
-            <AntDesign
-              name="folder1"
-              size={28}
-              color={theme === "BlackWhite" ? "white" : "#e8bb4e"}
-            />
+            <AntDesign name="folder1" size={28} color={"#e8bb4e"} />
           </View>
           {prayers?.length === 0 ? (
             <View>
-              <Text
-                style={{
-                  color: theme === "dark" ? "white" : "#2f2d51",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 12,
-                }}
-              >
-                No prayers yet!
+              <Text className="font-inter text-sm dark:text-white text-[#2f2d51]">
+                No prayers yet.
               </Text>
             </View>
           ) : (
             <FlatList
               data={prayers?.slice(0, 2)}
               keyExtractor={(item) => item.id}
-              style={{ gap: 5 }}
+              className="gap-1"
               renderItem={({ item }) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-                      fontFamily: "Inter-Regular",
-                      fontSize: 12,
-                    }}
-                  >
+                <View className="flex-row items-center">
+                  <Text className="dark:text-[#d2d2d2] text-[#2f2d51] text-sm">
                     {truncateWords(item.prayer)}
                   </Text>
                 </View>
               )}
             />
           )}
-
-          <Modal
-            animationType="fade"
-            transparent
-            visible={openEdit}
-            onRequestClose={handleCloseEdit}
-            statusBarTranslucent
-          >
-            <KeyboardAvoidingView
-              style={{ flex: 1 }}
-              behavior={Platform.OS === "ios" ? "padding" : "padding"}
-            >
-              <ModalContainer
-                style={
-                  theme === "dark"
-                    ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-                    : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-                }
-              >
-                <ModalView
-                  style={
-                    theme === "dark"
-                      ? { backgroundColor: "#212121" }
-                      : { backgroundColor: "#93D8F8" }
-                  }
-                >
-                  <ModalIcon>
-                    <HeaderTitle
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontFamily: "Inter-Bold",
-                              fontSize: 18,
-                              color: "white",
-                            }
-                          : { fontSize: 18, fontFamily: "Inter-Bold" }
-                      }
-                    >
-                      Change folder name
-                    </HeaderTitle>
-                  </ModalIcon>
-                  <StyledInput
-                    style={theme === "dark" ? styles.inputDark : styles.input}
-                    placeholder="Enter new folder name"
-                    placeholderTextColor="white"
-                    selectionColor="white"
-                    autoFocus
-                    onChangeText={(text) => setNewFolderName(text)}
-                    value={newFolderName}
-                    onSubmitEditing={(e) => {
-                      e.key === "Enter" && e.preventDefault();
-                    }}
-                  />
-                  <ModalActionGroup>
-                    <ModalAction
-                      color="white"
-                      onPress={() => setOpenEdit(false)}
-                    >
-                      <AntDesign
-                        name="close"
-                        size={28}
-                        color={theme === "dark" ? "black" : "#2F2D51"}
-                      />
-                    </ModalAction>
-                    <ModalAction
-                      color={theme === "dark" ? "#121212" : "#2F2D51"}
-                      onPress={() => editFolder(item.id)}
-                    >
-                      <AntDesign name="check" size={28} color="white" />
-                    </ModalAction>
-                  </ModalActionGroup>
-                </ModalView>
-              </ModalContainer>
-            </KeyboardAvoidingView>
-          </Modal>
         </View>
       </View>
     </TouchableOpacity>

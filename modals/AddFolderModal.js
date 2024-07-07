@@ -20,6 +20,7 @@ import {
 
 const AddFolderModal = ({
   folderName,
+  colorScheme,
   setFolderName,
   addVisible,
   handleCloseModal,
@@ -40,14 +41,14 @@ const AddFolderModal = ({
       >
         <ModalContainer
           style={
-            theme == "dark"
+            colorScheme == "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              colorScheme == "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#b7d3ff" }
             }
@@ -55,7 +56,7 @@ const AddFolderModal = ({
             <ModalIcon>
               <HeaderTitle
                 style={
-                  theme == "dark"
+                  colorScheme == "dark"
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 20,
@@ -66,21 +67,15 @@ const AddFolderModal = ({
               >
                 Create Folder
               </HeaderTitle>
-              {/* <AntDesign
-                style={{ marginTop: 10 }}
-                name="edit"
-                size={30}
-                color={theme == "dark" ? "white" : "#2F2D51"}
-              /> */}
             </ModalIcon>
             <TextInput
-              // ref={folderInputRef}
-              style={theme == "dark" ? styles.inputDark : styles.input}
+              className=""
+              style={colorScheme == "dark" ? styles.inputDark : styles.input}
               placeholder="Enter folder name"
               placeholderTextColor="white"
               selectionColor="white"
               textAlignVertical="center"
-              // autoFocus={true}
+              autoFocus={true}
               onChangeText={(text) => setFolderName(text)}
               value={folderName}
               onSubmitEditing={(e) => {
@@ -91,10 +86,14 @@ const AddFolderModal = ({
 
             <ModalActionGroup>
               <ModalAction color="white" onPress={() => setAddVisible(false)}>
-                <AntDesign name="close" size={28} color="#2F2D51" />
+                <AntDesign
+                  name="close"
+                  size={28}
+                  color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
+                />
               </ModalAction>
               <ModalAction
-                color={theme == "dark" ? "#121212" : "#2F2D51"}
+                color={colorScheme == "dark" ? "#121212" : "#2F2D51"}
                 onPress={addNewFolder}
               >
                 <AntDesign name="check" size={28} color="white" />
@@ -117,9 +116,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     marginTop: 10,
-    // alignItems: "center",
-    // alignSelf: "center",
-    // textAlignVertical: "center",
     fontSize: 14,
     fontFamily: "Inter-Regular",
     backgroundColor: "#121212",

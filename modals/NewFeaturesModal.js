@@ -13,7 +13,12 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import googleIcon from "../assets/google-icon.png";
 import { ModalContainer } from "../styles/appStyles";
-const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
+const NewFeaturesModal = ({
+  colorScheme,
+  theme,
+  setFeatureVisible,
+  featureVisible,
+}) => {
   const [page, setPage] = useState(0);
 
   const ref = useRef();
@@ -39,163 +44,46 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
     >
       <ModalContainer
         style={
-          theme === "dark"
+          colorScheme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
         <Animated.View
           entering={FadeIn.duration(500)}
-          style={
-            theme === "dark"
-              ? {
-                  borderRadius: 5,
-                  position: "relative",
-                  padding: 15,
-                  width: "90%",
-                  justifyContent: "space-between",
-                  backgroundColor: "#212121",
-                }
-              : {
-                  borderRadius: 5,
-                  position: "relative",
-                  padding: 15,
-                  width: "90%",
-                  justifyContent: "space-between",
-                  backgroundColor: "#b7d3ff",
-                }
-          }
+          className="relative w-[90%] p-4 justify-between dark:bg-[#212121] bg-[#b7d3ff] rounded-lg"
         >
-          <Text
-            style={
-              theme === "dark"
-                ? {
-                    textAlign: "center",
-                    fontFamily: "Inter-Black",
-                    color: "white",
-                    fontSize: 25,
-                    letterSpacing: 1,
-                    marginBottom: 10,
-                  }
-                : {
-                    textAlign: "center",
-                    fontFamily: "Inter-Black",
-                    color: "#2f2d51",
-                    fontSize: 25,
-                    marginBottom: 10,
-                  }
-            }
-          >
+          <Text className="text-center font-inter text-2xl font-extrabold dark:text-white text-[#2f2d51] mb-2">
             What's new!
           </Text>
           <View ref={ref}>
             {page === 0 && (
-              <View style={{ alignItems: "center", gap: 10 }}>
+              <View className="items-center gap-2">
                 <MaterialCommunityIcons
                   name="hands-pray"
                   size={100}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
+                  color={colorScheme == "dark" ? "white" : "#2f2d51"}
                 />
 
-                <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          fontSize: 22,
-                          color: "white",
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          fontSize: 22,
-                          color: "#2f2d51",
-                        }
-                  }
-                >
+                <Text className="font-inter font-bold text-2xl dark:text-white text-[#2f2d51]">
                   Streaks
                 </Text>
-                <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Regular",
-                          fontSize: 15,
-                          color: "#dbdbdb",
-                        }
-                      : {
-                          fontFamily: "Inter-Regular",
-                          fontSize: 15,
-                          color: "#2f2d51",
-                        }
-                  }
-                >
+                <Text className="dark:text-[#dbdbdb] text-[#2f2d51] font-inter font-normal">
                   Go through the daily devotions every day to receive a free
                   Prayse merch item!
                 </Text>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    width: "100%",
-                    marginTop: 10,
-                    justifyContent: "space-between",
-                  }}
-                >
+                <View className="flex-row items-center w-full mt-2 justify-between">
                   <TouchableOpacity
-                    style={
-                      theme === "dark"
-                        ? {
-                            width: "45%",
-                            borderColor: "#A5C9FF",
-                            borderWidth: 1,
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                        : {
-                            width: "45%",
-                            backgroundColor: "#caecfc",
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                    }
+                    className="w-[45%] dark:border bg-[#caecfc] dark:border-[#a5c9ff] p-4 rounded-lg justify-center items-center"
                     onPress={StartOver}
                   >
-                    <Text
-                      style={
-                        theme === "dark"
-                          ? { color: "white", fontFamily: "Inter-Bold" }
-                          : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                      }
-                    >
+                    <Text className="dark:text-white font-inter font-bold">
                       Exit
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={
-                      theme === "dark"
-                        ? {
-                            width: "45%",
-                            backgroundColor: "#A5C9FF",
-                            borderWidth: 1,
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                        : {
-                            width: "45%",
-                            backgroundColor: "#2f2d51",
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                    }
+                    className="w-[45%] dark:border bg-[#2f2d51] dark:bg-[#a5c9ff] p-4 rounded-lg justify-center items-center"
                     onPress={onNextPage}
                   >
                     <Text
@@ -212,121 +100,35 @@ const NewFeaturesModal = ({ theme, setFeatureVisible, featureVisible }) => {
               </View>
             )}
             {page === 1 && (
-              <View style={{ alignItems: "center", gap: 10 }}>
+              <View className="items-center gap-2">
                 <Feather
                   name="layout"
                   size={100}
-                  color={theme === "dark" ? "white" : "#2f2d51"}
+                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
                 />
 
-                <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          fontSize: 22,
-                          color: "white",
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          fontSize: 22,
-                          color: "#2f2d51",
-                        }
-                  }
-                >
+                <Text className="font-inter font-bold text-2xl dark:text-white text-[#2f2d51]">
                   Improved UI
                 </Text>
-                <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Regular",
-                          fontSize: 15,
-                          color: "#dbdbdb",
-                        }
-                      : {
-                          fontFamily: "Inter-Regular",
-                          fontSize: 15,
-                          color: "#2f2d51",
-                        }
-                  }
-                >
+                <Text className="dark:text-[#dbdbdb] text-[#2f2d51] font-inter font-normal">
                   Updated layout of Home and Prayer screen for better
                   readability and usability.
                 </Text>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    width: "100%",
-                    marginTop: 10,
-                    justifyContent: "space-between",
-                  }}
-                >
+                <View className="flex-row items-center w-full mt-2 justify-between">
                   <TouchableOpacity
-                    style={
-                      theme === "dark"
-                        ? {
-                            width: "45%",
-                            borderColor: "#A5C9FF",
-                            borderWidth: 1,
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                        : {
-                            width: "45%",
-                            backgroundColor: "#caecfc",
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                    }
+                    className="w-[45%] dark:border bg-[#caecfc] dark:border-[#a5c9ff] p-4 rounded-lg justify-center items-center"
                     onPress={StartOver}
                   >
-                    <Text
-                      style={
-                        theme === "dark"
-                          ? { color: "white", fontFamily: "Inter-Bold" }
-                          : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                      }
-                    >
+                    <Text className="dark:text-white font-inter font-bold">
                       Exit
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={
-                      theme === "dark"
-                        ? {
-                            width: "45%",
-                            backgroundColor: "#A5C9FF",
-                            borderWidth: 1,
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                        : {
-                            width: "45%",
-                            backgroundColor: "#2f2d51",
-                            padding: 15,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }
-                    }
+                    className="w-[45%] dark:border bg-[#2f2d51] dark:bg-[#a5c9ff] p-4 rounded-lg justify-center items-center"
                     onPress={onNextPage}
                   >
-                    <Text
-                      style={
-                        theme === "dark"
-                          ? { color: "#212121", fontFamily: "Inter-Bold" }
-                          : { color: "white", fontFamily: "Inter-Bold" }
-                      }
-                    >
+                    <Text className="dark:text-[#212121] text-white font-inter font-bold">
                       Next
                     </Text>
                   </TouchableOpacity>

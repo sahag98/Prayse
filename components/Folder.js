@@ -25,11 +25,11 @@ import { HeaderTitle, ListView2, TodoText } from "../styles/appStyles";
 import AnsweredPrayer from "./AnsweredPrayer";
 import FolderItem from "./FolderItem";
 
-const Folder = ({ navigation, todos }) => {
+const Folder = ({ colorScheme, navigation, todos }) => {
   const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
+    (state) => state.answered.answeredPrayers
   );
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
@@ -74,7 +74,7 @@ const Folder = ({ navigation, todos }) => {
   answeredPrayers?.forEach((prayer) => {
     const date = prayer.answeredDate;
     const sectionIndex = sections.findIndex(
-      (section) => section.title === date,
+      (section) => section.title === date
     );
     if (sectionIndex === -1) {
       sections.push({
@@ -118,7 +118,7 @@ const Folder = ({ navigation, todos }) => {
         id: uuid.v4(),
         name: folderName,
         prayers: [],
-      }),
+      })
     );
     setTimeout(() => {
       setAddVisible(false);
@@ -131,23 +131,7 @@ const Folder = ({ navigation, todos }) => {
   const renderSectionHeader = ({ section }) => {
     return (
       <View>
-        <Text
-          style={
-            theme === "dark"
-              ? {
-                  fontFamily: "Inter-Medium",
-                  fontSize: 15,
-                  marginBottom: 10,
-                  color: "#bebebe",
-                }
-              : {
-                  fontFamily: "Inter-Medium",
-                  fontSize: 15,
-                  marginBottom: 10,
-                  color: "#36345e",
-                }
-          }
-        >
+        <Text className="font-inter font-medium text-lg mb-2 dark:text-[#bebebe] text-[#36345e]">
           {section.title}
         </Text>
       </View>
@@ -161,6 +145,7 @@ const Folder = ({ navigation, todos }) => {
   const renderItem = ({ item }) => {
     return (
       <FolderItem
+        colorScheme={colorScheme}
         item={item}
         theme={theme}
         navigation={navigation}
@@ -173,31 +158,16 @@ const Folder = ({ navigation, todos }) => {
   };
 
   return (
-    <View style={{ position: "relative", flex: 1 }}>
-      <View
-        style={{
-          display: "flex",
-          marginVertical: 15,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <View className="relative flex-1">
+      <View className="my-4 flex-row justify-between items-center">
         {folderClicked ? (
           <TouchableOpacity
-            style={{
-              width: "50%",
-              justifyContent: "center",
-              backgroundColor: theme === "dark" ? "#3b3b3b" : "#d1e3ff",
-              borderRadius: 20,
-              paddingVertical: 5,
-              alignItems: "center",
-            }}
+            className="w-1/2 dark:bg-[#3b3b3b] bg-[#d1e3ff] justify-center items-center rounded-xl py-3"
             onPress={() => setFolderClicked(true)}
           >
             <HeaderTitle
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -207,18 +177,12 @@ const Folder = ({ navigation, todos }) => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={{
-              width: "50%",
-              justifyContent: "center",
-              borderRadius: 20,
-              paddingVertical: 5,
-              alignItems: "center",
-            }}
+            className="w-1/2 rounded-xl py-3 items-center justify-center"
             onPress={() => setFolderClicked(true)}
           >
             <HeaderTitle
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -229,17 +193,12 @@ const Folder = ({ navigation, todos }) => {
         )}
         {folderClicked ? (
           <TouchableOpacity
-            style={{
-              width: "50%",
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            className="w-1/2 items-center"
             onPress={() => setFolderClicked(false)}
           >
             <HeaderTitle
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? { fontFamily: "Inter-Bold", fontSize: 18, color: "#979797" }
                   : { fontFamily: "Inter-Bold", fontSize: 18, color: "#2F2D51" }
               }
@@ -249,19 +208,12 @@ const Folder = ({ navigation, todos }) => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={{
-              width: "50%",
-              justifyContent: "center",
-              backgroundColor: theme === "dark" ? "#3b3b3b" : "#d1e3ff",
-              borderRadius: 20,
-              paddingVertical: 5,
-              alignItems: "center",
-            }}
+            className="w-1/2 dark:bg-[#3b3b3b] bg-[#d1e3ff] justify-center items-center rounded-xl py-3"
             onPress={() => setFolderClicked(false)}
           >
             <HeaderTitle
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? {
                       fontFamily: "Inter-Bold",
                       fontSize: 18,
@@ -304,30 +256,18 @@ const Folder = ({ navigation, todos }) => {
         </ListView2>
       )}
       {folders.length === 0 && folderClicked && (
-        <View
-          style={{
-            flex: 1,
-
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 90,
-          }}
-        >
+        <View className="flex-1 justify-center items-center mt-28">
           <AntDesign
             name="folder1"
             size={60}
-            color={theme === "dark" ? "#e8bb4e" : "#2f2d51"}
+            color={colorScheme === "dark" ? "#e8bb4e" : "#2f2d51"}
           />
-          <TodoText style={theme === "dark" ? styles.pressDark : styles.press}>
+          <TodoText
+            style={colorScheme === "dark" ? styles.pressDark : styles.press}
+          >
             Create a prayer folder.
           </TodoText>
-          <Text
-            style={{
-              color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-              fontSize: 12,
-              fontFamily: "Inter-Regular",
-            }}
-          >
+          <Text className="font-inter dark:text-[#d2d2d2] text-[#2f2d51]">
             (These folders are only visible to you.)
           </Text>
         </View>
@@ -345,26 +285,14 @@ const Folder = ({ navigation, todos }) => {
             onScroll={onScroll}
             renderItem={renderItem}
             numColumns={2}
-            ListFooterComponent={() => (
-              <View
-                style={
-                  theme === "dark"
-                    ? {
-                        height: 80,
-                      }
-                    : {
-                        height: 80,
-                      }
-                }
-              />
-            )}
+            ListFooterComponent={() => <View className="h-20" />}
             columnWrapperStyle={{
               justifyContent: "space-between",
               columnGap: 8,
             }}
           />
 
-          <View style={styles.actionButtons}>
+          <View className="absolute w-full flex-row justify-between items-center bottom-5 h-16">
             <AnimatedFAB
               icon="plus"
               label="Create Folder"
@@ -375,31 +303,12 @@ const Folder = ({ navigation, todos }) => {
               visible={fabvisible}
               animateFrom="left"
               iconMode="dynamic"
-              color={theme === "dark" ? "#121212" : "white"}
+              color={colorScheme === "dark" ? "#121212" : "white"}
               style={
-                theme === "dark"
-                  ? styles.fabStyleDark
-                  : theme === "BlackWhite"
-                    ? styles.fabStyleBlack
-                    : styles.fabStyle
+                colorScheme === "dark" ? styles.fabStyleDark : styles.fabStyle
               }
             />
             <View>
-              {showNewBadge ? (
-                <Text
-                  style={{
-                    color: "red",
-                    alignSelf: "flex-start",
-                    position: "absolute",
-                    top: -20,
-                    fontFamily: "Inter-Medium",
-                    right: 5,
-                  }}
-                >
-                  New
-                </Text>
-              ) : null}
-
               <AnimatedFAB
                 icon="hands-pray"
                 label="Prayer Room"
@@ -410,13 +319,11 @@ const Folder = ({ navigation, todos }) => {
                 visible={fabvisible}
                 animateFrom="right"
                 iconMode="dynamic"
-                color={theme === "dark" ? "white" : "#2f2d51"}
+                color={colorScheme === "dark" ? "white" : "#2f2d51"}
                 style={
-                  theme === "dark"
+                  colorScheme === "dark"
                     ? [styles.fabStyleDark, { backgroundColor: "#212121" }]
-                    : theme === "BlackWhite"
-                      ? styles.fabStyleBlack
-                      : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]
+                    : [styles.fabStyle, { backgroundColor: "#b7d3ff" }]
                 }
               />
             </View>
@@ -456,6 +363,7 @@ const Folder = ({ navigation, todos }) => {
       <AddFolderModal
         addVisible={addVisible}
         addNewFolder={addNewFolder}
+        colorScheme={colorScheme}
         theme={theme}
         folderName={folderName}
         setAddVisible={setAddVisible}
@@ -497,7 +405,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textAlign: "center",
     color: "#2F2D51",
-    fontSize: 17,
+    fontSize: 18,
   },
   pressDark: {
     fontFamily: "Inter-Bold",
@@ -505,7 +413,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
     color: "white",
-    fontSize: 17,
+    fontSize: 18,
   },
   actionButtons: {
     position: "absolute",

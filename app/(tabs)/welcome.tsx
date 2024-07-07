@@ -775,6 +775,7 @@ const WelcomeScreen = () => {
         </View>
       </View>
       <NewFeaturesModal
+        colorScheme={colorScheme}
         theme={theme}
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
