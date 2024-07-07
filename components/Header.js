@@ -25,15 +25,15 @@ import {
   Feather,
   Ionicons,
 } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
 
 import { FOLDER_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import DeleteFolder from "./DeleteFolder";
 import EditFolder from "./EditFolder";
+import { Link } from "expo-router";
 
-const Header = ({ folderName, folderId, theme }) => {
+const Header = ({ colorScheme, folderName, folderId, theme }) => {
   const [isShowingModal, setIsShowingModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -61,21 +61,6 @@ const Header = ({ folderName, folderId, theme }) => {
     }
   };
 
-  const [fontsLoaded] = useFonts({
-    "Inter-Black": require("../assets/fonts/Inter-Black.ttf"),
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-  });
-
-  const BusyIndicator = () => {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="white" />
-      </View>
-    );
-  };
-
   const slideUpValue = useSharedValue(300);
 
   function doSlideUpAnimation() {
@@ -96,34 +81,23 @@ const Header = ({ folderName, folderId, theme }) => {
     transform: [{ translateY: slideUpValue.value }],
   }));
 
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
-  }
-
   return (
     <>
       <HeaderView>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Link to={`/${FOLDER_SCREEN}`}>
-              <View style={{ marginRight: 10 }}>
+        <View className="flex-row items-center justify-between w-full">
+          <View className="flex-row items-center gap-2">
+            <Link asChild href={`/${FOLDER_SCREEN}`}>
+              <View className="mr-1">
                 <Ionicons
                   name="chevron-back"
                   size={30}
-                  color={theme === "light" ? "#2f2d51" : "white"}
+                  color={colorScheme === "light" ? "#2f2d51" : "white"}
                 />
               </View>
             </Link>
             <HeaderTitle
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? { fontFamily: "Inter-Bold", color: "white" }
                   : { fontFamily: "Inter-Bold", color: "#2F2D51" }
               }
@@ -134,7 +108,7 @@ const Header = ({ folderName, folderId, theme }) => {
               name="folderopen"
               size={28}
               style={{ marginLeft: 10 }}
-              color={theme === "dark" ? "#e8bb4e" : "#f1d592"}
+              color={colorScheme === "dark" ? "#e8bb4e" : "#f1d592"}
             />
           </View>
           <Entypo
@@ -144,7 +118,7 @@ const Header = ({ folderName, folderId, theme }) => {
               doSlideUpAnimation();
             }}
             size={20}
-            color={theme === "dark" ? "white" : "#2F2D51"}
+            color={colorScheme === "dark" ? "white" : "#2F2D51"}
           />
         </View>
 
@@ -156,61 +130,30 @@ const Header = ({ folderName, folderId, theme }) => {
           statusBarTranslucent
         >
           <View
-            style={
-              theme === "dark"
-                ? {
-                    flex: 1,
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  }
-                : {
-                    flex: 1,
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  }
-            }
+            className="flex-1 justify-end items-center"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
+            }}
           >
             <Animated.View
+              className="p-2 w-[95%] gap-4 rounded-lg"
               style={
-                theme === "dark"
+                colorScheme === "dark"
                   ? [
                       animatedSlideUpStyle,
                       {
                         backgroundColor: "rgba(33, 33, 33, 0.7)",
-                        width: "95%",
-                        borderRadius: 10,
-                        padding: 10,
-                        gap: 10,
                       },
                     ]
                   : [
                       {
                         backgroundColor: "rgba(183, 211, 255,0.5)",
-                        width: "95%",
-                        borderRadius: 10,
-                        padding: 10,
-                        gap: 10,
                       },
                     ]
               }
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 5,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Bold",
-                    fontSize: 16,
-                    color: theme === "dark" ? "white" : "#2f2d51",
-                  }}
-                >
+              <View className="flex-row items-center justify-between mb-1">
+                <Text className="font-inter font-bold text-xl dark:text-white text-[#2f2d51]">
                   Folder Settings
                 </Text>
                 <AntDesign
@@ -221,7 +164,7 @@ const Header = ({ folderName, folderId, theme }) => {
                   style={{ alignSelf: "flex-end" }}
                   name="closecircleo"
                   size={24}
-                  color={theme === "dark" ? "white" : "#2f2d51"}
+                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
                 />
               </View>
 
@@ -229,60 +172,30 @@ const Header = ({ folderName, folderId, theme }) => {
                 onPress={() => {
                   setIsShowingModal(false);
                   setOpenEdit(true);
-                  console.log("opening edit");
                 }}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: theme === "dark" ? "#2e2e2e" : "#b7d3ff",
-                  borderRadius: 10,
-                  justifyContent: "space-between",
-                  padding: 10,
-                }}
+                className="flex-row items-center rounded-lg justify-between p-3 dark:bg-[#2e2e2e] bg-[#b7d3ff]"
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "Inter-Medium",
-
-                    color: theme === "dark" ? "white" : "#2f2d51",
-                  }}
-                >
+                <Text className="dark:text-white text-[#2f2d51] text-center font-inter font-medium">
                   Rename Folder
                 </Text>
                 <Feather
                   name="edit"
                   size={22}
-                  color={theme === "dark" ? "white" : "#2f2d51"}
+                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
                 />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={onShare}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: theme === "dark" ? "#2e2e2e" : "#b7d3ff",
-                  borderRadius: 10,
-                  justifyContent: "space-between",
-                  padding: 10,
-                  marginBottom: 10,
-                }}
+                className="flex-row mb-3 items-center rounded-lg justify-between p-3 dark:bg-[#2e2e2e] bg-[#b7d3ff]"
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "Inter-Medium",
-
-                    color: theme === "dark" ? "white" : "#2f2d51",
-                  }}
-                >
+                <Text className="dark:text-white text-[#2f2d51] text-center font-inter font-medium">
                   Share
                 </Text>
 
                 <Feather
                   name="share"
                   size={21}
-                  color={theme === "dark" ? "white" : "#2f2d51"}
+                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -290,23 +203,9 @@ const Header = ({ folderName, folderId, theme }) => {
                   setOpenDelete(true);
                   setIsShowingModal(false);
                 }}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: theme === "dark" ? "#270000" : "#ffd8d8",
-                  borderRadius: 10,
-                  justifyContent: "space-between",
-                  padding: 14,
-                }}
+                className="flex-row items-center justify-between p-4 rounded-lg dark:bg-[#270000] bg-[#ffd8d8] "
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "Inter-Bold",
-
-                    color: theme === "dark" ? "#ff3b3b" : "#ff3b3b",
-                  }}
-                >
+                <Text className="text-center font-inter font-bold text-[#ff3b3b]">
                   Delete
                 </Text>
                 <EvilIcons name="trash" size={24} color="#ff3b3b" />
@@ -318,6 +217,7 @@ const Header = ({ folderName, folderId, theme }) => {
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
           folderName={folderName}
+          colorScheme={colorScheme}
           theme={theme}
           folderId={folderId}
         />
@@ -325,6 +225,7 @@ const Header = ({ folderName, folderId, theme }) => {
           openDelete={openDelete}
           setOpenDelete={setOpenDelete}
           theme={theme}
+          colorScheme={colorScheme}
           folderId={folderId}
         />
       </HeaderView>

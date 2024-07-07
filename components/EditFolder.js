@@ -22,7 +22,14 @@ import {
   StyledInput,
 } from "../styles/appStyles";
 
-const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
+const EditFolder = ({
+  colorScheme,
+  folderName,
+  openEdit,
+  setOpenEdit,
+  theme,
+  folderId,
+}) => {
   console.log("folder name: ", folderName);
   const [newFolderName, setNewFolderName] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +46,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
       editFolderName({
         name: newFolderName,
         id,
-      }),
+      })
     );
     navigation.setParams({
       title: newFolderName,
@@ -62,27 +69,14 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
       >
         <View
-          style={
-            theme === "dark"
-              ? {
-                  padding: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flex: 1,
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
-                }
-              : {
-                  padding: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flex: 1,
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
-                }
-          }
+          className="p-2 justify-center items-center flex-1"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          }}
         >
           <ModalView
             style={
-              theme === "dark"
+              colorScheme === "dark"
                 ? { backgroundColor: "#212121" }
                 : { backgroundColor: "#93D8F8" }
             }
@@ -90,20 +84,25 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
             <ModalIcon>
               <HeaderTitle
                 style={
-                  theme === "dark"
+                  colorScheme === "dark"
                     ? {
                         fontFamily: "Inter-Bold",
                         fontSize: 18,
                         color: "white",
+                        marginBottom: 5,
                       }
-                    : { fontSize: 18, fontFamily: "Inter-Bold" }
+                    : {
+                        fontSize: 18,
+                        marginBottom: 5,
+                        fontFamily: "Inter-Bold",
+                      }
                 }
               >
                 Change folder name
               </HeaderTitle>
             </ModalIcon>
             <StyledInput
-              style={theme === "dark" ? styles.inputDark : styles.input}
+              style={colorScheme === "dark" ? styles.inputDark : styles.input}
               placeholder="Enter new folder name"
               placeholderTextColor="white"
               selectionColor="white"
@@ -115,14 +114,7 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
               }}
             />
             {error && (
-              <Text
-                style={{
-                  marginTop: 5,
-                  fontSize: 13,
-                  fontFamily: "Inter-Regular",
-                  color: theme === "dark" ? "red" : "red",
-                }}
-              >
+              <Text className="mt-1 text-sm font-inter text-red-500">
                 {error}
               </Text>
             )}
@@ -138,11 +130,11 @@ const EditFolder = ({ folderName, openEdit, setOpenEdit, theme, folderId }) => {
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme === "dark" ? "black" : "#2F2D51"}
+                  color={colorScheme === "dark" ? "black" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme === "dark" ? "#121212" : "#2F2D51"}
+                color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
                 onPress={() => HandleEditFolder(folderId)}
               >
                 <AntDesign name="check" size={28} color="white" />

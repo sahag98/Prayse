@@ -339,23 +339,10 @@ const Folder = ({ colorScheme, navigation, todos }) => {
         />
       )}
       {!folderClicked && answeredPrayers.length == 0 && (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 10,
-            flex: 1,
-          }}
-        >
+        <View className="items-center justify-center gap-2 flex-1">
           <FontAwesome name="check-circle-o" size={70} color="#00b400" />
-          <Text
-            style={
-              theme === "dark"
-                ? { color: "white", fontSize: 15, fontFamily: "Inter-Medium" }
-                : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Medium" }
-            }
-          >
-            Nothing on the list just yet!
+          <Text className="font-inter font-medium text-lg dark:text-white text-[#2f2d51]">
+            Nothing on the list just yet.
           </Text>
         </View>
       )}
