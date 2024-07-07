@@ -234,7 +234,7 @@ export const ToolTipView = styled.View`
 export const StyledInput = styled.TextInput`
   width: 300px;
   background-color: ${colors.tertiary};
-  padding: 10px;
+  padding: 15px;
   font-size: 14px;
   border-radius: 10px;
   color: ${colors.alternative};

@@ -10,6 +10,7 @@ import { PrayerContainer } from "../styles/appStyles";
 import BottomBox from "./BottomBox";
 import Header from "./Header";
 import ListItems from "./ListItems";
+import { useColorScheme } from "nativewind";
 
 const Home = ({
   navigation,
@@ -19,6 +20,7 @@ const Home = ({
   setoldPrayer,
   folderId,
 }) => {
+  const { colorScheme } = useColorScheme();
   const theme = useSelector((state) => state.user.theme);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,7 +35,7 @@ const Home = ({
   const [answeredAlready, setAnsweredAlready] = useState("");
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
+    (state) => state.answered.answeredPrayers
   );
   const slideUpValue = useRef(new Animated.Value(0)).current;
   const isIOS = Platform.OS === "ios";
@@ -68,7 +70,7 @@ const Home = ({
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
       )
     ) {
       setAnsweredAlready(prayer.id);
@@ -117,7 +119,7 @@ const Home = ({
   return (
     <PrayerContainer
       style={
-        theme === "dark"
+        colorScheme === "dark"
           ? { position: "relative", backgroundColor: "#121212" }
           : { backgroundColor: "#F2F7FF" }
       }
@@ -133,6 +135,7 @@ const Home = ({
         <Header
           folderId={folderId}
           folderName={folderName}
+          colorScheme={colorScheme}
           theme={theme}
           navigation={navigation}
         />

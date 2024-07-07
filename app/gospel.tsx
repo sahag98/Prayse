@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react";
 import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Alert,
@@ -30,15 +31,14 @@ import {
 const Gospel = () => {
   const navigation = useNavigation();
   const theme = useSelector((state: any) => state.user.theme);
-
+  const { colorScheme } = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const Message = [
     {
       id: 1,
       title: "GOD LOVES YOU",
-      content:
-        "Friend, God loves you so much that He sent His only Son for you.",
+      content: "God loves you so much that He sent His only Son for you.",
       verse:
         "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
       chapter: "John 3:16",
@@ -80,19 +80,18 @@ const Gospel = () => {
   ];
 
   const Item = ({ title, verse, chapter, content }) => (
-    <View style={styles.item}>
-      <View>
-        <Text style={theme == "dark" ? styles.titleDark : styles.title}>
-          {title}
-        </Text>
-        <Text style={theme == "dark" ? styles.contentDark : styles.content}>
-          {content}
-        </Text>
-      </View>
-      <Text style={theme == "dark" ? styles.verseDark : styles.verse}>
+    <View className="gap-2 mb-5">
+      <Text className="dark:text-white text-[#2f2d51] font-inter font-bold text-2xl">
+        {title}
+      </Text>
+      <Text className="dark:text-white text-[#2f2d51] font-inter font-medium text-xl">
+        {content}
+      </Text>
+
+      <Text className="dark:text-[#b4b4b4] text-[#2f2d51] font-inter font-medium text-lg">
         "{verse}"
       </Text>
-      <Text style={theme == "dark" ? styles.chapterDark : styles.chapter}>
+      <Text className="dark:text-[#b4b4b4] self-end text-[#2f2d51] font-inter font-medium text-lg">
         - {chapter}
       </Text>
     </View>
@@ -160,32 +159,17 @@ const Gospel = () => {
     return <BusyIndicator />;
   }
   return (
-    <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212" }
-          : { backgroundColor: "#F2F7FF" }
-      }
-    >
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <HeaderView
-          style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-        >
+    <Container className="bg-[#f2f7ff] dark:bg-[#121212]">
+      <View className="flex-row items-center justify-between">
+        <HeaderView className="flex-row items-center gap-1">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons
               name="chevron-back"
               size={30}
-              color={theme == "light" ? "#2f2d51" : "white"}
+              color={colorScheme == "light" ? "#2f2d51" : "white"}
             />
           </TouchableOpacity>
-          <Text style={theme == "dark" ? styles.headingDark : styles.heading}>
+          <Text className="font-inter font-bold text-center text-2xl dark:text-white text-[#2f2d51]">
             Gospel
           </Text>
         </HeaderView>
@@ -196,23 +180,14 @@ const Gospel = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListFooterComponent={() => (
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              marginBottom: 10,
-            }}
-          >
+          <View className=" justify-center mb-[10px]">
             <TouchableOpacity
-              style={theme == "dark" ? styles.buttonDark : styles.button}
+              className="w-full items-center justify-center dark:bg-[#a5c9ff] bg-[#2f2d51] p-4 rounded-lg"
               onPress={() => {
                 setClearModalVisible(true);
               }}
             >
-              <Text
-                style={theme == "dark" ? styles.startedDark : styles.started}
-              >
+              <Text className="font-inter font-bold text-center text-xl dark:text-[#121212] text-white">
                 Take Next Step
               </Text>
             </TouchableOpacity>
@@ -227,63 +202,39 @@ const Gospel = () => {
       >
         <ModalContainer
           style={
-            theme == "dark"
+            colorScheme == "dark"
               ? { backgroundColor: "#121212" }
               : { backgroundColor: "#F2F7FF" }
           }
         >
           <ModalView
             style={
-              theme == "dark"
+              colorScheme == "dark"
                 ? { backgroundColor: "#212121", gap: 5, width: "95%" }
                 : { backgroundColor: "#b7d3ff", gap: 5, width: "95%" }
             }
           >
             <ModalIcon style={{ gap: 5 }}>
-              <Text
-                style={
-                  theme == "dark" ? styles.prayTitleDark : styles.prayTitle
-                }
-              >
+              <Text className="text-center dark:text-white text-[#2f2d51] font-inter font-bold text-2xl mb-3">
                 Pray this Short Prayer
               </Text>
-              <Text style={theme == "dark" ? styles.prayDark : styles.pray}>
+              <Text className="dark:text-white text-[#2f2d51] font-inter font-normal text-lg">
                 Dear God, I recognize that I am a sinner and have been seperated
                 from you. From this point on, I accept you Jesus as my Lord and
                 Savior. Please forgive me from my sins and help me to surrender
                 all areas my life to You.
               </Text>
-              <Text
-                style={
-                  theme == "dark"
-                    ? [styles.prayDark, { fontFamily: "Inter-Medium" }]
-                    : [styles.pray, { fontFamily: "Inter-Medium" }]
-                }
-              >
+              <Text className="dark:text-white text-[#2f2d51] font-inter font-normal text-lg">
                 In Jesus' name I pray, Amen.
               </Text>
             </ModalIcon>
             <ModalActionGroup2>
               <TouchableOpacity
-                style={theme == "dark" ? styles.buttonDark : styles.button}
+                className="dark:bg-[#A5C9FF] items-center bg-[#2f2d51] p-4 rounded-lg w-full"
                 onPress={handleSubmit}
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "#121212",
-                          fontSize: 15,
-                          fontFamily: "Inter-Bold",
-                        }
-                      : {
-                          color: "white",
-                          fontSize: 15,
-                          fontFamily: "Inter-Bold",
-                        }
-                  }
-                >
-                  Just prayed that!
+                <Text className="dark:text-[#121212] text-white font-inter font-bold text-lg">
+                  Amen
                 </Text>
               </TouchableOpacity>
             </ModalActionGroup2>

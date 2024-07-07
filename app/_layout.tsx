@@ -3,6 +3,7 @@ import React from "react";
 import { Buffer } from "buffer";
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
+import { useColorScheme } from "nativewind";
 import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -108,6 +109,8 @@ export default function App() {
     "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
     inter: require("../assets/fonts/inter.ttf"),
   });
+
+  const { colorScheme } = useColorScheme();
 
   React.useEffect(() => {
     if (loaded) {

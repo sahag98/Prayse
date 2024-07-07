@@ -1,11 +1,8 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import { useNavigation } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, View } from "react-native";
+import { useColorScheme } from "nativewind";
 import { useSelector } from "react-redux";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Folder from "../../components/Folder";
 import useIsReady from "../../hooks/useIsReady";
@@ -16,52 +13,22 @@ export default function MainScreen() {
   const theme = useSelector((state: any) => state.user.theme);
   const isReady = useIsReady();
   const [todos, setTodos] = useState([]);
-
-  const BusyIndicator = () => {
-    return (
-      <View
-        style={
-          theme == "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
-      >
-        <ActivityIndicator
-          size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
-        />
-      </View>
-    );
-  };
-
-  const loadTodos = () => {
-    AsyncStorage.getItem("storedTodos")
-      .then((data) => {
-        if (data !== null) {
-          setTodos(JSON.parse(data));
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
-  if (!isReady) {
-    loadTodos();
-    return <BusyIndicator />;
-  }
-
+  const { colorScheme } = useColorScheme();
+  console.log(colorScheme);
   return (
     <>
-      <StatusBar style={theme == "dark" ? "light" : "dark"} />
       <Container
         style={
-          theme == "dark"
+          colorScheme == "dark"
             ? { backgroundColor: "#121212" }
-            : theme == "BlackWhite"
-              ? { backgroundColor: "white" }
-              : { backgroundColor: "#F2F7FF" }
+            : { backgroundColor: "#F2F7FF" }
         }
       >
-        <Folder todos={todos} navigation={navigation} />
+        <Folder
+          colorScheme={colorScheme}
+          todos={todos}
+          navigation={navigation}
+        />
       </Container>
     </>
   );

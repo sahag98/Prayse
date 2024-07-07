@@ -167,7 +167,7 @@ const StreakSlider = ({
       >
         <ModalContainer
           style={
-            theme === "dark"
+            colorScheme === "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
           }
@@ -210,7 +210,7 @@ const StreakSlider = ({
                     {appstreak}
                   </Text>
                 </View>
-                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:[#d2d2d2]">
+                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:text-[#d2d2d2]">
                   App Streak
                 </Text>
               </View>
@@ -225,12 +225,12 @@ const StreakSlider = ({
                     {streak}
                   </Text>
                 </View>
-                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:[#d2d2d2]">
+                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:text-[#d2d2d2]">
                   Devotions Streak
                 </Text>
               </View>
             </View>
-            <Text className="font-normal text-center font-inter text-base mt-[5px]">
+            <Text className="font-normal dark:text-white text-[#2f2d51] text-center font-inter text-base mt-[5px]">
               Thank you for praising God with us every day.
             </Text>
             <View className="w-full mt-[10px] gap-[10px]">

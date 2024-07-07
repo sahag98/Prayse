@@ -12,9 +12,7 @@ import {
   FlatList,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
   Linking,
-  Modal,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -22,7 +20,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SelectList } from "react-native-dropdown-select-list";
 import { Badge, Divider } from "react-native-paper";
 import {
   Easing,
@@ -55,9 +52,7 @@ import {
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useIsFocused } from "@react-navigation/native";
-import { addQuickFolder } from "@redux/folderReducer";
 import { addNoti } from "@redux/notiReducer";
-import { addPrayer } from "@redux/prayerReducer";
 import { deleteReminder } from "@redux/remindersReducer";
 import { increaseAppStreakCounter } from "@redux/userReducer";
 import {
@@ -70,16 +65,7 @@ import {
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
 } from "@routes";
-import {
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-  WelcomeContainer,
-} from "@styles/appStyles";
+import { WelcomeContainer } from "@styles/appStyles";
 
 import noreminder from "../../assets/noreminders.png";
 
@@ -183,7 +169,6 @@ const WelcomeScreen = () => {
   // const fadeAnim = useRef(new Animated.Value(0)).current;
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const [quickModal, setQuickModal] = useState(false);
   const notificationListener = useRef();
   const [isReminderOff, setIsReminderOff] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
@@ -234,56 +219,9 @@ const WelcomeScreen = () => {
     );
   };
 
-  async function handleQuickPrayer() {
-    console.log(quickFolderExists);
-    if (quickFolderExists === undefined || quickFolderExists === false) {
-      console.log("its undefined");
-      try {
-        await dispatch(
-          addQuickFolder({
-            id: 4044,
-            name: "Quick Prayers",
-            prayers: [],
-          }),
-        );
-      } catch (error) {
-        console.log("quick prayer", error);
-      }
-
-      handleSubmit();
-    } else if (quickFolderExists === true) {
-      console.log("folder already exists, adding prayer to it");
-      handleSubmit();
-    }
-  }
-
-  function handleSubmit() {
-    dispatch(
-      addPrayer({
-        prayer: quickprayervalue,
-        folder: "Quick Prayers",
-        folderId: 4044,
-        category: quickcategoryvalue,
-        date: new Date().toLocaleString(),
-        id: uuid.v4(),
-      }),
-    );
-    setQuickModal(false);
-    setQuickprayervalue("");
-  }
-
-  function handleCloseTooltip() {
-    // setToolVisible(false);
-  }
-
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-
-  function handleCloseModal() {
-    setQuickprayervalue("");
-    setQuickModal(false);
-  }
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -583,8 +521,11 @@ const WelcomeScreen = () => {
     navigation.navigate(ONBOARDING_SCREEN);
   }
 
+  console.log("theme: ", theme);
+
   return (
     <WelcomeContainer
+      showsVerticalScrollIndicator={false}
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
     >
@@ -651,11 +592,6 @@ const WelcomeScreen = () => {
           />
         </View>
       </View>
-      {/* <ProgressBar
-        style={{ height: 10, borderRadius: 10 }}
-        progress={15 / 30}
-        color="green"
-      /> */}
       <DailyReflection
         completedItems={completedItems}
         devoStreak={streak}
@@ -842,6 +778,7 @@ const WelcomeScreen = () => {
         </View>
       </View>
       <NewFeaturesModal
+        colorScheme={colorScheme}
         theme={theme}
         setFeatureVisible={setFeatureVisible}
         featureVisible={featureVisible}
@@ -849,354 +786,92 @@ const WelcomeScreen = () => {
       <QuestionoftheWeek colorScheme={colorScheme} theme={theme} />
       <GospelofJesus colorScheme={colorScheme} theme={theme} />
       <MerchComponent colorScheme={colorScheme} theme={theme} />
-      <View
-        style={{
-          width: "100%",
-          marginTop: "auto",
-          marginBottom: 20,
-          zIndex: notiVisible ? -10 : 1,
-        }}
-      >
-        <View
-          style={
-            notiVisible
-              ? { marginBottom: 40, width: "100%", gap: 2 }
-              : { marginBottom: 40, width: "100%", gap: 2 }
-          }
-        >
-          <Text
-            style={
-              theme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold", fontSize: 17 }
-                : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 17 }
-            }
-          >
+      <View className="w-full mt-auto mb-5">
+        <View className="mb-10 w-full gap-[2px]">
+          <Text className="dark:text-white text-[#2f2d51] font-inter font-bold text-lg">
             Quick links
           </Text>
-          <Divider
-            style={
-              theme == "BlackWhite"
-                ? { backgroundColor: "black", marginBottom: 10, marginTop: 5 }
-                : { marginBottom: 10, marginTop: 5 }
-            }
-          />
+          <Divider className="mb-3 mt-1" />
           <TouchableOpacity
             onPress={() => setFeatureVisible(true)}
-            style={
-              theme == "dark"
-                ? styles.refreshDark
-                : theme == "BlackWhite"
-                  ? styles.refreshBlack
-                  : styles.refresh
-            }
+            className="w-full dark:bg-[#212121] mb-[5px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
           >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View className="flex-row items-center">
               <Feather
                 name="info"
                 size={24}
                 color={
-                  theme == "dark"
+                  colorScheme == "dark"
                     ? "#f1d592"
                     : theme == "BlackWhite"
                       ? "black"
                       : "#bb8b18"
                 }
               />
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#f1d592",
-                        marginLeft: 10,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : theme == "BlackWhite"
-                      ? {
-                          color: "black",
-                          marginLeft: 10,
-                          fontFamily: "Inter-Medium",
-                        }
-                      : {
-                          color: "#bb8b18",
-                          marginLeft: 10,
-                          fontFamily: "Inter-Medium",
-                        }
-                }
-              >
+              <Text className="dark:text-[#f1d592] text-[#bb8b18] ml-[10px] font-inter font-medium">
                 What's New in v9.5!
               </Text>
             </View>
             <AntDesign
               name="right"
               size={18}
-              color={
-                theme == "dark"
-                  ? "#f1d592"
-                  : theme == "BlackWhite"
-                    ? "black"
-                    : "#bb8b18"
-              }
+              color={colorScheme == "dark" ? "#f1d592" : "#bb8b18"}
             />
           </TouchableOpacity>
           {Platform.OS === "android" && (
             <TouchableOpacity
-              style={
-                theme == "dark"
-                  ? styles.refreshDark
-                  : theme == "BlackWhite"
-                    ? styles.refreshBlack
-                    : styles.refresh
-              }
+              className="w-full dark:bg-[#212121] mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
               onPress={() =>
                 Linking.openURL(
                   "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
                 )
               }
             >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
+              <View className="flex-row items-center">
                 <Ionicons
                   name="logo-google-playstore"
                   size={24}
-                  color={
-                    theme == "dark"
-                      ? "#d6d6d6"
-                      : theme == "BlackWhite"
-                        ? "black"
-                        : "#606060"
-                  }
+                  color={colorScheme == "dark" ? "#d6d6d6" : "#606060"}
                 />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "#f0f0f0",
-                          fontFamily: "Inter-Medium",
-                          marginLeft: 10,
-                        }
-                      : theme == "BlackWhite"
-                        ? {
-                            color: "black",
-                            fontFamily: "Inter-Medium",
-                            marginLeft: 10,
-                          }
-                        : {
-                            color: "#606060",
-                            fontFamily: "Inter-Medium",
-                            marginLeft: 10,
-                          }
-                  }
-                >
+                <Text className="font-inter dark:text-[#f0f0f0] text-[#606060] font-medium ml-[10px]">
                   Check for Updates
                 </Text>
               </View>
               <AntDesign
                 name="right"
                 size={18}
-                color={
-                  theme == "dark"
-                    ? "#d6d6d6"
-                    : theme == "BlackWhite"
-                      ? "black"
-                      : "#606060"
-                }
+                color={colorScheme == "dark" ? "#d6d6d6" : "#606060"}
               />
             </TouchableOpacity>
           )}
           {Platform.OS === "ios" && (
             <TouchableOpacity
-              style={theme == "dark" ? styles.refreshDark : styles.refresh}
+              className="w-full dark:bg-[#212121] mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
               onPress={() =>
                 Linking.openURL(
                   "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
                 )
               }
             >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
+              <View className="flex-row items-center">
                 <AntDesign
                   name="apple1"
                   size={24}
-                  color={theme == "dark" ? "#d6d6d6" : "#606060"}
+                  color={colorScheme == "dark" ? "#d6d6d6" : "#606060"}
                 />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "#f0f0f0",
-                          fontFamily: "Inter-Medium",
-                          marginLeft: 10,
-                        }
-                      : {
-                          color: "#606060",
-                          fontFamily: "Inter-Medium",
-                          marginLeft: 10,
-                        }
-                  }
-                >
+                <Text className="ml-[10px] font-inter font-medium dark:text-[#f0f0f0] text-[#606060]">
                   Check for Updates
                 </Text>
               </View>
               <AntDesign
                 name="right"
                 size={18}
-                color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                color={colorScheme == "dark" ? "#d6d6d6" : "#2f2d51"}
               />
             </TouchableOpacity>
           )}
         </View>
       </View>
-
-      <Modal
-        animationType="fade"
-        transparent
-        visible={quickModal}
-        onRequestClose={handleCloseModal}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ModalContainer
-            style={
-              theme == "dark"
-                ? { backgroundColor: "#121212" }
-                : { backgroundColor: "#F2F7FF" }
-            }
-          >
-            <ModalView
-              style={
-                theme == "dark"
-                  ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#b7d3ff" }
-              }
-            >
-              <ModalIcon>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                    marginBottom: 5,
-                  }}
-                >
-                  <HeaderTitle
-                    style={
-                      theme == "dark"
-                        ? { fontFamily: "Inter-Bold", color: "white" }
-                        : { fontFamily: "Inter-Bold" }
-                    }
-                  >
-                    Quick Prayer
-                  </HeaderTitle>
-                  <AntDesign
-                    name="edit"
-                    size={24}
-                    color={theme == "dark" ? "white" : "#2F2D51"}
-                  />
-                </View>
-              </ModalIcon>
-              <StyledInput
-                style={
-                  theme == "dark"
-                    ? {
-                        height: inputHeight < 60 ? 60 : inputHeight,
-                        marginTop: 10,
-                        alignItems: "center",
-                        alignSelf: "center",
-                        textAlignVertical: "center",
-                        fontFamily: "Inter-Regular",
-                        backgroundColor: "#121212",
-                      }
-                    : {
-                        height: inputHeight < 60 ? 60 : inputHeight,
-                        marginTop: 10,
-                        textAlignVertical: "center",
-                        fontFamily: "Inter-Regular",
-                        backgroundColor: "#2F2D51",
-                      }
-                }
-                placeholder="Add a prayer"
-                placeholderTextColor="#e0e0e0"
-                selectionColor="white"
-                autoFocus
-                onChangeText={(text) => setQuickprayervalue(text)}
-                value={quickprayervalue}
-                onContentSizeChange={handleContentSizeChange}
-                onSubmitEditing={(e) => {
-                  e.key === "Enter" && e.preventDefault();
-                }}
-                multiline
-              />
-              <TouchableOpacity
-                style={styles.dismiss}
-                onPress={dismissKeyboard}
-              >
-                <Text
-                  style={{
-                    color: "#ff4e4e",
-                    fontFamily: "Inter-Regular",
-                    fontSize: 13,
-                  }}
-                >
-                  Dismiss Keyboard
-                </Text>
-              </TouchableOpacity>
-              <Text style={theme == "dark" ? styles.selectDark : styles.select}>
-                Select a Category (optional):
-              </Text>
-              <SelectList
-                placeholder="selectcategory"
-                setSelected={setQuickcategoryvalue}
-                data={data}
-                search={false}
-                defaultOption={{ key: "None", value: "None" }}
-                boxStyles={
-                  theme == "dark" ? styles.categoryDark : styles.category
-                }
-                dropdownStyles={
-                  theme == "dark" ? styles.dropdownDark : styles.dropdown
-                }
-                dropdownTextStyles={styles.dropdownTextDark}
-                inputStyles={styles.inputText}
-                arrowicon={<AntDesign name="down" size={15} color="white" />}
-                maxHeight="250"
-              />
-              <ModalActionGroup>
-                <ModalAction color="white" onPress={handleCloseModal}>
-                  <AntDesign
-                    name="close"
-                    size={28}
-                    color={theme == "dark" ? "#121212" : "#2F2D51"}
-                  />
-                </ModalAction>
-                <ModalAction
-                  color={theme == "dark" ? "#121212" : "#2F2D51"}
-                  onPress={handleQuickPrayer}
-                >
-                  <AntDesign name="check" size={28} color="white" />
-                </ModalAction>
-              </ModalActionGroup>
-            </ModalView>
-          </ModalContainer>
-        </KeyboardAvoidingView>
-      </Modal>
     </WelcomeContainer>
   );
 };

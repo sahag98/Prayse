@@ -2,6 +2,7 @@
 import React from "react";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   FlatList,
   StyleSheet,
@@ -20,6 +21,7 @@ import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 const ReminderScreen = () => {
   const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
+  const { colorScheme } = useColorScheme();
   const reminders = useSelector((state) => state.reminder.reminders);
   const dispatch = useDispatch();
 
@@ -29,37 +31,19 @@ const ReminderScreen = () => {
   };
 
   return (
-    <Container
-      style={
-        theme == "dark"
-          ? {
-              flex: 1,
-              backgroundColor: "#121212",
-            }
-          : {
-              flex: 1,
-              backgroundColor: "#f2f7ff",
-            }
-      }
-    >
-      <HeaderView
-        style={{
-          justifyContent: "space-between",
-          marginBottom: 20,
-          width: "100%",
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 5 }}>
+    <Container className="dark:bg-[#121212] bg-[#f2f7ff] flex-1">
+      <HeaderView className="justify-between mb-5 w-full">
+        <View className="flex-row gap-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign
               name="left"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={colorScheme == "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
           <HeaderTitle
             style={
-              theme == "dark"
+              colorScheme == "dark"
                 ? { color: "white", fontFamily: "Inter-Bold" }
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
@@ -69,30 +53,8 @@ const ReminderScreen = () => {
         </View>
       </HeaderView>
       {reminders.length == 0 ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={
-              theme == "dark"
-                ? {
-                    color: "#d2d2d2",
-                    alignSelf: "center",
-                    fontSize: 15,
-                    fontFamily: "Inter-Medium",
-                  }
-                : {
-                    color: "#2f2d51",
-                    alignSelf: "center",
-                    fontSize: 15,
-                    fontFamily: "Inter-Medium",
-                  }
-            }
-          >
+        <View className="flex-1 justify-center items-center">
+          <Text className="self-center font-inter font-medium dark:text-[#d2d2d2] text-[#2f2d51] text-lg">
             No reminders yet!
           </Text>
         </View>
@@ -147,156 +109,45 @@ const ReminderScreen = () => {
             );
 
             return (
-              <View
-                style={
-                  theme == "dark"
-                    ? {
-                        padding: 10,
-                        marginRight: 15,
-                        gap: 5,
-                        borderRadius: 10,
-                        marginBottom: 15,
-                        width: "100%",
-                        // justifyContent: "space-between",
-                        borderColor: "#525252",
-                        borderWidth: 1,
-                      }
-                    : {
-                        marginRight: 15,
-                        gap: 5,
-                        justifyContent: "space-between",
-                        padding: 10,
-                        borderRadius: 10,
-                        marginBottom: 15,
-                        borderWidth: 1,
-                        borderColor: "#ffcd8b",
-                        backgroundColor: "white",
-                        width: "100%",
-                      }
-                }
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
+              <View className="dark:border-[#525252] border-[#ffcf8b] bg-white dark:bg-none border-2 p-3 w-full mr-4 gap-2 mb-4">
+                <View className="flex-row items-center gap-2">
                   <Ionicons
                     name="time-outline"
                     size={24}
-                    color={theme == "dark" ? "#f1d592" : "#dda41c"}
+                    color={colorScheme == "dark" ? "#f1d592" : "#dda41c"}
                   />
                   {item.ocurrence === "Daily" && (
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontSize: 14,
-                              fontFamily: "Inter-Medium",
-                              color: "#f1d592",
-                            }
-                          : {
-                              fontSize: 14,
-                              fontFamily: "Inter-Medium",
-                              color: "#dda41c",
-                            }
-                      }
-                    >
+                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
                       {item.ocurrence} at {formattedDate}
                     </Text>
                   )}
                   {item.ocurrence === "Weekly" && (
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontSize: 13,
-                              fontFamily: "Inter-Medium",
-                              color: "#f1d592",
-                            }
-                          : {
-                              fontSize: 13,
-                              fontFamily: "Inter-Medium",
-                              color: "#dda41c",
-                            }
-                      }
-                    >
+                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
                       {item.ocurrence} on {dayOfWeekName}s at {formattedDate}
                     </Text>
                   )}
                   {item.ocurrence === "None" && (
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontSize: 13,
-                              fontFamily: "Inter-Regular",
-                              color: "#f1d592",
-                            }
-                          : {
-                              fontSize: 13,
-                              fontFamily: "Inter-Regular",
-                              color: "grey",
-                            }
-                      }
-                    >
+                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
                       {formattedDate}
                     </Text>
                   )}
-
-                  {/* <Text
-                        style={{
-                          fontSize: 12,
-                          fontFamily: "Inter-Regular",
-                          color: "grey",
-                        }}
-                      >
-                       
-                      </Text> */}
                 </View>
-                <View style={{ gap: 3 }}>
+                <View className="gap-1">
                   <Text
-                    style={
-                      theme == "dark"
-                        ? {
-                            fontFamily: "Inter-Regular",
-                            fontSize: 16,
-                            color: "white",
-                            marginBottom: item.reminder.note ? 0 : 5,
-                          }
-                        : {
-                            fontFamily: "Inter-Regular",
-                            fontSize: 16,
-                            color: "#2f2d51",
-                            marginBottom: item.reminder.note ? 0 : 5,
-                          }
-                    }
+                    className="dark:text-white text-[#2f2d51] font-inter font-normal text-[16px]"
+                    style={{
+                      marginBottom: item.reminder.note ? 0 : 5,
+                    }}
                   >
                     {item.reminder.message}
                   </Text>
                   {item.reminder.note && (
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                        color: "grey",
-                        marginBottom: 5,
-                      }}
-                    >
+                    <Text className="font-inter font-normal dark:text-gray-500 mb-2">
                       {item.reminder.note}
                     </Text>
                   )}
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 10,
-                    alignSelf: "flex-end",
-                    alignItems: "center",
-                    marginTop: "auto",
-                  }}
-                >
+                <View className="flex-row gap-3 self-end items-center mt-auto">
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate(TEST_SCREEN, {
@@ -310,57 +161,17 @@ const ReminderScreen = () => {
                       })
                     }
                   >
-                    <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 15,
-                              color: "white",
-                            }
-                          : {
-                              fontFamily: "Inter-Medium",
-                              fontSize: 15,
-                              color: "#2f2d51",
-                            }
-                      }
-                    >
+                    <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
                       Edit
                     </Text>
                   </TouchableOpacity>
-                  <View
-                    style={
-                      theme == "dark"
-                        ? {
-                            width: 1.2,
-                            height: "100%",
-                            backgroundColor: "white",
-                          }
-                        : {
-                            width: 1.2,
-                            height: "100%",
-                            backgroundColor: "#2f2d51",
-                          }
-                    }
-                  />
+                  <View className="h-full dark:bg-white bg-[#2f2d51] w-[1.2px]" />
                   <TouchableOpacity onPress={() => dismissNotification(item)}>
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Medium",
-                        fontSize: 15,
-                        color: "#ff3b3b",
-                      }}
-                    >
+                    <Text className="font-inter font-medium text-red-500">
                       Delete
                     </Text>
                   </TouchableOpacity>
                 </View>
-                {/* <ReminderModal
-                reminderVisible={reminderVisible}
-                setReminderVisible={setReminderVisible}
-                theme={theme}
-                reminder={item.reminder}
-              /> */}
               </View>
             );
           }}
