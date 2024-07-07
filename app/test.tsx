@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   Image,
   Keyboard,
@@ -19,7 +20,7 @@ import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
@@ -45,7 +46,7 @@ export default function TestScreen() {
   const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
-
+  const { colorScheme } = useColorScheme();
   const [isRepeat, setIsRepeat] = useState(false);
   const toggleSwitch = () => {
     setIsRepeat((previousState) => !previousState);
@@ -388,37 +389,19 @@ export default function TestScreen() {
   };
 
   return (
-    <Container
-      style={
-        theme == "dark"
-          ? {
-              flex: 1,
-              backgroundColor: "#121212",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 16,
-            }
-          : {
-              flex: 1,
-              backgroundColor: "#f2f7ff",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              padding: 16,
-            }
-      }
-    >
+    <Container className="flex-1 dark:bg-[#121212] bg-[#f2f7ff] justify-center items-center p-4">
       <HeaderView style={{ justifyContent: "space-between", width: "100%" }}>
-        <View style={{ flexDirection: "row", gap: 5 }}>
+        <View className="flex-row gap-1">
           <TouchableOpacity onPress={clearAll}>
             <AntDesign
               name="left"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={colorScheme == "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
           <HeaderTitle
             style={
-              theme == "dark"
+              colorScheme == "dark"
                 ? { color: "white", fontFamily: "Inter-Bold" }
                 : { color: "#2f2d51", fontFamily: "Inter-Bold" }
             }
@@ -429,21 +412,18 @@ export default function TestScreen() {
         <TouchableOpacity
           onPress={routeParams.type == "Add" ? addReminder : handleEditReminder}
           disabled={newReminder.length == 0}
-          style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
+          className="flex-row gap-1 items-center"
         >
           <Text
+            className="text-xl font-inter font-bold"
             style={
               newReminder.length === 0 ||
               reminderDate.toString().length === 0 ||
               reminderTime.toString().length === 0
                 ? {
-                    fontSize: 18,
-                    fontFamily: "Inter-Bold",
-                    color: theme == "dark" ? "#5c5c5c" : "grey",
+                    color: colorScheme == "dark" ? "#5c5c5c" : "grey",
                   }
                 : {
-                    fontSize: 18,
-                    fontFamily: "Inter-Bold",
                     color: theme == "light" ? "#2f2d51" : "#A5C9FF",
                   }
             }
@@ -458,10 +438,10 @@ export default function TestScreen() {
                 newReminder.length === 0 ||
                 reminderDate.toString().length === 0 ||
                 reminderTime.toString().length === 0
-                  ? theme == "dark"
+                  ? colorScheme == "dark"
                     ? "#5c5c5c"
                     : "grey"
-                  : theme == "light"
+                  : colorScheme == "light"
                     ? "#2f2d51"
                     : "#A5C9FF"
               }
@@ -474,10 +454,10 @@ export default function TestScreen() {
                 newReminder.length === 0 ||
                 reminderDate.toString().length === 0 ||
                 reminderTime.toString().length === 0
-                  ? theme == "dark"
+                  ? colorScheme == "dark"
                     ? "#5c5c5c"
                     : "grey"
-                  : theme == "light"
+                  : colorScheme == "light"
                     ? "#2f2d51"
                     : "#A5C9FF"
               }
@@ -485,61 +465,21 @@ export default function TestScreen() {
           )}
         </TouchableOpacity>
       </HeaderView>
-      <View
-        style={{
-          flex: 1,
-          marginTop: 10,
-          width: "100%",
-          position: "relative",
-          gap: 10,
-        }}
-      >
-        <View
-          style={
-            theme == "dark"
-              ? {
-                  backgroundColor: "#212121",
-                  width: "100%",
-                  padding: 10,
-                  borderRadius: 8,
-                  gap: 10,
-                }
-              : {
-                  backgroundColor: "#b7d3ff",
-                  width: "100%",
-                  padding: 10,
-                  borderRadius: 8,
-                  gap: 10,
-                }
-          }
-        >
+      <View className="flex-1 mt-3 w-full relative gap-2">
+        <View className="dark:bg-[#212121] bg-[#b7d3ff] w-full p-3 rounded-lg gap-2">
           <TextInput
-            style={
-              theme == "dark"
-                ? { minHeight: 30, color: "white" }
-                : { minHeight: 30, color: "#2f2d51" }
-            }
-            placeholderTextColor={theme == "dark" ? "#a1a1a1" : "#808080"}
+            className="dark:text-white text-[#2f2d51] min-h-8"
+            placeholderTextColor={colorScheme == "dark" ? "#a1a1a1" : "#808080"}
             placeholder="Prayer Title"
-            selectionColor={theme == "dark" ? "white" : "#2f2d51"}
+            selectionColor={colorScheme == "dark" ? "white" : "#2f2d51"}
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
           />
 
-          <View
-            style={
-              theme == "dark"
-                ? { width: "100%", backgroundColor: "grey", height: 0.5 }
-                : { width: "100%", backgroundColor: "#2f2d51", height: 0.5 }
-            }
-          />
+          <View className="w-full dark:bg-gray-500 bg-[#2f2d51] h-[1px]" />
           <TextInput
-            placeholderTextColor={theme == "dark" ? "#a1a1a1" : "#808080"}
-            style={
-              theme == "dark"
-                ? { minHeight: 50, color: "white" }
-                : { minHeight: 50, color: "#2f2d51" }
-            }
+            placeholderTextColor={colorScheme == "dark" ? "#a1a1a1" : "#808080"}
+            className="min-h-12 dark:text-white text-[#2f2d51]"
             placeholder="Prayer Notes"
             multiline
             textAlignVertical="top"
@@ -549,120 +489,58 @@ export default function TestScreen() {
           />
         </View>
 
-        <View
-          style={
-            theme == "dark"
-              ? {
-                  backgroundColor: "#212121",
-                  padding: 10,
-                  gap: 5,
-                  borderRadius: 8,
-                }
-              : {
-                  backgroundColor: "#b7d3ff",
-                  padding: 10,
-                  gap: 5,
-                  borderRadius: 8,
-                }
-          }
-        >
+        <View className="dark:bg-[#212121] bg-[#b7d3ff] p-3 gap-2 rounded-lg">
           <TouchableOpacity
             onPress={showDatePicker}
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 5,
-            }}
+            className="w-full flex-row justify-between p-2 items-center"
           >
-            <View style={{ gap: 5 }}>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-              >
+            <View className="gap-2">
+              <View className="flex-row items-center gap-3">
                 <Image
                   style={
-                    theme == "dark"
+                    colorScheme == "dark"
                       ? [styles.img, { tintColor: "#f1d592" }]
                       : [styles.img, { tintColor: "#dda41c" }]
                   }
                   source={calendar}
                 />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Medium", color: "white" }
-                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                  }
-                >
+                <Text className="font-inter font-medium dark:text-white text-[#2f2d51]">
                   Date
                 </Text>
               </View>
               {reminderDate.toString().length > 0 && (
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Regular", color: "white" }
-                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                  }
-                >
+                <Text className="font-inter font-normal dark:text-white text-[#2f2d51]">
                   {reminderDate.toDateString()}
                 </Text>
               )}
             </View>
             <AntDesign
               name="right"
-              size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              size={22}
+              color={colorScheme == "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
-          <View
-            style={
-              theme == "dark"
-                ? { width: "100%", backgroundColor: "grey", height: 0.5 }
-                : { width: "100%", backgroundColor: "#2f2d51", height: 0.5 }
-            }
-          />
+          <View className="w-full dark:bg-gray-500 bg-[#2f2d51] h-[1px]" />
           <TouchableOpacity
             onPress={showTimePicker}
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: 5,
-            }}
+            className="w-full flex-row justify-between p-2"
           >
-            <View style={{ gap: 5 }}>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-              >
+            <View className="gap-2">
+              <View className="flex-row items-center gap-3">
                 <Image
                   style={
-                    theme == "dark"
+                    colorScheme == "dark"
                       ? [styles.img, { tintColor: "#A5C9FF" }]
                       : [styles.img, { tintColor: "#438eff" }]
                   }
                   source={time}
                 />
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Medium", color: "white" }
-                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                  }
-                >
+                <Text className="font-inter font-medium dark:text-white text-[#2f2d51]">
                   Time
                 </Text>
               </View>
               {reminderTime.toString().length > 0 && (
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Regular", color: "white" }
-                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                  }
-                >
+                <Text className="font-inter font-normal dark:text-white text-[#2f2d51]">
                   {new Date(reminderTime).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -672,46 +550,20 @@ export default function TestScreen() {
             </View>
             <AntDesign
               name="right"
-              size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              size={22}
+              color={colorScheme == "dark" ? "white" : "#2f2d51"}
             />
           </TouchableOpacity>
         </View>
 
-        <View
-          style={
-            theme == "dark"
-              ? {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  backgroundColor: "#212121",
-                  borderRadius: 8,
-                  padding: 8,
-                }
-              : {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  backgroundColor: "#b7d3ff",
-                  borderRadius: 8,
-                  padding: 8,
-                }
-          }
-        >
+        <View className="dark:bg-[#212121] bg-[#b7d3ff] flex-row items-center justify-between rounded-lg p-3">
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Feather
               name="repeat"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={colorScheme == "dark" ? "white" : "#2f2d51"}
             />
-            <Text
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Medium", color: "white" }
-                  : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-              }
-            >
+            <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
               Repeat
             </Text>
           </View>
@@ -724,177 +576,76 @@ export default function TestScreen() {
           />
         </View>
         {isRepeat && (
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 20,
-              marginTop: 10,
-            }}
-          >
+          <View className="flex-row gap-5 mt-3">
             <TouchableOpacity
               onPress={() => setRepeatOption("daily")}
-              style={{
-                gap: 10,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+              className="gap-2 flex-row items-center"
             >
               <View
+                className="w-5 dark:border-white border-[#2f2d51] border-2 h-5 rounded-full"
                 style={
-                  theme == "dark"
+                  colorScheme == "dark"
                     ? {
-                        width: 20,
-                        borderWidth: 3,
-                        borderColor: "white",
-                        height: 20,
-                        borderRadius: 100,
                         backgroundColor:
                           repeatOption === "daily" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
-                        width: 20,
-                        borderWidth: 3,
-                        borderColor: "#2f2d51",
-                        height: 20,
-                        borderRadius: 100,
                         backgroundColor:
                           repeatOption === "daily" ? "#00cc00" : "white",
                       }
                 }
               />
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Medium" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-                }
-              >
+              <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
                 Daily
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              className="gap-2 flex-row items-center"
               onPress={() => setRepeatOption("weekly")}
-              style={{
-                gap: 10,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
             >
               <View
+                className="w-5 dark:border-white border-[#2f2d51] border-2 h-5 rounded-full"
                 style={
-                  theme == "dark"
+                  colorScheme == "dark"
                     ? {
-                        width: 20,
-                        borderWidth: 3,
-                        borderColor: "white",
-                        height: 20,
-                        borderRadius: 100,
                         backgroundColor:
                           repeatOption === "weekly" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
-                        width: 20,
-                        borderWidth: 3,
-                        borderColor: "#2f2d51",
-                        height: 20,
-                        borderRadius: 100,
                         backgroundColor:
                           repeatOption === "weekly" ? "#00cc00" : "white",
                       }
                 }
               />
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Medium" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-                }
-              >
+              <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
                 Weekly
               </Text>
             </TouchableOpacity>
           </View>
         )}
-        <View style={{ marginTop: 5, flex: 1 }}>
-          <Link to={`/${SETTINGS_SCREEN}`}>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#ff3b3b",
+        <View className="mt-2 flex-1">
+          <Text className="text-[#ff3b3b] mb-2 font-inter font-medium">
+            Required fields: Title, date and time.
+          </Text>
 
-                      marginBottom: 5,
-                      fontFamily: "Inter-Medium",
-                    }
-                  : {
-                      color: "#ff3b3b",
-                      marginBottom: 5,
-
-                      fontFamily: "Inter-Medium",
-                    }
-              }
-            >
-              Required fields: Title, date and time.
-            </Text>
-          </Link>
-          <Link to={`/${SETTINGS_SCREEN}`}>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#d2d2d2",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
+          <Link href={`/${SETTINGS_SCREEN}`}>
+            <Text className="dark:text-[#d2d2d2] text-[#2f2d51] text-[13px] font-inter font-normal">
               To receive the reminders, make sure to enable notifications in
               both your phone and Prayse settings{" "}
               <Feather
                 name="external-link"
                 size={14}
-                color={theme == "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={colorScheme == "dark" ? "#d2d2d2" : "#2f2d51"}
               />
               .
             </Text>
           </Link>
 
-          <View style={{ marginTop: "auto", marginBottom: 20, width: "100%" }}>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "#d2d2d2",
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
+          <View className="mt-auto mb-5 w-full">
+            <Text className="text-[#2f2d51] dark:text-[#d2d2d2] font-inter font-normal">
               "Continue in prayer, and watch in the same with thanksgiving."
             </Text>
-            <Text
-              style={
-                theme == "dark"
-                  ? {
-                      color: "white",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Medium",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Medium",
-                    }
-              }
-            >
+            <Text className="text-[#2f2d51] self-end dark:text-[#d2d2d2] font-inter font-normal">
               - Colossians 4:2
             </Text>
           </View>

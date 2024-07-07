@@ -521,8 +521,11 @@ const WelcomeScreen = () => {
     navigation.navigate(ONBOARDING_SCREEN);
   }
 
+  console.log("theme: ", theme);
+
   return (
     <WelcomeContainer
+      showsVerticalScrollIndicator={false}
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
     >
