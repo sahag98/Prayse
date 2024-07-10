@@ -16,6 +16,7 @@ import {
   PRAYER_GROUP_SCREEN,
   PRAYER_ROOM_SCREEN,
   PRAYER_SCREEN,
+  PRO_SCREEN,
   PUBLIC_COMMUNITY_SCREEN,
   PUBLIC_GROUPS_SCREEN,
   QUESTION_LIST_SCREEN,
@@ -83,6 +84,7 @@ const StackContainer = () => {
           name={VERSE_OF_THE_DAY_SCREEN}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name={PRO_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen name={GOSPEL_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
           name={OUR_PRESENTATION_SCREEN}

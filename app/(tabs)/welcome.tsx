@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { nativeApplicationVersion } from "expo-application";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import {
@@ -51,7 +51,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { addNoti } from "@redux/notiReducer";
 import { deleteReminder } from "@redux/remindersReducer";
 import { increaseAppStreakCounter } from "@redux/userReducer";
@@ -59,6 +59,7 @@ import {
   NOTIFICATIONS_SCREEN,
   ONBOARDING_SCREEN,
   PRAYER_GROUP_SCREEN,
+  PRO_SCREEN,
   QUESTION_SCREEN,
   REFLECTION_SCREEN,
   REMINDER_SCREEN,
@@ -521,8 +522,6 @@ const WelcomeScreen = () => {
     navigation.navigate(ONBOARDING_SCREEN);
   }
 
-  console.log("theme: ", theme);
-
   return (
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
@@ -559,7 +558,7 @@ const WelcomeScreen = () => {
             </TouchableOpacity>
             <View className="p-[8px] relative">
               {/* <Text>Hey</Text> */}
-              <Link className=" mt-1 " to={`/${NOTIFICATIONS_SCREEN}`}>
+              <Link className=" mt-1 " href={`/${NOTIFICATIONS_SCREEN}`}>
                 <View className="p-[8px] rounded-md">
                   <Ionicons
                     name="notifications-outline"
@@ -598,6 +597,25 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={theme}
       />
+      <Link
+        href={`/${PRO_SCREEN}`}
+        className="w-full flex-row items-center justify-between p-5 rounded-lg bg-[#2f2d51] dark:bg-[#212121]"
+        asChild
+      >
+        <TouchableOpacity className="w-full flex-row items-center justify-between p-5 rounded-lg bg-[#2f2d51] dark:bg-[#212121]">
+          <View className="flex-row items-center gap-3">
+            <MaterialCommunityIcons
+              name="lightning-bolt-outline"
+              size={24}
+              color={colorScheme === "dark" ? "yellow" : "yellow"}
+            />
+            <Text className="font-inter font-bold text-lg dark:text-yellow text-yellow-200">
+              Pro Features
+            </Text>
+          </View>
+          <AntDesign name="right" size={24} color="yellow" />
+        </TouchableOpacity>
+      </Link>
       <View className="w-full flex-1">
         <View className="bg-[#ffcd8b] dark:bg-[#212121] my-[5px] flex-1 border-[1px] border-[#ffcd8b] dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]">
           <View className="flex-row items-center justify-between">
@@ -605,14 +623,14 @@ const WelcomeScreen = () => {
               Reminders
             </Text>
             <View className="flex-row items-center gap-3">
-              <Link to={`/${REMINDER_SCREEN}`}>
+              <Link href={`/${REMINDER_SCREEN}`}>
                 <View className="flex-row items-center gap-[5px]">
                   <Text className="font-inter font-semibold text-lg text-[#444444] dark:text-white">
                     View all
                   </Text>
                 </View>
               </Link>
-              <Link to={`/${TEST_SCREEN}?type=Add`}>
+              <Link href={`/${TEST_SCREEN}?type=Add`}>
                 <View className="flex-row items-center gap-1">
                   <Text className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-[#a5c9ff]">
                     Add
