@@ -8,6 +8,7 @@ interface UserState {
   tooltip: boolean;
   checkmarkVisible: boolean;
   userGroups: string[];
+  customBg: string;
   theme: string;
   completedItems: {
     date: string;
@@ -38,6 +39,7 @@ const initialState: UserState = {
   devostreak: 0,
   isAppReady: false,
   appstreak: [],
+  customBg: "",
   appstreakNum: 0,
   expoToken: "",
   alreadyEnteredGiveaway: false,

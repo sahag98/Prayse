@@ -9,6 +9,17 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      colors: {
+        light: {
+          primary: "#2f2d51",
+          secondary: "#b7d3ff",
+        },
+        dark: {
+          primary: "white",
+          secondary: "#212121",
+          accent: "#a5c9ff",
+        },
+      },
       fontFamily: {
         inter: ["inter"],
       },

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import {
   CHECKLIST_SCREEN,
+  CREATE_THEME_SCREEN,
   DEVO_LIST_SCREEN,
   FAVORITES_SCREEN,
   GOSPEL_SCREEN,
@@ -85,6 +86,10 @@ const StackContainer = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name={PRO_SCREEN} options={{ headerShown: false }} />
+        <Stack.Screen
+          name={CREATE_THEME_SCREEN}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name={GOSPEL_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
           name={OUR_PRESENTATION_SCREEN}
