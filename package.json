@@ -66,9 +66,9 @@
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.5",
     "reanimated-color-picker": "^3.0.4",
-    "redux": "^4.2.1",
+    "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.4.2",
+    "redux-thunk": "^3.1.0",
     "styled-components": "^5.3.9",
     "tailwindcss": "^3.4.3"
   },
