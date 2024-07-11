@@ -12,6 +12,7 @@ import messageReducer from "./messageReducer";
 import notiReducer from "./notiReducer";
 import prayerReducer from "./prayerReducer";
 import remindersReducer from "./remindersReducer";
+import themeReducer from "./themeReducer";
 import userReducer from "./userReducer";
 
 const reducers = combineReducers({
@@ -21,6 +22,7 @@ const reducers = combineReducers({
   answered: answeredReducer,
   message: messageReducer,
   favorites: favoritesReducer,
+  theme: themeReducer,
   noti: notiReducer,
   reminder: remindersReducer,
 });
@@ -37,6 +39,7 @@ const persistConfig = {
     "answered",
     "favorites",
     "reminder",
+    "theme",
   ],
 };
 
