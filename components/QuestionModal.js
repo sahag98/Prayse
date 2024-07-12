@@ -32,7 +32,7 @@ const QuestionModal = ({
 }) => {
   const [answer, setAnswer] = useState("");
   const [inputHeight, setInputHeight] = useState(100);
-  const { questions, currentUser } = useSupabase();
+  const { questions, fetchAnswers, currentUser } = useSupabase();
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 100) {
       setInputHeight(100);
@@ -55,7 +55,7 @@ const QuestionModal = ({
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
     } else {
-      const { error } = await supabase.from("answers_test").insert({
+      const { error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
@@ -82,19 +82,20 @@ const QuestionModal = ({
         },
       };
 
-      // fetch(config.prayseMessage, {
-      //   method: "POST",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Accept-encoding": "gzip, deflate",
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(message),
-      // });
+      fetch(config.prayseMessage, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         console.log("ERROR insert answer: ", error);
         showToast("error", "Something went wrong. Try again.");
       }
+      fetchAnswers();
       handleCloseModal();
     }
   };

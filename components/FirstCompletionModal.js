@@ -99,7 +99,7 @@ const FirstCompletionModal = ({ theme, congratsModal, setCongratsModal }) => {
             }
           >
             You have completed your first day of daily devotions. Come back
-            tomorrow to start you streak!
+            tomorrow to start your streak!
           </Text>
 
           <TouchableOpacity

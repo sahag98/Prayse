@@ -61,7 +61,7 @@ const WelcomeModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!",
+          "We need camera roll permissions to make this work!"
         );
       } else {
         pickImage();
@@ -89,7 +89,7 @@ const WelcomeModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1,
+        result.assets[0].uri.lastIndexOf(".") + 1
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -176,7 +176,7 @@ const WelcomeModal = ({
     const newId = id.substring(0, 3);
     setName(`Anonymous${newId}`);
     setImage(
-      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
+      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559"
     );
     await supabase
       .from("profiles")
@@ -298,7 +298,7 @@ const WelcomeModal = ({
                       : { fontFamily: "Inter-Medium", color: "#2f2d51" }
                   }
                 >
-                  Upload an Image + (Optional)
+                  Upload an Image (Optional)
                 </Text>
               ) : (
                 <Image
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     color: "#2f2d51",
     fontFamily: "Inter-Regular",
     width: "100%",
-    backgroundColor: "#caecfc",
+    backgroundColor: "#b7d3ff",
     padding: 12,
     borderRadius: 10,
   },
@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   },
   featherIcon: {
     position: "absolute",
-    backgroundColor: "#caecfc",
+    backgroundColor: "#b7d3ff",
     borderRadius: 100,
     padding: 10,
     width: 130,
