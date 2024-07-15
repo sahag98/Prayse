@@ -1,8 +1,11 @@
 // @ts-nocheck
 
-import { createSlice } from "@reduxjs/toolkit";
+import uuid from "react-native-uuid";
 
+import { createSlice } from "@reduxjs/toolkit";
 interface UserState {
+  customTheme: object;
+  customThemeArray: [];
   customBg: string;
   customPrimary: string;
   customSecondary: string;
@@ -16,6 +19,8 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  customTheme: {},
+  customThemeArray: [],
   customBg: "",
   customPrimary: "",
   customSecondary: "",
@@ -38,6 +43,22 @@ export const themeSlice = createSlice({
       state.Secondary = state.customSecondary;
       state.PrimaryTxt = state.customPrimaryTxt;
       state.SecondaryTxt = state.customSecondaryTxt;
+
+      state.customTheme = {
+        id: uuid.v4(),
+        Bg: state.Bg,
+        Primary: state.Primary,
+        Secondary: state.Secondary,
+        PrimaryTxt: state.PrimaryTxt,
+        SecondaryTxt: state.SecondaryTxt,
+      };
+
+      state.customThemeArray = [...state.customThemeArray, state.customTheme];
+    },
+    deleteTheme: (state, action) => {
+      state.customThemeArray = state.customThemeArray.filter(
+        (theme) => theme.id !== action.payload,
+      );
     },
     setCustomBg: (state, action) => {
       //   console.log("bg color: ", action.payload);
@@ -62,7 +83,7 @@ export const themeSlice = createSlice({
       state.customPrimary = null;
       state.customSecondary = null;
       state.customPrimaryTxt = null;
-      state.customSecondarytxt = null;
+      state.customSecondaryTxt = null;
       state.Bg = null;
       state.Primary = null;
       state.Secondary = null;
@@ -78,6 +99,7 @@ export const {
   setCustomSecondary,
   setCustomPrimaryTxt,
   setCustomSecondaryTxt,
+  deleteTheme,
   resetTheme,
   setTheme,
 } = themeSlice.actions;
