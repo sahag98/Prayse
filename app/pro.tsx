@@ -8,7 +8,7 @@ import {
   FontAwesome6,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { CREATE_THEME_SCREEN } from "@routes";
+import { CREATE_THEME_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
@@ -57,16 +57,18 @@ const ProScreen = () => {
             </Text>
           </TouchableOpacity>
         </Link>
-        <TouchableOpacity className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary">
-          <MaterialCommunityIcons
-            name="brush-variant"
-            size={24}
-            color={colorScheme === "dark" ? "white" : "#2f2d51"}
-          />
-          <Text className="font-inter font-medium text-lg text-light-primaryprimary dark:text-dark-primary">
-            View Themes
-          </Text>
-        </TouchableOpacity>
+        <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
+          <TouchableOpacity className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary">
+            <MaterialCommunityIcons
+              name="brush-variant"
+              size={24}
+              color={colorScheme === "dark" ? "white" : "#2f2d51"}
+            />
+            <Text className="font-inter font-medium text-lg text-light-primaryprimary dark:text-dark-primary">
+              Your Themes
+            </Text>
+          </TouchableOpacity>
+        </Link>
       </View>
       <View className="flex-row items-center mt-3 gap-3">
         <Text className="font-inter text-primary dark:text-white font-medium text-lg">

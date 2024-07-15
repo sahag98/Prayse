@@ -2,6 +2,7 @@ export const HOME_SCREEN = "home";
 export const FOLDER_SCREEN = "folder";
 export const PRO_SCREEN = "pro";
 export const CREATE_THEME_SCREEN = "create-theme";
+export const YOUR_THEMES_SCREEN = "your-themes";
 export const PRAYER_SCREEN = "prayer";
 export const DEVOTIONAL_SCREEN = "devotional";
 export const DEVO_LIST_SCREEN = "devo-list";

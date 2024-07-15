@@ -28,6 +28,7 @@ import {
   SETTINGS_SCREEN,
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
+  YOUR_THEMES_SCREEN,
 } from "@routes";
 
 const StackContainer = () => {
@@ -88,6 +89,10 @@ const StackContainer = () => {
         <Stack.Screen name={PRO_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
           name={CREATE_THEME_SCREEN}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={YOUR_THEMES_SCREEN}
           options={{ headerShown: false }}
         />
         <Stack.Screen name={GOSPEL_SCREEN} options={{ headerShown: false }} />
