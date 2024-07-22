@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React from "react";
+import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import StreakSlider from "@components/StreakSlider";
 
@@ -14,8 +14,8 @@ interface StreakActionProps {
 export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
   const streak = useSelector((state) => state.user.devostreak);
   const appstreak = useSelector((state) => state.user.appstreakNum);
-
-  const [isShowingStreak, setIsShowingStreak] = React.useState(false);
+  const dispatch = useDispatch();
+  const [isShowingStreak, setIsShowingStreak] = useState(false);
 
   async function appStreak() {
     const today = new Date().toLocaleDateString("en-CA");
@@ -23,7 +23,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
     dispatch(increaseAppStreakCounter({ today }));
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     appStreak();
   }, []);
 

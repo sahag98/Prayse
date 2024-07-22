@@ -4,6 +4,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { useColorScheme } from "nativewind";
 import { Linking, Platform, View } from "react-native";
 import { Easing, useSharedValue, withTiming } from "react-native-reanimated";
 import uuid from "react-native-uuid";
@@ -107,7 +108,7 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-
+  const { colorScheme, setColorScheme } = useColorScheme();
   const welcomeFadeIn = useSharedValue(0);
 
   const [openings, setOpenings] = useState(0);
@@ -314,13 +315,13 @@ const WelcomeScreen = () => {
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
     >
-      <UpdateModal theme={theme} />
+      <UpdateModal theme={colorScheme} />
       <View className="items-center mb-0 flex-row justify-between w-full">
-        <Greeting theme={theme} />
+        <Greeting theme={colorScheme} />
         <View className="relative flex-row items-center">
           <View className="flex items-center flex-row">
-            <StreakAction theme={theme} />
-            <NoticationAction theme={theme} />
+            <StreakAction theme={colorScheme} />
+            <NoticationAction theme={colorScheme} />
           </View>
         </View>
       </View>
@@ -328,14 +329,14 @@ const WelcomeScreen = () => {
         completedItems={completedItems}
         devoStreak={streak}
         appStreak={appstreak}
-        theme={theme}
+        theme={colorScheme}
       />
-      <ProBanner theme={theme} />
-      <NoticationsCard theme={theme} />
+      <ProBanner theme={colorScheme} />
+      <NoticationsCard theme={colorScheme} />
       <QuestionOfTheWeek />
       <GospelOfJesus />
-      <MerchComponent theme={theme} />
-      <QuickLinks theme={theme} />
+      <MerchComponent theme={colorScheme} />
+      <QuickLinks theme={colorScheme} />
     </WelcomeContainer>
   );
 };

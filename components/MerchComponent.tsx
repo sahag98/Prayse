@@ -13,8 +13,6 @@ import { AntDesign } from "@expo/vector-icons";
 
 import merch from "../assets/merch.png";
 
-// <AntDesign name="rightcircleo" size={24} color="black" />;
-
 interface MerchComponentProps {
   theme: string;
 }
