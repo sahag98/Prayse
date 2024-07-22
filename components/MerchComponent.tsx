@@ -1,9 +1,9 @@
+// @ts-nocheck
 import React from "react";
 import {
   Image,
   Linking,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -12,8 +12,13 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 
 import merch from "../assets/merch.png";
-<AntDesign name="rightcircleo" size={24} color="black" />;
-const MerchComponent = ({ colorScheme, theme }) => {
+
+// <AntDesign name="rightcircleo" size={24} color="black" />;
+
+interface MerchComponentProps {
+  theme: string;
+}
+export const MerchComponent: React.FC<MerchComponentProps> = ({ theme }) => {
   return (
     <View className="flex-1 dark:bg-[#212121] bg-[#b7d3ff] mb-4 p-[10px] rounded-lg dark:border-[#474747] dark:border-2">
       <View
@@ -50,7 +55,7 @@ const MerchComponent = ({ colorScheme, theme }) => {
             <AntDesign
               name="shoppingcart"
               size={22}
-              color={colorScheme === "dark" ? "#121212" : "white"}
+              color={theme === "dark" ? "#121212" : "white"}
             />
           </TouchableOpacity>
         </View>
@@ -67,7 +72,3 @@ const MerchComponent = ({ colorScheme, theme }) => {
     </View>
   );
 };
-
-export default MerchComponent;
-
-const styles = StyleSheet.create({});

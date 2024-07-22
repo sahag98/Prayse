@@ -1,4 +1,6 @@
+// @ts-nocheck
 import React from "react";
+import { nativeApplicationVersion } from "expo-application";
 import {
   Linking,
   Modal,
@@ -8,6 +10,8 @@ import {
   View,
 } from "react-native";
 
+import { useSupabase } from "@context/useSupabase";
+
 import {
   HeaderTitle,
   ModalContainer,
@@ -15,15 +19,46 @@ import {
   ModalView,
 } from "../styles/appStyles";
 
-const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
+interface UpdateModalProps {
+  theme: string;
+}
+export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
+  const { supabase } = useSupabase();
+  const [hasUpdate, setHasUpdate] = React.useState(false);
+
+  async function fetchUpdate() {
+    try {
+      const { data: update } = await supabase
+        .from("update")
+        .select("isUpdateAvailable");
+
+      if (!update.length) {
+        return;
+      }
+
+      if (update[0].isUpdateAvailable !== nativeApplicationVersion.toString()) {
+        // setHasUpdate(true);
+      } else {
+        setHasUpdate(false);
+      }
+    } catch (error) {
+      console.log("fetchUpdate", error);
+    }
+  }
+
+  React.useEffect(() => {
+    fetchUpdate();
+  }, []);
+
   const handleCloseModal = () => {
-    setIsUpdateAvailable(false);
+    setHasUpdate(false);
   };
+
   return (
     <Modal
       animationType="fade"
       transparent
-      visible={isUpdateAvailable}
+      visible={hasUpdate}
       onRequestClose={handleCloseModal}
       statusBarTranslucent
     >
@@ -128,7 +163,7 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginTop: 10 }}
-              onPress={() => setIsUpdateAvailable(false)}
+              onPress={handleCloseModal}
             >
               <Text
                 style={
@@ -156,5 +191,3 @@ const UpdateModal = ({ theme, isUpdateAvailable, setIsUpdateAvailable }) => {
     </Modal>
   );
 };
-
-export default UpdateModal;

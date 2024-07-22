@@ -1,10 +1,10 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Link } from "expo-router";
+import { Text, TouchableOpacity } from "react-native";
 
 import { GOSPEL_SCREEN } from "../routes";
-import { Link } from "expo-router";
 
-const GospelofJesus = ({ theme, colorScheme }) => {
+export const GospelOfJesus: React.FC = () => {
   return (
     <Link asChild href={`/${GOSPEL_SCREEN}`}>
       <TouchableOpacity className="bg-white dark:bg-[#212121] mb-[15px] w-full p-[15px] rounded-lg gap-[15px]">
@@ -21,5 +21,3 @@ const GospelofJesus = ({ theme, colorScheme }) => {
     </Link>
   );
 };
-
-export default GospelofJesus;

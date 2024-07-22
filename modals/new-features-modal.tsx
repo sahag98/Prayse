@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Image,
   Modal,
@@ -13,15 +13,18 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import googleIcon from "../assets/google-icon.png";
 import { ModalContainer } from "../styles/appStyles";
-const NewFeaturesModal = ({
-  colorScheme,
+
+interface NewFeaturesModalProps {
+  theme: string;
+  featureVisible: boolean;
+  setFeatureVisible: (visible: boolean) => void;
+}
+export const NewFeaturesModal: React.FC<NewFeaturesModalProps> = ({
   theme,
   setFeatureVisible,
   featureVisible,
 }) => {
   const [page, setPage] = useState(0);
-
-  const ref = useRef();
 
   const onNextPage = () => {
     if (page < 3) {
@@ -44,7 +47,7 @@ const NewFeaturesModal = ({
     >
       <ModalContainer
         style={
-          colorScheme === "dark"
+          theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
@@ -56,13 +59,13 @@ const NewFeaturesModal = ({
           <Text className="text-center font-inter text-2xl font-extrabold dark:text-white text-[#2f2d51] mb-2">
             What's new!
           </Text>
-          <View ref={ref}>
+          <View>
             {page === 0 && (
               <View className="items-center gap-2">
                 <MaterialCommunityIcons
                   name="hands-pray"
                   size={100}
-                  color={colorScheme == "dark" ? "white" : "#2f2d51"}
+                  color={theme === "dark" ? "white" : "#2f2d51"}
                 />
 
                 <Text className="font-inter font-bold text-2xl dark:text-white text-[#2f2d51]">
@@ -75,7 +78,26 @@ const NewFeaturesModal = ({
 
                 <View className="flex-row items-center w-full mt-2 justify-between">
                   <TouchableOpacity
-                    className="w-[45%] dark:border bg-[#caecfc] dark:border-[#a5c9ff] p-4 rounded-lg justify-center items-center"
+                    style={
+                      theme === "dark"
+                        ? {
+                            width: "45%",
+                            borderColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#caecfc",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
                     onPress={StartOver}
                   >
                     <Text className="dark:text-white font-inter font-bold">
@@ -104,7 +126,7 @@ const NewFeaturesModal = ({
                 <Feather
                   name="layout"
                   size={100}
-                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
+                  color={theme === "dark" ? "white" : "#2f2d51"}
                 />
 
                 <Text className="font-inter font-bold text-2xl dark:text-white text-[#2f2d51]">
@@ -117,7 +139,26 @@ const NewFeaturesModal = ({
 
                 <View className="flex-row items-center w-full mt-2 justify-between">
                   <TouchableOpacity
-                    className="w-[45%] dark:border bg-[#caecfc] dark:border-[#a5c9ff] p-4 rounded-lg justify-center items-center"
+                    style={
+                      theme === "dark"
+                        ? {
+                            width: "45%",
+                            borderColor: "#A5C9FF",
+                            borderWidth: 1,
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                        : {
+                            width: "45%",
+                            backgroundColor: "#caecfc",
+                            padding: 15,
+                            borderRadius: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }
+                    }
                     onPress={StartOver}
                   >
                     <Text className="dark:text-white font-inter font-bold">
@@ -417,7 +458,7 @@ const NewFeaturesModal = ({
                 </View>
                 <TouchableOpacity
                   style={
-                    theme == "dark"
+                    theme === "dark"
                       ? {
                           width: "100%",
                           backgroundColor: "#A5C9FF",
@@ -455,8 +496,6 @@ const NewFeaturesModal = ({
     </Modal>
   );
 };
-
-export default NewFeaturesModal;
 
 const styles = StyleSheet.create({
   img: {
