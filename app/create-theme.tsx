@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -11,7 +11,7 @@ import TextColorPanel from "@components/TextColorPanel";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import { resetTheme, setTheme } from "@redux/themeReducer";
-import { PRO_SCREEN } from "@routes";
+import { YOUR_THEMES_SCREEN } from "@routes";
 import { HeaderView, WelcomeContainer } from "@styles/appStyles";
 
 const CreateThemeScreen = () => {
@@ -21,6 +21,7 @@ const CreateThemeScreen = () => {
   const customPrimary = useSelector((state) => state.theme.customPrimary);
   const customPrimaryTxt = useSelector((state) => state.theme.customPrimaryTxt);
   const customSecondary = useSelector((state) => state.theme.customSecondary);
+  const customAccent = useSelector((state) => state.theme.customAccent);
   const customSecondaryTxt = useSelector(
     (state) => state.theme.customSecondaryTxt,
   );
@@ -31,9 +32,9 @@ const CreateThemeScreen = () => {
   const Secondary = useSelector((state) => state.theme.Secondary);
   const SecondaryTxt = useSelector((state) => state.theme.SecondaryTxt);
 
-  useEffect(() => {
-    dispatch(resetTheme());
-  }, [isFocused]);
+  // useEffect(() => {
+  //   dispatch(resetTheme());
+  // }, [isFocused]);
 
   const dispatch = useDispatch();
 
@@ -63,7 +64,7 @@ const CreateThemeScreen = () => {
           <Text className="font-inter text-xl mb-3 font-medium">Example</Text>
           <View
             style={customBg && { backgroundColor: customBg }}
-            className="border bg-[#f2f7ff] dark:bg-[#121212] gap-3 mb-3 p-5 h-fit rounded-lg"
+            className="border bg-[#f2f7ff] dark:bg-[#121212] gap-3 mb-3 p-3 h-fit rounded-lg"
           >
             <View
               style={
@@ -99,6 +100,25 @@ const CreateThemeScreen = () => {
                 Secondary Box/Button
               </Text>
             </View>
+            <View
+              style={
+                customAccent && {
+                  backgroundColor: customAccent ? customAccent : null,
+                }
+              }
+              className="p-5 bg-light-secondary dark:bg-dark-secondary rounded-lg border"
+            >
+              <Text
+                style={
+                  customSecondaryTxt && {
+                    color: customSecondaryTxt ? customSecondaryTxt : null,
+                  }
+                }
+                className="font-inter text-light-primary dark:text-dark-primary font-medium"
+              >
+                Accent Box/Button
+              </Text>
+            </View>
           </View>
           <View className="flex-row items-center gap-3">
             <Text className="font-inter text-primary dark:text-white font-medium text-xl">
@@ -114,17 +134,10 @@ const CreateThemeScreen = () => {
           <View className="gap-3 mt-3">
             <ColorPanel type="mainbg" title="Change main background color" />
             <View className="flex-row gap-3 w-full">
-              <ColorPanel
-                type="primarybg"
-                title="Change primary background color"
-              />
-              <ColorPanel
-                type="secondarybg"
-                title="Change secondary background color"
-              />
+              <ColorPanel type="primarybg" title="Change primary color" />
+              <ColorPanel type="secondarybg" title="Change secondary color" />
             </View>
-
-            {/* <ColorPanel title="Change text color" /> */}
+            <ColorPanel type="accent" title="Change accent color" />
           </View>
           <View className="flex-row items-center mt-3 gap-3">
             <Text className="font-inter text-primary dark:text-white font-medium text-xl">
@@ -137,7 +150,7 @@ const CreateThemeScreen = () => {
             />
           </View>
 
-          <View className="gap-3 mt-3">
+          <View className="gap-3 my-3">
             <View className="flex-row gap-3 w-full">
               <TextColorPanel
                 type="primarytxt"
@@ -150,10 +163,12 @@ const CreateThemeScreen = () => {
             </View>
           </View>
         </View>
-        <View className="w-full gap-2">
-          <Link asChild href={`/${PRO_SCREEN}`}>
+        <View className="w-full mt-1 gap-2">
+          <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
             <TouchableOpacity
-              onPress={() => dispatch(setTheme())}
+              onPress={() => {
+                dispatch(setTheme());
+              }}
               className="w-full p-5 bg-light-primary dark:bg-dark-accent justify-center items-center rounded-lg"
             >
               <Text className="text-white font-inter text-base font-bold dark:text-dark-secondary">
