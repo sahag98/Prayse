@@ -55,6 +55,9 @@ export default function ColorPanel({
       case "secondarybg":
         dispatch(setCustomSecondary(color.hex));
         break;
+      case "accent":
+        dispatch(setCustomSecondary(color.hex));
+        break;
       default:
         break;
     }
@@ -64,7 +67,7 @@ export default function ColorPanel({
 
   return (
     <>
-      {type !== "mainbg" && (
+      {type !== "mainbg" && type !== "accent" && (
         <Pressable
           className="rounded-lg bg-light-secondary flex-1 p-5"
           onPress={() => setShowModal(true)}

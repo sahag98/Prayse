@@ -5,30 +5,36 @@ import uuid from "react-native-uuid";
 import { createSlice } from "@reduxjs/toolkit";
 interface UserState {
   customTheme: object;
+  actualTheme: object;
   customThemeArray: [];
   customBg: string;
   customPrimary: string;
   customSecondary: string;
+  customAccent: string;
   customPrimaryTxt: string;
   customSecondaryTxt: string;
   Bg: string;
   Primary: string;
   Secondary: string;
+  Accent: string;
   PrimaryTxt: string;
   SecondaryTxt: string;
 }
 
 const initialState: UserState = {
   customTheme: {},
+  actualTheme: {},
   customThemeArray: [],
   customBg: "",
   customPrimary: "",
   customSecondary: "",
+  customAccent: "",
   customPrimaryTxt: "",
   customSecondaryTxt: "",
   Bg: "",
   Primary: "",
   Secondary: "",
+  Accent: "",
   PrimaryTxt: "",
   SecondaryTxt: "",
 };
@@ -41,6 +47,7 @@ export const themeSlice = createSlice({
       state.Bg = state.customBg;
       state.Primary = state.customPrimary;
       state.Secondary = state.customSecondary;
+      state.Accent = state.customAccent;
       state.PrimaryTxt = state.customPrimaryTxt;
       state.SecondaryTxt = state.customSecondaryTxt;
 
@@ -49,13 +56,29 @@ export const themeSlice = createSlice({
         Bg: state.Bg,
         Primary: state.Primary,
         Secondary: state.Secondary,
+        Accent: state.Accent,
         PrimaryTxt: state.PrimaryTxt,
         SecondaryTxt: state.SecondaryTxt,
       };
 
       state.customThemeArray = [...state.customThemeArray, state.customTheme];
     },
+    selectTheme: (state, { payload }) => {
+      state.actualTheme = {
+        id: payload.id,
+        Bg: payload.Bg,
+        Primary: payload.Primary,
+        Secondary: payload.Secondary,
+        Accent: payload.Accent,
+        PrimaryTxt: payload.PrimaryTxt,
+        SecondaryTxt: payload.SecondaryTxt,
+      };
+    },
     deleteTheme: (state, action) => {
+      // state.actualTheme = {};
+      if (action.payload === state.actualTheme.id) {
+        state.actualTheme = {};
+      }
       state.customThemeArray = state.customThemeArray.filter(
         (theme) => theme.id !== action.payload,
       );
@@ -71,6 +94,10 @@ export const themeSlice = createSlice({
     setCustomSecondary: (state, action) => {
       //   console.log("bg color: ", action.payload);
       state.customSecondary = action.payload;
+    },
+    setCustomAccent: (state, action) => {
+      //   console.log("bg color: ", action.payload);
+      state.customAccent = action.payload;
     },
     setCustomPrimaryTxt: (state, action) => {
       state.customPrimaryTxt = action.payload;
@@ -97,8 +124,10 @@ export const {
   setCustomBg,
   setCustomPrimary,
   setCustomSecondary,
+  setCustomAccent,
   setCustomPrimaryTxt,
   setCustomSecondaryTxt,
+  selectTheme,
   deleteTheme,
   resetTheme,
   setTheme,

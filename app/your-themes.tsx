@@ -14,7 +14,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
-import { deleteTheme } from "@redux/themeReducer";
+import { deleteTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 
@@ -24,13 +24,15 @@ const YourThemesScreen = () => {
   const width = Dimensions.get("window").width - 40;
 
   const customThemeArray = useSelector((state) => state.theme.customThemeArray);
+  const actualTheme = useSelector((state) => state.theme.actualTheme);
 
+  console.log("actual theme: ", actualTheme);
   return (
     <Container
       style={
         colorScheme == "dark"
-          ? { backgroundColor: "#121212" }
-          : { backgroundColor: "#F2F7FF" }
+          ? { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#121212" }
+          : { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#F2F7FF" }
       }
     >
       <HeaderView>
@@ -39,9 +41,24 @@ const YourThemesScreen = () => {
             <AntDesign
               name="left"
               size={24}
-              color={colorScheme === "dark" ? "white" : "#2f2d51"}
+              color={
+                colorScheme === "dark"
+                  ? actualTheme.Primary
+                    ? actualTheme.Primary
+                    : "white"
+                  : actualTheme.Primary
+                    ? actualTheme.Primary
+                    : "#2f2d51"
+              }
             />
-            <Text className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl">
+            <Text
+              style={
+                actualTheme.Primary && {
+                  color: actualTheme?.Primary ?? null,
+                }
+              }
+              className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
+            >
               Your Themes
             </Text>
           </View>
@@ -69,56 +86,102 @@ const YourThemesScreen = () => {
           keyExtractor={(item) => item.id}
           data={customThemeArray}
           renderItem={({ item }) => (
-            <View
-              style={{ width: width / 2 }}
+            <TouchableOpacity
+              onPress={() => dispatch(selectTheme(item))}
+              style={
+                actualTheme.Secondary
+                  ? {
+                      width: width / 2,
+                      backgroundColor: actualTheme.Secondary ?? null,
+                    }
+                  : {
+                      width: width / 2,
+                    }
+              }
               className="bg-light-secondary mb-3 p-3 gap-3 rounded-lg"
             >
               <View className="flex-row items-center justify-between gap-3">
-                <Text className="font-inter  font-semibold">Background </Text>
+                <Text
+                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Background{" "}
+                </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
                   style={{ backgroundColor: item.Bg }}
                 />
               </View>
               <View className="flex-row items-center justify-between gap-3">
-                <Text className="font-inter  font-semibold">Primary</Text>
+                <Text
+                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Primary
+                </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
                   style={{ backgroundColor: item.Primary }}
                 />
               </View>
               <View className="flex-row items-center justify-between gap-3">
-                <Text className="font-inter  font-semibold">Secondary </Text>
+                <Text
+                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Secondary{" "}
+                </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
                   style={{ backgroundColor: item.Secondary }}
                 />
               </View>
               <View className="flex-row items-center justify-between gap-3">
-                <Text className="font-inter  font-semibold">Primary Text </Text>
+                <Text
+                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Primary Text
+                </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
                   style={{ backgroundColor: item.PrimaryTxt }}
                 />
               </View>
               <View className="flex-row items-center justify-between gap-3">
-                <Text className="font-inter  font-semibold">
-                  Secondary Text{" "}
+                <Text
+                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Secondary Text
                 </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
                   style={{ backgroundColor: item.SecondaryTxt }}
                 />
               </View>
+
               <TouchableOpacity
+                style={
+                  actualTheme.Primary && {
+                    backgroundColor: actualTheme.Primary ?? null,
+                  }
+                }
                 onPress={() => dispatch(deleteTheme(item.id))}
                 className="w-full items-center mt-3 justify-center p-3 rounded-md bg-light-primary dark:bg-dark-accent"
               >
-                <Text className="font-inter font-bold text-light-background dark:text-dark-primary">
+                <Text
+                  style={
+                    actualTheme.PrimaryTxt && {
+                      color: actualTheme.PrimaryTxt ?? null,
+                    }
+                  }
+                  className="font-inter font-bold text-light-background dark:text-dark-primary"
+                >
                   Delete
                 </Text>
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -34,12 +36,21 @@ import {
 const StackContainer = () => {
   const theme = useSelector((state: any) => state?.user?.theme);
   const { colorScheme } = useColorScheme();
+
+  const actualTheme = useSelector((state) => state.theme.actualTheme);
   return (
     <SafeAreaView
       edges={["bottom"]}
       style={{
         flex: 1,
-        backgroundColor: colorScheme === "dark" ? "#121212" : "white",
+        backgroundColor:
+          colorScheme === "dark"
+            ? actualTheme.Bg
+              ? actualTheme.Bg
+              : "#121212"
+            : actualTheme.Bg
+              ? actualTheme.Bg
+              : "white",
       }}
     >
       <Stack initialRouteName="(tabs)">
