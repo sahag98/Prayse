@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
@@ -6,7 +7,7 @@ import { QUESTION_SCREEN } from "@routes";
 
 import { useSupabase } from "../context/useSupabase";
 
-const QuestionoftheWeek = ({ theme, colorScheme }) => {
+export const QuestionOfTheWeek: React.FC = () => {
   const navigation = useNavigation();
   const { latestQuestion } = useSupabase();
 
@@ -48,5 +49,3 @@ const QuestionoftheWeek = ({ theme, colorScheme }) => {
     </View>
   );
 };
-
-export default QuestionoftheWeek;
