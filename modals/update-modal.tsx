@@ -86,34 +86,12 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
             >
               An Update is Available!
             </HeaderTitle>
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      marginTop: 5,
-                      textAlign: "center",
-                      fontFamily: "Inter-Regular",
-                      color: "white",
-                    }
-                  : {
-                      marginTop: 5,
-                      textAlign: "center",
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Regular",
-                    }
-              }
-            >
+            <Text className="dark:text-white text-light-primary mt-1 text-center font-inter">
               Update your app to the latest version and check out our newly
               added features!
             </Text>
           </ModalIcon>
-          <View
-            style={{
-              marginTop: 10,
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+          <View className="mt-2 items-center justify-between">
             <TouchableOpacity
               onPress={() => {
                 if (Platform.OS === "android") {
@@ -127,27 +105,10 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
                   );
                 }
               }}
-              style={
-                theme === "dark"
-                  ? {
-                      backgroundColor: "#a5c9ff",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                    }
-                  : {
-                      backgroundColor: "#2f2d51",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                    }
-              }
+              className="dark:bg-dark-accent bg-light-primary justify-center items-center w-full p-4 rounded-lg"
             >
               <Text
+                className="dark:text-dark-secondary text-white text-lg font-inter font-bold"
                 style={
                   theme === "dark"
                     ? {
@@ -161,28 +122,9 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
                 Update Now
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{ marginTop: 10 }}
-              onPress={handleCloseModal}
-            >
-              <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        textDecorationLine: "underline",
-                        padding: 10,
-                        fontFamily: "Inter-Regular",
-                        color: "white",
-                      }
-                    : {
-                        textDecorationLine: "underline",
-                        padding: 10,
-                        fontFamily: "Inter-Regular",
-                        color: "#2f2d51",
-                      }
-                }
-              >
-                I&apos;ll do it later
+            <TouchableOpacity className="mt-2" onPress={handleCloseModal}>
+              <Text className="underline underline-offset-2 p-2 font-inter dark:text-white text-light-primary">
+                Later
               </Text>
             </TouchableOpacity>
           </View>

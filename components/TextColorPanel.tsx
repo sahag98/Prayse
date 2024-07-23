@@ -16,6 +16,8 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 
 import {
+  setCustomAccentTxt,
+  setCustomMainTxt,
   setCustomPrimaryTxt,
   setCustomSecondaryTxt,
 } from "@redux/themeReducer";
@@ -45,11 +47,17 @@ export default function TextColorPanel({
     console.log("hex: ", color.hex);
 
     switch (type) {
+      case "maintxt":
+        dispatch(setCustomMainTxt(color.hex));
+        break;
       case "primarytxt":
         dispatch(setCustomPrimaryTxt(color.hex));
         break;
       case "secondarytxt":
         dispatch(setCustomSecondaryTxt(color.hex));
+        break;
+      case "accenttxt":
+        dispatch(setCustomAccentTxt(color.hex));
         break;
 
       default:
@@ -61,20 +69,40 @@ export default function TextColorPanel({
 
   return (
     <>
-      <Pressable
-        className="rounded-lg bg-light-secondary flex-1 p-5"
-        onPress={() => setShowModal(true)}
-      >
-        <Text
-          style={{
-            color: "#707070",
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
+      {type !== "primarytxt" &&
+        type !== "secondarytxt" &&
+        type !== "accenttxt" && (
+          <Pressable
+            className="rounded-lg bg-light-secondary w-full p-5"
+            onPress={() => setShowModal(true)}
+          >
+            <Text
+              style={{
+                color: "#707070",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              {title}
+            </Text>
+          </Pressable>
+        )}
+      {type !== "maintxt" && (
+        <Pressable
+          className="rounded-lg bg-light-secondary flex-1 p-5"
+          onPress={() => setShowModal(true)}
         >
-          {title}
-        </Text>
-      </Pressable>
+          <Text
+            style={{
+              color: "#707070",
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            {title}
+          </Text>
+        </Pressable>
+      )}
 
       <Modal
         onRequestClose={() => setShowModal(false)}

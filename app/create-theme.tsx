@@ -21,10 +21,13 @@ const CreateThemeScreen = () => {
   const customPrimary = useSelector((state) => state.theme.customPrimary);
   const customPrimaryTxt = useSelector((state) => state.theme.customPrimaryTxt);
   const customSecondary = useSelector((state) => state.theme.customSecondary);
-  const customAccent = useSelector((state) => state.theme.customAccent);
   const customSecondaryTxt = useSelector(
     (state) => state.theme.customSecondaryTxt,
   );
+  const customAccent = useSelector((state) => state.theme.customAccent);
+
+  const customAccentTxt = useSelector((state) => state.theme.customAccentTxt);
+  const customMainTxt = useSelector((state) => state.theme.customMainTxt);
 
   const Bg = useSelector((state) => state.theme.Bg);
   const Primary = useSelector((state) => state.theme.Primary);
@@ -40,10 +43,10 @@ const CreateThemeScreen = () => {
 
   return (
     <WelcomeContainer
-      style={Bg && { backgroundColor: Bg }}
-      className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flex: 1 }}
+      // style={Bg && { backgroundColor: Bg }}
+      className="flex relative py-20 flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
+      // showsVerticalScrollIndicator={false}
+      // contentContainerStyle={{ flex: 1 }}
     >
       <HeaderView>
         <Link href="/pro">
@@ -66,6 +69,12 @@ const CreateThemeScreen = () => {
             style={customBg && { backgroundColor: customBg }}
             className="border bg-[#f2f7ff] dark:bg-[#121212] gap-3 mb-3 p-3 h-fit rounded-lg"
           >
+            <Text
+              style={customMainTxt && { color: customMainTxt ?? "" }}
+              className="font-inter text-lg text-center text-light-primary dark:text-white font-medium"
+            >
+              Main Text
+            </Text>
             <View
               style={
                 customPrimary && {
@@ -81,6 +90,7 @@ const CreateThemeScreen = () => {
                 Primary Box/Button
               </Text>
             </View>
+
             <View
               style={
                 customSecondary && {
@@ -100,6 +110,7 @@ const CreateThemeScreen = () => {
                 Secondary Box/Button
               </Text>
             </View>
+
             <View
               style={
                 customAccent && {
@@ -110,8 +121,8 @@ const CreateThemeScreen = () => {
             >
               <Text
                 style={
-                  customSecondaryTxt && {
-                    color: customSecondaryTxt ? customSecondaryTxt : null,
+                  customAccentTxt && {
+                    color: customAccentTxt ? customAccentTxt : null,
                   }
                 }
                 className="font-inter text-light-primary dark:text-dark-primary font-medium"
@@ -151,6 +162,7 @@ const CreateThemeScreen = () => {
           </View>
 
           <View className="gap-3 my-3">
+            <TextColorPanel type="maintxt" title="Change Main text color" />
             <View className="flex-row gap-3 w-full">
               <TextColorPanel
                 type="primarytxt"
@@ -159,6 +171,10 @@ const CreateThemeScreen = () => {
               <TextColorPanel
                 type="secondarytxt"
                 title="Change Secondary text color"
+              />
+              <TextColorPanel
+                type="accenttxt"
+                title="Change Accent text color"
               />
             </View>
           </View>

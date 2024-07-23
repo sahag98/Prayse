@@ -12,8 +12,16 @@ import { Feather } from "@expo/vector-icons";
 
 interface GreetingProps {
   theme: string;
+  actualTheme: {
+    Bg: string;
+    Primary: string;
+    PrimaryTxt: string;
+    Secondary: string;
+    SecondaryTxt: string;
+    id: string;
+  };
 }
-export const Greeting: React.FC<GreetingProps> = ({ theme }) => {
+export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   const welcomeFadeIn = useSharedValue(0);
 
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -68,10 +76,15 @@ export const Greeting: React.FC<GreetingProps> = ({ theme }) => {
       </Text> */}
       {/* <Text className="dark:text-green-400 text-red-400">Hey</Text> */}
       <Animated.Text
+        style={
+          actualTheme.PrimaryTxt && {
+            color: actualTheme.PrimaryTxt ?? null,
+          }
+        }
         onPress={() => {
           setColorScheme(colorScheme === "light" ? "dark" : "light");
         }}
-        className="text-2xl tracking-wide font-inter font-bold text-[#2F2D51] dark:text-[#d2d2d2]"
+        className="text-xl tracking-wide font-inter font-bold text-light-primary dark:text-[#d2d2d2]"
       >
         {greeting}
       </Animated.Text>

@@ -21,23 +21,20 @@ import {
 } from "../redux/userReducer";
 
 import StreakSlider from "./StreakSlider";
-import { useColorScheme } from "nativewind";
 
 const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
 
-  const { colorScheme, setColorScheme } = useColorScheme();
-
   const hasEnteredGiveaway = useSelector(
     (state) => state.user.alreadyEnteredGiveaway
   );
   const dispatch = useDispatch();
-
+  const today = new Date().toLocaleDateString().split("T")[0];
   useEffect(() => {
     clearPreviousDayCompletion();
-  }, [isFocused]);
+  }, [isFocused, today]);
 
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
@@ -70,16 +67,7 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        width: "100%",
-        marginBottom: 10,
-        gap: 10,
-      }}
-    >
+    <View className="flex-1 justify-start items-start w-full mb-4 gap-3">
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
         theme={theme}
@@ -93,7 +81,7 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <Text className="text-[#2f2d51] font-inter font-bold text-xl dark:text-white">
+      <Text className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white">
         Daily Devotions
       </Text>
       <View className="gap-3 relative w-full">
@@ -102,50 +90,59 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
+            className="absolute w-[4px] h-3/4 top-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <View
-            className="w-[25px] border-4 border-[#b7d3ff] dark:border-[#474747] h-[25px] rounded-full"
+            className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
-            className="bg-white dark:bg-[#212121] p-[15px] ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-[10px]">
-              <Text className="text-[#2f2d51] dark:text-[#d2d2d2] text-[14px] font-inter font-light">
+              <Text className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter font-light">
                 Pray
               </Text>
               <MaterialCommunityIcons
                 name="hands-pray"
                 size={20}
-                color={colorScheme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
-            <Text className="text-[#2f2d51] dark:text-white font-bold font-inter text-xl">
-              Take a moment to pray.
-            </Text>
+            <View className="gap-1">
+              <Text className="text-light-primary dark:text-white font-bold font-inter text-2xl">
+                Take a moment to pray.
+              </Text>
+              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+                "And all things, whatsoever ye shall ask in prayer, believing,
+                ye shall receive."
+              </Text>
+              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+                - Matthew 21:22
+              </Text>
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
         <TouchableOpacity
@@ -153,70 +150,78 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
+            className="absolute w-[4px] h-1/2 bottom-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <View
-            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
+            className="absolute w-[4px] h-3/4 top-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <View
-            className="w-[25px] border-4 border-[#b7d3ff] dark:border-[#474747] h-[25px] rounded-full"
+            className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <TouchableOpacity
             onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
-            className="bg-white dark:bg-[#212121] p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
-              <Text className="text-[#2f2d51] dark:text-[#d2d2d2] font-inter font-light text-[14px]">
+              <Text className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]">
                 Verse of the Day
               </Text>
               <Feather
                 name="book-open"
                 size={20}
-                color={colorScheme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
-            <Text className="text-[#2f2d51] dark:text-white font-inter font-bold text-xl">
-              Read the daily verse.
-            </Text>
+            <View className="gap-1">
+              <Text className="text-light-primary dark:text-white font-inter font-bold text-2xl">
+                Read the daily verse.
+              </Text>
+              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+                "Thy word is a lamp unto my feet, and a light unto my path."
+              </Text>
+              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+                - Psalm 119:105
+              </Text>
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
         <TouchableOpacity
@@ -224,50 +229,59 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
+            className="absolute w-[4px] h-1/2 bottom-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <View
-            className="w-[25px] border-4 border-[#b7d3ff] dark:border-[#474747] h-[25px] rounded-full"
+            className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? colorScheme === "dark"
+                ? theme === "dark"
                   ? "#a5c9ff"
                   : "#2f2d51"
-                : colorScheme === "dark"
+                : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <TouchableOpacity
             onPress={() => handleComplete(DEVO_LIST_SCREEN)}
-            className="bg-white dark:bg-[#212121] p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
-              <Text className="text-[#2f2d51] dark:text-[#d2d2d2] font-inter font-light text-[14px]">
+              <Text className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]">
                 Devotional
               </Text>
               <Feather
                 name="book"
                 size={20}
-                color={colorScheme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
             </View>
-            <Text className="text-[#2f2d51] dark:text-white font-inter font-bold text-xl">
-              Dive into today's devotional.
-            </Text>
+            <View className="gap-1">
+              <Text className="text-light-primary dark:text-white font-inter font-bold text-2xl">
+                Explore today's devotional.
+              </Text>
+              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+                "Study to show thyself approved unto God, a workman that needeth
+                not to be ashamed, rightly dividing the word of truth."
+              </Text>
+              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+                - 2 Timothy 2:15
+              </Text>
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
       </View>
@@ -276,5 +290,3 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
 };
 
 export default DailyReflection;
-
-const styles = StyleSheet.create({});

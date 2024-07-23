@@ -17,9 +17,9 @@ export const NoticationAction: React.FC<NotificationActionProps> = ({
   const notis = useSelector((state) => state.noti.notifications);
 
   return (
-    <View className="p-[8px] relative">
-      <Link className=" mt-1 " href={`/${NOTIFICATIONS_SCREEN}`}>
-        <View className="p-[8px] rounded-md">
+    <View className="p-2 relative">
+      <Link className="mt-1 " href={`/${NOTIFICATIONS_SCREEN}`}>
+        <View className="p-2 rounded-md">
           <Ionicons
             name="notifications-outline"
             size={20}
@@ -28,12 +28,12 @@ export const NoticationAction: React.FC<NotificationActionProps> = ({
         </View>
       </Link>
       <Badge
-        size={14}
+        size={15}
         style={{
           position: "absolute",
           fontFamily: "Inter-Medium",
           fontSize: 11,
-          top: 10,
+          top: 8,
           right: 8,
         }}
       >

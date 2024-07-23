@@ -13,10 +13,10 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme }) => {
   return (
     <Link
       href={`/${PRO_SCREEN}`}
-      className="w-full flex-row items-center justify-between p-5 rounded-lg bg-[#2f2d51] dark:bg-[#212121]"
+      className="w-full flex-row items-center justify-between p-5 mb-3 rounded-lg bg-light-primary dark:bg-dark-secondary"
       asChild
     >
-      <TouchableOpacity className="w-full flex-row items-center justify-between p-5 rounded-lg bg-[#2f2d51] dark:bg-[#212121]">
+      <TouchableOpacity className="w-full flex-row items-center justify-between p-5 rounded-lg bg-light-primary dark:bg-dark-secondary">
         <View className="flex-row items-center gap-3">
           <MaterialCommunityIcons
             name="lightning-bolt-outline"
