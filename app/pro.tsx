@@ -31,18 +31,18 @@ const ProScreen = () => {
               size={24}
               color={
                 colorScheme === "dark"
-                  ? actualTheme.Primary
-                    ? actualTheme.Primary
+                  ? actualTheme.MainTxt
+                    ? actualTheme.MainTxt
                     : "white"
-                  : actualTheme.Primary
-                    ? actualTheme.Primary
+                  : actualTheme.MainTxt
+                    ? actualTheme.MainTxt
                     : "#2f2d51"
               }
             />
             <Text
               style={
-                actualTheme.Primary && {
-                  color: actualTheme?.Primary ?? null,
+                actualTheme.MainTxt && {
+                  color: actualTheme?.MainTxt ?? null,
                 }
               }
               className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
@@ -55,8 +55,8 @@ const ProScreen = () => {
       <View className="flex-row items-center gap-3">
         <Text
           style={
-            actualTheme.Primary && {
-              color: actualTheme?.Primary ?? null,
+            actualTheme.MainTxt && {
+              color: actualTheme?.MainTxt ?? null,
             }
           }
           className="font-inter text-primary dark:text-white font-medium text-lg"
@@ -68,11 +68,11 @@ const ProScreen = () => {
           size={20}
           color={
             colorScheme === "dark"
-              ? actualTheme.Primary
-                ? actualTheme.Primary
+              ? actualTheme.MainTxt
+                ? actualTheme.MainTxt
                 : "white"
-              : actualTheme.Primary
-                ? actualTheme.Primary
+              : actualTheme.MainTxt
+                ? actualTheme.MainTxt
                 : "#2f2d51"
           }
         />
@@ -150,8 +150,8 @@ const ProScreen = () => {
       <View className="flex-row items-center mt-3 gap-3">
         <Text
           style={
-            actualTheme.Primary && {
-              color: actualTheme?.Primary ?? null,
+            actualTheme.MainTxt && {
+              color: actualTheme?.MainTxt ?? null,
             }
           }
           className="font-inter text-primary dark:text-white font-medium text-lg"
@@ -163,11 +163,11 @@ const ProScreen = () => {
           size={20}
           color={
             colorScheme === "dark"
-              ? actualTheme.Primary
-                ? actualTheme.Primary
+              ? actualTheme.MainTxt
+                ? actualTheme.MainTxt
                 : "white"
-              : actualTheme.Primary
-                ? actualTheme.Primary
+              : actualTheme.MainTxt
+                ? actualTheme.MainTxt
                 : "#2f2d51"
           }
         />

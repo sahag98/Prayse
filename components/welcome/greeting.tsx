@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Feather } from "@expo/vector-icons";
+import { getMainTextColorStyle } from "@lib/customStyles";
 
 interface GreetingProps {
   theme: string;
@@ -76,11 +77,7 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
       </Text> */}
       {/* <Text className="dark:text-green-400 text-red-400">Hey</Text> */}
       <Animated.Text
-        style={
-          actualTheme.PrimaryTxt && {
-            color: actualTheme.PrimaryTxt ?? null,
-          }
-        }
+        style={getMainTextColorStyle(actualTheme)}
         onPress={() => {
           setColorScheme(colorScheme === "light" ? "dark" : "light");
         }}

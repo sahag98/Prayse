@@ -6,12 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 import StreakSlider from "@components/StreakSlider";
 
+import { getMainTextColorStyle } from "@lib/customStyles";
 import { increaseAppStreakCounter } from "@redux/userReducer";
 
 interface StreakActionProps {
   theme: string;
+  actualTheme: object;
 }
-export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
+export const StreakAction: React.FC<StreakActionProps> = ({
+  theme,
+  actualTheme,
+}) => {
   const streak = useSelector((state) => state.user.devostreak);
   const appstreak = useSelector((state) => state.user.appstreakNum);
   const dispatch = useDispatch();
@@ -45,10 +50,19 @@ export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
             style={{ zIndex: 10 }}
             name="hands-pray"
             size={20}
-            color={theme === "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
 
-          <Text className="text-light-primary dark:text-white font-inter font-bold">
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="text-light-primary dark:text-white font-inter font-bold"
+          >
             {streak?.toString() ?? "0"}
           </Text>
         </View>

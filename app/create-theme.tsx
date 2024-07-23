@@ -110,26 +110,6 @@ const CreateThemeScreen = () => {
                 Secondary Box/Button
               </Text>
             </View>
-
-            <View
-              style={
-                customAccent && {
-                  backgroundColor: customAccent ? customAccent : null,
-                }
-              }
-              className="p-5 bg-light-secondary dark:bg-dark-secondary rounded-lg border"
-            >
-              <Text
-                style={
-                  customAccentTxt && {
-                    color: customAccentTxt ? customAccentTxt : null,
-                  }
-                }
-                className="font-inter text-light-primary dark:text-dark-primary font-medium"
-              >
-                Accent Box/Button
-              </Text>
-            </View>
           </View>
           <View className="flex-row items-center gap-3">
             <Text className="font-inter text-primary dark:text-white font-medium text-xl">
@@ -148,7 +128,6 @@ const CreateThemeScreen = () => {
               <ColorPanel type="primarybg" title="Change primary color" />
               <ColorPanel type="secondarybg" title="Change secondary color" />
             </View>
-            <ColorPanel type="accent" title="Change accent color" />
           </View>
           <View className="flex-row items-center mt-3 gap-3">
             <Text className="font-inter text-primary dark:text-white font-medium text-xl">
@@ -171,10 +150,6 @@ const CreateThemeScreen = () => {
               <TextColorPanel
                 type="secondarytxt"
                 title="Change Secondary text color"
-              />
-              <TextColorPanel
-                type="accenttxt"
-                title="Change Accent text color"
               />
             </View>
           </View>

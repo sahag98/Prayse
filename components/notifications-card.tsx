@@ -14,6 +14,12 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import { deleteReminder } from "@redux/remindersReducer";
 import { REMINDER_SCREEN, TEST_SCREEN } from "@routes";
 
@@ -21,9 +27,21 @@ import noreminder from "../assets/noreminders.png";
 
 interface NotificationsCardProps {
   theme: string;
+  actualTheme: {
+    Accent: string;
+    AccentTxt: string;
+    Bg: string;
+    MainTxt: string;
+    Primary: string;
+    PrimaryTxt: string;
+    Secondary: string;
+    SecondaryTxt: string;
+    id: string;
+  };
 }
 export const NoticationsCard: React.FC<NotificationsCardProps> = ({
   theme,
+  actualTheme,
 }) => {
   const reminders = useSelector((state) => state.reminder.reminders);
   const ITEM_WIDTH = Dimensions.get("window").width / 2;
@@ -38,28 +56,46 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
 
   return (
     <View className="w-full flex-1">
-      <View className="bg-light-secondary dark:bg-dark-secondary my-[5px] flex-1 dark:border-[1px] border-none dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]">
+      <View
+        style={getSecondaryBackgroundColorStyle(actualTheme)}
+        className="bg-light-secondary dark:bg-dark-secondary my-[5px] flex-1 dark:border-[1px] border-none dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]"
+      >
         <View className="flex-row items-center justify-between">
-          <Text className="font-inter font-bold text-xl text-[#2f2d51] dark:text-white">
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-xl text-[#2f2d51] dark:text-white"
+          >
             Reminders
           </Text>
           <View className="flex-row items-center gap-3">
             <Link href={`/${REMINDER_SCREEN}`}>
               <View className="flex-row items-center gap-[5px]">
-                <Text className="font-inter font-semibold text-lg text-[#444444] dark:text-white">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-semibold text-lg text-[#444444] dark:text-white"
+                >
                   View all
                 </Text>
               </View>
             </Link>
             <Link href={`/${TEST_SCREEN}?type=Add`}>
               <View className="flex-row items-center gap-1">
-                <Text className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-[#a5c9ff]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-[#a5c9ff]"
+                >
                   Add
                 </Text>
                 <Ionicons
                   name="add-circle-outline"
                   size={30}
-                  color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
+                  color={
+                    actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : theme === "dark"
+                        ? "#A5C9FF"
+                        : "#2f2d51"
+                  }
                 />
               </View>
             </Link>
@@ -75,7 +111,10 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
               }}
               source={noreminder}
             />
-            <Text className="text-[#2f2d51] dark:text-[#d2d2d2] self-center font-inter font-medium">
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="text-[#2f2d51] dark:text-[#d2d2d2] self-center font-inter font-medium"
+            >
               No reminders yet!
             </Text>
           </View>
@@ -136,10 +175,13 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
 
                 return (
                   <View
-                    className="p-[10px] mr-[15px] gap-[5px] rounded-lg bg-[#f2f7ff] dark:bg-[#121212]"
-                    style={{
-                      maxWidth: ITEM_WIDTH + 100,
-                    }}
+                    className="p-[10px] mr-[15px] gap-[5px] rounded-lg bg-light-background dark:bg-dark-background"
+                    style={[
+                      getMainBackgroundColorStyle(actualTheme),
+                      {
+                        maxWidth: ITEM_WIDTH + 100,
+                      },
+                    ]}
                   >
                     <View className="flex-row items-center gap-[5px]">
                       <Ionicons
@@ -168,7 +210,8 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                       <Text
                         numberOfLines={1}
                         lineBreakMode="tail"
-                        className="font-inter font-medium text-lg text-[#2f2d51] dark:text-white"
+                        style={getMainTextColorStyle(actualTheme)}
+                        className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-white"
                       >
                         {item.reminder.message}
                       </Text>
@@ -176,6 +219,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                       <Text
                         numberOfLines={2}
                         lineBreakMode="tail"
+                        style={getMainTextColorStyle(actualTheme)}
                         className="font-inter text-base font-normal text-[#bebebe]"
                       >
                         {item.reminder.note}
@@ -195,7 +239,10 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                           })
                         }
                       >
-                        <Text className="text-[#2f2d51] dark:text-white font-inter font-semibold text-base">
+                        <Text
+                          style={getSecondaryTextColorStyle(actualTheme)}
+                          className="text-[#2f2d51] dark:text-white font-inter font-semibold text-base"
+                        >
                           Edit
                         </Text>
                       </TouchableOpacity>

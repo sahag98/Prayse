@@ -10,9 +10,11 @@ import { NOTIFICATIONS_SCREEN } from "@routes";
 
 interface NotificationActionProps {
   theme: string;
+  actualTheme: object;
 }
 export const NoticationAction: React.FC<NotificationActionProps> = ({
   theme,
+  actualTheme,
 }) => {
   const notis = useSelector((state) => state.noti.notifications);
 
@@ -23,7 +25,13 @@ export const NoticationAction: React.FC<NotificationActionProps> = ({
           <Ionicons
             name="notifications-outline"
             size={20}
-            color={theme === "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
         </View>
       </Link>

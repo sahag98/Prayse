@@ -327,23 +327,24 @@ const WelcomeScreen = () => {
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row items-center">
           <View className="flex items-center flex-row">
-            <StreakAction theme={colorScheme} />
-            <NoticationAction theme={colorScheme} />
+            <StreakAction actualTheme={actualTheme} theme={colorScheme} />
+            <NoticationAction actualTheme={actualTheme} theme={colorScheme} />
           </View>
         </View>
       </View>
       <DailyReflection
+        actualTheme={actualTheme}
         completedItems={completedItems}
         devoStreak={streak}
         appStreak={appstreak}
         theme={colorScheme}
       />
-      <ProBanner theme={colorScheme} />
-      <NoticationsCard theme={colorScheme} />
-      <QuestionOfTheWeek />
-      <GospelOfJesus />
-      <MerchComponent theme={colorScheme} />
-      <QuickLinks theme={colorScheme} />
+      <ProBanner actualTheme={actualTheme} theme={colorScheme} />
+      <NoticationsCard actualTheme={actualTheme} theme={colorScheme} />
+      <QuestionOfTheWeek actualTheme={actualTheme} />
+      <GospelOfJesus actualTheme={actualTheme} />
+      <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
+      <QuickLinks actualTheme={actualTheme} theme={colorScheme} />
     </WelcomeContainer>
   );
 };

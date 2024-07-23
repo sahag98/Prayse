@@ -21,8 +21,18 @@ import {
 } from "../redux/userReducer";
 
 import StreakSlider from "./StreakSlider";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
+const DailyReflection = ({
+  completedItems,
+  actualTheme,
+  theme,
+  devoStreak,
+  appStreak,
+}) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
@@ -81,7 +91,14 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <Text className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white">
+      <Text
+        style={
+          actualTheme.MainTxt && {
+            color: actualTheme.MainTxt ?? null,
+          }
+        }
+        className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white"
+      >
         Daily Devotions
       </Text>
       <View className="gap-3 relative w-full">
@@ -95,9 +112,11 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -106,12 +125,16 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
+              borderWidth: actualTheme.Secondary ? 4 : 0,
+              borderColor: actualTheme.Secondary ?? null,
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -119,27 +142,46 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           />
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-[10px]">
-              <Text className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter font-light">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter font-light"
+              >
                 Pray
               </Text>
               <MaterialCommunityIcons
                 name="hands-pray"
                 size={20}
-                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={
+                  actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "#d2d2d2"
+                      : "#2f2d51"
+                }
               />
             </View>
             <View className="gap-1">
-              <Text className="text-light-primary dark:text-white font-bold font-inter text-2xl">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-white font-bold font-inter text-2xl"
+              >
                 Take a moment to pray.
               </Text>
-              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+              >
                 "And all things, whatsoever ye shall ask in prayer, believing,
                 ye shall receive."
               </Text>
-              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+              >
                 - Matthew 21:22
               </Text>
             </View>
@@ -157,9 +199,11 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -173,9 +217,11 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -184,41 +230,64 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
+              borderWidth: actualTheme.Secondary ? 4 : 0,
+              borderColor: actualTheme.Secondary ?? null,
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
             }}
           />
           <TouchableOpacity
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
             className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
-              <Text className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]"
+              >
                 Verse of the Day
               </Text>
               <Feather
                 name="book-open"
                 size={20}
-                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={
+                  actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "#d2d2d2"
+                      : "#2f2d51"
+                }
               />
             </View>
             <View className="gap-1">
-              <Text className="text-light-primary dark:text-white font-inter font-bold text-2xl">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-white font-inter font-bold text-2xl"
+              >
                 Read the daily verse.
               </Text>
-              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+              >
                 "Thy word is a lamp unto my feet, and a light unto my path."
               </Text>
-              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+              >
                 - Psalm 119:105
               </Text>
             </View>
@@ -234,9 +303,11 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -245,12 +316,16 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
+              borderWidth: actualTheme.Secondary ? 4 : 0,
+              borderColor: actualTheme.Secondary ?? null,
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? actualTheme.Primary
+                  ? actualTheme.Primary
+                  : theme === "dark"
+                    ? "#a5c9ff"
+                    : "#2f2d51"
                 : theme === "dark"
                   ? "#212121"
                   : "white",
@@ -258,10 +333,14 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
           />
           <TouchableOpacity
             onPress={() => handleComplete(DEVO_LIST_SCREEN)}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
-              <Text className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]"
+              >
                 Devotional
               </Text>
               <Feather
@@ -271,14 +350,23 @@ const DailyReflection = ({ completedItems, theme, devoStreak, appStreak }) => {
               />
             </View>
             <View className="gap-1">
-              <Text className="text-light-primary dark:text-white font-inter font-bold text-2xl">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-white font-inter font-bold text-2xl"
+              >
                 Explore today's devotional.
               </Text>
-              <Text className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+              >
                 "Study to show thyself approved unto God, a workman that needeth
                 not to be ashamed, rightly dividing the word of truth."
               </Text>
-              <Text className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+              >
                 - 2 Timothy 2:15
               </Text>
             </View>
