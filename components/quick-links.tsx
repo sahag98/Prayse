@@ -52,14 +52,14 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({ theme }) => {
   return (
     <View className="w-full mt-auto mb-5">
       <View className="mb-10 w-full gap-[2px]">
-        <Text className="dark:text-white text-[#2f2d51] font-inter font-bold text-lg">
+        <Text className="dark:text-white text-light-primary font-inter font-bold text-lg">
           Quick links
         </Text>
         <Divider className="mb-3 mt-1" />
         <VersionLink theme={theme} />
         {Platform.OS === "android" && (
           <TouchableOpacity
-            className="w-full dark:bg-[#212121] mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
+            className="w-full dark:bg-dark-secondary mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
             onPress={() =>
               Linking.openURL(
                 "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
@@ -85,7 +85,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({ theme }) => {
         )}
         {Platform.OS === "ios" && (
           <TouchableOpacity
-            className="w-full dark:bg-[#212121] mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
+            className="w-full dark:bg-dark-secondary mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
             onPress={() =>
               Linking.openURL(
                 "https://apps.apple.com/us/app/prayerlist-app/id6443480347",

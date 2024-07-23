@@ -115,22 +115,10 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
             >
               Great Job!
             </HeaderTitle>
-            <Text
-              style={{
-                fontFamily: "Inter-Medium",
-                fontSize: 15,
-                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-              }}
-            >
+            <Text className="font-inter font-medium text-lg dark:text-[#d2d2d2] text-light-primary">
               You have done the daily devotions for 60 days straight.
             </Text>
-            <Text
-              style={{
-                fontFamily: "Inter-Medium",
-
-                color: theme === "dark" ? "#d2d2d2" : "#2f2d51",
-              }}
-            >
+            <Text className="font-inter font-medium dark:text-[#d2d2d2] text-light-primary">
               Enter your email for a chance to win a prayse merch item of your
               choice.
             </Text>
@@ -140,86 +128,34 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
               placeholderTextColor={theme == "dark" ? "#d6d6d6" : "grey"}
               value={email}
               blurOnSubmit
-              style={
-                theme === "dark"
-                  ? {
-                      color: "white",
-                      backgroundColor: "#121212",
-                      padding: 12,
-                      borderRadius: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      backgroundColor: "white",
-                      padding: 12,
-                      borderRadius: 10,
-                      fontFamily: "Inter-Regular",
-                    }
-              }
+              className="dark:text-white text-light-primary dark:bg-dark-background p-3 rounded-lg font-inter font-normal"
               placeholder="Enter email"
             />
             {success && (
-              <Text
-                style={{
-                  color: "#008900",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 13,
-                }}
-              >
+              <Text className="text-[#008900] font-inter font-medium text-sm">
                 {success}
               </Text>
             )}
             {error && (
-              <Text
-                style={{
-                  color: "red",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                }}
-              >
+              <Text className="text-red-600 font-inter font-normal text-sm">
                 {error}
               </Text>
             )}
             {success ? (
               <TouchableOpacity
                 onPress={closeModal}
-                style={{
-                  width: "100%",
-                  backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                  padding: 12,
-                  borderRadius: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                className="w-full dark:bg-dark-accent bg-light-primary p-3 rounded-lg justify-center  items-center"
               >
-                <Text
-                  style={{
-                    color: theme === "dark" ? "#121212" : "white",
-                    fontFamily: "Inter-Bold",
-                  }}
-                >
+                <Text className="font-inter font-bold dark:text-dark-background text-white">
                   Okay
                 </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 onPress={handleSubmit}
-                style={{
-                  width: "100%",
-                  backgroundColor: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                  padding: 12,
-                  borderRadius: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                className="w-full dark:bg-dark-accent bg-light-primary p-3 rounded-lg justify-center  items-center"
               >
-                <Text
-                  style={{
-                    color: theme === "dark" ? "#121212" : "white",
-                    fontFamily: "Inter-Bold",
-                  }}
-                >
+                <Text className="font-inter font-bold dark:text-dark-background text-white">
                   Submit
                 </Text>
               </TouchableOpacity>

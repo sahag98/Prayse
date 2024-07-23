@@ -43,18 +43,18 @@ const YourThemesScreen = () => {
               size={24}
               color={
                 colorScheme === "dark"
-                  ? actualTheme.Primary
-                    ? actualTheme.Primary
+                  ? actualTheme.MainTxt
+                    ? actualTheme.MainTxt
                     : "white"
-                  : actualTheme.Primary
-                    ? actualTheme.Primary
+                  : actualTheme.MainTxt
+                    ? actualTheme.MainTxt
                     : "#2f2d51"
               }
             />
             <Text
               style={
-                actualTheme.Primary && {
-                  color: actualTheme?.Primary ?? null,
+                actualTheme.MainTxt && {
+                  color: actualTheme?.MainTxt ?? null,
                 }
               }
               className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
@@ -89,10 +89,10 @@ const YourThemesScreen = () => {
             <TouchableOpacity
               onPress={() => dispatch(selectTheme(item))}
               style={
-                actualTheme.Secondary
+                item.Secondary
                   ? {
                       width: width / 2,
-                      backgroundColor: actualTheme.Secondary ?? null,
+                      backgroundColor: item.Secondary ?? null,
                     }
                   : {
                       width: width / 2,
@@ -102,7 +102,7 @@ const YourThemesScreen = () => {
             >
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  style={{ color: item.PrimaryTxt ?? null }}
                   className="font-inter  font-semibold"
                 >
                   Background{" "}
@@ -114,7 +114,7 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  style={{ color: item.PrimaryTxt ?? null }}
                   className="font-inter  font-semibold"
                 >
                   Primary
@@ -126,7 +126,7 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  style={{ color: item.PrimaryTxt ?? null }}
                   className="font-inter  font-semibold"
                 >
                   Secondary{" "}
@@ -138,7 +138,19 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  style={{ color: item.MainTxt ?? null }}
+                  className="font-inter  font-semibold"
+                >
+                  Main Text
+                </Text>
+                <View
+                  className="w-7 h-7 border dark:border-white rounded-md"
+                  style={{ backgroundColor: item.MainTxt }}
+                />
+              </View>
+              <View className="flex-row items-center justify-between gap-3">
+                <Text
+                  style={{ color: item.PrimaryTxt ?? null }}
                   className="font-inter  font-semibold"
                 >
                   Primary Text
@@ -150,7 +162,7 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: actualTheme.PrimaryTxt ?? null }}
+                  style={{ color: item.PrimaryTxt ?? null }}
                   className="font-inter  font-semibold"
                 >
                   Secondary Text
@@ -163,8 +175,8 @@ const YourThemesScreen = () => {
 
               <TouchableOpacity
                 style={
-                  actualTheme.Primary && {
-                    backgroundColor: actualTheme.Primary ?? null,
+                  item.Primary && {
+                    backgroundColor: item.Primary ?? null,
                   }
                 }
                 onPress={() => dispatch(deleteTheme(item.id))}
@@ -172,7 +184,7 @@ const YourThemesScreen = () => {
               >
                 <Text
                   style={
-                    actualTheme.PrimaryTxt && {
+                    item.PrimaryTxt && {
                       color: actualTheme.PrimaryTxt ?? null,
                     }
                   }

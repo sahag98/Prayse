@@ -38,7 +38,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
       />
       <TouchableOpacity
         onPress={() => setIsShowingStreak((prev) => !prev)}
-        className="flex-row  p-[8px] items-center"
+        className="flex-row p-2 items-center"
       >
         <View className="flex-row items-center gap-1">
           <MaterialCommunityIcons
@@ -48,7 +48,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({ theme }) => {
             color={theme === "dark" ? "white" : "#2f2d51"}
           />
 
-          <Text className="text-[#2f2d51] dark:text-white font-inter font-bold">
+          <Text className="text-light-primary dark:text-white font-inter font-bold">
             {streak?.toString() ?? "0"}
           </Text>
         </View>

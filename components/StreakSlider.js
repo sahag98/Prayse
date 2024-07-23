@@ -206,11 +206,11 @@ const StreakSlider = ({
                     color={colorScheme === "dark" ? "white" : "#2f2d51"}
                   />
 
-                  <Text className="font-inter font-bold text-[#2f2d51] dark:text-white text-5xl">
+                  <Text className="font-inter font-bold text-light-primary dark:text-white text-5xl">
                     {appstreak}
                   </Text>
                 </View>
-                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:text-[#d2d2d2]">
+                <Text className="font-inter font-bold text-base text-light-primary dark:text-[#d2d2d2]">
                   App Streak
                 </Text>
               </View>
@@ -221,22 +221,22 @@ const StreakSlider = ({
                     size={22}
                     color={colorScheme === "dark" ? "white" : "#2f2d51"}
                   />
-                  <Text className="font-inter font-bold text-[#2f2d51] dark:text-white text-5xl">
+                  <Text className="font-inter font-bold text-light-primary dark:text-white text-5xl">
                     {streak}
                   </Text>
                 </View>
-                <Text className="font-inter font-bold text-base text-[#2f2d51] dark:text-[#d2d2d2]">
+                <Text className="font-inter font-bold text-base text-light-primary dark:text-[#d2d2d2]">
                   Devotions Streak
                 </Text>
               </View>
             </View>
-            <Text className="font-normal dark:text-white text-[#2f2d51] text-center font-inter text-base mt-[5px]">
+            <Text className="font-normal dark:text-white text-light-primary text-center font-inter text-base mt-[5px]">
               Thank you for praising God with us every day.
             </Text>
             <View className="w-full mt-[10px] gap-[10px]">
               {streak > GOAL ? null : (
                 <>
-                  <Text className="text-center text-[#2f2d51] dark:text-white font-inter font-medium text-lg">
+                  <Text className="text-center text-light-primary dark:text-white font-inter font-medium text-lg">
                     Devotions Streak: {((streak / GOAL) * 100).toFixed(1)}%
                   </Text>
                   <ProgressBar
@@ -244,7 +244,7 @@ const StreakSlider = ({
                     progress={streak / GOAL}
                     color="green"
                   />
-                  <Text className="font-inter font-medium text-[13px] text-center mb-[10px] text-[#2f2d51] dark:text-[#d2d2d2]">
+                  <Text className="font-inter font-medium text-[13px] text-center mb-[10px] text-light-primary dark:text-[#d2d2d2]">
                     Reach {GOAL} days to win a free merch item of your choice!
                   </Text>
                 </>
@@ -255,7 +255,7 @@ const StreakSlider = ({
               onPress={onShare}
               className="self-end flex-row items-center gap-[10px]"
             >
-              <Text className="text-[#2f2d51] dark:text-[#a5c9ff] text-lg font-inter font-bold">
+              <Text className="text-light-primary dark:text-dark-accent text-lg font-inter font-bold">
                 Share
               </Text>
               <Feather

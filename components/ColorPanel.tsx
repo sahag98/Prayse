@@ -16,6 +16,7 @@ import ColorPicker, {
 } from "reanimated-color-picker";
 
 import {
+  setCustomAccent,
   setCustomBg,
   setCustomPrimary,
   setCustomSecondary,
@@ -56,7 +57,7 @@ export default function ColorPanel({
         dispatch(setCustomSecondary(color.hex));
         break;
       case "accent":
-        dispatch(setCustomSecondary(color.hex));
+        dispatch(setCustomAccent(color.hex));
         break;
       default:
         break;

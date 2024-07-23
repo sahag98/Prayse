@@ -8,17 +8,21 @@ interface UserState {
   actualTheme: object;
   customThemeArray: [];
   customBg: string;
+  customMainTxt: string;
   customPrimary: string;
   customSecondary: string;
   customAccent: string;
   customPrimaryTxt: string;
   customSecondaryTxt: string;
+  customAccentTxt: string;
   Bg: string;
+  MainTxt: string;
   Primary: string;
   Secondary: string;
   Accent: string;
   PrimaryTxt: string;
   SecondaryTxt: string;
+  AccentTxt: string;
 }
 
 const initialState: UserState = {
@@ -26,17 +30,21 @@ const initialState: UserState = {
   actualTheme: {},
   customThemeArray: [],
   customBg: "",
+  customMainTxt: "",
   customPrimary: "",
   customSecondary: "",
   customAccent: "",
   customPrimaryTxt: "",
   customSecondaryTxt: "",
+  customAccentTxt: "",
   Bg: "",
+  MainTxt: "",
   Primary: "",
   Secondary: "",
   Accent: "",
   PrimaryTxt: "",
   SecondaryTxt: "",
+  AccentTxt: "",
 };
 
 export const themeSlice = createSlice({
@@ -50,7 +58,8 @@ export const themeSlice = createSlice({
       state.Accent = state.customAccent;
       state.PrimaryTxt = state.customPrimaryTxt;
       state.SecondaryTxt = state.customSecondaryTxt;
-
+      state.AccentTxt = state.customAccentTxt;
+      state.MainTxt = state.customMainTxt;
       state.customTheme = {
         id: uuid.v4(),
         Bg: state.Bg,
@@ -59,6 +68,8 @@ export const themeSlice = createSlice({
         Accent: state.Accent,
         PrimaryTxt: state.PrimaryTxt,
         SecondaryTxt: state.SecondaryTxt,
+        AccentTxt: state.AccentTxt,
+        MainTxt: state.MainTxt,
       };
 
       state.customThemeArray = [...state.customThemeArray, state.customTheme];
@@ -72,6 +83,8 @@ export const themeSlice = createSlice({
         Accent: payload.Accent,
         PrimaryTxt: payload.PrimaryTxt,
         SecondaryTxt: payload.SecondaryTxt,
+        AccentTxt: payload.AccentTxt,
+        MainTxt: payload.MainTxt,
       };
     },
     deleteTheme: (state, action) => {
@@ -105,6 +118,12 @@ export const themeSlice = createSlice({
     setCustomSecondaryTxt: (state, action) => {
       state.customSecondaryTxt = action.payload;
     },
+    setCustomAccentTxt: (state, action) => {
+      state.customAccentTxt = action.payload;
+    },
+    setCustomMainTxt: (state, action) => {
+      state.customMainTxt = action.payload;
+    },
     resetTheme: (state) => {
       state.customBg = null;
       state.customPrimary = null;
@@ -116,6 +135,8 @@ export const themeSlice = createSlice({
       state.Secondary = null;
       state.PrimaryTxt = null;
       state.Secondarytxt = null;
+      state.AccentTxt = null;
+      state.MainTxt = null;
     },
   },
 });
@@ -127,6 +148,8 @@ export const {
   setCustomAccent,
   setCustomPrimaryTxt,
   setCustomSecondaryTxt,
+  setCustomAccentTxt,
+  setCustomMainTxt,
   selectTheme,
   deleteTheme,
   resetTheme,

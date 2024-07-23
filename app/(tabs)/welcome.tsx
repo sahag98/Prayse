@@ -123,6 +123,7 @@ const WelcomeScreen = () => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
+  const actualTheme = useSelector((state) => state.theme.actualTheme);
 
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
@@ -308,16 +309,22 @@ const WelcomeScreen = () => {
   if (isFirst === true) {
     navigation.navigate(ONBOARDING_SCREEN);
   }
+  console.log(actualTheme);
 
   return (
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
+      style={
+        actualTheme.Bg && {
+          backgroundColor: actualTheme.Bg ?? null,
+        }
+      }
       // contentContainerStyle={{ alignItems: "flex-start" }}
-      className="flex relative flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
+      className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
       <UpdateModal theme={colorScheme} />
       <View className="items-center mb-0 flex-row justify-between w-full">
-        <Greeting theme={colorScheme} />
+        <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row items-center">
           <View className="flex items-center flex-row">
             <StreakAction theme={colorScheme} />

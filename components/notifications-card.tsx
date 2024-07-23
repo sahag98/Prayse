@@ -38,7 +38,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
 
   return (
     <View className="w-full flex-1">
-      <View className="bg-[#ffcd8b] dark:bg-[#212121] my-[5px] flex-1 border-[1px] border-[#ffcd8b] dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]">
+      <View className="bg-light-secondary dark:bg-dark-secondary my-[5px] flex-1 dark:border-[1px] border-none dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]">
         <View className="flex-row items-center justify-between">
           <Text className="font-inter font-bold text-xl text-[#2f2d51] dark:text-white">
             Reminders
