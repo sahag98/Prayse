@@ -8,10 +8,11 @@ import StreakSlider from "@components/StreakSlider";
 
 import { getMainTextColorStyle } from "@lib/customStyles";
 import { increaseAppStreakCounter } from "@redux/userReducer";
+import { ActualTheme } from "@types/reduxTypes";
 
 interface StreakActionProps {
   theme: string;
-  actualTheme: object;
+  actualTheme: ActualTheme;
 }
 export const StreakAction: React.FC<StreakActionProps> = ({
   theme,
@@ -37,6 +38,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({
       <StreakSlider
         appstreak={appstreak}
         streak={streak}
+        actualTheme={actualTheme}
         theme={theme}
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}

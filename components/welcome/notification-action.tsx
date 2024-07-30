@@ -7,10 +7,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 
 import { NOTIFICATIONS_SCREEN } from "@routes";
+import { ActualTheme } from "@types/reduxTypes";
 
 interface NotificationActionProps {
   theme: string;
-  actualTheme: object;
+  actualTheme: ActualTheme;
 }
 export const NoticationAction: React.FC<NotificationActionProps> = ({
   theme,

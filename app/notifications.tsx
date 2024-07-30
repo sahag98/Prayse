@@ -1,22 +1,28 @@
 // @ts-nocheck
 import React from "react";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
+import { getMainTextColorStyle } from "@lib/customStyles";
+import { ActualTheme } from "@types/reduxTypes";
 
 import NotiItem from "../components/NotiItem";
 import { deleteAll } from "../redux/notiReducer";
-import { HOME_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 
 const NotificationsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const notis = useSelector((state: any) => state.noti.notifications);
+
+  const { colorScheme } = useColorScheme();
   const theme = useSelector((state: any) => state.user.theme);
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
 
   // const notiArray = [
   //   {
@@ -32,39 +38,35 @@ const NotificationsScreen = () => {
   return (
     <Container
       style={
-        theme == "dark"
-          ? {
-              backgroundColor: "#121212",
-            }
-          : {
-              backgroundColor: "#f2f7ff",
-            }
+        actualTheme && actualTheme.Bg
+          ? { backgroundColor: actualTheme.Bg }
+          : colorScheme == "dark"
+            ? {
+                backgroundColor: "#121212",
+              }
+            : {
+                backgroundColor: "#f2f7ff",
+              }
       }
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Link to={`/${HOME_SCREEN}`}>
-            <View style={{ marginRight: 10 }}>
-              <Ionicons
-                name="chevron-back"
-                size={35}
-                color={theme == "light" ? "#2f2d51" : "white"}
-              />
-            </View>
+      <View className="flex-row justify-between w-full items-center">
+        <View className="flex-row items-center">
+          <Link className="mr-1" href="/">
+            <Ionicons
+              name="chevron-back"
+              size={35}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "light"
+                    ? "#2f2d51"
+                    : "white"
+              }
+            />
           </Link>
           <Text
-            style={{
-              fontFamily: "Inter-Bold",
-              fontSize: 20,
-              color: theme == "dark" ? "white" : "#2f2d51",
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             Notifications
           </Text>
@@ -74,34 +76,30 @@ const NotificationsScreen = () => {
             dispatch(deleteAll());
             // navigation.navigate(HOME_SCREEN);
           }}
-          style={{ padding: 10, alignSelf: "flex-end" }}
+          className="p-3 self-end"
         >
-          <Text
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Bold", fontSize: 17, color: "#e24774" }
-                : { fontFamily: "Inter-Bold", fontSize: 17, color: "#ff6262" }
-            }
-          >
+          <Text className="font-inter font-semibold text-lg text-red-500">
             Clear All
           </Text>
         </TouchableOpacity>
       </View>
       {notis.length == 0 ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
+        <View className="flex-1 justify-center items-center gap-3">
           <AntDesign
             name="notification"
             size={50}
-            color={theme == "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme == "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
-          <Text style={{ color: theme == "dark" ? "white" : "#2f2d51" }}>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-medium text-light-primary dark:text-dark-primary"
+          >
             No notifications at the moment.
           </Text>
         </View>
@@ -112,39 +110,16 @@ const NotificationsScreen = () => {
           onEndReachedThreshold={0}
           initialNumToRender={8}
           windowSize={8}
-          // ListHeaderComponent={() => (
-          //   <TouchableOpacity
-          //     onPress={() => {
-          //       dispatch(deleteAll());
-          //       navigation.navigate(HOME_SCREEN);
-          //     }}
-          //     style={{ padding: 10, alignSelf: "flex-end" }}
-          //   >
-          //     <Text
-          //       style={
-          //         theme == "dark"
-          //           ? { fontFamily: "Inter-Bold", color: "#e24774" }
-          //           : { fontFamily: "Inter-Bold", color: "#ff6262" }
-          //       }
-          //     >
-          //       Clear all
-          //     </Text>
-          //   </TouchableOpacity>
-          // )}
-          // ItemSeparatorComponent={() => (
-          //   <Divider
-          //     style={
-          //       theme == "dark"
-          //         ? { backgroundColor: "#525252" }
-          //         : { backgroundColor: "#2f2d51" }
-          //     }
-          //   />
-          // )}
           contentContainerStyle={{ paddingTop: 10 }}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <NotiItem theme={theme} navigation={navigation} item={item} />
+            <NotiItem
+              actualTheme={actualTheme}
+              theme={theme}
+              navigation={navigation}
+              item={item}
+            />
           )}
         />
       )}

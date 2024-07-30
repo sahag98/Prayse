@@ -1,17 +1,19 @@
 import React from "react";
 import Moment from "moment";
 import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const AnswerItem = ({ item, theme }) => {
+const AnswerItem = ({ item, actualTheme, theme }) => {
   return (
     <View
-      style={[
-        styles.commentContainer,
-        { backgroundColor: theme == "dark" ? "#212121" : "#ffd8a5" },
-      ]}
+      style={getSecondaryBackgroundColorStyle(actualTheme)}
+      className="bg-light-secondary p-3 rounded-md gap-3 justify-between mb-2 dark:bg-dark-secondary"
     >
-      <View style={styles.content}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+      <View className="flex-row items-center justify-between mb-2">
+        <View className="flex-row items-center gap-1">
           <Image
             style={styles.profileImg}
             source={{
@@ -21,52 +23,23 @@ const AnswerItem = ({ item, theme }) => {
             }}
           />
           <Text
-            style={
-              theme == "dark"
-                ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontSize: 15, fontFamily: "Inter-Bold" }
-            }
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
           >
             {item.profiles.full_name}
           </Text>
         </View>
 
         <Text
-          style={
-            theme == "dark"
-              ? {
-                  color: "#d6d6d6",
-                  fontFamily: "Inter-Light",
-                  fontSize: 12,
-                  marginTop: 2,
-                }
-              : {
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Light",
-                  fontSize: 12,
-                  marginTop: 2,
-                }
-          }
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter font-normal text-light-primary dark:text-gray-400 text-sm"
         >
           {Moment(item.created_at).fromNow()}
         </Text>
       </View>
       <Text
-        style={
-          theme == "dark"
-            ? {
-                fontSize: 14,
-                marginLeft: 5,
-                color: "white",
-                fontFamily: "Inter-Regular",
-                lineHeight: 20,
-              }
-            : {
-                fontSize: 14,
-                color: "#2f2d51",
-                fontFamily: "Inter-Regular",
-              }
-        }
+        style={getSecondaryTextColorStyle(actualTheme)}
+        className="ml-1 font-inter text-light-primary dark:text-dark-primary font-normal leading-5"
       >
         {item.answer}
       </Text>

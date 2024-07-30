@@ -1,12 +1,24 @@
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { AnimatedFAB } from "react-native-paper";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useColorScheme } from "nativewind";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { Link, useIsFocused } from "@react-navigation/native";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+} from "@lib/customStyles";
+import { useIsFocused } from "@react-navigation/native";
 
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
@@ -15,21 +27,23 @@ import { QUESTION_LIST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionScreen = () => {
-  const {
-    answers,
-    currentUser,
-    setQuestions,
-    fetchAnswers,
-
-    supabase,
-  } = useSupabase();
+  const { answers, currentUser, setQuestions, fetchAnswers, supabase } =
+    useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
   const routeParams = useLocalSearchParams();
+  const [answersArray, setAnswersArray] = useState([]);
+  const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector((state) => state.theme.actualTheme);
+
   const itemTitle = routeParams?.title;
   const itemId = routeParams?.question_id;
   const isFocused = useIsFocused();
   useEffect(() => {
     fetchAnswers();
+
+    if (itemId) {
+      setAnswersArray(answers.filter((answer) => answer.question_id === 15));
+    }
   }, [isFocused]);
 
   const theme = useSelector((state) => state.user.theme);
@@ -51,152 +65,126 @@ const QuestionScreen = () => {
 
   return (
     <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212", position: "relative" }
-          : { backgroundColor: "#F2F7FF", position: "relative" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="dark:bg-dark-background relative bg-light-background"
     >
       <HeaderView style={{ marginTop: 10, alignItems: "center" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <Link to={`/${QUESTION_LIST_SCREEN}}`}>
+        <View className="flex-row items-center gap-3">
+          <Link href={`/${QUESTION_LIST_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </Link>
           <HeaderTitle
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Bold", color: "white" }
-                : {
-                    fontFamily: "Inter-Bold",
-                    color: "#2F2D51",
-                  }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold dark:text-dark-primary text-light-primary"
           >
-            <Text>Question</Text>
+            Question
           </HeaderTitle>
         </View>
       </HeaderView>
-      <View style={theme == "dark" ? styles.questionDark : styles.question}>
-        <Text
-          style={
-            theme == "dark"
-              ? {
-                  fontSize: 23,
-                  marginBottom: 15,
-                  color: "white",
-                  fontFamily: "Inter-Bold",
-                }
-              : {
-                  fontSize: 23,
-                  marginBottom: 15,
-                  color: "#2f2d51",
-                  fontFamily: "Inter-Bold",
-                }
+      <View
+        style={
+          actualTheme &&
+          actualTheme.MainTxt && {
+            borderBottomWidth: 1,
+            borderBottomColor: actualTheme.MainTxt,
           }
+        }
+        className="mb-5 border-b dark:border-b-gray-400 border-b-light-primary"
+      >
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter font-semibold text-2xl dark:text-dark-primary text-light-primary mb-4"
         >
           {itemTitle}
         </Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ flex: 1, width: "100%" }}>
-          {existingAnswers.length == 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <MaterialIcons
-                name="question-answer"
-                size={50}
-                color={theme == "dark" ? "#A5C9FF" : "#2f2d51"}
-              />
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        marginTop: 10,
-                        color: "#A5C9FF",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        marginTop: 10,
-                        color: "#2f2d51",
-                      }
-                }
-              >
-                No answers at this moment.
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={existingAnswers}
-              keyExtractor={(e, i) => i.toString()}
-              onEndReachedThreshold={0}
-              scrollEventThrottle={16}
-              contentContainerStyle={{ gap: 5 }}
-              showsVerticalScrollIndicator={false}
-              ListFooterComponent={() => (
-                <View
-                  style={
-                    theme == "dark"
-                      ? {
-                          height: 100,
-                        }
-                      : {
-                          height: 100,
-                        }
-                  }
-                />
-              )}
-              renderItem={({ item }) => (
-                <AnswerItem item={item} theme={theme} />
-              )}
+
+      <View className="flex-1 w-full">
+        {answersArray.length == 0 ? (
+          <View className="flex-1 justify-center items-center">
+            <MaterialIcons
+              name="question-answer"
+              size={50}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "#A5C9FF"
+                    : "#2f2d51"
+              }
             />
-          )}
-        </View>
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-medium mt-3 dark:text-dark-accent text-light-primary"
+            >
+              No answers at this moment.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={answersArray}
+            keyExtractor={(e, i) => i.toString()}
+            onEndReachedThreshold={0}
+            scrollEventThrottle={16}
+            contentContainerStyle={{ gap: 5 }}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={() => <View className="h-24" />}
+            renderItem={({ item }) => (
+              <AnswerItem
+                actualTheme={actualTheme}
+                item={item}
+                theme={colorScheme}
+              />
+            )}
+          />
+        )}
       </View>
-      <View style={styles.actionButtons}>
-        <AnimatedFAB
-          icon="plus"
-          label="Add answer"
-          extended
+      <View className="absolute flex right-4 bottom-4 ">
+        <TouchableOpacity
+          style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => setAnswersVisible(true)}
-          visible
-          animateFrom="right"
-          iconMode="dynamic"
-          color={theme == "dark" ? "#212121" : "white"}
-          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
-        />
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+        >
+          <AntDesign
+            name="plus"
+            size={24}
+            color={
+              actualTheme && actualTheme.PrimaryTxt
+                ? actualTheme.PrimaryTxt
+                : colorScheme === "dark"
+                  ? "#121212"
+                  : "white"
+            }
+          />
+          <Text
+            style={getPrimaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+          >
+            Add answer
+          </Text>
+        </TouchableOpacity>
       </View>
       <QuestionModal
-        answersLength={existingAnswers.length}
+        answersLength={answersArray.length}
         user={currentUser}
         // question={item}
         setQuestions={setQuestions}
         // fetchAnswers={fetchAnswers}
         itemTitle={itemTitle}
         itemId={itemId}
-        answersArray={existingAnswers}
+        answersArray={answersArray}
+        colorScheme={colorScheme}
+        actualTheme={actualTheme}
         theme={theme}
         supabase={supabase}
         setAnswersVisible={setAnswersVisible}
@@ -232,6 +220,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#A5C9FF",
   },
   fabStyle: {
+    position: "relative",
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    backgroundColor: "#2f2d51",
+  },
+
+  fabStyleCustom: {
     position: "relative",
     alignSelf: "flex-end",
     justifyContent: "flex-end",

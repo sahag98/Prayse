@@ -60,7 +60,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
         style={getSecondaryBackgroundColorStyle(actualTheme)}
         className="bg-light-secondary dark:bg-dark-secondary my-[5px] flex-1 dark:border-[1px] border-none dark:border-[#474747] gap-[10px] rounded-lg p-[10px] mb-[15px]"
       >
-        <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center  justify-between">
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter font-bold text-xl text-[#2f2d51] dark:text-white"
@@ -68,18 +68,28 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
             Reminders
           </Text>
           <View className="flex-row items-center gap-3">
-            <Link href={`/${REMINDER_SCREEN}`}>
-              <View className="flex-row items-center gap-[5px]">
+            <Link asChild href={`/${REMINDER_SCREEN}`}>
+              <TouchableOpacity
+                href={`/${REMINDER_SCREEN}`}
+                className="flex-row items-center gap-[5px]"
+              >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter font-semibold text-lg text-[#444444] dark:text-white"
                 >
                   View all
                 </Text>
-              </View>
+              </TouchableOpacity>
             </Link>
-            <Link href={`/${TEST_SCREEN}?type=Add`}>
-              <View className="flex-row items-center gap-1">
+            <Link
+              asChild
+              className="flex-row items-center gap-1"
+              href={`/${TEST_SCREEN}?type=Add`}
+            >
+              <TouchableOpacity
+                href={`/${TEST_SCREEN}?type=Add`}
+                className="flex-row items-center gap-1"
+              >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter font-semibold text-lg text-[#2f2d51] dark:text-[#a5c9ff]"
@@ -97,7 +107,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                         : "#2f2d51"
                   }
                 />
-              </View>
+              </TouchableOpacity>
             </Link>
           </View>
         </View>

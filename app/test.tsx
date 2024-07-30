@@ -20,7 +20,14 @@ import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import { useIsFocused } from "@react-navigation/native";
+import { ActualTheme } from "@types/reduxTypes";
 
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
@@ -48,6 +55,10 @@ export default function TestScreen() {
   const [reminderTime, setReminderTime] = useState("");
   const { colorScheme } = useColorScheme();
   const [isRepeat, setIsRepeat] = useState(false);
+
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
   const toggleSwitch = () => {
     setIsRepeat((previousState) => !previousState);
     setRepeatOption("");
@@ -389,22 +400,28 @@ export default function TestScreen() {
   };
 
   return (
-    <Container className="flex-1 dark:bg-[#121212] bg-[#f2f7ff] justify-center items-center p-4">
+    <Container
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="flex-1 dark:bg-[#121212] bg-[#f2f7ff] justify-center items-center p-4"
+    >
       <HeaderView style={{ justifyContent: "space-between", width: "100%" }}>
         <View className="flex-row gap-1">
           <TouchableOpacity onPress={clearAll}>
             <AntDesign
               name="left"
               size={24}
-              color={colorScheme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
           <HeaderTitle
-            style={
-              colorScheme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-light-primary dark:text-dark-primary"
           >
             {routeParams.type} Reminder
           </HeaderTitle>
@@ -424,7 +441,12 @@ export default function TestScreen() {
                     color: colorScheme == "dark" ? "#5c5c5c" : "grey",
                   }
                 : {
-                    color: theme == "light" ? "#2f2d51" : "#A5C9FF",
+                    color:
+                      actualTheme && actualTheme.Primary
+                        ? actualTheme.Primary
+                        : colorScheme == "light"
+                          ? "#2f2d51"
+                          : "#A5C9FF",
                   }
             }
           >
@@ -441,9 +463,11 @@ export default function TestScreen() {
                   ? colorScheme == "dark"
                     ? "#5c5c5c"
                     : "grey"
-                  : colorScheme == "light"
-                    ? "#2f2d51"
-                    : "#A5C9FF"
+                  : actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : colorScheme == "light"
+                      ? "#2f2d51"
+                      : "#A5C9FF"
               }
             />
           ) : (
@@ -457,30 +481,69 @@ export default function TestScreen() {
                   ? colorScheme == "dark"
                     ? "#5c5c5c"
                     : "grey"
-                  : colorScheme == "light"
-                    ? "#2f2d51"
-                    : "#A5C9FF"
+                  : actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : colorScheme == "light"
+                      ? "#2f2d51"
+                      : "#A5C9FF"
               }
             />
           )}
         </TouchableOpacity>
       </HeaderView>
       <View className="flex-1 mt-3 w-full relative gap-2">
-        <View className="dark:bg-[#212121] bg-[#b7d3ff] w-full p-3 rounded-lg gap-2">
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="dark:bg-dark-secondary bg-light-secondary w-full p-3 rounded-lg gap-2"
+        >
           <TextInput
+            style={getSecondaryTextColorStyle(actualTheme)}
             className="dark:text-white text-[#2f2d51] min-h-8"
-            placeholderTextColor={colorScheme == "dark" ? "#a1a1a1" : "#808080"}
-            placeholder="Prayer Title"
-            selectionColor={colorScheme == "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme == "dark"
+                  ? "#a1a1a1"
+                  : "#808080"
+            }
+            placeholder="Title"
+            selectionColor={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme == "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
             value={newReminder}
             onChangeText={(text) => setNewReminder(text)}
           />
 
-          <View className="w-full dark:bg-gray-500 bg-[#2f2d51] h-[1px]" />
+          <View
+            style={
+              actualTheme &&
+              actualTheme.SecondaryTxt && {
+                backgroundColor: actualTheme.SecondaryTxt,
+              }
+            }
+            className="w-full dark:bg-gray-500 bg-light-primary h-[1px]"
+          />
           <TextInput
-            placeholderTextColor={colorScheme == "dark" ? "#a1a1a1" : "#808080"}
+            placeholderTextColor={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme == "dark"
+                  ? "#a1a1a1"
+                  : "#808080"
+            }
             className="min-h-12 dark:text-white text-[#2f2d51]"
-            placeholder="Prayer Notes"
+            placeholder="Notes"
+            selectionColor={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme == "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
             multiline
             textAlignVertical="top"
             numberOfLines={3}
@@ -489,7 +552,10 @@ export default function TestScreen() {
           />
         </View>
 
-        <View className="dark:bg-[#212121] bg-[#b7d3ff] p-3 gap-2 rounded-lg">
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="dark:bg-dark-secondary bg-light-secondary p-3 gap-2 rounded-lg"
+        >
           <TouchableOpacity
             onPress={showDatePicker}
             className="w-full flex-row justify-between p-2 items-center"
@@ -504,12 +570,18 @@ export default function TestScreen() {
                   }
                   source={calendar}
                 />
-                <Text className="font-inter font-medium dark:text-white text-[#2f2d51]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-medium dark:text-dark-primary text-light-primary"
+                >
                   Date
                 </Text>
               </View>
               {reminderDate.toString().length > 0 && (
-                <Text className="font-inter font-normal dark:text-white text-[#2f2d51]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-normal dark:text-dark-primary text-light-primary"
+                >
                   {reminderDate.toDateString()}
                 </Text>
               )}
@@ -517,10 +589,24 @@ export default function TestScreen() {
             <AntDesign
               name="right"
               size={22}
-              color={colorScheme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
-          <View className="w-full dark:bg-gray-500 bg-[#2f2d51] h-[1px]" />
+          <View
+            style={
+              actualTheme &&
+              actualTheme.SecondaryTxt && {
+                backgroundColor: actualTheme.SecondaryTxt,
+              }
+            }
+            className="w-full dark:bg-gray-500 bg-light-primary h-[1px]"
+          />
           <TouchableOpacity
             onPress={showTimePicker}
             className="w-full flex-row justify-between p-2"
@@ -535,12 +621,18 @@ export default function TestScreen() {
                   }
                   source={time}
                 />
-                <Text className="font-inter font-medium dark:text-white text-[#2f2d51]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-medium dark:text-dark-primary text-light-primary"
+                >
                   Time
                 </Text>
               </View>
               {reminderTime.toString().length > 0 && (
-                <Text className="font-inter font-normal dark:text-white text-[#2f2d51]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-normal dark:text-dark-primary text-light-primary"
+                >
                   {new Date(reminderTime).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -551,26 +643,41 @@ export default function TestScreen() {
             <AntDesign
               name="right"
               size={22}
-              color={colorScheme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
         </View>
 
-        <View className="dark:bg-[#212121] bg-[#b7d3ff] flex-row items-center justify-between rounded-lg p-3">
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="dark:bg-dark-secondary bg-light-secondary flex-row items-center justify-between rounded-lg p-3"
+        >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Feather
               name="repeat"
               size={24}
-              color={colorScheme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
-            <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
+            <Text className="dark:text-dark-primary text-light-primary font-inter font-medium">
               Repeat
             </Text>
           </View>
           <Switch
             trackColor={{ false: "#767577", true: "#767577" }}
             thumbColor={isRepeat ? "#4eff4e" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
+            ios_backgroundColor="#797979"
             onValueChange={toggleSwitch}
             value={isRepeat}
           />
@@ -582,20 +689,33 @@ export default function TestScreen() {
               className="gap-2 flex-row items-center"
             >
               <View
-                className="w-5 dark:border-white border-[#2f2d51] border-2 h-5 rounded-full"
+                className="w-5 dark:border-dark-primary border-light-primary border-2 h-5 rounded-full"
                 style={
                   colorScheme == "dark"
                     ? {
+                        borderWidth: 1,
+                        borderColor:
+                          actualTheme && actualTheme.Secondary
+                            ? actualTheme.Secondary
+                            : "",
                         backgroundColor:
                           repeatOption === "daily" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
+                        borderWidth: 2,
+                        borderColor:
+                          actualTheme &&
+                          actualTheme.Secondary &&
+                          actualTheme.Secondary,
                         backgroundColor:
                           repeatOption === "daily" ? "#00cc00" : "white",
                       }
                 }
               />
-              <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="dark:text-dark-primary text-light-primary font-inter font-medium"
+              >
                 Daily
               </Text>
             </TouchableOpacity>
@@ -608,16 +728,24 @@ export default function TestScreen() {
                 style={
                   colorScheme == "dark"
                     ? {
+                        borderColor:
+                          actualTheme &&
+                          actualTheme.Secondary &&
+                          actualTheme.Secondary,
                         backgroundColor:
                           repeatOption === "weekly" ? "#00cc00" : "#3e3e3e",
                       }
                     : {
+                        borderColor:
+                          actualTheme &&
+                          actualTheme.Secondary &&
+                          actualTheme.Secondary,
                         backgroundColor:
                           repeatOption === "weekly" ? "#00cc00" : "white",
                       }
                 }
               />
-              <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
+              <Text className="dark:text-dark-primary text-light-primary font-inter font-medium">
                 Weekly
               </Text>
             </TouchableOpacity>
@@ -629,7 +757,10 @@ export default function TestScreen() {
           </Text>
 
           <Link href={`/${SETTINGS_SCREEN}`}>
-            <Text className="dark:text-[#d2d2d2] text-[#2f2d51] text-[13px] font-inter font-normal">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="dark:text-[#d2d2d2] text-light-primary text-[13px] font-inter font-normal"
+            >
               To receive the reminders, make sure to enable notifications in
               both your phone and Prayse settings{" "}
               <Feather
@@ -642,10 +773,16 @@ export default function TestScreen() {
           </Link>
 
           <View className="mt-auto mb-5 w-full">
-            <Text className="text-[#2f2d51] dark:text-[#d2d2d2] font-inter font-normal">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="text-light-primary dark:text-[#d2d2d2] font-inter font-normal"
+            >
               "Continue in prayer, and watch in the same with thanksgiving."
             </Text>
-            <Text className="text-[#2f2d51] self-end dark:text-[#d2d2d2] font-inter font-normal">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="text-light-primary self-end dark:text-[#d2d2d2] font-inter font-medium"
+            >
               - Colossians 4:2
             </Text>
           </View>
