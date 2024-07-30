@@ -13,6 +13,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import { ActualTheme } from "@types/reduxTypes";
 
 import { deleteReminder } from "../redux/remindersReducer";
 import { TEST_SCREEN } from "../routes";
@@ -23,6 +30,9 @@ const ReminderScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const { colorScheme } = useColorScheme();
   const reminders = useSelector((state) => state.reminder.reminders);
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
   const dispatch = useDispatch();
 
   const dismissNotification = async (item) => {
@@ -31,22 +41,28 @@ const ReminderScreen = () => {
   };
 
   return (
-    <Container className="dark:bg-[#121212] bg-[#f2f7ff] flex-1">
+    <Container
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="dark:bg-[#121212] bg-[#f2f7ff] flex-1"
+    >
       <HeaderView className="justify-between mb-5 w-full">
         <View className="flex-row gap-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign
               name="left"
               size={24}
-              color={colorScheme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
           <HeaderTitle
-            style={
-              colorScheme == "dark"
-                ? { color: "white", fontFamily: "Inter-Bold" }
-                : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-light-primary dark:text-dark-primary"
           >
             Reminders
           </HeaderTitle>
@@ -109,40 +125,65 @@ const ReminderScreen = () => {
             );
 
             return (
-              <View className="dark:border-[#525252] border-[#ffcf8b] bg-white dark:bg-none border-2 p-3 w-full mr-4 gap-2 mb-4">
+              <View
+                style={[
+                  getSecondaryBackgroundColorStyle(actualTheme),
+                  actualTheme && { borderWidth: 0 },
+                ]}
+                className="dark:border-[#525252] border-[#ffcf8b] bg-white dark:bg-none border-2 rounded-md p-3 w-full mr-4 gap-2 mb-4"
+              >
                 <View className="flex-row items-center gap-2">
                   <Ionicons
                     name="time-outline"
                     size={24}
-                    color={colorScheme == "dark" ? "#f1d592" : "#dda41c"}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme == "dark"
+                          ? "#f1d592"
+                          : "#dda41c"
+                    }
                   />
                   {item.ocurrence === "Daily" && (
-                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]"
+                    >
                       {item.ocurrence} at {formattedDate}
                     </Text>
                   )}
                   {item.ocurrence === "Weekly" && (
-                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]"
+                    >
                       {item.ocurrence} on {dayOfWeekName}s at {formattedDate}
                     </Text>
                   )}
                   {item.ocurrence === "None" && (
-                    <Text className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]">
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium dark:text-[#f1d592] text-[#dda41c]"
+                    >
                       {formattedDate}
                     </Text>
                   )}
                 </View>
                 <View className="gap-1">
                   <Text
-                    className="dark:text-white text-[#2f2d51] font-inter font-normal text-[16px]"
+                    className="dark:text-white text-[#2f2d51] font-inter font-medium text-[16px]"
                     style={{
                       marginBottom: item.reminder.note ? 0 : 5,
+                      color: actualTheme && actualTheme.SecondaryTxt,
                     }}
                   >
                     {item.reminder.message}
                   </Text>
                   {item.reminder.note && (
-                    <Text className="font-inter font-normal dark:text-gray-500 mb-2">
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-normal dark:text-gray-500 mb-2"
+                    >
                       {item.reminder.note}
                     </Text>
                   )}
@@ -161,11 +202,17 @@ const ReminderScreen = () => {
                       })
                     }
                   >
-                    <Text className="dark:text-white text-[#2f2d51] font-inter font-medium">
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="dark:text-white text-[#2f2d51] font-inter font-medium"
+                    >
                       Edit
                     </Text>
                   </TouchableOpacity>
-                  <View className="h-full dark:bg-white bg-[#2f2d51] w-[1.2px]" />
+                  <View
+                    style={getMainBackgroundColorStyle(actualTheme)}
+                    className="h-full dark:bg-white bg-[#2f2d51] w-[1.2px]"
+                  />
                   <TouchableOpacity onPress={() => dismissNotification(item)}>
                     <Text className="font-inter font-medium text-red-500">
                       Delete

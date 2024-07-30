@@ -24,6 +24,8 @@ const QuestionModal = ({
   itemTitle,
   itemId,
   theme,
+  actualTheme,
+  colorScheme,
   user,
   supabase,
   setAnswersVisible,
@@ -118,39 +120,50 @@ const QuestionModal = ({
       >
         <ModalContainer
           style={
-            theme === "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+            colorScheme === "dark"
+              ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
           }
         >
           <ModalView
             style={
-              theme === "dark"
-                ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#b7d3ff" }
+              actualTheme && actualTheme.Secondary
+                ? { backgroundColor: actualTheme.Secondary }
+                : colorScheme === "dark"
+                  ? { backgroundColor: "#212121" }
+                  : { backgroundColor: "#b7d3ff" }
             }
           >
             <StyledInput
+              className="font-inter font-normal mb-2 bg-light-primary dark:bg-dark-secondary"
               style={
-                theme === "dark"
+                actualTheme && actualTheme.Primary
                   ? {
+                      backgroundColor: actualTheme.Primary,
                       height: inputHeight < 100 ? 100 : inputHeight,
                       verticalAlign: "top",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 5,
-                      backgroundColor: "#121212",
                     }
-                  : {
-                      height: inputHeight < 100 ? 100 : inputHeight,
-                      verticalAlign: "top",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 5,
-                      backgroundColor: "#2F2D51",
-                    }
+                  : colorScheme === "dark"
+                    ? {
+                        height: inputHeight < 100 ? 100 : inputHeight,
+                        verticalAlign: "top",
+                      }
+                    : {
+                        height: inputHeight < 100 ? 100 : inputHeight,
+                        verticalAlign: "top",
+                      }
               }
               placeholder="Add answer"
-              placeholderTextColor="#e0e0e0"
-              selectionColor="white"
+              placeholderTextColor={
+                actualTheme && actualTheme.PrimaryTxt
+                  ? actualTheme.PrimaryTxt
+                  : "#e0e0e0"
+              }
+              selectionColor={
+                actualTheme && actualTheme.PrimaryTxt
+                  ? actualTheme.PrimaryTxt
+                  : "white"
+              }
               autoFocus
               onChangeText={(text) => setAnswer(text)}
               value={answer}
@@ -161,13 +174,7 @@ const QuestionModal = ({
               multiline
             />
             <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-              <Text
-                style={{
-                  color: "#ff4e4e",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                }}
-              >
+              <Text className="text-red-500 font-inter font-normal text-sm">
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
@@ -176,14 +183,28 @@ const QuestionModal = ({
                 <AntDesign
                   name="close"
                   size={28}
-                  color={theme === "dark" ? "#121212" : "#2F2D51"}
+                  color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
                 />
               </ModalAction>
               <ModalAction
-                color={theme === "dark" ? "#121212" : "#2F2D51"}
+                color={
+                  actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : colorScheme === "dark"
+                      ? "#121212"
+                      : "#2F2D51"
+                }
                 onPress={addAnswer}
               >
-                <AntDesign name="check" size={28} color="white" />
+                <AntDesign
+                  name="check"
+                  size={28}
+                  color={
+                    actualTheme && actualTheme.PrimaryTxt
+                      ? actualTheme.PrimaryTxt
+                      : "white"
+                  }
+                />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

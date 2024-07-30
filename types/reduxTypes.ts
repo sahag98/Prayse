@@ -12,3 +12,15 @@ export type AnsweredPrayer = {
   id: string;
   prayer: Prayer;
 };
+
+export type ActualTheme = {
+  Accent: string;
+  AccentTxt: string;
+  Bg: string;
+  MainTxt: string;
+  Primary: string;
+  PrimaryTxt: string;
+  Secondary: string;
+  SecondaryTxt: string;
+  id: string;
+};

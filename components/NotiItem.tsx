@@ -4,11 +4,17 @@ import * as Notifications from "expo-notifications";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 
+import {
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+
 import { useSupabase } from "../context/useSupabase";
 import { deleteNoti } from "../redux/notiReducer";
 import { QUESTION_SCREEN } from "../routes";
 
-const NotiItem = ({ item, theme, navigation }) => {
+const NotiItem = ({ actualTheme, item, theme, navigation }) => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSupabase();
 
@@ -47,56 +53,25 @@ const NotiItem = ({ item, theme, navigation }) => {
 
   return (
     <View
-      style={{
-        width: "100%",
-        flexDirection: "row",
-        backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
-        borderRadius: 10,
-        alignItems: "center",
-        marginBottom: 15,
-        padding: 10,
-        justifyContent: "space-between",
-        gap: 10,
-      }}
+      style={getSecondaryBackgroundColorStyle(actualTheme)}
+      className="w-full flex-row bg-light-secondary dark:bg-dark-secondary rounded-md p-3 mb-4 justify-between gap-3"
       key={item.noti_id}
     >
-      <View style={{ gap: 5, padding: 10, width: "80%" }}>
+      <View className="gap-2 p-3 w-[80%]">
         <Text
-          style={
-            theme === "dark"
-              ? { color: "white", fontFamily: "Inter-Regular" }
-              : { color: "#2f2d51", fontFamily: "Inter-Regular" }
-          }
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter font-normal text-light-primary dark:text-dark-primary"
         >
           {item.notification}
         </Text>
       </View>
       <TouchableOpacity
         onPress={() => viewNotification(item.url || item.screen)}
-        style={
-          theme === "dark"
-            ? {
-                position: "relative",
-                borderLeftColor: "#A5C9FF",
-                borderLeftWidth: 1,
-                alignItems: "center",
-                width: "20%",
-              }
-            : {
-                position: "relative",
-                borderLeftColor: "#2f2d51",
-                borderLeftWidth: 1,
-                alignItems: "center",
-                width: "20%",
-              }
-        }
+        className="relative items-center w-[20%] border-l dark:border-dark-accent border-light-primary"
       >
         <Text
-          style={
-            theme === "dark"
-              ? { fontFamily: "Inter-Bold", color: "#A5C9FF" }
-              : { fontFamily: "Inter-Bold", color: "#2f2d51" }
-          }
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
         >
           View
         </Text>

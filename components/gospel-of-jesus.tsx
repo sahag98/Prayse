@@ -8,8 +8,13 @@ import {
 } from "@lib/customStyles";
 
 import { GOSPEL_SCREEN } from "../routes";
+import { ActualTheme } from "../types/reduxTypes";
 
-export const GospelOfJesus = ({ actualTheme }: { actualTheme: any }) => {
+export const GospelOfJesus = ({
+  actualTheme,
+}: {
+  actualTheme: ActualTheme;
+}) => {
   return (
     <Link asChild href={`/${GOSPEL_SCREEN}`}>
       <TouchableOpacity

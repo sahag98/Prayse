@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
+import { Link } from "expo-router";
 import {
   FlatList,
   StyleSheet,
@@ -10,7 +11,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
@@ -53,7 +54,7 @@ const QuestionListScreen = () => {
             gap: 10,
           }}
         >
-          <Link to={`/${COMMUNITY_SCREEN}`}>
+          <Link href={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}

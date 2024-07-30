@@ -14,9 +14,15 @@ import {
   WELCOME_SCREEN,
 } from "@routes";
 
+import { ActualTheme } from "../../types/reduxTypes";
+
 export default function TabLayout() {
   const theme = useSelector((state: any) => state?.user?.theme);
   const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+  );
+
   return (
     <>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
@@ -26,11 +32,14 @@ export default function TabLayout() {
         }}
         screenOptions={{
           headerBackgroundContainerStyle: {
-            borderColor: "red",
-            backgroundColor: colorScheme == "dark" ? "#121212S" : "white",
+            backgroundColor: colorScheme == "dark" ? "#121212" : "white",
           },
           headerShown: false,
-          tabBarActiveTintColor: colorScheme == "dark" ? "white" : "#2f2d51",
+          tabBarActiveTintColor: actualTheme.MainTxt
+            ? actualTheme.MainTxt
+            : colorScheme == "dark"
+              ? "white"
+              : "#2f2d51",
           tabBarInactiveTintColor: "gray",
         }}
       >
@@ -38,16 +47,24 @@ export default function TabLayout() {
           name={WELCOME_SCREEN}
           options={{
             title: "Home",
-            tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+            tabBarLabelStyle: {
+              fontSize: 11,
+
+              fontFamily: "Inter-Medium",
+            },
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+              backgroundColor: actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme == "dark"
+                  ? "#121212"
+                  : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
                 name={focused ? "home" : "home-outline"}
-                color={color}
+                color={actualTheme.MainTxt ? actualTheme.MainTxt : color}
                 size={size}
               />
             ),
@@ -62,7 +79,11 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+              backgroundColor: actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme == "dark"
+                  ? "#121212"
+                  : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <MaterialIcons
@@ -82,7 +103,11 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+              backgroundColor: actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme == "dark"
+                  ? "#121212"
+                  : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
@@ -102,7 +127,11 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+              backgroundColor: actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme == "dark"
+                  ? "#121212"
+                  : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
@@ -122,7 +151,11 @@ export default function TabLayout() {
               height: 58,
               paddingBottom: 5,
               paddingTop: 2,
-              backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+              backgroundColor: actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme == "dark"
+                  ? "#121212"
+                  : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons

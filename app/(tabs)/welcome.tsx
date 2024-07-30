@@ -35,6 +35,7 @@ import {
   VERSE_OF_THE_DAY_SCREEN,
 } from "@routes";
 import { WelcomeContainer } from "@styles/appStyles";
+import { ActualTheme } from "@types/reduxTypes";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -123,7 +124,9 @@ const WelcomeScreen = () => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
-  const actualTheme = useSelector((state) => state.theme.actualTheme);
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
 
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
