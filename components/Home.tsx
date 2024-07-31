@@ -1,7 +1,10 @@
+//@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
+import { useColorScheme } from "nativewind";
 import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import InputModal from "../modals/InputModal";
@@ -10,7 +13,6 @@ import { PrayerContainer } from "../styles/appStyles";
 import BottomBox from "./BottomBox";
 import Header from "./Header";
 import ListItems from "./ListItems";
-import { useColorScheme } from "nativewind";
 
 const Home = ({
   navigation,
@@ -21,6 +23,9 @@ const Home = ({
   folderId,
 }) => {
   const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
   const theme = useSelector((state) => state.user.theme);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,11 +40,11 @@ const Home = ({
   const [answeredAlready, setAnsweredAlready] = useState("");
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers
+    (state) => state.answered.answeredPrayers,
   );
   const slideUpValue = useRef(new Animated.Value(0)).current;
   const isIOS = Platform.OS === "ios";
-  const [visible, setVisible] = useState(true);
+
   const { current: velocity } = useRef(new Animated.Value(0));
 
   const onScroll = ({ nativeEvent }) => {
@@ -70,7 +75,7 @@ const Home = ({
     if (
       answeredPrayers?.some(
         (item) =>
-          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer
+          item.prayer.id === prayer.id && item.prayer.prayer === prayer.prayer,
       )
     ) {
       setAnsweredAlready(prayer.id);
@@ -118,11 +123,8 @@ const Home = ({
 
   return (
     <PrayerContainer
-      style={
-        colorScheme === "dark"
-          ? { position: "relative", backgroundColor: "#121212" }
-          : { backgroundColor: "#F2F7FF" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="relative bg-light-background dark:bg-dark-background"
     >
       <Animated.View
         pointerEvents={isBoxVisible ? "none" : "auto"}
@@ -133,6 +135,7 @@ const Home = ({
         }
       >
         <Header
+          actualTheme={actualTheme}
           folderId={folderId}
           folderName={folderName}
           colorScheme={colorScheme}
@@ -141,6 +144,8 @@ const Home = ({
         />
 
         <ListItems
+          actualTheme={actualTheme}
+          colorScheme={colorScheme}
           navigation={navigation}
           prayerList={prayerList}
           pickedPrayer={pickedPrayer}
@@ -161,13 +166,15 @@ const Home = ({
 
         {!isBoxVisible && (
           <InputModal
+            actualTheme={actualTheme}
+            colorScheme={colorScheme}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
             setTaskName={setTaskName}
             taskName={taskName}
             folderName={folderName}
             folderId={folderId}
-            visible={visible}
+            xwxx
             animatedValue={velocity}
             extended={extended}
             isIOS={isIOS}

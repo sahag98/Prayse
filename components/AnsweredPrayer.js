@@ -9,8 +9,12 @@ import {
   removeAnsweredPrayer,
 } from "../redux/answeredReducer";
 import { AnswerInput } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const AnsweredPrayer = ({ item, index, theme }) => {
+const AnsweredPrayer = ({ actualTheme, item, index, theme }) => {
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState("");
   const [openOptions, setOpenOptions] = useState(false);
@@ -25,7 +29,7 @@ const AnsweredPrayer = ({ item, index, theme }) => {
       addNoteToPrayer({
         id: prayerId,
         answerNote: answer,
-      }),
+      })
     );
     setOpenOptions(false);
     setAnswer("");
@@ -33,27 +37,17 @@ const AnsweredPrayer = ({ item, index, theme }) => {
 
   return (
     <View key={index}>
-      <View style={styles.answeredPrayerWrapper}>
-        <Feather name="check-circle" size={22} color="#66b266" />
+      <View className="w-full mb-5 flex-1 gap-3 flex-row items-center justify-between">
+        <Feather name="check-circle" size={25} color="#66b266" />
+
         <View
-          style={
-            theme === "dark" ? styles.answeredPrayerDark : styles.answeredPrayer
-          }
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="rounded-md items-center flex-1 justify-between bg-light-secondary dark:bg-dark-secondary  min-h-14 p-3"
         >
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
+          <View className="flex-row w-full justify-between">
             <Text
-              style={{
-                color: theme === "dark" ? "white" : "#2f2d51",
-                fontSize: 16,
-                fontFamily: "Inter-Bold",
-                width: "90%",
-              }}
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="font-inter font-semibold text-lg flex-1 text-light-primary dark:text-dark-primary"
             >
               {item.prayer.prayer}
             </Text>
@@ -62,28 +56,23 @@ const AnsweredPrayer = ({ item, index, theme }) => {
             >
               <AntDesign
                 name="close"
-                size={22}
-                color={theme === "dark" ? "white" : "#2f2d51"}
+                size={24}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              width: "100%",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 10,
-            }}
-          >
-            <TouchableOpacity style={{ width: "100%" }}>
+          <View className="w-full justify-between items-center mt-8">
+            <TouchableOpacity className="w-full">
               {item.answerNoted && (
                 <Text
-                  style={{
-                    color: theme === "dark" ? "#66b266" : "#00ab00",
-                    fontSize: 15,
-                    fontFamily: "Inter-Regular",
-                    width: "90%",
-                  }}
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter flex-1 text-light-primary dark:text-dark-primary"
                 >
                   {item.answerNoted}
                 </Text>
@@ -92,24 +81,35 @@ const AnsweredPrayer = ({ item, index, theme }) => {
             {!item.answerNoted && (
               <AnswerInput
                 onPressIn={() => InputPress(item.prayer.id)}
-                style={theme === "dark" ? styles.inputDark : styles.input}
+                style={
+                  actualTheme &&
+                  actualTheme.SecondaryTxt && {
+                    borderColor: actualTheme.SecondaryTxt,
+                  }
+                }
+                className="items-center self-center font-inter border border-light-primary dark:border-dark-primary"
                 placeholder="How did God answer this prayer?"
-                placeholderTextColor={theme === "dark" ? "#c2c2c2" : "grey"}
-                selectionColor={theme === "dark" ? "white" : "#2f2d51"}
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "#c2c2c2"
+                      : "grey"
+                }
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
                 onChangeText={(text) => setAnswer(text)}
                 value={answer}
                 multiline
               />
             )}
             {openOptions && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
-                  marginTop: 10,
-                }}
-              >
+              <View className="flex-row items-center self-end mt-4">
                 <TouchableOpacity
                   onPress={() => {
                     setOpenOptions(false), setSelected("");
@@ -124,14 +124,32 @@ const AnsweredPrayer = ({ item, index, theme }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => HandleAddAnswer(item.id)}
-                  style={[
-                    styles.actionButton,
-                    {
-                      backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
-                    },
-                  ]}
+                  style={
+                    actualTheme && actualTheme.Primary
+                      ? [
+                          styles.actionButton,
+                          {
+                            backgroundColor: actualTheme.Primary,
+                          },
+                        ]
+                      : [
+                          styles.actionButton,
+                          {
+                            backgroundColor:
+                              theme === "dark" ? "#121212" : "#2f2d51",
+                          },
+                        ]
+                  }
                 >
-                  <AntDesign name="check" size={28} color="white" />
+                  <AntDesign
+                    name="check"
+                    size={28}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : "white"
+                    }
+                  />
                 </TouchableOpacity>
               </View>
             )}

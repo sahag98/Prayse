@@ -31,15 +31,20 @@ import { HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import DeleteFolder from "./DeleteFolder";
 import EditFolder from "./EditFolder";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
+import {
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const Header = ({ colorScheme, folderName, folderId, theme }) => {
+const Header = ({ actualTheme, colorScheme, folderName, folderId, theme }) => {
   const [isShowingModal, setIsShowingModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const prayerList = useSelector((state) => state.prayer.prayer);
   const folderPrayers = prayerList.filter((item) => item.folderId === folderId);
-
+  const navigation = useNavigation();
   const onShare = async () => {
     const prayers = [];
 
@@ -87,20 +92,23 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
         <View className="flex-row items-center justify-between w-full">
           <View className="flex-row items-center gap-2">
             <Link asChild href={`/${FOLDER_SCREEN}`}>
-              <View className="mr-1">
+              <TouchableOpacity href={`/${FOLDER_SCREEN}`} className="mr-1">
                 <Ionicons
                   name="chevron-back"
                   size={30}
-                  color={colorScheme === "light" ? "#2f2d51" : "white"}
+                  color={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : colorScheme === "light"
+                        ? "#2f2d51"
+                        : "white"
+                  }
                 />
-              </View>
+              </TouchableOpacity>
             </Link>
             <HeaderTitle
-              style={
-                colorScheme === "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-primary dark:text-dark-primary"
             >
               {folderName}
             </HeaderTitle>
@@ -108,7 +116,13 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
               name="folderopen"
               size={28}
               style={{ marginLeft: 10 }}
-              color={colorScheme === "dark" ? "#e8bb4e" : "#f1d592"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "#e8bb4e"
+                    : "#f1d592"
+              }
             />
           </View>
           <Entypo
@@ -118,7 +132,13 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
               doSlideUpAnimation();
             }}
             size={20}
-            color={colorScheme === "dark" ? "white" : "#2F2D51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#2F2D51"
+            }
           />
         </View>
 
@@ -132,28 +152,39 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
           <View
             className="flex-1 justify-end items-center"
             style={{
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
             }}
           >
             <Animated.View
-              className="p-2 w-[95%] gap-4 rounded-lg"
+              className="p-3 w-[95%] gap-4 mb-10 rounded-xl"
               style={
                 colorScheme === "dark"
                   ? [
                       animatedSlideUpStyle,
+                      getSecondaryBackgroundColorStyle(actualTheme),
                       {
-                        backgroundColor: "rgba(33, 33, 33, 0.7)",
+                        backgroundColor:
+                          actualTheme && actualTheme.Secondary
+                            ? actualTheme.Secondary
+                            : "rgba(33, 33, 33, 0.8)",
                       },
                     ]
                   : [
+                      animatedSlideUpStyle,
                       {
-                        backgroundColor: "rgba(183, 211, 255,0.5)",
+                        backgroundColor:
+                          actualTheme && actualTheme.Secondary
+                            ? actualTheme.Secondary
+                            : "rgba(183, 211, 255,0.8)",
                       },
                     ]
               }
             >
               <View className="flex-row items-center justify-between mb-1">
-                <Text className="font-inter font-bold text-xl dark:text-white text-[#2f2d51]">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-bold text-2xl dark:text-dark-primary text-light-primary"
+                >
                   Folder Settings
                 </Text>
                 <AntDesign
@@ -163,30 +194,53 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
                   }}
                   style={{ alignSelf: "flex-end" }}
                   name="closecircleo"
-                  size={24}
-                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
+                  size={30}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "white"
+                        : "#2f2d51"
+                  }
                 />
               </View>
 
               <TouchableOpacity
+                style={[
+                  getSecondaryBackgroundColorStyle(actualTheme),
+                  { borderColor: actualTheme && actualTheme.SecondaryTxt },
+                ]}
                 onPress={() => {
                   setIsShowingModal(false);
                   setOpenEdit(true);
                 }}
-                className="flex-row items-center rounded-lg justify-between p-3 dark:bg-[#2e2e2e] bg-[#b7d3ff]"
+                className="flex-row items-center border border-light-primary dark:border-dark-primary rounded-lg justify-between p-4 dark:bg-dark-secondary bg-light-secondary"
               >
-                <Text className="dark:text-white text-[#2f2d51] text-center font-inter font-medium">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="dark:text-dark-primary text-light-primary text-center font-inter font-medium"
+                >
                   Rename Folder
                 </Text>
                 <Feather
                   name="edit"
-                  size={22}
-                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
+                  size={20}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "white"
+                        : "#2f2d51"
+                  }
                 />
               </TouchableOpacity>
               <TouchableOpacity
+                style={[
+                  getSecondaryBackgroundColorStyle(actualTheme),
+                  { borderColor: actualTheme && actualTheme.SecondaryTxt },
+                ]}
                 onPress={onShare}
-                className="flex-row mb-3 items-center rounded-lg justify-between p-3 dark:bg-[#2e2e2e] bg-[#b7d3ff]"
+                className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary p-4 dark:bg-dark-secondary bg-light-secondary"
               >
                 <Text className="dark:text-white text-[#2f2d51] text-center font-inter font-medium">
                   Share
@@ -194,8 +248,14 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
 
                 <Feather
                   name="share"
-                  size={21}
-                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
+                  size={20}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "white"
+                        : "#2f2d51"
+                  }
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -203,7 +263,7 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
                   setOpenDelete(true);
                   setIsShowingModal(false);
                 }}
-                className="flex-row items-center justify-between p-4 rounded-lg dark:bg-[#270000] bg-[#ffd8d8] "
+                className="flex-row items-center justify-between p-4 rounded-lg border border-red-500"
               >
                 <Text className="text-center font-inter font-bold text-[#ff3b3b]">
                   Delete
@@ -214,6 +274,7 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
           </View>
         </Modal>
         <EditFolder
+          actualTheme={actualTheme}
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
           folderName={folderName}
@@ -222,6 +283,7 @@ const Header = ({ colorScheme, folderName, folderId, theme }) => {
           folderId={folderId}
         />
         <DeleteFolder
+          actualTheme={actualTheme}
           openDelete={openDelete}
           setOpenDelete={setOpenDelete}
           theme={theme}

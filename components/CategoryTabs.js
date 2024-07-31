@@ -1,3 +1,4 @@
+import { getPrimaryBackgroundColorStyle } from "@lib/customStyles";
 import React from "react";
 import {
   ScrollView,
@@ -7,7 +8,14 @@ import {
   View,
 } from "react-native";
 
-const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
+const CategoryTabs = ({
+  actualTheme,
+  theme,
+  prayerList,
+  status,
+  setStatus,
+  selected,
+}) => {
   return (
     <>
       {prayerList.length !== 0 && (
@@ -21,26 +29,43 @@ const CategoryTabs = ({ theme, prayerList, status, setStatus, selected }) => {
               <TouchableOpacity
                 key={idx}
                 onPress={() => setStatus(selected)}
-                style={
-                  theme === "dark"
+                style={[
+                  actualTheme && actualTheme.Primary
                     ? [
-                        styles.btnTabDark,
-                        status === selected && styles.btnActiveDark,
+                        styles.btnTab,
+                        status === selected && {
+                          backgroundColor: actualTheme.Primary,
+                        },
                       ]
-                    : [styles.btnTab, status === selected && styles.btnActive]
-                }
+                    : theme === "dark"
+                      ? [
+                          styles.btnTabDark,
+                          status === selected && styles.btnActiveDark,
+                        ]
+                      : [
+                          styles.btnTab,
+                          status === selected && styles.btnActive,
+                        ],
+                ]}
               >
                 <Text
                   style={
-                    theme === "dark"
+                    actualTheme && actualTheme.PrimaryTxt
                       ? [
-                          styles.textTabDark,
-                          status === selected && styles.textTabActiveDark,
-                        ]
-                      : [
                           styles.textTab,
-                          status === selected && styles.textTabActive,
+                          status === selected && {
+                            color: actualTheme.PrimaryTxt,
+                          },
                         ]
+                      : theme === "dark"
+                        ? [
+                            styles.textTabDark,
+                            status === selected && styles.textTabActiveDark,
+                          ]
+                        : [
+                            styles.textTab,
+                            status === selected && styles.textTabActive,
+                          ]
                   }
                 >
                   {selected}

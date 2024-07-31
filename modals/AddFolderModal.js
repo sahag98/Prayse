@@ -4,7 +4,9 @@ import {
   Modal,
   Platform,
   StyleSheet,
+  Text,
   TextInput,
+  View,
 } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -17,8 +19,13 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const AddFolderModal = ({
+  actualTheme,
   folderName,
   colorScheme,
   setFolderName,
@@ -47,33 +54,39 @@ const AddFolderModal = ({
           }
         >
           <ModalView
-            style={
-              colorScheme == "dark"
-                ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#b7d3ff" }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary w-5/6 dark:bg-dark-secondary"
           >
             <ModalIcon>
               <HeaderTitle
-                style={
-                  colorScheme == "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        fontSize: 20,
-                        color: "white",
-                      }
-                    : { fontFamily: "Inter-Bold", fontSize: 20 }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
               >
                 Create Folder
               </HeaderTitle>
             </ModalIcon>
+
             <TextInput
-              className=""
-              style={colorScheme == "dark" ? styles.inputDark : styles.input}
+              style={[
+                getSecondaryBackgroundColorStyle(actualTheme),
+                actualTheme &&
+                  actualTheme.SecondaryTxt && {
+                    borderWidth: 1,
+                    borderColor: actualTheme.SecondaryTxt,
+                  },
+              ]}
+              className="w-full border border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
               placeholder="Enter folder name"
-              placeholderTextColor="white"
-              selectionColor="white"
+              placeholderTextColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : "white"
+              }
+              selectionColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : "white"
+              }
               textAlignVertical="center"
               autoFocus={true}
               onChangeText={(text) => setFolderName(text)}
@@ -93,10 +106,24 @@ const AddFolderModal = ({
                 />
               </ModalAction>
               <ModalAction
-                color={colorScheme == "dark" ? "#121212" : "#2F2D51"}
+                color={
+                  actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : colorScheme == "dark"
+                      ? "#121212"
+                      : "#2F2D51"
+                }
                 onPress={addNewFolder}
               >
-                <AntDesign name="check" size={28} color="white" />
+                <AntDesign
+                  name="check"
+                  size={28}
+                  color={
+                    actualTheme && actualTheme.PrimaryTxt
+                      ? actualTheme.PrimaryTxt
+                      : "white"
+                  }
+                />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

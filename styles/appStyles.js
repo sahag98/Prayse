@@ -57,7 +57,7 @@ export const HeaderView = styled.View`
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 20px;
+  font-size: 24px;
   color: ${colors.tertiary};
 `;
 export const HeaderButton = styled.TouchableOpacity`
@@ -77,7 +77,7 @@ export const ListContainer = styled.View`
 export const ListView = styled.View`
   min-height: 90px;
   width: 100%;
-  padding: 15px;
+  padding: 12px;
   justify-content: space-between;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -130,14 +130,13 @@ export const TodoText = styled.Text`
 export const TodoDate = styled.Text`
   font-size: 11px;
   letter-spacing: 1px;
-  color: ${colors.alternative};
   text-align: right;
   text-transform: uppercase;
   /* padding-top: 8px; */
 `;
 
 export const TodoCategory = styled.View`
-  background-color: #121212;
+  /* background-color: #121212; */
   border-radius: 20px;
 
   font-size: 9px;
@@ -210,11 +209,11 @@ export const ModalContainer = styled.View`
   justify-content: center;
   align-items: center;
   flex: 1;
-  background-color: ${colors.primary};
+  /* background-color: ${colors.primary}; */
 `;
 
 export const ModalView = styled.View`
-  background-color: ${colors.secondary};
+  /* background-color: ${colors.secondary}; */
   border-radius: 20px;
   padding: 25px;
 `;
@@ -233,17 +232,17 @@ export const ToolTipView = styled.View`
 
 export const StyledInput = styled.TextInput`
   width: 300px;
-  background-color: ${colors.tertiary};
+  /* background-color: ${colors.tertiary}; */
   padding: 15px;
   font-size: 14px;
   border-radius: 10px;
-  color: ${colors.alternative};
+  /* color: ${colors.alternative}; */
   letter-spacing: 1px;
 `;
 
 export const AnswerInput = styled.TextInput`
   width: 100%;
-  background-color: ${colors.tertiary};
+
   padding: 8px;
   font-size: 14px;
   border-radius: 10px;

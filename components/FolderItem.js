@@ -25,8 +25,12 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const FolderItem = ({ colorScheme, item, theme, navigation }) => {
+const FolderItem = ({ colorScheme, actualTheme, item, theme, navigation }) => {
   const dispatch = useDispatch();
   const [openEdit, setOpenEdit] = useState(false);
   const [newFolderName, setNewFolderName] = useState(item.name);
@@ -67,24 +71,42 @@ const FolderItem = ({ colorScheme, item, theme, navigation }) => {
   const prayers = prayerList?.filter((item) => item.folderId === id);
 
   return (
-    <TouchableOpacity onPress={() => handleOpen(item)} key={item.id}>
+    <TouchableOpacity
+      className="w-1/2"
+      onPress={() => handleOpen(item)}
+      key={item.id}
+    >
       <View
-        style={
-          colorScheme === "dark"
-            ? [styles.containerDark, styles.elevationDark]
-            : styles.container
-        }
+        className="bg-light-secondary w-full aspect-square dark:bg-dark-secondary p-3  flex-1 mb-4 rounded-lg"
+        style={[
+          { width: width / 2 - 8 },
+          getSecondaryBackgroundColorStyle(actualTheme),
+        ]}
       >
         <View className="relative flex-1 justify-between">
           <View className="w-full flex-row justify-between items-center">
-            <Text className="text-xl dark:text-white  text-[#2f2d51] my-1 max-w-[90%] font-inter font-bold">
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="text-2xl dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter font-bold"
+            >
               {item.name}
             </Text>
-            <AntDesign name="folder1" size={28} color={"#e8bb4e"} />
+            <AntDesign
+              name="folder1"
+              size={28}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : "#e8bb4e"
+              }
+            />
           </View>
           {prayers?.length === 0 ? (
             <View>
-              <Text className="font-inter text-sm dark:text-white text-[#2f2d51]">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-sm dark:text-dark-primary text-light-primary"
+              >
                 No prayers yet.
               </Text>
             </View>
@@ -95,7 +117,10 @@ const FolderItem = ({ colorScheme, item, theme, navigation }) => {
               className="gap-1"
               renderItem={({ item }) => (
                 <View className="flex-row items-center">
-                  <Text className="dark:text-[#d2d2d2] text-[#2f2d51] text-sm">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="dark:text-[#d2d2d2] text-light-primary text-sm"
+                  >
                     {truncateWords(item.prayer)}
                   </Text>
                 </View>
