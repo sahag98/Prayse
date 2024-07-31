@@ -21,8 +21,13 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const EditFolder = ({
+  actualTheme,
   colorScheme,
   folderName,
   openEdit,
@@ -71,41 +76,42 @@ const EditFolder = ({
         <View
           className="p-2 justify-center items-center flex-1"
           style={{
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
           }}
         >
           <ModalView
-            style={
-              colorScheme === "dark"
-                ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#93D8F8" }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary"
           >
             <ModalIcon>
               <HeaderTitle
-                style={
-                  colorScheme === "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        fontSize: 18,
-                        color: "white",
-                        marginBottom: 5,
-                      }
-                    : {
-                        fontSize: 18,
-                        marginBottom: 5,
-                        fontFamily: "Inter-Bold",
-                      }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold mb-2 text-light-primary dark:text-dark-primary"
               >
                 Change folder name
               </HeaderTitle>
             </ModalIcon>
+
             <StyledInput
-              style={colorScheme === "dark" ? styles.inputDark : styles.input}
+              style={
+                actualTheme &&
+                actualTheme.SecondaryTxt && {
+                  borderColor: actualTheme.SecondaryTxt,
+                  color: actualTheme.SecondaryTxt,
+                }
+              }
+              className="items-center self-center font-inter text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary"
               placeholder="Enter new folder name"
-              placeholderTextColor="white"
-              selectionColor="white"
+              placeholderTextColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : "white"
+              }
+              selectionColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : "white"
+              }
               autoFocus
               onChangeText={(text) => setNewFolderName(text)}
               value={newFolderName}
@@ -118,7 +124,6 @@ const EditFolder = ({
                 {error}
               </Text>
             )}
-
             <ModalActionGroup>
               <ModalAction
                 color="white"
@@ -134,10 +139,24 @@ const EditFolder = ({
                 />
               </ModalAction>
               <ModalAction
-                color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
+                color={
+                  actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : colorScheme === "dark"
+                      ? "#121212"
+                      : "#2F2D51"
+                }
                 onPress={() => HandleEditFolder(folderId)}
               >
-                <AntDesign name="check" size={28} color="white" />
+                <AntDesign
+                  name="check"
+                  size={28}
+                  color={
+                    actualTheme && actualTheme.PrimaryTxt
+                      ? actualTheme.PrimaryTxt
+                      : "white"
+                  }
+                />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>

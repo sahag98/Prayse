@@ -28,8 +28,17 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import {
+  getMainBackgroundColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const InputModal = ({
+  actualTheme,
+  colorScheme,
   categoryValue,
   setTaskName,
   categorytoBeEdited,
@@ -38,7 +47,6 @@ const InputModal = ({
   setCategorytoBeEdited,
   taskName,
   isIOS,
-  visible,
   animatedValue,
   extended,
   setCategoryValue,
@@ -132,7 +140,7 @@ const InputModal = ({
           category: categoryValue,
           date: new Date().toLocaleString(),
           id: uuid.v4(),
-        }),
+        })
       );
     } else {
       dispatch(
@@ -143,7 +151,7 @@ const InputModal = ({
           category: categoryValue,
           date: prayertoBeEdited.date,
           id: prayertoBeEdited.id,
-        }),
+        })
       );
       setIsEditing(false);
       setCategorytoBeEdited(null);
@@ -162,20 +170,32 @@ const InputModal = ({
   return (
     <View style={{ position: "relative", flex: 1 }}>
       <View style={styles.actionButtons}>
-        <AnimatedFAB
-          icon="plus"
-          label="Add prayer"
-          extended={isExtended}
+        <TouchableOpacity
+          style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => {
             setModalVisible(true);
             setTaskName("Add");
           }}
-          visible={visible}
-          animateFrom="left"
-          iconMode="dynamic"
-          color={theme === "dark" ? "#121212" : "white"}
-          style={theme === "dark" ? styles.fabStyleDark : styles.fabStyle}
-        />
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+        >
+          <AntDesign
+            name="plus"
+            size={24}
+            color={
+              actualTheme && actualTheme.PrimaryTxt
+                ? actualTheme.PrimaryTxt
+                : colorScheme === "dark"
+                  ? "#121212"
+                  : "white"
+            }
+          />
+          <Text
+            style={getPrimaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+          >
+            Add Prayer
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <Modal
@@ -189,62 +209,63 @@ const InputModal = ({
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <ModalContainer
-            style={
-              theme === "dark"
-                ? { backgroundColor: "#121212" }
-                : { backgroundColor: "#F2F7FF" }
-            }
+            style={getMainBackgroundColorStyle(actualTheme)}
+            className="bg-light-background dark:bg-dark-background"
           >
             <ModalView
-              style={
-                theme === "dark"
-                  ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#b7d3ff" }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary dark:bg-dark-secondary"
             >
               <ModalIcon>
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
+                <View className="flex-row items-center gap-2">
                   <HeaderTitle
-                    style={
-                      theme === "dark"
-                        ? { fontFamily: "Inter-Bold", color: "white" }
-                        : { fontFamily: "Inter-Bold" }
-                    }
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-light-primary dark:text-dark-primary"
                   >
                     {taskName} Prayer
                   </HeaderTitle>
                   <AntDesign
                     name="edit"
                     size={24}
-                    color={theme === "dark" ? "white" : "#2F2D51"}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "white"
+                          : "#2F2D51"
+                    }
                   />
                 </View>
               </ModalIcon>
               <StyledInput
+                className="mt-3 items-center border border-light-secondary dark:border-[#d2d2d2] self-center font-inter"
                 style={
-                  theme === "dark"
+                  actualTheme && actualTheme.SecondaryTxt
                     ? {
                         height: inputHeight < 60 ? 60 : inputHeight,
-                        marginTop: 10,
-                        alignItems: "center",
-                        alignSelf: "center",
-                        textAlignVertical: "center",
-                        fontFamily: "Inter-Regular",
-                        backgroundColor: "#121212",
+                        borderWidth: 1,
+                        color: actualTheme.SecondaryTxt,
+                        borderColor: actualTheme.SecondaryTxt,
                       }
-                    : {
-                        height: inputHeight < 60 ? 60 : inputHeight,
-                        marginTop: 10,
-                        textAlignVertical: "center",
-                        fontFamily: "Inter-Regular",
-                        backgroundColor: "#2F2D51",
-                      }
+                    : colorScheme === "dark"
+                      ? {
+                          height: inputHeight < 60 ? 60 : inputHeight,
+                        }
+                      : {
+                          height: inputHeight < 60 ? 60 : inputHeight,
+                        }
                 }
                 placeholder="Add a prayer"
-                placeholderTextColor="#e0e0e0"
-                selectionColor="white"
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : "#e0e0e0"
+                }
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : "white"
+                }
                 autoFocus
                 onChangeText={(text) => setPrayerValue(text)}
                 value={prayerValue}
@@ -255,23 +276,17 @@ const InputModal = ({
                 multiline
               />
               <TouchableOpacity
-                style={styles.dismiss}
+                className="my-2 self-end"
                 onPress={dismissKeyboard}
               >
-                <Text
-                  style={{
-                    color: "#ff4e4e",
-                    fontFamily: "Inter-Regular",
-                    fontSize: 13,
-                  }}
-                >
+                <Text className="font-inter text-red-500 font-semibold">
                   Dismiss Keyboard
                 </Text>
               </TouchableOpacity>
-              <Text
-                style={theme === "dark" ? styles.selectDark : styles.select}
-              >
-                Select a Category (optional):
+              {/* fontSize: 13, paddingVertical: 5, color: "black", fontFamily:
+              "Inter-Regular", */}
+              <Text className="mt-2 font-inter font-semibold">
+                Select a category (optional):
               </Text>
               <SelectList
                 placeholder="selectcategory"
@@ -283,15 +298,92 @@ const InputModal = ({
                     ? { key: "None", value: categoryValue }
                     : { key: "None", value: "None" }
                 }
+                fontFamily="Inter"
                 boxStyles={
-                  theme === "dark" ? styles.categoryDark : styles.category
+                  colorScheme === "dark"
+                    ? [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? {
+                              marginTop: 10,
+                              height: 50,
+                              alignItems: "center",
+                              borderColor: actualTheme.SecondaryTxt,
+                            }
+                          : styles.categoryDark,
+                      ]
+                    : [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? {
+                              marginTop: 10,
+                              height: 50,
+                              alignItems: "center",
+                              borderColor: actualTheme.SecondaryTxt,
+                            }
+                          : styles.category,
+                      ]
                 }
                 dropdownStyles={
-                  theme === "dark" ? styles.dropdownDark : styles.dropdown
+                  colorScheme === "dark"
+                    ? [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? {
+                              marginTop: 10,
+                              height: 50,
+                              borderColor: actualTheme.SecondaryTxt,
+                              height: 800,
+                            }
+                          : styles.dropdownDark,
+                      ]
+                    : [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? {
+                              marginTop: 10,
+                              height: 50,
+                              borderColor: actualTheme.SecondaryTxt,
+                              height: 800,
+                            }
+                          : styles.dropdown,
+                      ]
                 }
-                dropdownTextStyles={styles.dropdownTextDark}
-                inputStyles={styles.inputText}
-                arrowicon={<AntDesign name="down" size={15} color="white" />}
+                dropdownTextStyles={
+                  colorScheme === "dark"
+                    ? [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? { color: actualTheme.SecondaryTxt, padding: 10 }
+                          : styles.dropdownTextDark,
+                      ]
+                    : [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? { color: actualTheme.SecondaryTxt, padding: 10 }
+                          : styles.dropdownText,
+                      ]
+                }
+                inputStyles={
+                  colorScheme === "dark"
+                    ? [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? { color: actualTheme.SecondaryTxt }
+                          : styles.inputTextDark,
+                      ]
+                    : [
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? { color: actualTheme.SecondaryTxt }
+                          : styles.inputText,
+                      ]
+                }
+                arrowicon={
+                  <AntDesign
+                    name="down"
+                    size={15}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "white"
+                          : "#2f2d51"
+                    }
+                  />
+                }
                 maxHeight="250"
               />
               <ModalActionGroup>
@@ -299,14 +391,28 @@ const InputModal = ({
                   <AntDesign
                     name="close"
                     size={28}
-                    color={theme === "dark" ? "#121212" : "#2F2D51"}
+                    color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
                   />
                 </ModalAction>
                 <ModalAction
-                  color={theme === "dark" ? "#121212" : "#2F2D51"}
+                  color={
+                    actualTheme && actualTheme.Primary
+                      ? actualTheme.Primary
+                      : colorScheme === "dark"
+                        ? "#121212"
+                        : "#2F2D51"
+                  }
                   onPress={handleSubmit}
                 >
-                  <AntDesign name="check" size={28} color="white" />
+                  <AntDesign
+                    name="check"
+                    size={28}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : "white"
+                    }
+                  />
                 </ModalAction>
               </ModalActionGroup>
             </ModalView>
@@ -327,6 +433,9 @@ const styles = StyleSheet.create({
   },
 
   inputText: {
+    color: "#2f2d51",
+  },
+  inputTextDark: {
     color: "white",
   },
   fabStyleDark: {
@@ -390,8 +499,8 @@ const styles = StyleSheet.create({
   },
 
   category: {
-    backgroundColor: "#2F2D51",
-    color: "black",
+    // backgroundColor: "#2F2D51",
+    borderWidth: 1,
     marginTop: 10,
     height: 50,
     alignItems: "center",
@@ -413,16 +522,12 @@ const styles = StyleSheet.create({
     height: 800,
   },
   dropdownText: {
-    color: "black",
+    color: "#2f2d51",
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
   },
   dropdownTextDark: {
     color: "white",
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "white",
   },
 
   elevation: {

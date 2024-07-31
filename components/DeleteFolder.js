@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
 import { deletePrayerByFolderId } from "../redux/prayerReducer";
-import { PRAYER_SCREEN } from "../routes";
+import { FOLDER_SCREEN, PRAYER_SCREEN } from "../routes";
 import {
   HeaderTitle,
   ModalAction,
@@ -16,8 +16,19 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
+const DeleteFolder = ({
+  actualTheme,
+  colorScheme,
+  openDelete,
+  setOpenDelete,
+  theme,
+  folderId,
+}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   function deleteFolderById() {
@@ -27,7 +38,7 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
     } else {
       dispatch(deleteFolder(folderId));
       dispatch(deletePrayerByFolderId(folderId));
-      navigation.navigate(PRAYER_SCREEN);
+      navigation.navigate(FOLDER_SCREEN);
     }
 
     setOpenDelete(false);
@@ -44,25 +55,19 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
     >
       <ModalContainer
         style={
-          theme === "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+          colorScheme === "dark"
+            ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
         <ModalView
-          style={
-            theme === "dark"
-              ? { backgroundColor: "#212121" }
-              : { backgroundColor: "#93D8F8" }
-          }
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="bg-light-secondary dark:bg-dark-secondary"
         >
           <ModalIcon>
             <HeaderTitle
-              style={
-                theme === "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
-                  : { fontSize: 18, fontFamily: "Inter-Bold" }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-primary dark:text-dark-primary"
             >
               Are you sure you want to delete this folder and all its prayers?
             </HeaderTitle>
@@ -76,10 +81,24 @@ const DeleteFolder = ({ openDelete, setOpenDelete, theme, folderId }) => {
               />
             </ModalAction>
             <ModalAction
-              color={theme === "dark" ? "#121212" : "#2F2D51"}
+              color={
+                actualTheme && actualTheme.Primary
+                  ? actualTheme.Primary
+                  : colorScheme === "dark"
+                    ? "#121212"
+                    : "#2F2D51"
+              }
               onPress={deleteFolderById}
             >
-              <AntDesign name="check" size={28} color="white" />
+              <AntDesign
+                name="check"
+                size={28}
+                color={
+                  actualTheme && actualTheme.PrimaryTxt
+                    ? actualTheme.PrimaryTxt
+                    : "white"
+                }
+              />
             </ModalAction>
           </ModalActionGroup>
         </ModalView>

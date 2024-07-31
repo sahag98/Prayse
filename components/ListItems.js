@@ -24,8 +24,15 @@ import {
 
 import CategoryTabs from "./CategoryTabs";
 import SearchBar from "./SearchBar";
+import {
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const ListItems = ({
+  actualTheme,
+  colorScheme,
   pickedPrayer,
   prayerList,
   onScroll,
@@ -52,8 +59,6 @@ const ListItems = ({
   const prayers = prayerList.filter((item) => item.folderId === folderId);
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
-  console.log(size);
-  const value = 0;
 
   const All = "All";
   const General = "General";
@@ -71,14 +76,12 @@ const ListItems = ({
     .filter((item) => (search !== "" ? item.prayer.includes(search) : true));
 
   const list = prayers.filter((item) =>
-    search !== "" ? item.prayer.includes(search) : true,
+    search !== "" ? item.prayer.includes(search) : true
   );
 
   const renderItem = ({ item }) => {
     const RowText = TodoText;
     const categoryItem = item.category;
-
-    console.log(item.date.split(",")[0]);
 
     const addReminder = (item) => {
       navigation.navigate(TEST_SCREEN, {
@@ -89,47 +92,14 @@ const ListItems = ({
     return (
       <>
         <ListView
-          style={
-            theme === "dark"
-              ? [{ backgroundColor: "#212121", position: "relative" }]
-              : [
-                  {
-                    backgroundColor: "#b7d3ff",
-                    shadowColor: "#bdbdbd",
-                    shadowOffset: {
-                      width: 0,
-                      height: 5,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 5.62,
-                    elevation: 7,
-                  },
-                ]
-          }
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="bg-light-secondary dark:bg-dark-secondary  relative"
         >
           <>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <View className="flex-row items-center justify-between">
               <RowText
-                style={
-                  theme === "dark"
-                    ? {
-                        paddingRight: 5,
-                        fontFamily: "Inter-Regular",
-                        color: "white",
-                        fontSize: size,
-                      }
-                    : {
-                        fontFamily: "Inter-Regular",
-                        color: "#2F2D51",
-                        fontSize: size,
-                      }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-medium text-light-primary dark:text-dark-primary"
               >
                 {item.prayer}
               </RowText>
@@ -137,114 +107,56 @@ const ListItems = ({
             {search.length === 0 && (
               <TouchableOpacity
                 onPress={() => pickedPrayer(item)}
-                style={{ position: "absolute", top: 9, right: 3, padding: 5 }}
+                className="absolute top-2 right-1 p-2"
               >
                 <Entypo
                   name="dots-three-vertical"
-                  size={16}
-                  color={theme == "dark" ? "white" : "#2F2D51"}
+                  size={18}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme == "dark"
+                        ? "white"
+                        : "#2F2D51"
+                  }
                 />
               </TouchableOpacity>
             )}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 20,
-                gap: 20,
-                alignItems: "center",
-              }}
-            >
+            <View className="flex-row justify-between mt-8 items-center">
               <TouchableOpacity
                 onPress={() => addReminder(item.prayer)}
                 style={
-                  theme === "dark"
-                    ? {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        borderColor: "#A5C9FF",
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 5,
-                        gap: 8,
-                      }
-                    : {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        borderColor: "#2f2d51",
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 5,
-                        gap: 8,
-                      }
+                  actualTheme &&
+                  actualTheme.SecondaryTxt && {
+                    borderColor: actualTheme.SecondaryTxt,
+                  }
                 }
+                className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
               >
                 <AntDesign
                   name="pluscircleo"
                   size={15}
-                  color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "#A5C9FF"
+                        : "#2f2d51"
+                  }
                 />
                 <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          color: "#A5C9FF",
-                          fontSize: 12,
-                          fontFamily: "Inter-Medium",
-                        }
-                      : {
-                          color: "#2f2d51",
-                          fontSize: 12,
-                          fontFamily: "Inter-Medium",
-                        }
-                  }
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-medium text-light-primary dark:text-dark-accent"
                 >
                   Reminder
                 </Text>
               </TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 15,
-                }}
-              >
+              <View className="flex-row items-center gap-4">
                 {categoryItem === "General" && (
-                  <TodoCategory
-                    style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFDAA5",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFBF55",
-                          }
-                    }
-                  >
+                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#ffdaa5]">
                     <Text
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                      }
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
@@ -253,237 +165,70 @@ const ListItems = ({
                 {categoryItem === "People" && (
                   <TodoCategory
                     style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#A5C9FF",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#6B7EFF",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
+                      actualTheme &&
+                      actualTheme.SecondaryTxt && {
+                        backgroundColor: actualTheme.SecondaryTxt,
+                      }
                     }
+                    className="py-2 px-3 justify-center items-center rounded-md bg-light-primary dark:bg-dark-accent"
                   >
                     <Text
                       style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "white",
-                            }
+                        actualTheme &&
+                        actualTheme.Secondary && {
+                          color: actualTheme.Secondary,
+                        }
                       }
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
                   </TodoCategory>
                 )}
                 {categoryItem === "Praise" && (
-                  <TodoCategory
-                    style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#A5FFC9",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#65FFA2",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
+                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#65FFA2]">
                     <Text
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "#2F2D51",
-                            }
-                      }
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
                   </TodoCategory>
                 )}
                 {categoryItem === "Personal" && (
-                  <TodoCategory
-                    style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FFB2B2",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "#FF5858",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
+                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#FF5858]">
                     <Text
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "white",
-                            }
-                      }
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
                   </TodoCategory>
                 )}
                 {categoryItem === "Other" && (
-                  <TodoCategory
-                    style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "white",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-                            backgroundColor: "white",
-                            fontFamily: "Inter-Regular",
-                            color: "white",
-                          }
-                    }
-                  >
+                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-white">
                     <Text
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                      }
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
                   </TodoCategory>
                 )}
                 {categoryItem === "None" && (
-                  <TodoCategory
-                    style={
-                      theme === "dark"
-                        ? {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-
-                            backgroundColor: "#8C8C8C",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                        : {
-                            paddingVertical: 5,
-                            paddingHorizontal: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: 15,
-
-                            backgroundColor: "#8C8C8C",
-                            fontFamily: "Inter-SemiBold",
-                            color: "black",
-                          }
-                    }
-                  >
+                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#8C8C8C]">
                     <Text
-                      style={
-                        theme === "dark"
-                          ? {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "black",
-                            }
-                          : {
-                              fontSize: 11,
-                              fontFamily: "Inter-SemiBold",
-                              color: "white",
-                            }
-                      }
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
                     >
                       {item.category}
                     </Text>
                   </TodoCategory>
                 )}
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View className="flex-row items-center">
                   <TodoDate
-                    style={
-                      theme === "dark"
-                        ? { color: "#8C8C8C", fontFamily: "Inter-Regular" }
-                        : { color: "#4e4a8a", fontFamily: "Inter-Regular" }
-                    }
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="text-light-primary font-inter dark:text-dark-primary"
                   >
                     {item.date.split(",")[0]}
                   </TodoDate>
@@ -503,27 +248,29 @@ const ListItems = ({
   return (
     <>
       {prayers.length === 0 && (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 60,
-            gap: 5,
-          }}
-        >
+        <View className="flex-1 items-center justify-center mt-20 gap-2">
           <FontAwesome
             name="list-alt"
             size={50}
-            color={theme === "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
-          <TodoText style={theme === "dark" ? styles.pressDark : styles.press}>
+          <TodoText
+            style={getMainTextColorStyle(actualTheme)}
+            className="text-center font-inter font-medium text-light-primary dark:text-dark-primary"
+          >
             No prayers added yet!
           </TodoText>
         </View>
       )}
       <CategoryTabs
-        theme={theme}
+        actualTheme={actualTheme}
+        theme={colorScheme}
         prayerList={prayers}
         selected={selected}
         status={status}
@@ -531,17 +278,14 @@ const ListItems = ({
       />
       {prayers.length !== 0 && (
         <>
-          <SearchBar theme={theme} search={search} setSearch={setSearch} />
+          <SearchBar
+            actualTheme={actualTheme}
+            theme={colorScheme}
+            search={search}
+            setSearch={setSearch}
+          />
           {loading == true && (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                zIndex: 99,
-                alignSelf: "center",
-                alignItems: "center",
-              }}
-            >
+            <View className="flex-1 justify-center items-center self-center z-50">
               <LottieView
                 source={require("../assets/4964-check-mark-success-animation.json")}
                 style={styles.animation}
@@ -559,19 +303,7 @@ const ListItems = ({
               showsVerticalScrollIndicator={false}
               onScroll={onScroll}
               renderItem={renderItem}
-              ListFooterComponent={() => (
-                <View
-                  style={
-                    theme === "dark"
-                      ? {
-                          height: 80,
-                        }
-                      : {
-                          height: 80,
-                        }
-                  }
-                />
-              )}
+              ListFooterComponent={() => <View className="h-20" />}
             />
           )}
         </>

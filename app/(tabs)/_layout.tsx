@@ -17,7 +17,6 @@ import {
 import { ActualTheme } from "../../types/reduxTypes";
 
 export default function TabLayout() {
-  const theme = useSelector((state: any) => state?.user?.theme);
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
@@ -28,16 +27,16 @@ export default function TabLayout() {
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <Tabs
         sceneContainerStyle={{
-          backgroundColor: colorScheme == "dark" ? "#121212" : "#F2F7FF",
+          backgroundColor: colorScheme === "dark" ? "#121212" : "#F2F7FF",
         }}
         screenOptions={{
           headerBackgroundContainerStyle: {
-            backgroundColor: colorScheme == "dark" ? "#121212" : "white",
+            backgroundColor: colorScheme === "dark" ? "#121212" : "white",
           },
           headerShown: false,
           tabBarActiveTintColor: actualTheme.MainTxt
             ? actualTheme.MainTxt
-            : colorScheme == "dark"
+            : colorScheme === "dark"
               ? "white"
               : "#2f2d51",
           tabBarInactiveTintColor: "gray",
@@ -57,14 +56,14 @@ export default function TabLayout() {
               paddingBottom: 5,
               backgroundColor: actualTheme.Bg
                 ? actualTheme.Bg
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#121212"
                   : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
                 name={focused ? "home" : "home-outline"}
-                color={actualTheme.MainTxt ? actualTheme.MainTxt : color}
+                color={color}
                 size={size}
               />
             ),
@@ -81,7 +80,7 @@ export default function TabLayout() {
               paddingTop: 2,
               backgroundColor: actualTheme.Bg
                 ? actualTheme.Bg
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#121212"
                   : "white",
             },
@@ -105,7 +104,7 @@ export default function TabLayout() {
               paddingTop: 2,
               backgroundColor: actualTheme.Bg
                 ? actualTheme.Bg
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#121212"
                   : "white",
             },
@@ -129,7 +128,7 @@ export default function TabLayout() {
               paddingTop: 2,
               backgroundColor: actualTheme.Bg
                 ? actualTheme.Bg
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#121212"
                   : "white",
             },
@@ -153,7 +152,7 @@ export default function TabLayout() {
               paddingTop: 2,
               backgroundColor: actualTheme.Bg
                 ? actualTheme.Bg
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#121212"
                   : "white",
             },
