@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Alert,
@@ -21,8 +22,14 @@ import Animated, {
 import { useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+} from "@lib/customStyles";
 import NetInfo from "@react-native-community/netinfo";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import { ActualTheme } from "@types/reduxTypes";
 
 import tbf from "../assets/tbf-logo.jpg";
 import DevoItem from "../components/DevoItem";
@@ -58,6 +65,11 @@ const DevoListScreen = () => {
   const [likesArray, setLikesArray] = useState([]);
   const [reflectionsArray, setReflectionsArray] = useState([]);
   const [channel, setChannel] = useState([]);
+
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+  const { colorScheme } = useColorScheme();
   useEffect(() => {
     loadDevotionals();
   }, [isFocused]);
@@ -210,15 +222,18 @@ const DevoListScreen = () => {
   const BusyIndicator = () => {
     return (
       <View
-        style={
-          theme == "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background flex-1 justify-center"
       >
         <ActivityIndicator
           size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme == "dark"
+                ? "white"
+                : "#2f2d51"
+          }
         />
       </View>
     );
@@ -232,18 +247,10 @@ const DevoListScreen = () => {
     <>
       {refresh ? <ActivityIndicator /> : null}
       <Container
-        style={
-          theme == "dark"
-            ? { backgroundColor: "" }
-            : { backgroundColor: "#F2F7FF" }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background"
       >
-        <HeaderView
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-start",
-          }}
-        >
+        <HeaderView className="flex-row self-start">
           <TouchableOpacity
             onPress={() => {
               if (routeParams?.previousScreen) {
@@ -256,25 +263,18 @@ const DevoListScreen = () => {
             <AntDesign
               name="left"
               size={30}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
           <Text
-            style={
-              theme == "dark"
-                ? {
-                    color: "white",
-                    fontSize: 20,
-                    marginLeft: 10,
-                    fontFamily: "Inter-Bold",
-                  }
-                : {
-                    color: "#2f2d51",
-                    fontSize: 20,
-                    marginLeft: 10,
-                    fontFamily: "Inter-Bold",
-                  }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-2xl ml-3 text-light-primary dark:text-dark-primary"
           >
             Devotional
           </Text>
@@ -285,9 +285,10 @@ const DevoListScreen = () => {
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
         >
           {devotionals?.map((d, index) => (
-            <View style={{ flex: 1 }} key={d._id}>
+            <View className="flex-1" key={d._id}>
               <DevoItem
-                theme={theme}
+                theme={colorScheme}
+                actualTheme={actualTheme}
                 tbf={tbf}
                 supabase={supabase}
                 currentUser={currentUser}
@@ -303,48 +304,13 @@ const DevoListScreen = () => {
                 devo={d}
               />
               <View
-                style={
-                  theme == "dark"
-                    ? {
-                        position: "absolute",
-                        bottom: 10,
-                        width: "75%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        alignSelf: "center",
-                        padding: 10,
-                        borderRadius: 20,
-                        backgroundColor: "#212121",
-                      }
-                    : {
-                        position: "absolute",
-                        bottom: 10,
-                        width: "75%",
-                        shadowColor: "#9f9f9f",
-                        shadowOffset: {
-                          width: 0,
-                          height: 6,
-                        },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 5.62,
-                        elevation: 8,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        alignSelf: "center",
-                        padding: 10,
-                        borderRadius: 20,
-                        backgroundColor: "#b7d3ff",
-                      }
-                }
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                className="absolute bottom-3 w-3/4 flex-row items-center justify-around self-center p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary"
               >
                 <TouchableOpacity onPress={() => insertLike(d.title)}>
                   <Animated.View
-                    style={[
-                      animatedStyle,
-                      { flexDirection: "row", alignItems: "center", gap: 5 },
-                    ]}
+                    className="flex-row items-center gap-2"
+                    style={animatedStyle}
                   >
                     <AntDesign
                       name="hearto"
@@ -352,20 +318,23 @@ const DevoListScreen = () => {
                       color={
                         isLikedByMe
                           ? "red"
-                          : theme == "dark"
-                            ? "white"
-                            : "#2f2d51"
+                          : actualTheme && actualTheme.SecondaryTxt
+                            ? actualTheme.SecondaryTxt
+                            : colorScheme === "dark"
+                              ? "white"
+                              : "#2f2d51"
                       }
                     />
                     <Text
+                      className="font-inter font-semibold text-lg"
                       style={{
-                        fontSize: 16,
-                        fontFamily: "Inter-Medium",
                         color: isLikedByMe
                           ? "red"
-                          : theme == "dark"
-                            ? "white"
-                            : "#2f2d51",
+                          : actualTheme && actualTheme.SecondaryTxt
+                            ? actualTheme.SecondaryTxt
+                            : theme === "dark"
+                              ? "white"
+                              : "#2f2d51",
                       }}
                     >
                       {likesArray?.length}
@@ -373,58 +342,64 @@ const DevoListScreen = () => {
                   </Animated.View>
                 </TouchableOpacity>
                 <View
-                  style={{
-                    height: "100%",
-                    backgroundColor: theme == "dark" ? "white" : "black",
-                    width: 1,
-                  }}
+                  style={
+                    actualTheme &&
+                    actualTheme.SecondaryTxt && {
+                      backgroundColor: actualTheme.SecondaryTxt,
+                    }
+                  }
+                  className="h-full bg-light-primary dark:bg-dark-primary w-[2px]"
                 />
-                <Link to={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 5,
-                    }}
+                <Link
+                  asChild
+                  href={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}
+                >
+                  <TouchableOpacity
+                    href={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}
+                    className="flex-row items-center gap-2"
                   >
                     <FontAwesome
                       style={{ marginBottom: 4 }}
                       name="comment-o"
                       size={24}
-                      color={theme == "dark" ? "white" : "#2f2d51"}
+                      color={
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? actualTheme.SecondaryTxt
+                          : colorScheme === "dark"
+                            ? "white"
+                            : "#2f2d51"
+                      }
                     />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: theme == "dark" ? "white" : "#2f2d51",
-                        fontFamily: "Inter-Medium",
-                      }}
-                    >
+                    <Text className="font-inter font-semibold text-light-primary dark:text-dark-primary text-lg">
                       {reflectionsArray?.length}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 </Link>
                 <View
-                  style={{
-                    height: "100%",
-                    backgroundColor: theme == "dark" ? "white" : "black",
-                    width: 1,
-                  }}
+                  className="h-full w-[2px] bg-light-primary dark:bg-dark-primary"
+                  style={
+                    actualTheme &&
+                    actualTheme.SecondaryTxt && {
+                      backgroundColor: actualTheme.SecondaryTxt,
+                    }
+                  }
                 />
                 <TouchableOpacity
                   onPress={() =>
                     onShare(d.title, d.description, d.day, d.content)
                   }
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
+                  className="flex-row items-center gap-2"
                 >
                   <FontAwesome5
                     name="share"
                     size={24}
-                    color={theme == "dark" ? "white" : "#2f2d51"}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "white"
+                          : "#2f2d51"
+                    }
                   />
                 </TouchableOpacity>
               </View>
