@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
+import { Link } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Image,
@@ -7,13 +9,23 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import NetInfo from "@react-native-community/netinfo";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import { ActualTheme } from "@types/reduxTypes";
 
 import tbf from "../../assets/tbf-logo.jpg";
 import useIsReady from "../../hooks/useIsReady";
@@ -30,7 +42,10 @@ const DevotionalScreen = () => {
   const [devotionals, setDevotionals] = useState([]);
   const [refresh, setRefresh] = useState(true);
   const [connected, setConnected] = useState(false);
-
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+  const { colorScheme } = useColorScheme();
   useEffect(() => {
     loadDevotionals();
   }, [isFocused]);
@@ -73,15 +88,18 @@ const DevotionalScreen = () => {
   const BusyIndicator = () => {
     return (
       <View
-        style={
-          theme == "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background flex-1 justify-center"
       >
         <ActivityIndicator
           size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
         />
       </View>
     );
@@ -93,7 +111,8 @@ const DevotionalScreen = () => {
 
   return (
     <ScrollView
-      style={{ backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff" }}
+      className="bg-light-background dark:bg-dark-background"
+      style={getMainBackgroundColorStyle(actualTheme)}
       contentContainerStyle={{ flex: 1 }}
       refreshControl={
         <RefreshControl refreshing={refresh} onRefresh={loadDevotionals} />
@@ -103,119 +122,72 @@ const DevotionalScreen = () => {
       {refresh ? (
         <ActivityIndicator
           size="large"
-          color={theme == "dark" ? "white" : "red"}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme == "dark"
+                ? "white"
+                : "#2f2d51"
+          }
         />
       ) : null}
       <Container
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background justify-center items-center"
       >
         <View
-          style={{
-            backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-
-            padding: 10,
-            borderRadius: 10,
-            gap: 5,
-          }}
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="w-full justify-center items-center p-3 rounded-lg gap-2 bg-light-secondary dark:bg-dark-secondary"
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%",
-              gap: 10,
-            }}
-          >
-            <Image style={styles.img} source={tbf} />
+          <View className="flex-row items-center w-full gap-3">
+            <Image className="w-14 h-14 rounded-full" source={tbf} />
             <Text
-              style={{
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter text-lg font-medium text-light-primary dark:text-[#d2d2d2]"
             >
               triedbyfire
             </Text>
 
             <Text
-              style={{
-                marginLeft: "auto",
-                color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                fontFamily: "Inter-Medium",
-              }}
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="ml-auto font-inter text-light-primary dark:text-dark-[#d2d2d2]"
             >
               {convertDate(devotionals[0]?.date)}
             </Text>
           </View>
           <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Black",
-              letterSpacing: 1,
-              fontSize: 23,
-            }}
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter text-light-primary dark:text-dark-primary font-bold tracking-widest text-2xl"
           >
             {devotionals[0]?.title}
           </Text>
           <Text
-            style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-              fontFamily: "Inter-Regular",
-              textAlign: "left",
-              fontSize: 15,
-              marginBottom: 10,
-            }}
+            className="font-inter text-left mb-3"
+            style={getSecondaryTextColorStyle(actualTheme)}
           >
             {devotionals[0]?.description}
           </Text>
-          <Link style={{ width: "100%" }} to={`/${DEVO_LIST_SCREEN}`}>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 10,
-                padding: 15,
-                borderRadius: 10,
-                backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+          <Link asChild className="w-full" href={`/${DEVO_LIST_SCREEN}`}>
+            <TouchableOpacity
+              href={`/${DEVO_LIST_SCREEN}`}
+              className="w-full mt-3 p-4 justify-center items-center rounded-lg bg-light-primary dark:bg-dark-background"
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
             >
               <Text
-                style={{
-                  fontFamily: "Inter-Bold",
-                  fontSize: 15,
-                  color: theme == "dark" ? "#a5c9ff" : "white",
-                }}
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter text-lg font-bold text-light-background dark:text-dark-accent"
               >
                 View
               </Text>
-            </View>
+            </TouchableOpacity>
           </Link>
         </View>
         <Text
           onPress={loadDevotionals}
-          style={{
-            marginTop: 20,
-            fontFamily: "Inter-Medium",
-            fontSize: 12,
-            color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-          }}
+          style={getMainTextColorStyle(actualTheme)}
+          className="underline mt-5 text-sm text-light-primary dark:text-dark-primary"
         >
-          Pull page down or press here to refresh!
+          Pull page down or press here to refresh.
         </Text>
       </Container>
     </ScrollView>

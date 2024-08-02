@@ -1,19 +1,14 @@
 import React from "react";
 import Moment from "moment";
 import { Image, StyleSheet, Text, View } from "react-native";
-const ReflectionItem = ({ item, theme }) => {
+import { getMainTextColorStyle } from "@lib/customStyles";
+const ReflectionItem = ({ actualTheme, item, theme }) => {
   return (
-    <View style={{ gap: 10, paddingVertical: 15 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+    <View className="gap-3 py-4">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center gap-2" x>
           <Image
-            style={styles.avatar}
+            className="w-10 h-10 rounded-full"
             source={{
               uri: item.profiles.avatar_url
                 ? item.profiles.avatar_url
@@ -21,30 +16,22 @@ const ReflectionItem = ({ item, theme }) => {
             }}
           />
           <Text
-            style={{
-              color: theme === "dark" ? "white" : "#2f2d51",
-              fontSize: 15,
-              fontFamily: "Inter-Medium",
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
           >
             {item.profiles.full_name}
           </Text>
         </View>
         <Text
-          style={{
-            color: theme === "dark" ? "white" : "#2f2d51",
-            fontSize: 12,
-            fontFamily: "Inter-Regular",
-          }}
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter text-sm text-light-primary dark:text-dark-primary"
         >
           {Moment(item.created_at).fromNow()}
         </Text>
       </View>
       <Text
-        style={{
-          color: theme === "dark" ? "white" : "#2f2d51",
-          fontFamily: "Inter-Regular",
-        }}
+        style={getMainTextColorStyle(actualTheme)}
+        className="font-inter text-light-primary dark:text-dark-primary"
       >
         {item.reflection}
       </Text>
@@ -53,11 +40,3 @@ const ReflectionItem = ({ item, theme }) => {
 };
 
 export default ReflectionItem;
-
-const styles = StyleSheet.create({
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-  },
-});

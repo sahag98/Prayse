@@ -5,6 +5,7 @@ import Constants from "expo-constants";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
+import { useColorScheme } from "nativewind";
 import {
   Platform,
   StyleSheet,
@@ -35,6 +36,12 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getSecondaryBackgroundColorStyle,
+} from "@lib/customStyles";
 import { useIsFocused } from "@react-navigation/native";
 
 import Ebpad from "../assets/audio/Ebpad.mp3";
@@ -51,9 +58,13 @@ const PrayerRoom = () => {
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
   const [isPraying, setIsPraying] = useState(false);
+
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
   const routeParams = useLocalSearchParams();
   const data = prayers[screenIndex];
-
+  const { colorScheme } = useColorScheme();
   const pulse = useSharedValue(0);
   const opacityValue = useSharedValue(0);
   const fadeIn = useSharedValue(0);
@@ -284,32 +295,12 @@ const PrayerRoom = () => {
   if (prayers.length == 0) {
     return (
       <Container
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-
-                // justifyContent: "center",
-                // alignItems: "center",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-
-                // justifyContent: "center",
-                // alignItems: "center",
-              }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background"
       >
-        <View
-          style={{
-            flexDirection: "row",
-
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
+        <View className="flex-row w-full items-center">
           <TouchableOpacity
-            style={{ marginRight: 10 }}
+            className="mr-3"
             onPress={() => {
               if (routeParams?.previousScreen) {
                 console.log("previous screen:");
@@ -328,37 +319,37 @@ const PrayerRoom = () => {
             <Ionicons
               name="chevron-back"
               size={35}
-              color={theme == "light" ? "#2f2d51" : "white"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "light"
+                    ? "#2f2d51"
+                    : "white"
+              }
             />
           </TouchableOpacity>
           <Text
-            style={{
-              fontFamily: "Inter-Bold",
-              fontSize: 20,
-              color: theme == "dark" ? "white" : "#2f2d51",
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             Prayer Room
           </Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
+        <View className="flex-1 justify-center items-center gap-3">
           <FontAwesome5
             name="list-alt"
             size={50}
-            color={theme == "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme == "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
           <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Medium",
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
           >
             No prayers added yet!
           </Text>
@@ -369,45 +360,20 @@ const PrayerRoom = () => {
 
   return (
     <View
-      style={
-        theme == "dark"
-          ? {
-              backgroundColor: "#121212",
-              padding: 0,
-              paddingBottom: 0,
-              flex: 1,
-              // justifyContent: "center",
-              // alignItems: "center",
-            }
-          : {
-              backgroundColor: "#F2F7FF",
-              padding: 0,
-              paddingBottom: 0,
-              flex: 1,
-              // justifyContent: "center",
-              alignItems: "center",
-            }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background p-0 flex-1"
     >
       {isPraying ? (
         <Animated.View
-          style={[
-            {
-              flex: 1,
-              backgroundColor: "#f2f7ff",
-              // justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            },
-            animatedRoomFadeInStyle,
-          ]}
+          className="flex-1 bg-light-background dark:bg-dark-background items-center w-full"
+          style={[animatedRoomFadeInStyle]}
         >
           {Platform.OS === "android" ? (
             <>
               <Video
                 ref={video}
                 style={styles.video}
-                source={theme == "dark" ? darkGradient : gradient}
+                source={colorScheme == "dark" ? darkGradient : gradient}
                 useNativeControls={false}
                 resizeMode={ResizeMode.COVER}
                 isLooping
@@ -415,25 +381,14 @@ const PrayerRoom = () => {
               />
               <StatusBar hidden />
               <View
+                className="flex-1 absolute h-full z-20"
                 style={{
-                  flex: 1,
                   paddingTop: statusBarHeight,
-                  position: "absolute",
-
-                  height: "100%",
-                  zIndex: 99,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    zIndex: 99,
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
+                <View className="flex-row z-30 w-full items-center">
                   <TouchableOpacity
-                    style={{ marginRight: 10 }}
+                    className="mr-3"
                     onPress={() => {
                       console.log(routeParams?.previousScreen);
                       if (routeParams?.previousScreen) {
@@ -451,70 +406,66 @@ const PrayerRoom = () => {
                     <Ionicons
                       name="chevron-back"
                       size={35}
-                      color={theme == "light" ? "#2f2d51" : "white"}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : colorScheme == "light"
+                            ? "#2f2d51"
+                            : "white"
+                      }
                     />
                   </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 20,
-                      color: theme == "dark" ? "white" : "#2f2d51",
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary">
                     Prayer Room
                   </Text>
                 </View>
-                <View style={styles.stepIndicatorContainer}>
+
+                <View className="flex-row gap-2 mx-4 mt-2">
                   {prayers.map((step, index) => (
                     <View
                       key={index}
-                      style={[
-                        styles.stepIndicator,
-                        {
-                          backgroundColor:
-                            index === screenIndex
-                              ? theme == "dark"
+                      className="flex-1 h-2 bg-gray-400 rounded-lg"
+                      style={{
+                        backgroundColor:
+                          index === screenIndex
+                            ? actualTheme && actualTheme.Secondary
+                              ? actualTheme.Secondary
+                              : colorScheme === "dark"
                                 ? "white"
                                 : "#2f2d51"
-                              : "#acacac",
-                        },
-                      ]}
+                            : "#acacac",
+                      }}
                     />
                   ))}
                 </View>
                 <TouchableOpacity
                   onPress={checkSound}
-                  style={{
-                    alignSelf: "flex-end",
-                    marginTop: 10,
-                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                    padding: 15,
-                    marginRight: 15,
-                    borderRadius: 100,
-                  }}
+                  style={getSecondaryBackgroundColorStyle(actualTheme)}
+                  className="self-end mt-3 bg-light-primary dark:bg-dark-accent p-4 mr-4 rounded-full"
                 >
                   <Feather
                     name={isPlayingSound ? "volume-2" : "volume-x"}
                     size={30}
-                    color={theme == "dark" ? "#121212" : "white"}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : colorScheme == "dark"
+                          ? "#121212"
+                          : "white"
+                    }
                   />
                 </TouchableOpacity>
                 <GestureDetector gesture={swipes}>
-                  <View style={styles.pageContent} key={screenIndex}>
+                  <View
+                    className="p-5 mb-16 gap-8 justify-center items-center flex-1"
+                    key={screenIndex}
+                  >
                     <Animated.Text
-                      style={
-                        theme == "dark"
-                          ? [
-                              styles.title,
-                              { color: "white", fontFamily: "Inter-Bold" },
-                              animatedMomentFadeInStyle,
-                            ]
-                          : [
-                              styles.title,
-                              { fontFamily: "Inter-Bold" },
-                              animatedMomentFadeInStyle,
-                            ]
-                      }
+                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide my-2"
+                      style={[
+                        getMainTextColorStyle(actualTheme),
+                        animatedMomentFadeInStyle,
+                      ]}
                     >
                       Take a moment and Pray
                     </Animated.Text>
@@ -522,39 +473,19 @@ const PrayerRoom = () => {
                       <Animated.Text
                         entering={SlideInRight}
                         exiting={SlideOutLeft}
-                        style={
-                          theme == "dark"
-                            ? [
-                                styles.description,
-                                { color: "grey" },
-                                animatedPrayerFadeInStyle,
-                              ]
-                            : [styles.description, animatedPrayerFadeInStyle]
-                        }
-                      >
-                        Added on {data.date.split(",")[0]}
-                      </Animated.Text>
-                      <Animated.Text
-                        entering={SlideInRight}
-                        exiting={SlideOutLeft}
-                        style={
-                          theme == "dark"
-                            ? [
-                                styles.title,
-                                { color: "white" },
-                                animatedPrayerFadeInStyle,
-                              ]
-                            : [styles.title, animatedPrayerFadeInStyle]
-                        }
+                        className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
+                        style={[
+                          getMainTextColorStyle(actualTheme),
+                          animatedPrayerFadeInStyle,
+                        ]}
                       >
                         {data.prayer}
                       </Animated.Text>
                     </View>
                     <Animated.Text
+                      className="font-inter font-medium text-light-primary dark:text-dark-primary"
                       style={[
-                        styles.swipeText,
-                        theme == "dark" && { color: "white" },
-                        // animatedStyle,
+                        getMainTextColorStyle(actualTheme),
                         animatedOpacityStyle,
                       ]}
                     >
@@ -564,17 +495,7 @@ const PrayerRoom = () => {
                     </Animated.Text>
                   </View>
                 </GestureDetector>
-
-                <View
-                  style={{
-                    position: "absolute",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: isPraying ? "center" : "center",
-                    bottom: 20,
-                    width: "100%",
-                  }}
-                >
+                <View className="absolute flex-row items-center justify-center bottom-5 w-full">
                   {!isPraying ? (
                     <AnimatedTouchable
                       onPress={async () => {
@@ -582,19 +503,22 @@ const PrayerRoom = () => {
 
                         loadAndPlayRandomAudio();
                       }}
+                      className="bg-light-primary p-4 rounded-full dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
                       style={[
-                        {
-                          backgroundColor: "#2f2d51",
-                          padding: 15,
-                          borderRadius: 100,
-                        },
+                        getPrimaryBackgroundColorStyle(actualTheme),
                         animatedFadeInStyle,
                       ]}
                     >
                       <MaterialCommunityIcons
                         name="hands-pray"
                         size={55}
-                        color="#b7d3ff"
+                        color={
+                          actualTheme && actualTheme.MainTxt
+                            ? actualTheme.MainTxt
+                            : acolorScheme === "dark"
+                              ? "#a5c9ff"
+                              : "#b7d3ff"
+                        }
                       />
                     </AnimatedTouchable>
                   ) : (
@@ -621,18 +545,12 @@ const PrayerRoom = () => {
             >
               <StatusBar hidden />
               <View
-                style={{ flex: 1, paddingTop: statusBarHeight, zIndex: 99 }}
+                className="flex-1 z-20"
+                style={{ paddingTop: statusBarHeight }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    zIndex: 99,
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
+                <View className="flex-row z-30 w-full items-center">
                   <TouchableOpacity
-                    style={{ marginRight: 10 }}
+                    className="mr-3"
                     onPress={() => {
                       if (routeParams?.previousScreen) {
                         console.log("previous screen:");
@@ -650,70 +568,68 @@ const PrayerRoom = () => {
                     <Ionicons
                       name="chevron-back"
                       size={35}
-                      color={theme == "light" ? "#2f2d51" : "white"}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : colorScheme == "light"
+                            ? "#2f2d51"
+                            : "white"
+                      }
                     />
                   </TouchableOpacity>
                   <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 20,
-                      color: theme == "dark" ? "white" : "#2f2d51",
-                    }}
+                    style={getMainTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
                   >
                     Prayer Room
                   </Text>
                 </View>
-                <View style={styles.stepIndicatorContainer}>
+                <View className="flex-row gap-2 mx-4 mt-2">
                   {prayers.map((step, index) => (
                     <View
                       key={index}
-                      style={[
-                        styles.stepIndicator,
-                        {
-                          backgroundColor:
-                            index === screenIndex
-                              ? theme == "dark"
+                      className="flex-1 h-2 bg-gray-400 rounded-lg"
+                      style={{
+                        backgroundColor:
+                          index === screenIndex
+                            ? actualTheme && actualTheme.Secondary
+                              ? actualTheme.Secondary
+                              : colorScheme === "dark"
                                 ? "white"
                                 : "#2f2d51"
-                              : "#acacac",
-                        },
-                      ]}
+                            : "#acacac",
+                      }}
                     />
                   ))}
                 </View>
                 <TouchableOpacity
                   onPress={checkSound}
-                  style={{
-                    alignSelf: "flex-end",
-                    marginTop: 10,
-                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                    padding: 15,
-                    marginRight: 15,
-                    borderRadius: 100,
-                  }}
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
+                  className="self-end mt-3 bg-light-primary dark:bg-dark-accent p-4 mr-4 rounded-full"
                 >
                   <Feather
                     name={isPlayingSound ? "volume-2" : "volume-x"}
                     size={30}
-                    color={theme == "dark" ? "#121212" : "white"}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : colorScheme == "dark"
+                          ? "#121212"
+                          : "white"
+                    }
                   />
                 </TouchableOpacity>
                 <GestureDetector gesture={swipes}>
-                  <View style={styles.pageContent} key={screenIndex}>
+                  <View
+                    className="p-5 mb-16 gap-8 justify-center items-center flex-1"
+                    key={screenIndex}
+                  >
                     <Animated.Text
-                      style={
-                        theme == "dark"
-                          ? [
-                              styles.title,
-                              { color: "white", fontFamily: "Inter-Bold" },
-                              animatedMomentFadeInStyle,
-                            ]
-                          : [
-                              styles.title,
-                              { fontFamily: "Inter-Bold" },
-                              animatedMomentFadeInStyle,
-                            ]
-                      }
+                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide my-2"
+                      style={[
+                        getMainTextColorStyle(actualTheme),
+                        animatedMomentFadeInStyle,
+                      ]}
                     >
                       Take a moment and Pray
                     </Animated.Text>
@@ -721,39 +637,19 @@ const PrayerRoom = () => {
                       <Animated.Text
                         entering={SlideInRight}
                         exiting={SlideOutLeft}
-                        style={
-                          theme == "dark"
-                            ? [
-                                styles.description,
-                                { color: "grey" },
-                                animatedPrayerFadeInStyle,
-                              ]
-                            : [styles.description, animatedPrayerFadeInStyle]
-                        }
-                      >
-                        Added on {data.date.split(",")[0]}
-                      </Animated.Text>
-                      <Animated.Text
-                        entering={SlideInRight}
-                        exiting={SlideOutLeft}
-                        style={
-                          theme == "dark"
-                            ? [
-                                styles.title,
-                                { color: "white" },
-                                animatedPrayerFadeInStyle,
-                              ]
-                            : [styles.title, animatedPrayerFadeInStyle]
-                        }
+                        className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
+                        style={[
+                          getMainTextColorStyle(actualTheme),
+                          animatedPrayerFadeInStyle,
+                        ]}
                       >
                         {data.prayer}
                       </Animated.Text>
                     </View>
                     <Animated.Text
+                      className="font-inter font-medium text-light-primary dark:text-dark-primary"
                       style={[
-                        styles.swipeText,
-                        theme == "dark" && { color: "white" },
-                        // animatedStyle,
+                        getMainTextColorStyle(actualTheme),
                         animatedOpacityStyle,
                       ]}
                     >
@@ -764,17 +660,7 @@ const PrayerRoom = () => {
                   </View>
                 </GestureDetector>
 
-                <View
-                  style={{
-                    position: "absolute",
-                    flexDirection: "row",
-
-                    alignItems: "center",
-                    justifyContent: isPraying ? "center" : "center",
-                    bottom: 20,
-                    width: "100%",
-                  }}
-                >
+                <View className="absolute flex-row items-center justify-center bottom-5 w-full">
                   {!isPraying ? (
                     <AnimatedTouchable
                       onPress={async () => {
@@ -782,19 +668,22 @@ const PrayerRoom = () => {
 
                         loadAndPlayRandomAudio();
                       }}
+                      className="bg-light-primary p-4 rounded-full dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
                       style={[
-                        {
-                          backgroundColor: "#2f2d51",
-                          padding: 15,
-                          borderRadius: 100,
-                        },
+                        getPrimaryBackgroundColorStyle(actualTheme),
                         animatedFadeInStyle,
                       ]}
                     >
                       <MaterialCommunityIcons
                         name="hands-pray"
                         size={55}
-                        color="#b7d3ff"
+                        color={
+                          actualTheme && actualTheme.MainTxt
+                            ? actualTheme.MainTxt
+                            : acolorScheme === "dark"
+                              ? "#a5c9ff"
+                              : "#b7d3ff"
+                        }
                       />
                     </AnimatedTouchable>
                   ) : (
@@ -813,23 +702,14 @@ const PrayerRoom = () => {
         </Animated.View>
       ) : (
         <View
+          className="w-full flex-1"
           style={{
-            flex: 1,
-            width: "100%",
-
             paddingTop: statusBarHeight,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-
-              width: "100%",
-              alignItems: "center",
-            }}
-          >
+          <View className="flex-row w-full items-center">
             <TouchableOpacity
-              style={{ marginRight: 10 }}
+              className="mr-3"
               onPress={() => {
                 if (routeParams?.previousScreen) {
                   navigation.goBack();
@@ -846,102 +726,63 @@ const PrayerRoom = () => {
               <Ionicons
                 name="chevron-back"
                 size={35}
-                color={theme == "light" ? "#2f2d51" : "white"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme == "light"
+                      ? "#2f2d51"
+                      : "white"
+                }
               />
             </TouchableOpacity>
-            <Text
-              style={{
-                fontFamily: "Inter-Bold",
-                fontSize: 20,
-                color: theme == "dark" ? "white" : "#2f2d51",
-              }}
-            >
+            <Text className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary">
               Prayer Room
             </Text>
           </View>
-          <View style={styles.stepIndicatorContainer}>
+          <View className="flex-row gap-2 mx-4 mt-2">
             {prayers.map((step, index) => (
               <View
                 key={index}
-                style={[
-                  styles.stepIndicator,
-                  {
-                    backgroundColor:
-                      index === screenIndex
-                        ? theme == "dark"
+                className="flex-1 h-2 bg-gray-400 rounded-lg"
+                style={{
+                  backgroundColor:
+                    index === screenIndex
+                      ? actualTheme && actualTheme.Secondary
+                        ? actualTheme.Secondary
+                        : colorScheme === "dark"
                           ? "white"
                           : "#2f2d51"
-                        : "#acacac",
-                  },
-                ]}
+                      : "#acacac",
+                }}
               />
             ))}
           </View>
 
           <GestureDetector gesture={swipes}>
-            <View style={styles.pageContent} key={screenIndex}>
+            <View
+              className="p-5 mb-16 gap-8 justify-center items-center flex-1"
+              key={screenIndex}
+            >
               <View>
                 <Animated.Text
                   entering={SlideInRight}
                   exiting={SlideOutLeft}
-                  style={
-                    theme == "dark"
-                      ? [styles.description, { color: "grey" }]
-                      : styles.description
-                  }
-                >
-                  Added on {data.date.split(",")[0]}
-                </Animated.Text>
-                <Animated.Text
-                  entering={SlideInRight}
-                  exiting={SlideOutLeft}
-                  style={
-                    theme == "dark"
-                      ? [styles.title, { color: "white" }]
-                      : styles.title
-                  }
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
                 >
                   {data.prayer}
                 </Animated.Text>
               </View>
-              {/* <Animated.Text
-                style={[
-                  styles.swipeText,
-                  theme == "dark" && { color: "white" },
-                  // animatedStyle,
-                  animatedOpacityStyle,
-                ]}
-              >
-                Swipe right to go to the next prayer.
-              </Animated.Text> */}
             </View>
           </GestureDetector>
 
-          <View
-            style={{
-              position: "absolute",
-              flexDirection: "row",
-
-              alignItems: "center",
-              justifyContent: isPraying ? "center" : "center",
-              bottom: 20,
-              width: "100%",
-            }}
-          >
+          <View className="absolute flex-row items-center justify-center bottom-5 w-full">
             {!isPraying ? (
-              <View
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 15,
-                }}
-              >
+              <View className="items-center gap-4">
                 <Animated.Text
+                  className="font-inter font-medium text-light-primary dark:text-dark-primary"
                   style={[
-                    {
-                      color: theme == "dark" ? "white" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                    },
+                    getMainTextColorStyle(actualTheme),
                     animatedPressFadeInStyle,
                   ]}
                 >
@@ -953,21 +794,22 @@ const PrayerRoom = () => {
                     // doPressFadeOutAnimation();
                     loadAndPlayRandomAudio();
                   }}
+                  className="p-4 rounded-full bg-light-primary dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
                   style={[
-                    {
-                      backgroundColor: theme == "dark" ? "#212121" : "#2f2d51",
-                      borderWidth: theme == "dark" ? 1 : 0,
-                      borderColor: "#a5c9ff",
-                      padding: 15,
-                      borderRadius: 100,
-                    },
+                    getPrimaryBackgroundColorStyle(actualTheme),
                     animatedFadeInStyle,
                   ]}
                 >
                   <MaterialCommunityIcons
                     name="hands-pray"
                     size={55}
-                    color={theme == "dark" ? "#a5c9ff" : "#b7d3ff"}
+                    color={
+                      actualTheme && actualTheme.MainTxt
+                        ? actualTheme.MainTxt
+                        : colorScheme == "dark"
+                          ? "#a5c9ff"
+                          : "#b7d3ff"
+                    }
                   />
                 </AnimatedTouchable>
               </View>
