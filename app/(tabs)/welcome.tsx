@@ -5,7 +5,7 @@ import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Linking, Platform, View } from "react-native";
+import { Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 import { Easing, useSharedValue, withTiming } from "react-native-reanimated";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +37,8 @@ import {
 import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "@types/reduxTypes";
 
+import { posthog } from "../../lib/posthog";
+
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -48,6 +50,8 @@ Notifications.setNotificationHandler({
     };
   },
 });
+
+console.log(posthog);
 
 async function sendToken(expoPushToken) {
   const message = {
@@ -127,6 +131,12 @@ const WelcomeScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
+
+  // const posthog = usePostHog();
+  // useEffect(() => {
+  //   console.log("hereee");
+  //   posthog.capture("Welcome Screen");
+  // }, [posthog]);
 
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
@@ -312,7 +322,6 @@ const WelcomeScreen = () => {
   if (isFirst === true) {
     navigation.navigate(ONBOARDING_SCREEN);
   }
-  console.log(actualTheme);
 
   return (
     <WelcomeContainer
@@ -325,6 +334,9 @@ const WelcomeScreen = () => {
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
+      <TouchableOpacity onPress={() => posthog.capture("Post Hog Click")}>
+        <Text>Post Hog Click</Text>
+      </TouchableOpacity>
       <UpdateModal theme={colorScheme} />
       <View className="items-center mb-0 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />

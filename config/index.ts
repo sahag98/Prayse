@@ -11,6 +11,7 @@ const config = {
   iosItemId: process.env.EXPO_PUBLIC_IOS_ITEM_ID,
 
   notificationApi: process.env.EXPO_PUBLIC_NOTIFICATION_API,
+  postHog: process.env.EXPO_PUBLIC_POSTHOG_KEY,
 };
 
 export default config;

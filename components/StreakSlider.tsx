@@ -148,9 +148,6 @@ const StreakSlider = ({
       Alert.alert(error.message);
     }
   };
-
-  console.log(actualTheme);
-
   return (
     <>
       <PercentageModal
