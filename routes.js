@@ -26,5 +26,6 @@ export const PRAYER_ROOM_SCREEN = "prayer-room";
 export const PUBLIC_COMMUNITY_SCREEN = "public-community";
 export const PRAYER_GROUP_SCREEN = "prayer-group";
 export const COMMUNITY_SCREEN = "community";
+export const LOGIN_SCREEN = "login";
 export const MORE_SCREEN = "more";
 export const WELCOME_SCREEN = "welcome";

@@ -24,8 +24,18 @@ import { useNavigation } from "@react-navigation/native";
 import ProfilePrayers from "../components/ProfilePrayers";
 import { PUBLIC_COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const ProfileModal = ({
+  actualTheme,
+  colorScheme,
   logout,
   setCurrentUser,
   getPrayers,
@@ -91,7 +101,7 @@ const ProfileModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!",
+          "We need camera roll permissions to make this work!"
         );
       } else {
         pickImage();
@@ -111,7 +121,7 @@ const ProfileModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1,
+        result.assets[0].uri.lastIndexOf(".") + 1
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -233,44 +243,41 @@ const ProfileModal = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ModalContainer
-          style={
-            theme === "dark"
+          className="bg-light-background dark:bg-dark-background justify-start items-start"
+          style={[
+            getMainBackgroundColorStyle(actualTheme),
+            colorScheme === "dark"
               ? {
-                  backgroundColor: "#121212",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   paddingTop: Platform.OS === "ios" ? insets.top : 0,
                   paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
               : {
-                  backgroundColor: "#F2F7FF",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   paddingTop: Platform.OS === "ios" ? insets.top : 0,
                   paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
-          }
+                },
+          ]}
         >
-          <HeaderView
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
+          <HeaderView className="w-full flex-row justify-between">
             <TouchableOpacity onPress={handleCloseModal}>
               <AntDesign
                 name="close"
                 size={30}
-                color={theme === "dark" ? "white" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </TouchableOpacity>
             <HeaderTitle
-              style={
-                theme === "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-primary dark:text-dark-primary"
             >
               Profile Settings
             </HeaderTitle>
@@ -279,13 +286,19 @@ const ProfileModal = ({
               <AntDesign
                 name="check"
                 size={30}
-                color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "#A5C9FF"
+                      : "#2f2d51"
+                }
               />
             </TouchableOpacity>
           </HeaderView>
-          <View style={styles.iconContainer}>
+          <View className="relative self-center p-2">
             <Image
-              style={styles.profileImg}
+              className="w-32 aspect-square rounded-full"
               source={{
                 uri: image
                   ? image
@@ -294,172 +307,90 @@ const ProfileModal = ({
             />
             <TouchableOpacity
               onPress={photoPermission}
-              style={
-                theme === "dark" ? styles.featherIconDark : styles.featherIcon
-              }
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="absolute bottom-1 right-2 rounded-full items-center justify-center w-10 h-10 bg-light-primary dark:bg-dark-accent"
             >
               <AntDesign
                 name="plus"
                 size={20}
-                color={theme === "dark" ? "white" : "black"}
+                color={
+                  actualTheme && actualTheme.PrimaryTxt
+                    ? actualTheme.PrimaryTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "white"
+                }
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.inputField}>
+
+          <View className="my-3 w-full">
             <Text
-              style={
-                theme === "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
-                  : { color: "#2f2d51", fontFamily: "Inter-Bold", fontSize: 15 }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
             >
-              Change Name
+              Change username
             </Text>
             <TextInput
-              style={theme === "dark" ? styles.inputDark : styles.input}
-              selectionColor={theme === "dark" ? "white" : "#2f2d51"}
+              className="font-inter w-full border-b border-b-light-primary dark:border-b-dark-primary p-2"
+              style={getMainTextColorStyle(actualTheme)}
+              selectionColor={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
               value={name}
               onChangeText={(text) => setName(text)}
             />
             {!isUnique && (
-              <Text
-                style={{
-                  color: "#ff6262",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 12,
-                  marginTop: 5,
-                }}
-              >
+              <Text className="font-inter text-sm mt-2 text-red-500">
                 This name already exists.
               </Text>
             )}
             {isEmpty && (
-              <Text
-                style={{
-                  color: "#ff6262",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 12,
-                  marginTop: 5,
-                }}
-              >
-                Name field can't be empty.
+              <Text className="font-inter mt-2 text-red-500 text-sm">
+                Username field can't be empty.
               </Text>
             )}
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+          <View className="flex-row w-full items-center justify-between">
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        textDecorationLine: "underline",
-                        color: "white",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        textDecorationLine: "underline",
-                        color: "#2f2d51",
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-medium underline text-light-primary dark:text-dark-primary"
               >
                 Set Anonymous
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dismiss} onPress={dismissKeyboard}>
-              <Text
-                style={{
-                  color: "#ff4e4e",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 13,
-                }}
-              >
+            <TouchableOpacity onPress={dismissKeyboard}>
+              <Text className="font-inter font-medium text-sm text-red-500">
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
           </View>
           <Text
-            style={
-              theme === "dark"
-                ? {
-                    padding: 10,
-                    fontSize: 17,
-                    color: "#A5C9FF",
-                    fontFamily: "Inter-Medium",
-                    width: "100%",
-                    textAlign: "center",
-                  }
-                : {
-                    padding: 10,
-                    fontSize: 17,
-                    color: "#2f2d51",
-                    fontFamily: "Inter-Medium",
-                    width: "100%",
-                    textAlign: "center",
-                  }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="p-3 text-xl text-center font-inter font-semibold w-full text-light-primary dark:text-dark-primary"
           >
             Prayers Shared
           </Text>
           {userPrayers?.length === 0 ? (
             <View
-              style={
-                theme === "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      borderWidth: 1,
-                      borderColor: "#797979",
-                      borderRadius: 10,
-                      height: 120,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 5,
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
-                      borderRadius: 10,
-                      height: 120,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 5,
-                    }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full gap-1 min-h-32 max-h-56 bg-light-secondary dark:bg-dark-secondary items-center justify-center rounded-lg"
             >
               <Text
-                style={
-                  theme === "dark"
-                    ? { fontFamily: "Inter-Regular", color: "#bebebe" }
-                    : { fontFamily: "Inter-Regular", color: "#2f2d51" }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-medium text-light-primary dark:text-dark-primary"
               >
                 You haven't posted any prayers yet.
               </Text>
               <TouchableOpacity onPress={addPrayer}>
                 <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Bold",
-                          textDecorationLine: "underline",
-                          color: "white",
-                        }
-                      : {
-                          fontFamily: "Inter-Bold",
-                          textDecorationLine: "underline",
-                          color: "#2f2d51",
-                        }
-                  }
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-lg font-bold underline text-light-primary dark:text-dark-primary"
                 >
                   Post a prayer
                 </Text>
@@ -467,23 +398,7 @@ const ProfileModal = ({
             </View>
           ) : (
             <FlatList
-              style={
-                theme === "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      borderWidth: 1,
-                      borderColor: "#A5C9FF",
-                      borderRadius: 10,
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
-                      borderRadius: 10,
-                    }
-              }
+              className="w-full bg-light-secondary dark:bg-dark-secondary"
               data={userPrayers}
               keyExtractor={(i) => i.toString()}
               onEndReachedThreshold={0}
@@ -492,7 +407,8 @@ const ProfileModal = ({
               renderItem={({ item }) => (
                 <ProfilePrayers
                   item={item}
-                  theme={theme}
+                  theme={colorScheme}
+                  actualTheme={actualTheme}
                   user={user}
                   getUserPrayers={getUserPrayers}
                   supabase={supabase}
@@ -503,19 +419,12 @@ const ProfileModal = ({
           )}
           <TouchableOpacity
             onPress={logout}
-            style={theme === "dark" ? styles.logoutDark : styles.logout}
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="self-end my-3 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
           >
-            <Ionicons
-              name="md-exit-outline"
-              size={25}
-              color={theme === "dark" ? "white" : "white"}
-            />
             <Text
-              style={
-                theme === "dark"
-                  ? { color: "white", fontFamily: "Inter-Bold" }
-                  : { color: "white", fontFamily: "Inter-Bold" }
-              }
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-background dark:text-dark-primary"
             >
               Log Out
             </Text>
