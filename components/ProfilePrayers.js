@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 
@@ -11,9 +11,14 @@ import {
   ModalIcon,
   ModalView,
 } from "../styles/appStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const ProfilePrayers = ({
   item,
+  actualTheme,
   theme,
   getPrayers,
   getUserPrayers,
@@ -31,37 +36,31 @@ const ProfilePrayers = ({
   return (
     <View
       style={
-        theme === "dark" ? styles.prayerContainerDark : styles.prayerContainer
+        actualTheme &&
+        actualTheme.SecondaryTxt && {
+          borderBottomColor: actualTheme.SecondaryTxt,
+        }
       }
+      className="w-full p-3 border-b border-b-light-primary dark:border-b-dark-primary flex-row items-center justify-between"
     >
       <Text
-        style={
-          theme === "dark"
-            ? {
-                fontFamily: "Inter-Regular",
-                color: "white",
-                width: "80%",
-                lineHeight: 20,
-              }
-            : {
-                fontFamily: "Inter-Regular",
-                color: "#2f2d51",
-                width: "80%",
-                lineHeight: 20,
-              }
-        }
+        style={getSecondaryTextColorStyle(actualTheme)}
+        className="font-inter w-4/5 leading-5 text-light-primary dark:text-dark-primary"
       >
         {item.prayer}
       </Text>
-      <TouchableOpacity
-        // style={{ backgroundColor: "red", height: "100%", width: "20%" }}
-        onPress={() => setDeleteModal(true)}
-      >
+      <TouchableOpacity onPress={() => setDeleteModal(true)}>
         <AntDesign
           style={{ alignSelf: "center", verticalAlign: "middle" }}
           name="close"
           size={25}
-          color={theme === "dark" ? "#ff4e4e" : "#cb3f68"}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : theme === "dark"
+                ? "#ff4e4e"
+                : "#cb3f68"
+          }
         />
       </TouchableOpacity>
       <Modal
@@ -80,19 +79,13 @@ const ProfilePrayers = ({
           }
         >
           <ModalView
-            style={
-              theme === "dark"
-                ? { backgroundColor: "#212121" }
-                : { backgroundColor: "#93D8F8" }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary"
           >
             <ModalIcon>
               <HeaderTitle
-                style={
-                  theme === "dark"
-                    ? { fontFamily: "Inter-Bold", fontSize: 18, color: "white" }
-                    : { fontSize: 18, fontFamily: "Inter-Bold" }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-light-primary dark:text-dark-primary text-lg"
               >
                 Are you sure you want to delete this prayer?
               </HeaderTitle>
@@ -106,10 +99,24 @@ const ProfilePrayers = ({
                 />
               </ModalAction>
               <ModalAction
-                color={theme === "dark" ? "#121212" : "#2F2D51"}
+                color={
+                  actualTheme && actualTheme.Primary
+                    ? actualTheme.Primary
+                    : theme === "dark"
+                      ? "#121212"
+                      : "#2F2D51"
+                }
                 onPress={() => handleDelete(item.id)}
               >
-                <AntDesign name="check" size={28} color="white" />
+                <AntDesign
+                  name="check"
+                  size={28}
+                  color={
+                    actualTheme && actualTheme.Primary
+                      ? actualTheme.Primary
+                      : "white"
+                  }
+                />
               </ModalAction>
             </ModalActionGroup>
           </ModalView>
@@ -120,24 +127,3 @@ const ProfilePrayers = ({
 };
 
 export default ProfilePrayers;
-
-const styles = StyleSheet.create({
-  prayerContainer: {
-    width: "100%",
-    borderBottomWidth: 0.8,
-    padding: 10,
-    borderBottomColor: "#2f2d51",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  prayerContainerDark: {
-    width: "100%",
-    borderBottomWidth: 0.8,
-    padding: 10,
-    borderBottomColor: "#797979",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-});

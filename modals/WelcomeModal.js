@@ -24,11 +24,21 @@ import { useIsFocused } from "@react-navigation/native";
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const WelcomeModal = ({
   user,
   getUserGroups,
   isShowingWelcome,
+  actualTheme,
+  colorScheme,
   supabase,
   setCurrentUser,
   setIsShowingWelcome,
@@ -61,7 +71,7 @@ const WelcomeModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!",
+          "We need camera roll permissions to make this work!"
         );
       } else {
         pickImage();
@@ -89,7 +99,7 @@ const WelcomeModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1,
+        result.assets[0].uri.lastIndexOf(".") + 1
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -176,7 +186,7 @@ const WelcomeModal = ({
     const newId = id.substring(0, 3);
     setName(`Anonymous${newId}`);
     setImage(
-      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
+      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559"
     );
     await supabase
       .from("profiles")
@@ -240,69 +250,30 @@ const WelcomeModal = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ModalContainer
-          style={
-            theme === "dark"
-              ? {
-                  backgroundColor: "#121212",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 20,
-                }
-              : {
-                  backgroundColor: "#F2F7FF",
-                  gap: 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }
-          }
+          style={getMainBackgroundColorStyle(actualTheme)}
+          className="bg-light-background dark:bg-dark-background justify-center items-center gap-5"
         >
-          <HeaderView
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
+          <HeaderView className="items-center justify-center">
             <HeaderTitle
-              style={
-                theme === "dark"
-                  ? {
-                      fontFamily: "Inter-Bold",
-                      textAlign: "center",
-                      color: "#a5c9ff",
-                      fontSize: 20,
-                    }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      textAlign: "center",
-                      color: "#2F2D51",
-                      fontSize: 20,
-                    }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter text-wrap font-bold text-center text-light-primary dark:text-dark-accent"
             >
-              Welcome to Prayse Community
+              Welcome to Community
             </HeaderTitle>
           </HeaderView>
-          <View style={styles.iconContainer}>
+          <View className="relative self-center w-full h-32 justify-center items-center">
             <TouchableOpacity
               onPress={photoPermission}
-              style={
-                theme === "dark" ? styles.featherIconDark : styles.featherIcon
-              }
+              className="absolute bg-light-secondary dark:bg-dark-secondary rounded-full p-3 w-32 h-32 items-center justify-center"
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
             >
               {image.length === 0 ? (
-                <Text
-                  style={
-                    theme == "dark"
-                      ? { fontFamily: "Inter-Medium", color: "white" }
-                      : { fontFamily: "Inter-Medium", color: "#2f2d51" }
-                  }
-                >
-                  Upload an Image + (Optional)
+                <Text className="font-inter text-xs text-center font-medium text-light-primary dark:text-dark-primary">
+                  Upload Profile Image (Optional)
                 </Text>
               ) : (
                 <Image
-                  style={styles.profileImg}
+                  className="w-32 h-32 rounded-full"
                   source={{
                     uri: image,
                   }}
@@ -310,215 +281,105 @@ const WelcomeModal = ({
               )}
             </TouchableOpacity>
           </View>
-          <View style={styles.inputField}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+
+          <View className="w-full gap-2">
+            <View className="flex-row items-center justify-between">
               <Text
-                style={
-                  theme === "dark"
-                    ? { color: "white", fontFamily: "Inter-Bold", fontSize: 15 }
-                    : {
-                        color: "#2f2d51",
-                        fontFamily: "Inter-Bold",
-                        fontSize: 15,
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
               >
-                Enter username: (Required)
+                Username (Required)
               </Text>
               <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-                <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          color: "#ff6262",
-                          fontFamily: "Inter-Regular",
-                          fontSize: 13,
-                        }
-                      : {
-                          color: "#ff6262",
-                          fontFamily: "Inter-Regular",
-                          fontSize: 13,
-                        }
-                  }
-                >
+                <Text className="font-inter text-sm text-red-500">
                   Dismiss Keyboard
                 </Text>
               </TouchableOpacity>
             </View>
+
             <TextInput
-              style={theme === "dark" ? styles.inputDark : styles.input}
-              selectionColor={theme === "dark" ? "white" : "#2f2d51"}
+              style={[
+                getSecondaryTextColorStyle(actualTheme),
+                getSecondaryBackgroundColorStyle(actualTheme),
+              ]}
+              className="font-inter w-full bg-light-secondary dark:bg-dark-secondary p-3 rounded-md"
+              selectionColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+              placeholder="Enter a username"
+              placeholderTextColor={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
               value={name}
               onChangeText={(text) => setName(text)}
             />
             {!isUnique && (
-              <Text style={{ color: "#ff6262" }}>
+              <Text className="font-inter font-medium text-red-500">
                 This name already exists. Try again.
               </Text>
             )}
           </View>
-          <View
-            style={{
-              position: "relative",
-
-              height: 20,
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View className="relative h-5 w-full justify-center items-center">
             <View
-              style={
-                theme === "dark"
-                  ? { height: 1, width: "100%", backgroundColor: "#a5c9ff" }
-                  : { height: 1, width: "100%", backgroundColor: "#2f2d51" }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full bg-light-primary dark:bg-dark-accent h-[1px]"
             />
-
             <Text
-              style={
-                theme === "dark"
-                  ? {
-                      position: "absolute",
-                      backgroundColor: "#121212",
-                      color: "white",
-                      letterSpacing: 2,
-                      paddingHorizontal: 5,
-                    }
-                  : {
-                      position: "absolute",
-                      backgroundColor: "#F2F7FF",
-                      color: "#2f2d51",
-                      letterSpacing: 2,
-                      paddingHorizontal: 5,
-                    }
-              }
+              style={getMainBackgroundColorStyle(actualTheme)}
+              className="absolute tracking-wide font-inter font-semibold bg-light-background dark:bg-dark-background px-2"
             >
               Or
             </Text>
           </View>
-
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-            }}
-          >
+          <View className="w-full items-center justify-center gap-3">
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        textDecorationLine: "underline",
-                        color: "#a5c9ff",
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        textDecorationLine: "underline",
-                        color: "#2f2d51",
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-medium underline text-light-primary dark:text-dark-accent"
               >
-                Set Anonymous
+                Be Anonymous
               </Text>
             </TouchableOpacity>
-            <View
-              style={{
-                borderWidth: 1.5,
-                borderColor: "#ffa500",
-                borderRadius: 5,
-                width: "100%",
-                backgroundColor: "#ffd589",
-                padding: 10,
-              }}
-            >
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-              >
-                <Feather name="alert-triangle" size={24} color="#eb9800" />
-                <Text style={{ color: "#eb9800", fontFamily: "Inter-Bold" }}>
+            <View className="bg-[#ffd589] border border-[#ffa500] w-full rounded-md p-3 gap-2">
+              <View className="flex-row items-center gap-2">
+                <Feather name="alert-triangle" size={26} color="#eb9800" />
+                <Text className="font-inter font-bold text-[#eb9800] text-lg">
                   Alert
                 </Text>
               </View>
-              <Text>
+              <Text className="font-inter font-medium text-[#c4840e]">
                 To ensure that setup is done correctly, make sure you are signed
                 in on one device per account.
               </Text>
             </View>
             <TouchableOpacity
               onPress={handleNext}
-              style={
-                theme === "dark"
-                  ? {
-                      backgroundColor: "#a5c9ff",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-                  : {
-                      backgroundColor: "#2f2d51",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-              }
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="w-full p-5 my-3 items-center rounded-md bg-light-primary dark:bg-dark-accent"
             >
               <Text
-                style={
-                  theme === "dark"
-                    ? { color: "#121212", fontFamily: "Inter-Bold" }
-                    : { color: "white", fontFamily: "Inter-Bold" }
-                }
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter  font-bold text-light-background dark:text-dark-primary"
               >
                 Get Right in!
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
               onPress={logout}
-              style={
-                theme === "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-                  : {
-                      borderWidth: 1,
-                      borderColor: "#2f2d51",
-                      width: "100%",
-                      padding: 15,
-                      borderRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-              }
+              className="font-inter underline text-sm font-semibold text-light-primary dark:text-dark-primary"
             >
-              <Text
-                style={
-                  theme === "dark"
-                    ? { color: "white", fontFamily: "Inter-Bold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                }
-              >
-                Back to Sign in
-              </Text>
-            </TouchableOpacity>
+              Back to Sign in
+            </Text>
           </View>
         </ModalContainer>
       </KeyboardAvoidingView>

@@ -5,6 +5,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
 import * as Notifications from "expo-notifications";
+import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Dimensions,
@@ -29,7 +30,6 @@ import { useSelector } from "react-redux";
 import {
   AntDesign,
   Entypo,
-  EvilIcons,
   Feather,
   FontAwesome,
   Ionicons,
@@ -40,8 +40,11 @@ import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { Link, useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
 import globeBg from "../../assets/globe-bg.png";
@@ -56,7 +59,6 @@ import WelcomeModal from "../../modals/WelcomeModal";
 import {
   PRAYER_GROUP_SCREEN,
   PUBLIC_COMMUNITY_SCREEN,
-  PUBLIC_GROUPS_SCREEN,
   QUESTION_LIST_SCREEN,
 } from "../../routes";
 import { HeaderTitle } from "../../styles/appStyles";
@@ -258,16 +260,11 @@ const CommunityHomeScreen = () => {
 
   const width = Dimensions.get("window").width - 30;
 
-  // if (routeParams !== undefined) {
-  //   navigation.navigate(PRAYER_GROUP_SCREEN, {
-  //     group: routeParams.group,
-  //     allGroups: routeParams.allGroups,
-  //   });
-  // }
-
-  if (currentUser && currentUser?.full_name == null) {
+  if (currentUser && currentUser?.full_name === null) {
     return (
       <WelcomeModal
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
         supabase={supabase}
         getUserGroups={getUserGroups}
         setCurrentUser={setCurrentUser}
@@ -280,7 +277,10 @@ const CommunityHomeScreen = () => {
 
   if (!hasConnection) {
     return (
-      <View className="flex-1 justify-center gap-2 items-center bg-light-background dark:bg-dark-background">
+      <View
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="flex-1 justify-center gap-2 items-center bg-light-background dark:bg-dark-background"
+      >
         <MaterialIcons
           name="network-check"
           size={50}
@@ -292,7 +292,10 @@ const CommunityHomeScreen = () => {
                 : "#2f2d51"
           }
         />
-        <Text className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary">
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+        >
           No network connection. Try again...
         </Text>
       </View>
@@ -331,6 +334,8 @@ const CommunityHomeScreen = () => {
           logout={logout}
           session={session}
           setCurrentUser={setCurrentUser}
+          actualTheme={actualTheme}
+          colorScheme={colorScheme}
           supabase={supabase}
           profileVisible={profileVisible}
           user={currentUser}
@@ -366,119 +371,65 @@ const CommunityHomeScreen = () => {
         </TouchableOpacity>
       </View>
       <View className="flex-row w-full gap-3 items-center">
-        <Link style={{ width: "50%" }} to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
+        <Link className="w-1/2" href={`/${PUBLIC_COMMUNITY_SCREEN}`}>
           <View
-            style={
-              theme == "dark"
-                ? {
-                    flex: 1,
-                    minHeight: 130,
-                    maxHeight: 150,
-                    justifyContent: "space-between",
-                    padding: 10,
-                    gap: 20,
-                    borderRadius: 10,
-                    backgroundColor: "#212121",
-                    position: "relative",
-                  }
-                : {
-                    flex: 1,
-                    position: "relative",
-                    minHeight: 130,
-                    maxHeight: 150,
-                    gap: 20,
-                    justifyContent: "space-between",
-                    shadowColor: "#bdbdbd",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.17,
-                    shadowRadius: 3.05,
-                    elevation: 4,
-                    padding: 10,
-                    borderRadius: 10,
-                    backgroundColor: "#b7d3ff",
-                  }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
           >
             <Image
               source={globeBg}
+              className="absolute bottom-0 right-0 w-24 h-24"
               style={{
-                position: "absolute",
-                tintColor: theme == "dark" ? "#5c5c5c" : "#9693c3",
-                bottom: 0,
-                right: 0,
-                width: 100,
-                height: 100,
+                tintColor: "#ababac",
               }}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <View className="flex-row gap-3 items-center justify-between">
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        color: "#a5c9ff",
-                        fontSize: 16,
-                      }
-                    : {
-                        fontFamily: "Inter-Bold",
-                        color: "#2f2d51",
-                        fontSize: 16,
-                      }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
               >
                 Public Prayers
               </Text>
               <Entypo
                 name="globe"
                 size={24}
-                color={theme == "dark" ? "#a5c9ff" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#a5c9ff"
+                      : "#2f2d51"
+                }
               />
             </View>
-            <View style={{ gap: 10 }}>
+            <View className="gap-3">
               <Text
-                style={{
-                  fontFamily: "Inter-Regular",
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontSize: 13,
-                }}
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-sm text-light-primary dark:text-dark-primary"
               >
                 Public prayers posted by our users.
               </Text>
-              <Link to={`/${PUBLIC_COMMUNITY_SCREEN}`}>
+              <Link href={`/${PUBLIC_COMMUNITY_SCREEN}`}>
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderRadius: 5,
-                    justifyContent: "space-between",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    width: "100%",
-                    backgroundColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                  }}
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
+                  className="flex-row items-center rounded-md justify-between w-full px-3 py-2 bg-light-primary dark:bg-dark-accent"
                 >
                   <Text
-                    style={{
-                      color: theme == "dark" ? "#121212" : "white",
-                      fontFamily: "Inter-Medium",
-                    }}
+                    style={getPrimaryTextColorStyle(actualTheme)}
+                    className="font-inter font-semibold text-light-background dark:text-dark-background"
                   >
                     View
                   </Text>
                   <AntDesign
                     name="right"
                     size={24}
-                    color={theme == "dark" ? "#121212" : "white"}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : colorScheme === "dark"
+                          ? "#121212"
+                          : "white"
+                    }
                   />
                 </View>
               </Link>
@@ -486,118 +437,65 @@ const CommunityHomeScreen = () => {
           </View>
         </Link>
 
-        <Link style={{ width: "50%" }} to={`/${QUESTION_LIST_SCREEN}`}>
+        <Link className="w-1/2" href={`/${QUESTION_LIST_SCREEN}`}>
           <View
-            style={
-              theme == "dark"
-                ? {
-                    flex: 1,
-                    minHeight: 130,
-                    maxHeight: 150,
-                    justifyContent: "space-between",
-                    padding: 10,
-                    gap: 20,
-                    borderRadius: 10,
-                    backgroundColor: "#212121",
-                    position: "relative",
-                  }
-                : {
-                    position: "relative",
-                    flex: 1,
-                    minHeight: 130,
-                    maxHeight: 150,
-                    gap: 20,
-                    padding: 10,
-                    shadowColor: "#bdbdbd",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.17,
-                    shadowRadius: 3.05,
-                    elevation: 4,
-                    borderRadius: 10,
-                    justifyContent: "space-between",
-                    backgroundColor: "#ffcd8b",
-                  }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
           >
             <Image
               source={questionBg}
+              className="absolute bottom-0 right-0 w-24 h-24"
               style={{
-                position: "absolute",
-                tintColor: theme == "dark" ? "#353535" : "#ffd59f",
-                bottom: 0,
-                right: 0,
-                width: 100,
-                height: 100,
+                tintColor: "#ababac",
               }}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
+            <View className="flex-row justify-between items-center">
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        color: "#e8bb4e",
-                        fontSize: 16,
-                      }
-                    : {
-                        fontFamily: "Inter-Bold",
-                        color: "#2f2d51",
-                        fontSize: 16,
-                      }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
               >
                 Questions
               </Text>
               <MaterialCommunityIcons
                 name="frequently-asked-questions"
                 size={24}
-                color={theme == "dark" ? "#e8bb4e" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : olorScheme == "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </View>
-            <View style={{ gap: 10 }}>
+            <View className="gap-3">
               <Text
-                style={{
-                  fontFamily: "Inter-Regular",
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontSize: 13,
-                }}
+                className="font-inter text-sm text-light-primary dark:text-dark-primary"
+                style={getSecondaryTextColorStyle(actualTheme)}
               >
                 Weekly questions to reflect on.
               </Text>
-              <Link to={`/${QUESTION_LIST_SCREEN}`}>
+              <Link href={`/${QUESTION_LIST_SCREEN}`}>
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderRadius: 5,
-                    justifyContent: "space-between",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    width: "100%",
-                    backgroundColor: theme == "dark" ? "#e8bb4e" : "white",
-                  }}
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
+                  className="flex-row items-center rounded-md justify-between w-full px-3 py-2 bg-light-primary dark:bg-dark-accent"
                 >
                   <Text
-                    style={{
-                      color: theme == "dark" ? "#121212" : "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                    }}
+                    style={getPrimaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-light-background dark:text-dark-background"
                   >
                     View
                   </Text>
                   <AntDesign
                     name="right"
                     size={24}
-                    color={theme == "dark" ? "#121212" : "#2f2d51"}
+                    color={
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
+                        : colorScheme === "dark"
+                          ? "#121212"
+                          : "#2f2d51"
+                    }
                   />
                 </View>
               </Link>
@@ -605,77 +503,41 @@ const CommunityHomeScreen = () => {
           </View>
         </Link>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+      <View className="flex-row justify-between items-center">
+        <View className="flex-row items-center gap-2">
           <Text
-            style={
-              theme == "dark"
-                ? {
-                    fontFamily: "Inter-Bold",
-
-                    color: "white",
-                    fontSize: 18,
-                  }
-                : {
-                    fontFamily: "Inter-Bold",
-                    color: "#2f2d51",
-                    fontSize: 18,
-                  }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
           >
             Prayer Groups
           </Text>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View className="flex-row items-center gap-3">
           <TouchableOpacity
             onPress={() => setJoinVisible(true)}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              padding: 5,
-            }}
+            className="flex-row items-center gap-2 p-2"
           >
             <Text
-              style={{
-                fontFamily: "Inter-Bold",
-                color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                fontSize: 16,
-                textDecorationLine: "underline",
-              }}
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold underline text-light-primary dark:text-dark-accent"
             >
               Join
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setModalVisible(true)}
-            style={{
-              flexDirection: "row",
-              padding: 5,
-              alignItems: "center",
-              gap: 5,
-            }}
+            className="flex-row items-center gap-2 p-2"
           >
             <Text
-              style={{
-                fontFamily: "Inter-Bold",
-                textDecorationLine: "underline",
-                color: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                fontSize: 16,
-              }}
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold underline text-light-primary dark:text-dark-accent"
             >
               Create
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-      <Link style={{ width: "100%" }} to={`/${PUBLIC_GROUPS_SCREEN}`}>
+      {/* <Link className="w-full" href={`/${PUBLIC_GROUPS_SCREEN}`}>
         <View
           style={{
             width: "100%",
@@ -701,54 +563,24 @@ const CommunityHomeScreen = () => {
             color={theme == "dark" ? "white" : "#2f2d51"}
           />
         </View>
-      </Link>
-
-      {/* {userGroups?.length != 0 && isFetchingUserGroups && (
-            <View
-              style={{
-                flex: 1,
-                gap: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <FontAwesome
-                name="group"
-                size={30}
-                color={theme == "dark" ? "white" : "#2f2d51"}
-              />
-              <Text
-                style={{
-                  fontFamily: "Inter-Medium",
-                  color: theme == "dark" ? "white" : "#2f2d51",
-                  fontSize: 13,
-                }}
-              >
-                Loading...
-              </Text>
-            </View>
-          )} */}
+      </Link> */}
 
       {userGroups?.length == 0 && (
-        <View
-          style={{
-            flex: 1,
-            gap: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <View className="flex-1 pt-10 gap-3 justify-center items-center">
           <FontAwesome
             name="group"
-            size={30}
-            color={theme == "dark" ? "white" : "#2f2d51"}
+            size={40}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme == "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
           <Text
-            style={{
-              fontFamily: "Inter-Medium",
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontSize: 13,
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-semibold text-light-primary dark:text-dark-primary"
           >
             No groups created or joined.
           </Text>
