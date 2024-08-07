@@ -30,7 +30,6 @@ import { useSelector } from "react-redux";
 import {
   AntDesign,
   Entypo,
-  Feather,
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
@@ -48,7 +47,6 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
 import globeBg from "../../assets/globe-bg.png";
-import groupBg from "../../assets/group-bg.png";
 import questionBg from "../../assets/question-bg.png";
 import config from "../../config";
 import { useSupabase } from "../../context/useSupabase";
@@ -507,63 +505,38 @@ const CommunityHomeScreen = () => {
         <View className="flex-row items-center gap-2">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
+            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             Prayer Groups
           </Text>
         </View>
         <View className="flex-row items-center gap-3">
           <TouchableOpacity
-            onPress={() => setJoinVisible(true)}
-            className="flex-row items-center gap-2 p-2"
-          >
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold underline text-light-primary dark:text-dark-accent"
-            >
-              Join
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
             onPress={() => setModalVisible(true)}
-            className="flex-row items-center gap-2 p-2"
+            className="flex-row items-center rounded-lg gap-2 p-2"
           >
             <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold underline text-light-primary dark:text-dark-accent"
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
             >
               Create
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            onPress={() => setJoinVisible(true)}
+            className="flex-row items-center rounded-lg gap-2 p-2"
+          >
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+            >
+              Join
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
-      {/* <Link className="w-full" href={`/${PUBLIC_GROUPS_SCREEN}`}>
-        <View
-          style={{
-            width: "100%",
-            backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-            padding: 12,
-            borderRadius: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            style={{
-              color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-              fontFamily: "Inter-Medium",
-            }}
-          >
-            Search for Public Groups
-          </Text>
-          <EvilIcons
-            name="search"
-            size={24}
-            color={theme == "dark" ? "white" : "#2f2d51"}
-          />
-        </View>
-      </Link> */}
 
       {userGroups?.length == 0 && (
         <View className="flex-1 pt-10 gap-3 justify-center items-center">
@@ -592,19 +565,8 @@ const CommunityHomeScreen = () => {
           snapToInterval={ITEM_WIDTH}
           numColumns={1}
           windowSize={8}
-          ListFooterComponent={() => (
-            <View
-              style={
-                theme == "dark"
-                  ? {
-                      height: 30,
-                    }
-                  : {
-                      height: 30,
-                    }
-              }
-            />
-          )}
+          ListFooterComponent={() => <View className="h-7" />}
+          contentContainerStyle={{ gap: 15 }}
           showsHorizontalScrollIndicator={false}
           data={userGroups}
           keyExtractor={(e, i) => i.toString()}
@@ -620,183 +582,31 @@ const CommunityHomeScreen = () => {
                   })
                 }
                 style={
-                  theme == "dark"
-                    ? {
-                        position: "relative",
-                        backgroundColor: "#212121",
-                        padding: 8,
-                        width: "100%",
-                        flexDirection: "row",
-                        marginBottom: 10,
-                        gap: 10,
-                        borderRadius: 10,
-                        justifyContent: "space-between",
-                      }
-                    : {
-                        position: "relative",
-                        backgroundColor: "#b7d3ff",
-                        padding: 8,
-                        width: "100%",
-                        flexDirection: "row",
-                        marginBottom: 10,
-                        gap: 10,
-                        borderRadius: 10,
-                        justifyContent: "space-between",
-                      }
+                  actualTheme &&
+                  actualTheme.MainTxt && {
+                    borderColor: actualTheme.MainTxt,
+                  }
                 }
+                className=" p-3 w-full border border-light-primary rounded-lg"
               >
-                <Image
-                  source={
-                    item.groups.group_img
-                      ? {
-                          uri: item.groups.group_img,
-                        }
-                      : groupBg
-                  }
-                  style={
-                    item.groups.group_img
-                      ? {
-                          width: 70,
-                          height: 70,
-                          borderRadius: 10,
-                        }
-                      : {
-                          tintColor: theme == "dark" ? "white" : "#d1e3ff",
-                          backgroundColor:
-                            theme == "dark" ? "#121212" : "white",
-                          borderRadius: 10,
-                          width: 70,
-                          height: 70,
-                        }
-                  }
-                />
-                <View style={{ flex: 1, justifyContent: "space-between" }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-
-                      alignItems: "flex-start",
-                      gap: 10,
-                    }}
-                  >
+                <View className="flex-1 justify-between gap-5">
+                  <View className="gap-1">
                     <Text
-                      style={
-                        theme == "dark"
-                          ? {
-                              flex: 1,
-                              fontFamily: "Inter-Bold",
-                              fontSize: 17,
-                              color: "white",
-                            }
-                          : {
-                              flex: 1,
-                              fontFamily: "Inter-Bold",
-                              fontSize: 17,
-                              color: "#2f2d51",
-                            }
-                      }
+                      style={getMainTextColorStyle(actualTheme)}
+                      className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
                     >
                       {item.groups.name}
                     </Text>
-                    {item.groups.is_public === true ? (
-                      <View
-                        style={
-                          theme == "dark"
-                            ? {
-                                padding: 7,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#121212",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                            : {
-                                padding: 7,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#f2f7ff",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                        }
+                    {item.groups.description && (
+                      <Text
+                        style={getMainTextColorStyle(actualTheme)}
+                        className="flex-1 font-inter  text-light-primary dark:text-dark-primary"
                       >
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  color: "white",
-                                  fontSize: 13,
-                                  fontFamily: "Inter-Medium",
-                                }
-                              : {
-                                  color: "#2f2d51",
-                                  fontSize: 13,
-                                  fontFamily: "Inter-Medium",
-                                }
-                          }
-                        >
-                          PUBLIC
-                        </Text>
-                      </View>
-                    ) : (
-                      <TouchableOpacity
-                        onPress={() =>
-                          copyToClipboard(item.groups.code.toString())
-                        }
-                        style={
-                          theme == "dark"
-                            ? {
-                                padding: 7,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#121212",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                            : {
-                                padding: 7,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                backgroundColor: "#f2f7ff",
-                                borderRadius: 10,
-                                gap: 8,
-                              }
-                        }
-                      >
-                        <Feather
-                          name="copy"
-                          size={12}
-                          color={theme == "dark" ? "white" : "#2f2d51"}
-                        />
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  color: "white",
-                                  fontSize: 13,
-                                  fontFamily: "Inter-Medium",
-                                }
-                              : {
-                                  color: "#2f2d51",
-                                  fontSize: 13,
-                                  fontFamily: "Inter-Medium",
-                                }
-                          }
-                        >
-                          {item.groups.code}
-                        </Text>
-                      </TouchableOpacity>
+                        {item.groups?.description}
+                      </Text>
                     )}
                   </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 10,
-                      width: "100%",
-                      alignItems: "center",
-                    }}
-                  >
+                  <View className="flex-row px-3 w-full items-center">
                     {groups
                       .filter((g) => g.group_id === item.group_id)
                       .slice(0, 3)
@@ -809,7 +619,7 @@ const CommunityHomeScreen = () => {
                           }}
                         >
                           <Image
-                            style={styles.joinedUserImg}
+                            className="w-9 h-9 rounded-full"
                             source={{
                               uri: g.profiles?.avatar_url
                                 ? g.profiles?.avatar_url
@@ -823,19 +633,8 @@ const CommunityHomeScreen = () => {
                         groups.filter((g) => g.group_id === item.group_id)
                           ?.length > 3 && (
                           <Text
-                            style={
-                              theme == "dark"
-                                ? {
-                                    marginLeft: 5,
-                                    fontFamily: "Inter-Regular",
-                                    color: "grey",
-                                  }
-                                : {
-                                    marginLeft: 5,
-                                    fontFamily: "Inter-Regular",
-                                    color: "#2f2d51",
-                                  }
-                            }
+                            style={getMainTextColorStyle(actualTheme)}
+                            className="ml-1 font-inter text-light-primary dark:text-dark-primary"
                           >
                             +
                             {groups.filter((g) => g.group_id === item.group_id)
@@ -855,7 +654,8 @@ const CommunityHomeScreen = () => {
         getUserGroups={getUserGroups}
         getGroupUsers={getGroupUsers}
         supabase={supabase}
-        theme={theme}
+        actualTheme={actualTheme}
+        theme={colorScheme}
         user={currentUser}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
