@@ -6,7 +6,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
 
-import { useSupabase } from "@context/useSupabase";
 import {
   COMMUNITY_SCREEN,
   DEVOTIONAL_SCREEN,
@@ -19,9 +18,7 @@ import { ActualTheme } from "../../types/reduxTypes";
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
-  const { isLoggedIn } = useSupabase();
 
-  console.log("logged in: ", isLoggedIn);
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
