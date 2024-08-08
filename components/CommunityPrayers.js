@@ -5,7 +5,6 @@ import {
   RefreshControl,
   View,
 } from "react-native";
-import { Divider } from "react-native-paper";
 import { useSelector } from "react-redux";
 
 import NetInfo from "@react-native-community/netinfo";
@@ -13,9 +12,19 @@ import NetInfo from "@react-native-community/netinfo";
 import communityReady from "../hooks/communityReady";
 
 import PrayerItem from "./PrayerItem";
+import {
+  getMainBackgroundColorStyle,
+  getSecondaryBackgroundColorStyle,
+} from "@lib/customStyles";
 
-const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
-  const theme = useSelector((state) => state.user.theme);
+const CommunityPrayers = ({
+  session,
+  actualTheme,
+  colorScheme,
+  setNewPost,
+  prayers,
+  getPrayers,
+}) => {
   const isReady = communityReady();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -35,15 +44,18 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   const BusyIndicator = () => {
     return (
       <View
-        style={
-          theme === "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background flex-1 justify-center items-center"
       >
         <ActivityIndicator
           size="large"
-          color={theme === "dark" ? "white" : "#2f2d51"}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
         />
       </View>
     );
@@ -57,7 +69,7 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View className="flex-1">
       {!isReady || !isConnected ? (
         <BusyIndicator />
       ) : (
@@ -68,32 +80,23 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
           // onScroll={onScroll}
           initialNumToRender={4}
           windowSize={8}
-          ListFooterComponent={() => (
-            <View
-              style={
-                theme == "dark"
-                  ? {
-                      height: 100,
-                    }
-                  : {
-                      height: 100,
-                    }
-              }
-            />
-          )}
+          ListFooterComponent={() => <View className="h-28" />}
           ItemSeparatorComponent={() => (
-            <Divider
-              style={
-                theme === "dark"
-                  ? { backgroundColor: "#525252", marginBottom: 18 }
-                  : { backgroundColor: "#2f2d51", marginBottom: 18 }
-              }
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-primary h-[0.5px] dark:bg-dark-secondary mb-5"
             />
           )}
           scrollEventThrottle={16}
           refreshControl={
             <RefreshControl
-              tintColor={theme === "dark" ? "white" : "#2f2d51"}
+              tintColor={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
               refreshing={refreshing}
               onRefresh={handleRefresh}
             />
@@ -101,6 +104,8 @@ const CommunityPrayers = ({ session, setNewPost, prayers, getPrayers }) => {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <PrayerItem
+              actualTheme={actualTheme}
+              colorScheme={colorScheme}
               session={session}
               prayers={prayers}
               getPrayers={getPrayers}

@@ -1,20 +1,20 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { AnimatedFAB } from "react-native-paper";
-import Animated, {
-  FadeIn,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-} from "react-native-reanimated";
+import { Link } from "expo-router";
+import { useColorScheme } from "nativewind";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { withSequence, withSpring } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { AntDesign, Entypo } from "@expo/vector-icons";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+} from "@lib/customStyles";
+import { useIsFocused } from "@react-navigation/native";
 
 import CommunityPrayers from "../components/CommunityPrayers";
 import config from "../config";
@@ -24,45 +24,18 @@ import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const PublicCommunityScreen = () => {
-  const {
-    currentUser,
-    setCurrentUser,
-    session,
-    newPost,
-    setNewPost,
-    logout,
-    supabase,
-  } = useSupabase();
-  const theme = useSelector((state) => state.user.theme);
-  const [modalVisible, setModalVisible] = useState(false);
+  const { currentUser, session, setNewPost, logout, supabase } = useSupabase();
+  const { colorScheme } = useColorScheme();
+
+  const actualTheme = useSelector(
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+  );
   const [extended, setExtended] = useState(true);
   const [prayerModal, setPrayerModal] = useState(false);
-  const [isShowingWelcome, setIsShowingWelcome] = useState(false);
   const isFocused = useIsFocused();
   const [visible, setVisible] = useState(true);
   const [prayers, setPrayers] = useState([]);
-  const [userPrayers, setUserPrayers] = useState([]);
   const isIOS = Platform.OS === "ios";
-  // const { current: velocity } = useRef(new Animated.Value(0));
-  const scrollTimeoutRef = useRef(null);
-
-  const rotation = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotateZ: `${rotation.value}deg` }],
-    };
-  });
-
-  // const onScroll = ({ nativeEvent }) => {
-  //   const currentScrollPosition =
-  //     Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-  //   if (!isIOS) {
-  //     return velocity.setValue(currentScrollPosition);
-  //   }
-
-  //   setExtended(currentScrollPosition <= 0);
-  // };
 
   useEffect(() => {
     if (!isIOS) {
@@ -79,14 +52,10 @@ const PublicCommunityScreen = () => {
     getPrayers();
   }, [isFocused]);
 
-  //   useEffect(()=>{
-  //  getPrayers()
-  //   },[newPost])
-
   async function getPrayers() {
     //prayers for production
     //prayers_test for testing
-    const { data: prayers, error } = await supabase
+    const { data: prayers } = await supabase
       .from("prayers")
       .select("*, profiles(*)")
       .order("id", { ascending: false });
@@ -96,7 +65,7 @@ const PublicCommunityScreen = () => {
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
-    const { data: prayers, error } = await supabase
+    const { data: prayers } = await supabase
       .from("prayers")
       .select("*")
       .eq("user_id", currentUser?.id)
@@ -105,7 +74,7 @@ const PublicCommunityScreen = () => {
   }
 
   async function sendToken(expoPushToken) {
-    const { data, error } = await supabase
+    await supabase
       .from("profiles")
       .update({ expoToken: expoPushToken })
       .eq("id", currentUser?.id)
@@ -142,145 +111,35 @@ const PublicCommunityScreen = () => {
   }
   return (
     <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212", position: "relative" }
-          : { backgroundColor: "#F2F7FF", position: "relative" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background"
     >
-      <HeaderView style={{ marginTop: 0, marginBottom: 20 }}>
-        <Animated.View
-          entering={FadeIn.duration(500)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-        >
-          <Link to={`/${COMMUNITY_SCREEN}`}>
+      <HeaderView>
+        <View className="flex-row items-center gap-3">
+          <Link href={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </Link>
-          <HeaderTitle
-            style={
-              theme == "dark"
-                ? {
-                    fontFamily: "Inter-Bold",
-                    fontSize: 20,
-                    letterSpacing: 2,
-                    color: "white",
-                  }
-                : {
-                    fontFamily: "Inter-Bold",
-                    fontSize: 20,
-                    color: "#2F2D51",
-                  }
-            }
-          >
-            <Text>Public</Text>
+          <HeaderTitle className="font-inter font-bold text-light-primary dark:text-dark-primary">
+            Public Prayers
           </HeaderTitle>
-          <Animated.View style={animatedStyle}>
-            <Entypo
-              name="globe"
-              size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
-            />
-          </Animated.View>
-        </Animated.View>
-        {/* <View style={styles.iconContainer}>
-          <Image
-            style={styles.profileImg}
-            source={{
-              uri: currentUser?.avatar_url
-                ? currentUser?.avatar_url
-                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={
-              theme == "dark" ? styles.featherIconDark : styles.featherIcon
-            }
-          >
-            <Ionicons name="settings" size={16} color="black" />
-          </TouchableOpacity>
-        </View> */}
+        </View>
       </HeaderView>
 
-      <View style={{ flex: 1, position: "relative" }}>
-        {newPost && (
-          <Animated.View
-            entering={FadeIn.duration(300)}
-            style={
-              theme == "dark"
-                ? {
-                    position: "absolute",
-                    zIndex: 99,
-                    width: "65%",
-                    alignSelf: "center",
-                    marginVertical: 10,
-                    backgroundColor: "#121212",
-                    borderRadius: 50, // Set your desired border radius
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: theme == "dark" ? "#A5C9FF" : "#2f2d51",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }
-                : {
-                    position: "absolute",
-                    zIndex: 99,
-                    width: "70%",
-                    alignSelf: "center",
-                    marginVertical: 10,
-                    backgroundColor: "white",
-                    borderRadius: 50, // Set your desired border radius
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: "#2f2d51",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }
-            }
-          >
-            <Animated.Text
-              style={
-                theme == "dark"
-                  ? {
-                      fontFamily: "Inter-Bold",
-                      paddingVertical: 15,
-                      paddingHorizontal: 5,
-                      color: "#A5C9FF",
-                      textAlign: "center",
-                      fontSize: 13,
-                    }
-                  : {
-                      fontFamily: "Inter-Bold",
-                      paddingVertical: 15,
-                      paddingHorizontal: 5,
-                      color: "#2f2d51",
-                      textAlign: "center",
-                      fontSize: 13,
-                    }
-              }
-            >
-              New Prayers! Pull down to refresh
-            </Animated.Text>
-          </Animated.View>
-        )}
+      <View className="flex-1 mt-3 relative">
         <CommunityModal
           getUserPrayers={getUserPrayers}
+          actualTheme={actualTheme}
+          colorScheme={colorScheme}
           getPrayers={getPrayers}
           logout={logout}
           supabase={supabase}
@@ -292,107 +151,42 @@ const PublicCommunityScreen = () => {
         <CommunityPrayers
           session={session}
           getPrayers={getPrayers}
+          colorScheme={colorScheme}
           setNewPost={setNewPost}
           visible={visible}
           setVisible={setVisible}
           prayers={prayers}
           setPrayers={setPrayers}
-          // onScroll={onScroll}
+          actualTheme={actualTheme}
           supabase={supabase}
           currentUser={currentUser}
         />
       </View>
-      <View style={styles.actionButtons}>
-        <AnimatedFAB
-          icon="plus"
-          label="Post prayer"
-          extended={extended}
-          onPress={() => setPrayerModal(true)}
-          visible
-          animateFrom="right"
-          iconMode="dynamic"
-          color={theme == "dark" ? "#212121" : "white"}
-          style={theme == "dark" ? styles.fabStyleDark : styles.fabStyle}
+      <TouchableOpacity
+        style={getPrimaryBackgroundColorStyle(actualTheme)}
+        onPress={() => setPrayerModal(true)}
+        className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 absolute bottom-5 right-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+      >
+        <AntDesign
+          name="plus"
+          size={24}
+          color={
+            actualTheme && actualTheme.PrimaryTxt
+              ? actualTheme.PrimaryTxt
+              : colorScheme === "dark"
+                ? "#121212"
+                : "white"
+          }
         />
-      </View>
+        <Text
+          style={getPrimaryTextColorStyle(actualTheme)}
+          className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+        >
+          Prayer
+        </Text>
+      </TouchableOpacity>
     </Container>
   );
 };
 
 export default PublicCommunityScreen;
-
-const styles = StyleSheet.create({
-  question: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "#93d8f8",
-    borderWidth: 0.8,
-    // backgroundColor: "#93d8f8",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  questionDark: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "#f1d592",
-    borderWidth: 0.3,
-    // backgroundColor: "#f1d592",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  actionButtons: {
-    position: "absolute",
-    right: 15,
-    bottom: 15,
-    display: "flex",
-  },
-  fabStyleDark: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-  },
-  fabStyle: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "flex-end",
-    backgroundColor: "#2f2d51",
-  },
-  profileImg: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-  },
-  iconContainer: {
-    position: "relative",
-    padding: 8,
-  },
-  featherIconDark: {
-    position: "absolute",
-    backgroundColor: "#A5C9FF",
-    borderRadius: 50,
-    width: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 25,
-    bottom: 4,
-    right: 2,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "#93d8f8",
-    borderRadius: 50,
-    width: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 25,
-    bottom: 4,
-    right: 2,
-  },
-});
