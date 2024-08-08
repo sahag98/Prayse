@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -21,6 +21,7 @@ const QuestionListScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
   const { questions, answers, fetchQuestions, fetchAnswers } = useSupabase();
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
@@ -30,6 +31,12 @@ const QuestionListScreen = () => {
     fetchQuestions();
     fetchAnswers();
   }, [isFocused]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchQuestions();
+    setRefreshing(false);
+  }, []);
 
   return (
     <Container
@@ -76,6 +83,10 @@ const QuestionListScreen = () => {
       <FlatList
         className="mt-3"
         data={questions}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        // onRefresh={() => console.log("refresh list")}
+        showsVerticalScrollIndicator={false}
         contentContainerClassName="gap-4"
         keyExtractor={(e, i) => i.toString()}
         renderItem={({ item }) => (

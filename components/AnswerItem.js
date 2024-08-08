@@ -10,7 +10,7 @@ const AnswerItem = ({ item, actualTheme, theme }) => {
   return (
     <View
       style={getSecondaryBackgroundColorStyle(actualTheme)}
-      className="bg-light-secondary p-3 rounded-md gap-3 justify-between mb-2 dark:bg-dark-secondary"
+      className="bg-light-secondary p-3 rounded-lg gap-3 justify-between mb-2 dark:bg-dark-secondary"
     >
       <View className="flex-row items-center justify-between mb-2">
         <View className="flex-row items-center gap-1">
