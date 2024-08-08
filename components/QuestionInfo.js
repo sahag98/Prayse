@@ -6,161 +6,85 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSupabase } from "../context/useSupabase";
 import { QUESTION_SCREEN } from "../routes";
+import {
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const QuestionInfo = ({ item, theme }) => {
+const QuestionInfo = ({ item, actualTheme, theme }) => {
   const navigation = useNavigation();
 
   const { answers } = useSupabase();
 
   const existingAnswers = answers.filter(
-    (answer) => answer.question_id === item.id,
+    (answer) => answer.question_id === item.id
   );
 
   return (
     <TouchableOpacity
-      style={theme === "dark" ? styles.questionDark : styles.question}
+      onPress={() =>
+        navigation.navigate(QUESTION_SCREEN, {
+          title: item.title,
+          question_id: item.id,
+        })
+      }
+      style={getSecondaryBackgroundColorStyle(actualTheme)}
+      className="bg-light-secondary dark:bg-dark-secondary rounded-lg p-3 gap-4"
     >
-      {item.isNew && (
-        <Text
-          style={
-            theme === "dark"
-              ? {
-                  color: "#ff3333",
-                  alignSelf: "flex-end",
-                  fontSize: 13,
-                  fontFamily: "Inter-Regular",
-                }
-              : {
-                  color: "red",
-                  alignSelf: "flex-end",
-                  fontSize: 13,
-                  fontFamily: "Inter-Regular",
-                }
-          }
-        >
-          {item.isNew === true ? "New" : null}
-        </Text>
-      )}
       <Text
-        style={
-          theme === "dark"
-            ? { fontSize: 16, color: "white", fontFamily: "Inter-Medium" }
-            : { fontSize: 16, color: "#2f2d51", fontFamily: "Inter-Medium" }
-        }
+        style={getSecondaryTextColorStyle(actualTheme)}
+        className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
       >
         {item.title}
       </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          // alignSelf: "flex-end",
-          alignItems: "center",
-          gap: 5,
-          justifyContent: "space-between",
-        }}
-      >
-        <Text
-          style={
-            theme === "dark"
-              ? { fontSize: 12, color: "grey", fontFamily: "Inter-Regular" }
-              : { fontSize: 12, color: "#2f2d51", fontFamily: "Inter-Regular" }
-          }
-        >
-          Added on: {new Date(item.created_at).toLocaleDateString()}
-        </Text>
-        <Text
-          style={
-            theme === "dark"
-              ? { fontSize: 13, color: "grey", fontFamily: "Inter-Regular" }
-              : { fontSize: 13, color: "#2f2d51", fontFamily: "Inter-Regular" }
-          }
-        />
-        <View
-          style={{
-            flexDirection: "row",
+      <View className="flex-row items-center gap-2 justify-between">
+        <View className="flex-row items-center gap-3">
+          <View
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-primary rounded-xl px-2 py-1"
+          >
+            <Text
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter text-sm font-semibold text-light-background dark:text-dark-primary"
+            >
+              Posted by: Prayse
+            </Text>
+          </View>
 
-            alignItems: "center",
-            gap: 5,
-            // justifyContent: "space-between",
-          }}
-        >
+          {item.isNew ? (
+            <View className="bg-red-500 rounded-xl px-2 py-1">
+              <Text className="font-inter text-sm font-medium text-light-background dark:text-dark-primary">
+                new
+              </Text>
+            </View>
+          ) : (
+            <View />
+          )}
+        </View>
+        <View className="flex-row items-center gap-2">
           <FontAwesome5
             name="check-circle"
             size={20}
-            color={theme === "dark" ? "#A5C9FF" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : theme === "dark"
+                  ? "#A5C9FF"
+                  : "#2f2d51"
+            }
           />
           <Text
-            style={
-              theme === "dark"
-                ? {
-                    color: "#A5C9FF",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                  }
-                : {
-                    color: "#2f2d51",
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                  }
-            }
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter text-sm text-light-primary dark:text-dark-primary"
           >
-            {existingAnswers.length} answers
+            {existingAnswers.length}
           </Text>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate(QUESTION_SCREEN, {
-            title: item.title,
-            question_id: item.id,
-          })
-        }
-        style={{
-          backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
-          padding: 12,
-          borderRadius: 10,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={
-            theme === "dark"
-              ? {
-                  color: "#A5C9FF",
-                  fontSize: 14,
-                  fontFamily: "Inter-Medium",
-                }
-              : {
-                  color: "white",
-                  fontSize: 14,
-                  fontFamily: "Inter-Bold",
-                }
-          }
-        >
-          View
-        </Text>
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
 
 export default QuestionInfo;
-
-const styles = StyleSheet.create({
-  questionDark: {
-    borderRadius: 15,
-    padding: 10,
-    borderColor: "grey",
-    borderWidth: 1,
-    gap: 10,
-    marginBottom: 15,
-  },
-  question: {
-    backgroundColor: "#ffcd8b",
-    borderRadius: 15,
-    padding: 10,
-    gap: 10,
-    marginBottom: 15,
-  },
-});

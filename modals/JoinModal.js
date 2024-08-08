@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Platform,
@@ -8,7 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  FadeIn,
+  FadeOut,
+  Layout,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -18,8 +27,10 @@ import Toast from "react-native-toast-message";
 import { AntDesign } from "@expo/vector-icons";
 
 import { HeaderView, ModalContainer } from "../styles/appStyles";
+import { getMainTextColorStyle } from "@lib/customStyles";
 
 const JoinModal = ({
+  actualTheme,
   modalVisible,
   getUserGroups,
   getGroupUsers,
@@ -32,6 +43,22 @@ const JoinModal = ({
   const [isEnabled, setIsEnabled] = useState(false);
   const [joinError, setJoinError] = useState(false);
   const insets = useSafeAreaInsets();
+
+  const slideIn = useSharedValue(100);
+  const inputExpand = useSharedValue(100);
+
+  const slideAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: slideIn.value }],
+    };
+  });
+
+  const inputAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: `${inputExpand.value}%`,
+    };
+  });
+
   const handleCloseModal = () => {
     setModalVisible(false);
     setJoinError(false);
@@ -45,6 +72,28 @@ const JoinModal = ({
       visibilityTime: 3000,
     });
   };
+
+  useAnimatedReaction(
+    () => code.length,
+    (length) => {
+      if (length === 6) {
+        slideIn.value = withTiming(1, { duration: 200, easing: Easing.linear });
+        inputExpand.value = withTiming(85, {
+          duration: 200,
+          easing: Easing.linear,
+        });
+      } else {
+        slideIn.value = withTiming(100, {
+          duration: 200,
+          easing: Easing.linear,
+        });
+        inputExpand.value = withTiming(100, {
+          duration: 200,
+          easing: Easing.linear,
+        });
+      }
+    }
+  );
 
   const joinGroup = async () => {
     if (code.length <= 0) {
@@ -97,151 +146,121 @@ const JoinModal = ({
         onRequestClose={handleCloseModal}
       >
         <ModalContainer
+          className="bg-light-background dark:bg-dark-background items-center"
           style={
-            theme === "dark"
+            actualTheme && actualTheme.Bg
               ? {
-                  backgroundColor: "#121212",
                   justifyContent: "flex-start",
-                  alignItems: "center",
+                  backgroundColor: actualTheme.Bg,
                   paddingTop: Platform.OS === "ios" ? insets.top : 0,
                   paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
-              : {
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
+              : theme === "dark"
+                ? {
+                    justifyContent: "flex-start",
+
+                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+                  }
+                : {
+                    justifyContent: "flex-start",
+
+                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+                  }
           }
         >
-          <HeaderView
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
+          <HeaderView className="flex-row w-full justify-between">
             <TouchableOpacity onPress={handleCloseModal}>
               <AntDesign
                 name="left"
                 size={30}
-                color={theme === "dark" ? "white" : "#2f2d51"}
+                color={
+                  actualTheme & actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : theme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </TouchableOpacity>
           </HeaderView>
-          <View style={styles.inputField}>
+
+          <View className="flex-1 mb-14 gap-2 self-center items-center w-full justify-center">
             <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "white",
-                      fontSize: 22,
-                      marginBottom: 5,
-                      letterSpacing: 1,
-                      fontFamily: "Inter-Bold",
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontSize: 22,
-                      marginBottom: 5,
-                      letterSpacing: 1,
-                      fontFamily: "Inter-Bold",
-                    }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="text-3xl mb-2 font-inter font-bold text-light-primary dark:text-dark-primary"
             >
-              Join A Prayer Group
+              Join Prayer Group
             </Text>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <TextInput
-                style={
-                  theme === "dark"
-                    ? code.length < 6
-                      ? [styles.nameDark, { width: "100%" }]
-                      : styles.nameDark
-                    : code.length < 6
-                      ? [styles.name, { width: "100%" }]
-                      : styles.name
-                }
-                // autoFocus={modalVisible}
-                maxLength={6}
-                keyboardType="numeric"
-                placeholder="Enter 6 digit group code"
-                placeholderTextColor={theme === "dark" ? "#d6d6d6" : "#2f2d51"}
-                selectionColor={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
-                value={code}
-                onChangeText={(text) => setCode(text)}
-              />
+            <View className="w-full flex-row items-center justify-between">
+              <Animated.View
+                className="border p-4 rounded-lg border-light-primary dark:border-dark-secondary"
+                style={[
+                  inputAnimatedStyle,
+                  actualTheme &&
+                    actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
+                ]}
+              >
+                <TextInput
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter font-medium"
+                  // autoFocus={modalVisible}
+                  maxLength={6}
+                  keyboardType="numeric"
+                  placeholder="Enter 6 digit group code"
+                  placeholderTextColor={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : theme === "dark"
+                        ? "#d6d6d6"
+                        : "#2f2d51"
+                  }
+                  selectionColor={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : theme === "dark"
+                        ? "#a5c9ff"
+                        : "#2f2d51"
+                  }
+                  value={code}
+                  on
+                  onChangeText={(text) => setCode(text)}
+                />
+              </Animated.View>
               <TouchableOpacity onPress={joinGroup}>
-                {code.length === 6 && (
-                  <Animated.View
-                    entering={FadeIn.duration(500)}
-                    exiting={FadeOut.duration(500)}
-                  >
-                    <AntDesign
-                      name="rightcircle"
-                      size={40}
-                      color={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
-                    />
-                  </Animated.View>
-                )}
+                <Animated.View style={[slideAnimatedStyle]}>
+                  <AntDesign
+                    name="rightcircle"
+                    size={42}
+                    color={
+                      actualTheme && actualTheme.Primary
+                        ? actualTheme.Primary
+                        : theme === "dark"
+                          ? "#a5c9ff"
+                          : "#2f2d51"
+                    }
+                  />
+                </Animated.View>
               </TouchableOpacity>
             </View>
             {joinError && (
-              <Text
-                style={{
-                  alignSelf: "flex-start",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 13,
-                  color: "#ff4e4e",
-                }}
-              >
+              <Text className="font-inter self-start font-medium text-sm text-red-500">
                 Group doesn't exist try again.
               </Text>
             )}
 
-            <View style={{ marginTop: 5, width: "100%" }}>
+            <View className="mt-2 w-full">
               <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        color: "#d2d2d2",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontFamily: "Inter-Regular",
-                        fontSize: 13,
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter text-sm font-medium text-light-primary dark:text-dark-primary"
               >
                 "For where two or three are gathered together in my name, there
                 am I in the midst of them."
               </Text>
               <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        color: "white",
-                        alignSelf: "flex-end",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 13,
-                      }
-                    : {
-                        color: "#2f2d51",
-                        alignSelf: "flex-end",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 13,
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="self-end text-light-primary dark:text-dark-primary font-inter font-semibold"
               >
                 - Matthew 18:20
               </Text>
@@ -257,9 +276,8 @@ export default JoinModal;
 
 const styles = StyleSheet.create({
   nameDark: {
-    backgroundColor: "#212121",
+    width: "100%",
     padding: 15,
-    width: "85%",
     borderRadius: 10,
     color: "white",
     fontFamily: "Inter-Regular",
@@ -268,11 +286,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   name: {
+    width: "100%",
     padding: 15,
-    backgroundColor: "#deebff",
+
     color: "#2f2d51",
     borderRadius: 10,
-    width: "85%",
     fontFamily: "Inter-Regular",
     fontSize: 15,
     justifyContent: "center",

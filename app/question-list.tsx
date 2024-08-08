@@ -1,21 +1,19 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "expo-router";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useColorScheme } from "nativewind";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+} from "@lib/customStyles";
 import { useIsFocused } from "@react-navigation/native";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
-import QuestionHelpModal from "../modals/QuestionHelpModal";
 import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
@@ -23,81 +21,81 @@ const QuestionListScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const [questionHelpModal, setQuestionHelpModal] = useState(false);
   const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
   const { questions, answers, fetchQuestions, fetchAnswers } = useSupabase();
-
+  const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
   useEffect(() => {
     fetchQuestions();
     fetchAnswers();
   }, [isFocused]);
 
-  // questions.sort((a, b) => {
-  //   const dateA = new Date(a.created_at);
-  //   const dateB = new Date(b.created_at);
-  //   return dateB - dateA;
-  // });
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchQuestions();
+    setRefreshing(false);
+  }, []);
 
   return (
     <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212", position: "relative" }
-          : { backgroundColor: "#F2F7FF", position: "relative" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background"
     >
-      <HeaderView
-        style={{ marginTop: 10, marginBottom: 20, alignItems: "center" }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
+      <HeaderView>
+        <View className="flex-row items-center gap-3">
           <Link href={`/${COMMUNITY_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </Link>
           <HeaderTitle
-            style={
-              theme == "dark"
-                ? { fontFamily: "Inter-Bold", color: "white" }
-                : {
-                    fontFamily: "Inter-Bold",
-                    color: "#2F2D51",
-                  }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-light-primary dark:text-dark-primary"
           >
-            <Text>Questions</Text>
+            Questions
           </HeaderTitle>
         </View>
-        <TouchableOpacity onPress={() => setQuestionHelpModal(true)}>
-          <FontAwesome5
-            name="question-circle"
+        <TouchableOpacity onPress={fetchQuestions}>
+          <Ionicons
+            name="refresh"
             size={25}
-            color={theme == "dark" ? "#c8c8c8" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "#c8c8c8"
+                  : "#2f2d51"
+            }
           />
         </TouchableOpacity>
-
-        <QuestionHelpModal
-          theme={theme}
-          questionHelpModal={questionHelpModal}
-          setQuestionHelpModal={setQuestionHelpModal}
-        />
       </HeaderView>
 
       <FlatList
+        className="mt-3"
         data={questions}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        // onRefresh={() => console.log("refresh list")}
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="gap-4"
         keyExtractor={(e, i) => i.toString()}
         renderItem={({ item }) => (
           <QuestionInfo
             key={item.id}
             item={item}
             answers={answers}
-            theme={theme}
+            actualTheme={actualTheme}
+            theme={colorScheme}
           />
         )}
       />

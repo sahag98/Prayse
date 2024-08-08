@@ -664,7 +664,8 @@ const CommunityHomeScreen = () => {
         getUserGroups={getUserGroups}
         getGroupUsers={getGroupUsers}
         supabase={supabase}
-        theme={theme}
+        actualTheme={actualTheme}
+        theme={colorScheme}
         user={currentUser}
         modalVisible={joinVisible}
         setModalVisible={setJoinVisible}
