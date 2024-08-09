@@ -19,6 +19,9 @@ import {
 } from "@lib/customStyles";
 
 const Chat = ({
+  prayerToReact,
+  setPrayerToReact,
+  handleOpenBottomModal,
   theme,
   actualTheme,
   currentUser,
@@ -101,6 +104,9 @@ const Chat = ({
                     <View className="gap-2">
                       <GroupPrayerItem
                         theme={theme}
+                        handleOpenBottomModal={handleOpenBottomModal}
+                        prayerToReact={prayerToReact}
+                        setPrayerToReact={setPrayerToReact}
                         actualTheme={actualTheme}
                         currentUser={currentUser}
                         groupMessages={groupMessages}
