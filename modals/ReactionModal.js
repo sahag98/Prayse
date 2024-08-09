@@ -15,6 +15,7 @@ import Animated, {
 
 import praise from "../assets/praise.png";
 const ReactionModal = ({
+  actualTheme,
   toggleLike,
   togglePraise,
   praises,
@@ -34,7 +35,7 @@ const ReactionModal = ({
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   const isPraisedByMe = !!praises?.find(
-    (praise) => praise.user_id == currentUser.id,
+    (praise) => praise.user_id == currentUser.id
   );
 
   return (
@@ -47,36 +48,31 @@ const ReactionModal = ({
     >
       <TouchableWithoutFeedback onPress={() => setReactionModalVisibile(false)}>
         <View
+          className="p-8 justify-center flex-1"
           style={
             theme === "dark"
               ? {
-                  padding: 30,
                   alignItems:
                     isPressedLong?.user_id === currentUser.id
                       ? "flex-end"
                       : "flex-start",
-                  justifyContent: "center",
-                  flex: 1,
+
                   backgroundColor: "rgba(0, 0, 0, 0.7)",
                 }
               : {
-                  padding: 30,
                   alignItems:
                     isPressedLong?.user_id === currentUser.id
                       ? "flex-end"
                       : "flex-start",
-                  justifyContent: "center",
-                  flex: 1,
+
                   backgroundColor: "rgba(0, 0, 0, 0.7)",
                 }
           }
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View className="flex-row items-center gap-3">
             <TouchableOpacity
+              className="p-3 rounded-full"
               style={{
-                padding: 10,
-                borderRadius: 50,
-
                 backgroundColor:
                   isPressedLong?.user_id === currentUser.id
                     ? theme === "dark"
@@ -90,7 +86,7 @@ const ReactionModal = ({
                 toggleLike(
                   isPressedLong.id,
                   isPressedLong.profiles.expoToken,
-                  isPressedLong.message,
+                  isPressedLong.message
                 )
               }
             >
@@ -113,7 +109,6 @@ const ReactionModal = ({
               style={{
                 padding: 10,
                 borderRadius: 50,
-
                 backgroundColor:
                   isPressedLong?.user_id === currentUser.id
                     ? theme === "dark"
@@ -127,7 +122,7 @@ const ReactionModal = ({
                 togglePraise(
                   isPressedLong.id,
                   isPressedLong.profiles.expoToken,
-                  isPressedLong.message,
+                  isPressedLong.message
                 )
               }
             >

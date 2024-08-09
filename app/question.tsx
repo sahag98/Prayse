@@ -37,12 +37,15 @@ const QuestionScreen = () => {
 
   const itemTitle = routeParams?.title;
   const itemId = routeParams?.question_id;
+
   const isFocused = useIsFocused();
   useEffect(() => {
     fetchAnswers();
 
     if (itemId) {
-      setAnswersArray(answers.filter((answer) => answer.question_id === 15));
+      setAnswersArray(
+        answers.filter((answer) => answer.question_id === parseInt(itemId)),
+      );
     }
   }, [isFocused]);
 
@@ -58,10 +61,6 @@ const QuestionScreen = () => {
       setInputHeight(event.nativeEvent.contentSize.height);
     }
   };
-
-  const existingAnswers = answers.filter(
-    (answer) => answer.question_id === itemId,
-  );
 
   return (
     <Container

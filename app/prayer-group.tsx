@@ -1,8 +1,9 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -14,15 +15,22 @@ import {
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
+import BottomModal from "@modals/BottomSheetModal";
+
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
 import GroupPrayerList from "../components/GroupPrayerList";
 import { useSupabase } from "../context/useSupabase";
-import GroupInfoModal from "../modals/GroupInfoModal";
-import RemovedGroupModal from "../modals/RemovedGroupModal";
 import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
@@ -38,8 +46,8 @@ const PrayerGroupScreen = () => {
   const [inputHeight, setInputHeight] = useState(45);
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
-  const currGroup = params.group;
-  const allGroups = params.allGroups;
+  const currGroup = params?.group;
+  const allGroups = params?.allGroups;
   const [isGroupRemoved, setIsGroupRemoved] = useState(false);
   const [countdown, setCountdown] = useState(300);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -48,6 +56,12 @@ const PrayerGroupScreen = () => {
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
   const [channel, setChannel] = useState();
   const [isNotifyVisible, setIsNotifyVisible] = useState(false);
+  const groupId = params?.group_id;
+  const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+  const [currentGroup, setCurrentGroup] = useState();
 
   const {
     currentUser,
@@ -62,8 +76,20 @@ const PrayerGroupScreen = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    async function fetchCurrGroup() {
+      const { data, error } = await supabase
+        .from("groups")
+        .select("admin_id,code,description,id,name")
+        .eq("id", groupId)
+        .single();
+      setCurrentGroup(data);
+    }
+    fetchCurrGroup();
+  }, [groupId]);
+
+  useEffect(() => {
     /** only create the channel if we have a roomCode and username */
-    if (currGroup.group_id && currentUser?.id) {
+    if (groupId && currentUser?.id) {
       // dispatch(clearMessages());
       async function getGroupMessages() {
         try {
@@ -71,7 +97,7 @@ const PrayerGroupScreen = () => {
           const { data, error } = await supabase
             .from("messages")
             .select("*, profiles(full_name, avatar_url, expoToken)")
-            .eq("group_id", currGroup.group_id)
+            .eq("group_id", groupId)
             .order("id", { ascending: false });
 
           setGroupMessages(data);
@@ -88,7 +114,7 @@ const PrayerGroupScreen = () => {
        * Create the supabase channel for the roomCode, configured
        * so the channel receives its own messages
        */
-      const channel = supabase.channel(`room:${currGroup.group_id}`, {
+      const channel = supabase.channel(`room:${groupId}`, {
         config: {
           broadcast: {
             self: true,
@@ -152,7 +178,7 @@ const PrayerGroupScreen = () => {
         setChannel(undefined);
       };
     }
-  }, [currGroup?.group_id, currentUser?.id, isFocused]);
+  }, [groupId, currentUser?.id, isFocused]);
 
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
@@ -193,7 +219,7 @@ const PrayerGroupScreen = () => {
     const { data: groups, error } = await supabase
       .from("groups")
       .select("*")
-      .eq("id", currGroup?.group_id);
+      .eq("id", groupId);
     return groups;
   }
 
@@ -236,7 +262,7 @@ const PrayerGroupScreen = () => {
     const { data, error } = await supabase
       .from("messages")
       .insert({
-        group_id: currGroup.group_id,
+        group_id: groupId,
         user_id: currentUser.id,
         message: newMessage,
       })
@@ -257,7 +283,7 @@ const PrayerGroupScreen = () => {
     const { data: members, error: membersError } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
-      .eq("group_id", currGroup.groups?.id)
+      .eq("group_id", groupId)
       .order("id", { ascending: false });
 
     members.map(async (m) => {
@@ -265,12 +291,10 @@ const PrayerGroupScreen = () => {
         const message = {
           to: m.profiles.expoToken,
           sound: "default",
-          title: `${currGroup?.groups.name} 📢`,
+          title: `${currentGroup.name} 📢`,
           body: `${currentUser?.full_name}: ${newMessage}`,
           data: {
-            screen: "PrayerGroup",
-            group: currGroup,
-            allGroups,
+            group_id: groupId,
           },
         };
         await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -289,6 +313,16 @@ const PrayerGroupScreen = () => {
       setNewMessage("");
     }
   };
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  const handleOpenBottomModal = () => {
+    bottomSheetModalRef.current?.present();
+  };
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
 
   const openGroupInfo = async () => {
     const groups = await getSingleGroup();
@@ -313,7 +347,7 @@ const PrayerGroupScreen = () => {
       setIsGroupRemoved(true);
       return;
     }
-    copyToClipboard(currGroup.groups.code.toString());
+    copyToClipboard(currentUser.code.toString());
   };
 
   return (
@@ -323,68 +357,52 @@ const PrayerGroupScreen = () => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
     >
       <PrayerContainer
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-
-                position: "relative",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-
-                position: "relative",
-              }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background relative"
       >
         <HeaderView
-          style={{
-            justifyContent: "space-between",
-            borderBottomWidth: 1,
-
-            borderBottomColor: currGroup.groups.color.toLowerCase(),
-            padding: 5,
-            alignItems: "flex-start",
-            width: "100%",
-          }}
+          style={
+            actualTheme &&
+            actualTheme.Secondary && {
+              borderBottomColor: actualTheme.Secondary,
+            }
+          }
+          className="justify-between border-b border-b-light-primary dark:border-b-dark-secondary p-2 w-full"
         >
-          <View
-            style={{ flexDirection: "row", alignItems: "flex-start", gap: 0 }}
-          >
-            <Link to={`/${COMMUNITY_SCREEN}`}>
+          <View className="flex-row">
+            <Link href={`/${COMMUNITY_SCREEN}`}>
               <AntDesign
                 name="left"
                 size={24}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </Link>
 
             <TouchableOpacity
               onPress={openGroupInfo}
-              style={{ paddingBottom: 2, marginLeft: 10, gap: 5 }}
+              className="pb-1 ml-3 gap-2"
             >
               <HeaderTitle
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontFamily: "Inter-Bold" }
-                    : { color: "#2f2d51", fontFamily: "Inter-Bold" }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
               >
-                {currGroup.groups.name}
+                {currentGroup?.name}
               </HeaderTitle>
               <Text
-                style={{
-                  color: theme == "dark" ? "#bebebe" : "#9a9a9a",
-                  fontSize: 12,
-                  textDecorationLine: "underline",
-                  fontFamily: "Inter-Medium",
-                }}
+                style={getMainTextColorStyle(actualTheme)}
+                className="text-sm underline font-inter font-medium text-light-primary dark:text-dark-primary/50"
               >
-                Click here for group info
+                Tap for group info
               </Text>
             </TouchableOpacity>
           </View>
-          {groupInfoVisible && (
+          {/* {groupInfoVisible && (
             <GroupInfoModal
               group={currGroup}
               theme={theme}
@@ -402,96 +420,37 @@ const PrayerGroupScreen = () => {
               setIsGroupRemoved={setIsGroupRemoved}
               theme={theme}
             />
-          )}
+          )} */}
 
           <TouchableOpacity
             onPress={copyCode}
-            style={
-              theme == "dark"
-                ? {
-                    padding: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    backgroundColor: "#212121",
-                    borderRadius: 10,
-                    gap: 8,
-                  }
-                : {
-                    padding: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    backgroundColor: "#b7d3ff",
-                    borderRadius: 10,
-                    gap: 8,
-                  }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="p-2 flex-row items-center bg-light-secondary dark:bg-dark-secondary rounded-lg gap-2"
           >
             <Feather
               name="copy"
               size={15}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
             <Text
-              style={{
-                color: theme == "dark" ? "white" : "#2f2d51",
-                fontSize: 13,
-                fontFamily: "Inter-Medium",
-              }}
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter font-medium text-sm text-light-primary dark:text-dark-primary"
             >
-              {currGroup.groups.code}
+              {currentGroup?.code}
             </Text>
           </TouchableOpacity>
         </HeaderView>
 
-        {/* <View
-          style={{
-            flexDirection: "row",
-            paddingBottom: 10,
-            justifyContent: "space-evenly",
-          }}
-        >
-          <Text
-            onPress={() => setToggle("chat")}
-            style={{
-              color:
-                theme == "dark"
-                  ? toggle == "chat"
-                    ? "white"
-                    : "#d2d2d2"
-                  : toggle == "chat"
-                  ? "#2f2d51"
-                  : "#d2d2d2",
-              textDecorationLine: "underline",
-              fontFamily: toggle == "chat" ? "Inter-Bold" : "Inter-Medium",
-            }}
-          >
-            Chat
-          </Text>
-          <Text
-            onPress={() => setToggle("prayerlist")}
-            style={{
-              color:
-                theme == "dark"
-                  ? toggle == "prayerlist"
-                    ? "white"
-                    : "#9a9a9a"
-                  : toggle == "prayerlist"
-                  ? "#2f2d51"
-                  : "#9a9a9a",
-              textDecorationLine: "underline",
-              fontFamily:
-                toggle == "prayerlist" ? "Inter-Bold" : "Inter-Medium",
-            }}
-          >
-            Prayer List
-          </Text>
-        </View> */}
-
         {toggle == "chat" ? (
           <Chat
-            theme={theme}
+            theme={colorScheme}
+            actualTheme={actualTheme}
             currentUser={currentUser}
             onlineUsers={onlineUsers}
             areMessagesLoading={areMessagesLoading}
@@ -499,10 +458,9 @@ const PrayerGroupScreen = () => {
             setGroupMessages={setGroupMessages}
             flatListRef={flatListRef}
             supabase={supabase}
-            currGroup={currGroup}
+            currGroup={currentGroup}
             setRefreshMsgLikes={setRefreshMsgLikes}
             refreshMsgLikes={refreshMsgLikes}
-            allGroups={allGroups}
             showToast={showToast}
             newMessage={newMessage}
             setNewMessage={setNewMessage}
@@ -519,6 +477,10 @@ const PrayerGroupScreen = () => {
             allGroups={allGroups}
           />
         )}
+        <BottomModal
+          handlePresentModalPress={handleOpenBottomModal}
+          bottomSheetModalRef={bottomSheetModalRef}
+        />
       </PrayerContainer>
     </KeyboardAvoidingView>
   );

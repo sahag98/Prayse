@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import {
   AntDesign,
   Entypo,
+  Feather,
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
@@ -575,10 +576,11 @@ const CommunityHomeScreen = () => {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate(PRAYER_GROUP_SCREEN, {
-                    group: item,
-                    allGroups: groups.filter(
-                      (g) => g.group_id === item.group_id,
-                    ),
+                    group_id: item.group_id,
+                    // group: item,
+                    // allGroups: groups.filter(
+                    //   (g) => g.group_id === item.group_id
+                    // ),
                   })
                 }
                 style={
@@ -590,22 +592,47 @@ const CommunityHomeScreen = () => {
                 className=" p-3 w-full border border-light-primary rounded-lg"
               >
                 <View className="flex-1 justify-between gap-5">
-                  <View className="gap-1">
-                    <Text
-                      style={getMainTextColorStyle(actualTheme)}
-                      className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
-                    >
-                      {item.groups.name}
-                    </Text>
+                  <View className="gap-1 ">
+                    <View className="flex-row justify-between">
+                      <Text
+                        style={getMainTextColorStyle(actualTheme)}
+                        className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
+                      >
+                        {item.groups.name}
+                      </Text>
+                      <TouchableOpacity
+                        style={getPrimaryBackgroundColorStyle(actualTheme)}
+                        className="bg-light-primary flex-row gap-1 p-1.5 rounded-lg dark:bg-dark-secondary items-center justify-between"
+                      >
+                        <Feather
+                          name="copy"
+                          size={16}
+                          color={
+                            actualTheme && actualTheme.PrimaryTxt
+                              ? actualTheme.PrimaryTxt
+                              : colorScheme === "dark"
+                                ? "white"
+                                : "white"
+                          }
+                        />
+                        <Text
+                          style={getPrimaryTextColorStyle(actualTheme)}
+                          className="text-light-background text-sm font-inter font-semibold dark:text-dark-primary"
+                        >
+                          {item.groups.code}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                     {item.groups.description && (
                       <Text
                         style={getMainTextColorStyle(actualTheme)}
-                        className="flex-1 font-inter  text-light-primary dark:text-dark-primary"
+                        className="font-inter  text-light-primary dark:text-dark-primary"
                       >
                         {item.groups?.description}
                       </Text>
                     )}
                   </View>
+
                   <View className="flex-row px-3 w-full items-center">
                     {groups
                       .filter((g) => g.group_id === item.group_id)

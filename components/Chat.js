@@ -8,13 +8,19 @@ import {
   View,
 } from "react-native";
 
-import { FontAwesome, Octicons } from "@expo/vector-icons";
+import { FontAwesome, Octicons, FontAwesome5 } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 
 import GroupPrayerItem from "../components/GroupPrayerItem";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 const Chat = ({
   theme,
+  actualTheme,
   currentUser,
   onlineUsers,
   areMessagesLoading,
@@ -26,7 +32,6 @@ const Chat = ({
   currGroup,
   setRefreshMsgLikes,
   refreshMsgLikes,
-  allGroups,
   showToast,
   newMessage,
   setNewMessage,
@@ -34,78 +39,50 @@ const Chat = ({
   sendMessage,
 }) => {
   return (
-    <View style={{ flex: 1 }}>
+    <View className="flex-1">
       <View
-        style={{
-          flexDirection: "row",
-          backgroundColor: theme === "dark" ? "#121212" : "#f2f7ff",
-          alignItems: "center",
-          alignSelf: "center",
-          paddingHorizontal: 10,
-          paddingVertical: 3,
-          justifyContent: "center",
-          borderRadius: 50,
-          marginBottom: 10,
-          shadowColor: "#2bc035",
-          shadowOffset: {
-            width: 0,
-            height: 3,
-          },
-          shadowOpacity: 0.17,
-          shadowRadius: 3.05,
-          elevation: 4,
-          // width: "30%",
-          gap: 5,
-        }}
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="flex-row items-center bg-light-background dark:bg-dark-background self-center px-3 py-1 justify-center rounded-full mb-3  shadow-sm gap-1 shadow-green-400"
       >
         <Octicons name="dot-fill" size={24} color="green" />
-        <Text
-          style={{
-            color: theme === "dark" ? "white" : "#2f2d51",
-            fontFamily: "Inter-Regular",
-            fontSize: 13,
-          }}
-        >
+        <Text className="font-inter text-sm text-light-primary dark:text-dark-primary">
           {onlineUsers.length} User{onlineUsers.length > 1 ? "s " : " "}
           Online
         </Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: 15,
-          width: "100%",
-          position: "relative",
-        }}
-      >
+      <View className="flex-1 px-4 w-full relative">
         {areMessagesLoading ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ActivityIndicator color={theme === "dark" ? "white" : "#2f2d51"} />
+          <View className="flex-1 justify-center items-center">
+            <ActivityIndicator
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : theme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
           </View>
         ) : (
           <>
             {groupMessages.length === 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={
-                    theme === "dark"
-                      ? { fontFamily: "Inter-Regular", color: "#bebebe" }
-                      : { fontFamily: "Inter-Regular", color: "#2f2d51" }
+              <View className="flex-1 justify-center gap-1 items-center">
+                <FontAwesome5
+                  name="list-alt"
+                  size={50}
+                  color={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : theme === "dark"
+                        ? "white"
+                        : "#2f2d51"
                   }
+                />
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
                 >
-                  No messages yet.
+                  No prayers yet.
                 </Text>
               </View>
             ) : (
@@ -116,26 +93,15 @@ const Chat = ({
                 inverted
                 estimatedListSize={{ height: 800, width: 450 }}
                 data={groupMessages}
-                ListHeaderComponent={() => (
-                  <View
-                    style={
-                      theme === "dark"
-                        ? {
-                            height: 30,
-                          }
-                        : {
-                            height: 30,
-                          }
-                    }
-                  />
-                )}
-                keyExtractor={(i) => i.toString()}
+                ListHeaderComponent={() => <View className="h-8" />}
+                keyExtractor={(item) => item.id}
                 initialNumToRender={30}
                 renderItem={({ item }) => {
                   return (
-                    <View style={{ gap: 5 }}>
+                    <View className="gap-2">
                       <GroupPrayerItem
                         theme={theme}
+                        actualTheme={actualTheme}
                         currentUser={currentUser}
                         groupMessages={groupMessages}
                         setGroupMessages={setGroupMessages}
@@ -144,27 +110,11 @@ const Chat = ({
                         item={item}
                         setRefreshMsgLikes={setRefreshMsgLikes}
                         refreshMsgLikes={refreshMsgLikes}
-                        allGroups={allGroups}
                         showToast={showToast}
                       />
                       {item.user_id !== currentUser.id && (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginLeft: 5,
-                            marginBottom: 5,
-                            gap: 5,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: theme === "dark" ? "#707070" : "#acacac",
-
-                              fontFamily: "Inter-Regular",
-                              fontSize: 11,
-                            }}
-                          >
+                        <View className="flex-row items-center ml-2 mb-2 gap-2">
+                          <Text className="font-inter text-sm text-gray-500">
                             Press and hold to pray or praise.
                           </Text>
                         </View>
@@ -178,43 +128,46 @@ const Chat = ({
         )}
       </View>
       <View
-        style={[
-          styles.inputField,
-          {
-            borderTopWidth: 1,
-            borderTopColor: currGroup.groups.color.toLowerCase(),
-          },
-        ]}
+        style={
+          actualTheme &&
+          actualTheme.MainTxt && { borderTopColor: actualTheme.MainTxt }
+        }
+        className="flex-row p-4 justify-between items-center w-full self-center border-t border-t-light-primary dark:border-t-dark-secondary"
       >
         <View
-          style={{
-            flex: 1,
-            minHeight: 35,
-            maxHeight: 200,
-            width: "85%",
-            backgroundColor: theme === "dark" ? "#212121" : "white",
-            borderWidth: theme === "dark" ? 0 : 1,
-            borderColor: "#2f2d51",
-            borderRadius: 10,
-            padding: 10,
-            justifyContent: "center",
-          }}
+          style={
+            actualTheme &&
+            actualTheme.MainTxt && { borderColor: actualTheme.MainTxt }
+          }
+          className="flex-1 min-h-9 max-h-52 w-5/6 rounded-lg border border-light-primary dark:border-dark-secondary p-3 justify-center"
         >
           <TextInput
+            className="w-full font-inter text-light-primary dark:text-dark-primary"
             style={
-              theme === "dark"
+              actualTheme && actualTheme.MainTxt
                 ? [
-                    styles.inputDark,
+                    getMainTextColorStyle(actualTheme),
                     { paddingBottom: Platform.OS === "android" ? 0 : 5 },
                   ]
-                : [
-                    styles.input,
-                    { paddingBottom: Platform.OS === "android" ? 0 : 5 },
-                  ]
+                : theme === "dark"
+                  ? { paddingBottom: Platform.OS === "android" ? 0 : 5 }
+                  : { paddingBottom: Platform.OS === "android" ? 0 : 5 }
             }
             placeholder="Write a prayer..."
-            placeholderTextColor={theme === "dark" ? "#b8b8b8" : "#2f2d51"}
-            selectionColor={theme === "dark" ? "white" : "#2f2d51"}
+            placeholderTextColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "#b8b8b8"
+                  : "#2f2d51"
+            }
+            selectionColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
             value={newMessage}
             textAlignVertical="center"
             onChangeText={(text) => setNewMessage(text)}
@@ -227,17 +180,19 @@ const Chat = ({
         </View>
         <TouchableOpacity
           disabled={newMessage.length === 0}
-          style={{
-            width: "15%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          className="w-[15%] justify-center items-center"
           onPress={sendMessage}
         >
           <FontAwesome
             name="send"
             size={28}
-            color={theme === "dark" ? "#a5c9ff" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.Primary
+                ? actualTheme.Primary
+                : theme === "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+            }
           />
         </TouchableOpacity>
       </View>
@@ -246,26 +201,3 @@ const Chat = ({
 };
 
 export default Chat;
-
-const styles = StyleSheet.create({
-  inputField: {
-    flexDirection: "row",
-    padding: 15,
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    alignSelf: "center",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    paddingBottom: 5,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "85%",
-    paddingBottom: 5,
-  },
-});
