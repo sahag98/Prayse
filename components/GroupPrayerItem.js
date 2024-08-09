@@ -14,9 +14,10 @@ import Animated, {
 import { useIsFocused } from "@react-navigation/native";
 
 import ReactionModal from "../modals/ReactionModal";
+import { PRAYER_GROUP_SCREEN } from "@routes";
 
 const GroupPrayerItem = ({
-  allGroups,
+  actualTheme,
   item,
   currentUser,
   currGroup,
@@ -41,7 +42,7 @@ const GroupPrayerItem = ({
     //   setIsShowingHeader(false);
     // }, 5000);
     /** only create the channel if we have a roomCode and username */
-    if (currGroup?.group_id && currentUser.id) {
+    if (currGroup?.id && currentUser.id) {
       // dispatch(clearMessages());
       /**
        * Step 1:
@@ -102,18 +103,17 @@ const GroupPrayerItem = ({
         setChannel(undefined);
       };
     }
-  }, [currGroup?.group_id, currentUser.id, isFocused]);
+  }, [currGroup?.id, currentUser.id, isFocused]);
 
   const notifyLike = async (expoToken, item) => {
     const message = {
       to: expoToken,
       sound: "default",
-      title: `${currGroup.groups.name} 📢`,
+      title: `${currGroup.name} 📢`,
       body: `${currentUser.full_name} has reacted on ${item} with a prayer 🙏`,
       data: {
-        screen: "Community",
-        currGroup,
-        allGroups,
+        screen: PRAYER_GROUP_SCREEN,
+        group_id: currGroup.id,
       },
     };
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -129,12 +129,11 @@ const GroupPrayerItem = ({
     const message = {
       to: expoToken,
       sound: "default",
-      title: `${currGroup.groups.name} 📢`,
+      title: `${currGroup.name} 📢`,
       body: `${currentUser.full_name} has reacted on ${item} with a praise 🙌`,
       data: {
-        screen: "Community",
-        currGroup,
-        allGroups,
+        screen: PRAYER_GROUP_SCREEN,
+        group_id: currGroup.id,
       },
     };
     await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -151,7 +150,7 @@ const GroupPrayerItem = ({
     if (isLikedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
       );
       await supabase
         .from("message_likes")
@@ -184,7 +183,7 @@ const GroupPrayerItem = ({
 
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
     );
     const { error } = await supabase.from("message_likes").insert({
       prayer_id: id,
@@ -222,7 +221,7 @@ const GroupPrayerItem = ({
     if (isPraisedByMe) {
       scale.value = withSequence(
         withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 }),
+        withSpring(1, { damping: 2, stiffness: 80 })
       );
       await supabase
         .from("message_praises")
@@ -254,7 +253,7 @@ const GroupPrayerItem = ({
 
     scale.value = withSequence(
       withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 }),
+      withSpring(1, { damping: 2, stiffness: 80 })
     );
     const { error } = await supabase.from("message_praises").insert({
       prayer_id: id,
@@ -292,17 +291,14 @@ const GroupPrayerItem = ({
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
   const isPraisedByMe = !!praises?.find(
-    (praise) => praise.user_id == currentUser.id,
+    (praise) => praise.user_id == currentUser.id
   );
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
   const isPrayerPraised = !!praises?.find(
-    (praise) => praise.prayer_id == item.id,
+    (praise) => praise.prayer_id == item.id
   );
   return (
-    <TouchableOpacity
-      style={{ marginVertical: 5 }}
-      onLongPress={() => openReactionModal(item)}
-    >
+    <TouchableOpacity onLongPress={() => openReactionModal(item)}>
       <ReactionModal
         currentUser={currentUser}
         likes={likes}
@@ -313,38 +309,22 @@ const GroupPrayerItem = ({
         setReactionModalVisibile={setReactionModalVisibile}
         isPressedLong={isPressedLong}
         theme={theme}
+        actualTheme={actualTheme}
       />
       <ChatBubble
         isOwnMessage={item.user_id === currentUser.id}
         bubbleColor={
           item.user_id === currentUser.id
-            ? theme === "dark"
-              ? "#353535"
-              : "#b7d3ff"
-            : theme === "light"
-              ? "#d9e7ff"
-              : "#212121"
-        }
-        style={
-          theme === "dark"
-            ? [
-                {
-                  borderRadius: 10,
-                  marginBottom: 10,
-
-                  gap: 10,
-                  minWidth: 170,
-                  maxWidth: 300,
-                },
-              ]
-            : {
-                borderRadius: 10,
-                marginBottom: 10,
-
-                gap: 10,
-                minWidth: 170,
-                maxWidth: 300,
-              }
+            ? actualTheme && actualTheme.Secondary
+              ? actualTheme.Secondary
+              : theme === "dark"
+                ? "#353535"
+                : "#b7d3ff"
+            : actualTheme && actualTheme.Secondary
+              ? "grey"
+              : theme === "light"
+                ? "#d9e7ff"
+                : "#212121"
         }
       >
         {item.user_id !== currentUser.id && (
