@@ -2,21 +2,17 @@
 import React, { useEffect, useState } from "react";
 import * as Application from "expo-application";
 import * as Device from "expo-device";
-import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
-import {
-  Modal,
-  Platform,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Divider, Text } from "react-native-paper";
+import { Link } from "expo-router";
+import { useColorScheme } from "nativewind";
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+} from "@lib/customStyles";
 
 import config from "../config";
 import { deleteAnsweredPrayers } from "../redux/answeredReducer";
@@ -30,15 +26,7 @@ import {
   systemTheme,
 } from "../redux/userReducer";
 import { MORE_SCREEN } from "../routes";
-import {
-  Container,
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-} from "../styles/appStyles";
+import { Container, HeaderTitle } from "../styles/appStyles";
 
 const SettingsScreen = () => {
   const [active, setActive] = useState(false);
@@ -49,8 +37,13 @@ const SettingsScreen = () => {
   const size = useSelector((state) => state.user.fontSize);
   const dispatch = useDispatch();
 
+  const { colorScheme, setColorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+
   useEffect(() => {
-    getlastUpdate();
+    // getlastUpdate();
     getPermission();
   }, []);
 
@@ -103,12 +96,6 @@ const SettingsScreen = () => {
     sendToken(token);
   }
 
-  const [fontsLoaded] = useFonts({
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-  });
-
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
     if (isEnabled == false) {
@@ -158,13 +145,10 @@ const SettingsScreen = () => {
 
   return (
     <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212", justifyContent: "space-between" }
-          : { backgroundColor: "#F2F7FF", justifyContent: "space-between" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background justify-between"
     >
-      <View style={{ gap: 10 }}>
+      <View className="gap-2">
         <View>
           <View
             style={{
@@ -173,21 +157,22 @@ const SettingsScreen = () => {
               alignItems: "center",
             }}
           >
-            <Link to={`/${MORE_SCREEN}`}>
-              <View style={{ marginRight: 5 }}>
-                <Ionicons
-                  name="chevron-back"
-                  size={30}
-                  color={theme == "light" ? "#2f2d51" : "white"}
-                />
-              </View>
+            <Link className="mr-2" href={`/${MORE_SCREEN}`}>
+              <Ionicons
+                name="chevron-back"
+                size={30}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "light"
+                      ? "#2f2d51"
+                      : "white"
+                }
+              />
             </Link>
             <HeaderTitle
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-primary dark:text-dark-primary"
             >
               Settings
             </HeaderTitle>
@@ -195,290 +180,150 @@ const SettingsScreen = () => {
         </View>
         <View>
           <Text
-            style={theme == "light" ? styles.appearance : styles.appearanceDark}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
           >
             APPEARANCE
           </Text>
-          <Divider />
-          <View
-            style={
-              Platform.isPad
-                ? {
-                    marginTop: 10,
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    gap: 10,
-                  }
-                : {
-                    marginTop: 10,
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }
-            }
-          >
-            <View style={{ width: "30%" }}>
-              <TouchableOpacity
-                onPress={() => SwitchTheme("light")}
-                style={
-                  theme == "light" ? styles.activeLight : styles.inactiveLight
-                }
-              >
-                <View style={styles.lightButton}>
-                  <Text
-                    style={{
-                      color: "black",
-                      paddingLeft: 5,
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    Aa
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "white",
-                        marginTop: 5,
-                        fontFamily: "Inter-Bold",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        marginTop: 5,
-                        fontFamily: "Inter-Bold",
-                      }
-                }
-              >
-                Light theme
-              </Text>
-            </View>
-            <View style={{ width: "30%" }}>
-              <TouchableOpacity
-                onPress={() => SwitchTheme("dark")}
-                style={
-                  theme == "dark" ? styles.activeDark : styles.inactiveDark
-                }
-              >
-                <View style={styles.darkButton}>
-                  <Text
-                    style={{
-                      color: theme == "dark" ? "white" : "black",
-                      paddingLeft: 5,
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    Aa
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", marginTop: 5, fontFamily: "Inter-Bold" }
-                    : {
-                        color: "#2f2d51",
-                        marginTop: 5,
-                        fontFamily: "Inter-Bold",
-                      }
-                }
-              >
-                Dark theme
-              </Text>
-            </View>
-            <View style={{ width: "30%" }}>
-              <TouchableOpacity onPress={SystemTheme} style={styles.system}>
-                <View style={styles.systemDark}>
-                  <Text
-                    style={{
-                      color: theme == "dark" ? "white" : "black",
-                      paddingLeft: 5,
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    Aa
-                  </Text>
-                </View>
-                <View style={styles.systemLight}>
-                  <Text
-                    style={{
-                      color: "black",
-                      paddingLeft: 5,
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    Aa
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", marginTop: 5, fontFamily: "Inter-Bold" }
-                    : {
-                        color: "#2f2d51",
-                        marginTop: 5,
-                        fontFamily: "Inter-Bold",
-                      }
-                }
-              >
-                System theme
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <Text
-            style={theme == "light" ? styles.appearance : styles.appearanceDark}
-          >
-            PRAYER FONT SIZE
-          </Text>
-          <Divider style={{ marginBottom: 10 }} />
-          <View style={styles.fontSizeWrapper}>
-            <View
-              style={{
-                display: "flex",
-                marginBottom: 15,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+          {actualTheme ? (
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter text-light-primary dark:text-dark-primary"
             >
+              You are using a custom theme.
+            </Text>
+          ) : (
+            <View className="mt-1 flex-row justify-between gap-3">
+              <View className="w-[30%]">
+                <TouchableOpacity
+                  onPress={() => setColorScheme("light")}
+                  style={
+                    colorScheme === "light"
+                      ? styles.activeLight
+                      : styles.inactiveLight
+                  }
+                >
+                  <View className="absolute bottom-0 right-0 rounded-tl-lg bg-white aspect-square w-full">
+                    <Text className="font-inter font-medium pl-2">Aa</Text>
+                  </View>
+                </TouchableOpacity>
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter font-medium mt-2 text-light-primary dark:text-dark-primary"
+                >
+                  Light theme
+                </Text>
+              </View>
+              <View className="w-[30%]">
+                <TouchableOpacity
+                  onPress={() => setColorScheme("dark")}
+                  style={
+                    colorScheme === "dark"
+                      ? styles.activeDark
+                      : styles.inactiveDark
+                  }
+                >
+                  <View className="absolute bottom-0 right-0 rounded-tl-lg bg-dark-background aspect-square w-full">
+                    <Text className="font-inter font-medium text-white  pl-2">
+                      Aa
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter font-medium mt-2 text-light-primary dark:text-dark-primary"
+                >
+                  Dark theme
+                </Text>
+              </View>
+              <View className="w-[30%]">
+                <TouchableOpacity
+                  onPress={() => setColorScheme("system")}
+                  className="relative overflow-hidden bg-dark-background aspect-square w-full rounded-lg"
+                >
+                  <View className="absolute right-0 bg-dark-secondary h-full w-1/2">
+                    <Text className="font-inter font-medium pl-2 text-white">
+                      Aa
+                    </Text>
+                  </View>
+                  <View className="absolute left-0 bg-white h-full w-1/2">
+                    <Text className="font-inter font-medium pl-2 text-dark-background">
+                      Aa
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter mt-2 text-light-primary dark:text-dark-primary font-medium"
+                >
+                  System theme
+                </Text>
+              </View>
+            </View>
+          )}
+        </View>
+        <View className="mt-2">
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-semibold mb-1 text-lg text-light-primary dark:text-dark-primary"
+          >
+            FONT SIZE (PRAYERS ONLY)
+          </Text>
+
+          <View>
+            <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("large")}
                 style={size == 20 ? styles.FontActive : styles.FontInActive}
               >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Regular",
-                    color: "black",
-                    paddingLeft: 5,
-                  }}
-                >
-                  Large Font
+                <Text className="font-inter text-xl text-black font-medium">
+                  Large
                 </Text>
               </TouchableOpacity>
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Regular",
-                        color: "white",
-                        paddingLeft: 10,
-                        fontSize: 20,
-                      }
-                    : {
-                        fontFamily: "Inter-Regular",
-                        color: "#2f2d51",
-                        paddingLeft: 10,
-                        fontSize: 20,
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter pl-3 text-xl text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
             </View>
-            <View
-              style={{
-                display: "flex",
-                marginBottom: 15,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("regular")}
                 style={size == 16 ? styles.FontActive : styles.FontInActive}
               >
-                <Text style={{ color: "black", paddingLeft: 5 }}>
-                  Regular Font
-                </Text>
+                <Text className="text-base text-black">Regular Font</Text>
               </TouchableOpacity>
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Regular",
-                        color: "white",
-                        paddingLeft: 10,
-                        fontSize: 16,
-                      }
-                    : {
-                        fontFamily: "Inter-Regular",
-                        paddingLeft: 10,
-                        fontSize: 15,
-                        color: "#2f2d51",
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter pl-3 text-base text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
             </View>
-            <View
-              style={{
-                display: "flex",
-                marginBottom: 15,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("small")}
                 style={size == 12 ? styles.FontActive : styles.FontInActive}
               >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Regular",
-                    color: "black",
-                    paddingLeft: 5,
-                  }}
-                >
+                <Text className="text-sm font-inter text-black">
                   Small Font
                 </Text>
               </TouchableOpacity>
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        fontFamily: "Inter-Regular",
-                        color: "white",
-                        paddingLeft: 10,
-                        fontSize: 12,
-                      }
-                    : {
-                        fontFamily: "Inter-Regular",
-                        color: "#2f2d51",
-                        paddingLeft: 10,
-                        fontSize: 12,
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter pl-3 text-sm text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
             </View>
           </View>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 10,
-            }}
-          >
+          <View className="w-full flex-row items-center mt-1 justify-between">
             <Text
-              style={
-                theme == "dark"
-                  ? { color: "white", fontFamily: "Inter-Medium", fontSize: 16 }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 16,
-                    }
-              }
+              className="font-inter font-medium text-light-primary dark:text-dark-primary"
+              style={getMainTextColorStyle(actualTheme)}
             >
-              Get Notifications
+              Notifications
             </Text>
             <Switch
               trackColor={{ false: "grey", true: "grey" }}
@@ -488,97 +333,12 @@ const SettingsScreen = () => {
               value={isEnabled}
             />
           </View>
-          {/* <TouchableOpacity
-            onPress={() => setDeleteAllModal(true)}
-            style={theme == "dark" ? styles.clearAllDark : styles.clearAll}
-          >
-            <Text
-              style={{
-                color: "#ff6666",
-                fontFamily: "Inter-Bold",
-                fontSize: 16,
-              }}
-            >
-              Clear All Data
-            </Text>
-          </TouchableOpacity> */}
-          <Modal
-            animationType="fade"
-            transparent
-            visible={deleteAllModal}
-            onRequestClose={handleCloseModal}
-            statusBarTranslucent
-            // onShow={() => inputRef.current?.focus()}
-          >
-            <ModalContainer
-              style={
-                theme == "dark"
-                  ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-                  : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-              }
-            >
-              <ModalView
-                style={
-                  theme == "dark"
-                    ? { backgroundColor: "#212121" }
-                    : { backgroundColor: "#b7d3ff" }
-                }
-              >
-                <ModalIcon>
-                  <HeaderTitle
-                    style={
-                      theme == "dark"
-                        ? {
-                            fontFamily: "Inter-Bold",
-                            fontSize: 18,
-                            color: "white",
-                          }
-                        : { fontSize: 18, fontFamily: "Inter-Bold" }
-                    }
-                  >
-                    Are you sure you want delete everything?
-                  </HeaderTitle>
-                </ModalIcon>
-                <ModalActionGroup>
-                  <ModalAction
-                    color="white"
-                    onPress={() => setDeleteAllModal(false)}
-                  >
-                    <AntDesign
-                      name="close"
-                      size={28}
-                      color={theme == "dark" ? "black" : "#2F2D51"}
-                    />
-                  </ModalAction>
-                  <ModalAction
-                    color={theme == "dark" ? "#121212" : "#2F2D51"}
-                    onPress={() => {
-                      clearAll();
-                      setDeleteAllModal(false);
-                    }}
-                  >
-                    <AntDesign name="check" size={28} color="white" />
-                  </ModalAction>
-                </ModalActionGroup>
-              </ModalView>
-            </ModalContainer>
-          </Modal>
         </View>
       </View>
-      <View
-        style={{
-          marginBottom: 10,
-          gap: 5,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <View className="mb-1 gap-2 items-center justify-center">
         <Text
-          style={
-            theme == "dark"
-              ? { fontFamily: "Inter-Medium", color: "white" }
-              : { color: "#2f2d51", fontFamily: "Inter-Medium" }
-          }
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter font-medium text-light-primary dark:text-dark-primary"
         >
           {Application.applicationName} v {Application.nativeApplicationVersion}
         </Text>
@@ -686,6 +446,8 @@ const styles = StyleSheet.create({
     padding: 35,
   },
   inactiveLight: {
+    borderWidth: 2,
+    borderColor: "#d3d3d3",
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#d3d3d3",
@@ -746,6 +508,8 @@ const styles = StyleSheet.create({
     padding: 35,
   },
   inactiveDark: {
+    borderWidth: 2,
+    borderColor: "#212121",
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#373737",

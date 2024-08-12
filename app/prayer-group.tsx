@@ -63,6 +63,8 @@ const PrayerGroupScreen = () => {
   );
   const [currentGroup, setCurrentGroup] = useState();
 
+  const [prayerToReact, setPrayerToReact] = useState();
+
   const {
     currentUser,
 
@@ -324,15 +326,16 @@ const PrayerGroupScreen = () => {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const openGroupInfo = async () => {
-    const groups = await getSingleGroup();
-    if (groups.length == 0) {
-      console.log("this group has been removed");
-      setIsGroupRemoved(true);
-      return;
-    }
-    setGroupInfoVisible(true);
-  };
+  // const openGroupInfo = async () => {
+  //   console.log("open");
+  //   const groups = await getSingleGroup();
+  //   if (groups.length == 0) {
+  //     console.log("this group has been removed");
+  //     setIsGroupRemoved(true);
+  //     return;
+  //   }
+  //   setGroupInfoVisible(true);
+  // };
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -384,10 +387,7 @@ const PrayerGroupScreen = () => {
               />
             </Link>
 
-            <TouchableOpacity
-              onPress={openGroupInfo}
-              className="pb-1 ml-3 gap-2"
-            >
+            <TouchableOpacity className="pb-1 ml-3 gap-2">
               <HeaderTitle
                 style={getMainTextColorStyle(actualTheme)}
                 className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
@@ -450,9 +450,12 @@ const PrayerGroupScreen = () => {
         {toggle == "chat" ? (
           <Chat
             theme={colorScheme}
+            prayerToReact={prayerToReact}
+            setPrayerToReact={setPrayerToReact}
             actualTheme={actualTheme}
             currentUser={currentUser}
             onlineUsers={onlineUsers}
+            handleOpenBottomModal={handleOpenBottomModal}
             areMessagesLoading={areMessagesLoading}
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
@@ -477,8 +480,14 @@ const PrayerGroupScreen = () => {
             allGroups={allGroups}
           />
         )}
+        {/* <Button
+          onPress={handleOpenBottomModal}
+          title="Present Modal"
+          color="black"
+        /> */}
         <BottomModal
           handlePresentModalPress={handleOpenBottomModal}
+          prayerToReact={prayerToReact}
           bottomSheetModalRef={bottomSheetModalRef}
         />
       </PrayerContainer>

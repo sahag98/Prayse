@@ -15,8 +15,12 @@ import { useIsFocused } from "@react-navigation/native";
 
 import ReactionModal from "../modals/ReactionModal";
 import { PRAYER_GROUP_SCREEN } from "@routes";
+import { getSecondaryTextColorStyle } from "@lib/customStyles";
 
 const GroupPrayerItem = ({
+  prayerToReact,
+  setPrayerToReact,
+  handleOpenBottomModal,
   actualTheme,
   item,
   currentUser,
@@ -29,7 +33,7 @@ const GroupPrayerItem = ({
   const [channel, setChannel] = useState();
   const isFocused = useIsFocused();
   const [reactionModalVisibile, setReactionModalVisibile] = useState(false);
-  const [isPressedLong, setIsPressedLong] = useState();
+  // const [isPressedLong, setIsPressedLong] = useState();
   const [loadingLikes, setLoadingLikes] = useState(false);
   const [loadingPraises, setLoadingPraises] = useState(false);
   useEffect(() => {
@@ -285,8 +289,9 @@ const GroupPrayerItem = ({
   }
 
   const openReactionModal = (item) => {
-    setIsPressedLong(item);
-    setReactionModalVisibile(true);
+    console.log("Item: ", item);
+    setPrayerToReact(item);
+    handleOpenBottomModal();
   };
 
   const isLikedByMe = !!likes?.find((like) => like.user_id == currentUser.id);
@@ -299,7 +304,7 @@ const GroupPrayerItem = ({
   );
   return (
     <TouchableOpacity onLongPress={() => openReactionModal(item)}>
-      <ReactionModal
+      {/* <ReactionModal
         currentUser={currentUser}
         likes={likes}
         praises={praises}
@@ -310,7 +315,7 @@ const GroupPrayerItem = ({
         isPressedLong={isPressedLong}
         theme={theme}
         actualTheme={actualTheme}
-      />
+      /> */}
       <ChatBubble
         isOwnMessage={item.user_id === currentUser.id}
         bubbleColor={
@@ -328,18 +333,13 @@ const GroupPrayerItem = ({
         }
       >
         {item.user_id !== currentUser.id && (
-          <View
-            style={{
-              flexDirection: "row",
-              paddingVertical: 5,
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
+          <View className="flex-row py-2 items-center gap-3">
             <Image
               style={
-                theme === "dark" ? styles.profileImgDark : styles.profileImg
+                actualTheme &&
+                actualTheme.Secondary && { borderColor: actualTheme.Secondary }
               }
+              className="size-10 rounded-full border border-light-primary dark:border-dark-accent"
               source={{
                 uri: item.profiles?.avatar_url
                   ? item.profiles?.avatar_url
@@ -347,222 +347,39 @@ const GroupPrayerItem = ({
               }}
             />
             <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "white",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                    }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
             >
               {item.profiles.full_name}
             </Text>
           </View>
         )}
         <Text
-          style={
-            theme === "dark"
-              ? {
-                  color: "white",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 15,
-                  paddingVertical: 5,
-                  lineHeight: 23,
-                  marginBottom: 10,
-                }
-              : {
-                  color: "#2f2d51",
-                  paddingVertical: 5,
-                  fontFamily: "Inter-Regular",
-                  fontSize: 15,
-                  marginBottom: 10,
-                }
-          }
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter text-light-primary dark:text-dark-primary py-2 leading-6 mb-3"
         >
           {item.message}
         </Text>
-        {item.user_id === currentUser.id ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-
-              padding: 3,
-              gap: 10,
-            }}
-          >
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "#d6d6d6",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Light",
-                      fontSize: 11,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Light",
-                      fontSize: 11,
-                    }
-              }
-            >
-              {Moment(item.created_at).fromNow()}
-            </Text>
-
-            {!loadingLikes && likes?.length > 0 && (
-              <Animated.View
-                entering={FadeIn.duration(500)}
-                exiting={FadeOut.duration(500)}
-                style={{
-                  display: isPrayerLiked ? "flex" : "none",
-                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
-                  position: "absolute",
-                  borderRadius: 100,
-                  zIndex: 20,
-                  padding: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bottom: -25,
-                  left: item.user_id === currentUser.id ? -30 : -40,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Medium",
-                    fontSize: 13,
-                    color: theme === "dark" ? "#121212" : "white",
-                  }}
-                >
-                  🙏 {likes?.length}
-                </Text>
-              </Animated.View>
+        <View className="flex-row justify-between p-1 gap-3">
+          <View className="flex-row items-center gap-2">
+            {likes.length > 0 && (
+              <TouchableOpacity className="bg-white px-2 py-1 rounded-full">
+                <Text className="text-sm font-inter">{likes.length} 🙏</Text>
+              </TouchableOpacity>
             )}
-            {!loadingPraises && praises?.length > 0 && (
-              <Animated.View
-                entering={FadeIn.duration(500)}
-                exiting={FadeOut.duration(500)}
-                style={{
-                  display: isPrayerPraised ? "flex" : "none",
-                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
-                  position: "absolute",
-                  borderRadius: 100,
-                  zIndex: 20,
-                  padding: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bottom: -25,
-                  left: item.user_id === currentUser.id ? 8 : -10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Medium",
-                    fontSize: 13,
-                    color: theme === "dark" ? "#121212" : "white",
-                  }}
-                >
-                  🙌 {praises?.length}
-                </Text>
-              </Animated.View>
+            {praises.length > 0 && (
+              <TouchableOpacity className="bg-white px-2 py-1 rounded-full">
+                <Text className="text-sm font-inter">{praises.length} 🙌</Text>
+              </TouchableOpacity>
             )}
           </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 3,
-              gap: 10,
-              justifyContent: "space-between",
-            }}
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="self-end font-inter font-light text-sm text-light-primary dark:text-gray-500"
           >
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "#d6d6d6",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Light",
-                      fontSize: 11,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      alignSelf: "flex-end",
-                      fontFamily: "Inter-Light",
-                      fontSize: 11,
-                    }
-              }
-            >
-              {Moment(item.created_at).fromNow()}
-            </Text>
-
-            {!loadingLikes && likes?.length > 0 && (
-              <Animated.View
-                entering={FadeIn.duration(500)}
-                exiting={FadeOut.duration(500)}
-                style={{
-                  display: isPrayerLiked ? "flex" : "none",
-                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
-                  position: "absolute",
-                  borderRadius: 100,
-                  zIndex: 20,
-                  padding: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bottom: -25,
-                  right: item.user_id === currentUser.id ? -30 : -25,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Medium",
-                    fontSize: 13,
-                    color: theme === "dark" ? "#121212" : "white",
-                  }}
-                >
-                  🙏 {likes?.length}
-                </Text>
-              </Animated.View>
-            )}
-            {!loadingPraises && praises?.length > 0 && (
-              <Animated.View
-                entering={FadeIn.duration(500)}
-                exiting={FadeOut.duration(500)}
-                style={{
-                  display: isPrayerPraised ? "flex" : "none",
-                  backgroundColor: theme === "dark" ? "white" : "#2f2d51",
-                  position: "absolute",
-                  borderRadius: 100,
-                  zIndex: 20,
-                  padding: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bottom: -25,
-                  right: item.user_id === currentUser.id ? -10 : 14,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Inter-Medium",
-                    fontSize: 13,
-                    color: theme === "dark" ? "#121212" : "white",
-                  }}
-                >
-                  🙌 {praises?.length}
-                </Text>
-              </Animated.View>
-            )}
-          </View>
-        )}
+            {Moment(item.created_at).fromNow()}
+          </Text>
+        </View>
       </ChatBubble>
     </TouchableOpacity>
   );

@@ -1,10 +1,15 @@
 // @ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useColorScheme } from "nativewind";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Ionicons } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+} from "@lib/customStyles";
 
 import FavoriteVerses from "../components/FavoriteVerses";
 import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
@@ -14,60 +19,60 @@ const FavoritesScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
+  const { colorScheme } = useColorScheme();
+
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+
   const renderFavoriteVerses = ({ item }) => {
-    return <FavoriteVerses item={item.verse} theme={theme} />;
+    return (
+      <FavoriteVerses
+        item={item.verse}
+        actualTheme={actualTheme}
+        theme={colorScheme}
+      />
+    );
   };
   return (
     <Container
-      style={
-        theme == "dark"
-          ? { backgroundColor: "#121212" }
-          : { backgroundColor: "#F2F7FF" }
-      }
+      className="bg-light-background dark:bg-dark-background"
+      style={getMainBackgroundColorStyle(actualTheme)}
     >
-      <View
-        style={{
-          marginVertical: 10,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Link to={`/${VERSE_OF_THE_DAY_SCREEN}`}>
-          <View style={{ marginRight: 5 }}>
+      <View className="flex-row items-center mt-3 mb-5">
+        <Link asChild href={`/${VERSE_OF_THE_DAY_SCREEN}`}>
+          <TouchableOpacity
+            href={`/${VERSE_OF_THE_DAY_SCREEN}`}
+            className="mr-2"
+          >
             <Ionicons
               name="chevron-back"
+              href={`/${VERSE_OF_THE_DAY_SCREEN}`}
               size={30}
-              color={theme == "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
-          </View>
+          </TouchableOpacity>
         </Link>
         <HeaderTitle
-          style={
-            theme == "dark"
-              ? { fontFamily: "Inter-Bold", color: "white" }
-              : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-          }
+          className="font-inter font-bold text-light-primary dark:text-dark-primary"
+          style={getMainTextColorStyle(actualTheme)}
         >
           Favorite Verses
         </HeaderTitle>
       </View>
       {favorites.length == 0 && (
-        <View
-          style={{
-            justifyContent: "center",
-
-            alignItems: "center",
-            flex: 1,
-          }}
-        >
+        <View className="flex-1 pt-32 justify-center items-center">
           <Text
-            style={
-              theme == "dark"
-                ? { color: "#A5C9FF", fontSize: 16, fontFamily: "Inter-Medium" }
-                : { color: "#2f2d51", fontSize: 16, fontFamily: "Inter-Medium" }
-            }
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
           >
-            Nothing on the list just yet!
+            Nothing added just yet!
           </Text>
         </View>
       )}
@@ -75,6 +80,7 @@ const FavoritesScreen = () => {
         data={favorites}
         keyExtractor={(e, i) => i.toString()}
         onEndReachedThreshold={0}
+        contentContainerStyle={{ gap: 5 }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         renderItem={renderFavoriteVerses}
@@ -84,5 +90,3 @@ const FavoritesScreen = () => {
 };
 
 export default FavoritesScreen;
-
-const styles = StyleSheet.create({});
