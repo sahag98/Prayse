@@ -1,16 +1,15 @@
-import React from "react";
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
 
-const SettingsItems = ({ options, theme }) => {
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+
+import { Link } from "expo-router";
+
+const SettingsItems = ({ options, actualTheme, theme }) => {
   return (
     <>
       {options.map((option) =>
@@ -18,25 +17,15 @@ const SettingsItems = ({ options, theme }) => {
           <TouchableOpacity
             key={option.id}
             onPress={() => Linking.openURL(option.link)}
-            style={theme === "dark" ? styles.verseDark : styles.verse}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between mb-3"
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View className="flex-row items-center">
               {option.icon}
 
               <Text
-                style={
-                  theme === "dark"
-                    ? {
-                        fontFamily: "Inter-Medium",
-                        color: "#dbdbdb",
-                        fontSize: 16,
-                      }
-                    : {
-                        fontFamily: "Inter-Medium",
-                        color: "#2f2d51",
-                        fontSize: 16,
-                      }
-                }
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
               >
                 {option.title}
               </Text>
@@ -45,28 +34,26 @@ const SettingsItems = ({ options, theme }) => {
               style={{ marginLeft: 10 }}
               name="right"
               size={14}
-              color={theme === "dark" ? "white" : "#2f2d51"}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : theme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
           </TouchableOpacity>
         ) : (
-          <Link to={`/${option.screen}`} key={option.id}>
-            <View style={theme === "dark" ? styles.verseDark : styles.verse}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Link href={`/${option.screen}`} key={option.id}>
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between mb-3"
+            >
+              <View className="flex-row items-center">
                 {option.icon}
                 <Text
-                  style={
-                    theme === "dark"
-                      ? {
-                          fontFamily: "Inter-Medium",
-                          color: "#dbdbdb",
-                          fontSize: 16,
-                        }
-                      : {
-                          fontFamily: "Inter-Medium",
-                          color: "#2f2d51",
-                          fontSize: 16,
-                        }
-                  }
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
                 >
                   {option.title}
                 </Text>
@@ -75,45 +62,20 @@ const SettingsItems = ({ options, theme }) => {
                 style={{ marginLeft: 10 }}
                 name="right"
                 size={14}
-                color={theme === "dark" ? "white" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </View>
           </Link>
-        ),
+        )
       )}
     </>
   );
 };
 
 export default SettingsItems;
-
-const styles = StyleSheet.create({
-  verseDark: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#212121",
-    padding: 20,
-    borderRadius: 20,
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  verse: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#b7d3ff",
-    shadowColor: "#bdbdbd",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 3,
-    padding: 20,
-    borderRadius: 20,
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-});
