@@ -10,18 +10,21 @@ import {
   FontAwesome6,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { CREATE_THEME_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import { YOUR_THEMES_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector((state) => state.theme.actualTheme);
   return (
     <Container
-      style={
-        colorScheme == "dark"
-          ? { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#121212" }
-          : { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#F2F7FF" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background"
     >
       <HeaderView>
         <Link href="/">
@@ -40,11 +43,7 @@ const ProScreen = () => {
               }
             />
             <Text
-              style={
-                actualTheme.MainTxt && {
-                  color: actualTheme?.MainTxt ?? null,
-                }
-              }
+              style={getMainTextColorStyle(actualTheme)}
               className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
             >
               Pro Features
@@ -54,12 +53,8 @@ const ProScreen = () => {
       </HeaderView>
       <View className="flex-row items-center gap-3">
         <Text
-          style={
-            actualTheme.MainTxt && {
-              color: actualTheme?.MainTxt ?? null,
-            }
-          }
-          className="font-inter text-primary dark:text-white font-medium text-lg"
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter text-primary dark:text-white font-semibold text-lg"
         >
           Theme Customization
         </Text>
@@ -78,13 +73,9 @@ const ProScreen = () => {
         />
       </View>
       <View className="flex-row justify-between mt-2 w-full gap-3">
-        <Link asChild href={`/${CREATE_THEME_SCREEN}`}>
+        {/* <Link asChild href={`/${CREATE_THEME_SCREEN}`}>
           <TouchableOpacity
-            style={
-              actualTheme.Secondary && {
-                backgroundColor: actualTheme.Secondary ?? null,
-              }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary"
           >
             <AntDesign
@@ -111,14 +102,10 @@ const ProScreen = () => {
               Create Theme
             </Text>
           </TouchableOpacity>
-        </Link>
+        </Link> */}
         <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
           <TouchableOpacity
-            style={
-              actualTheme.Secondary && {
-                backgroundColor: actualTheme.Secondary ?? null,
-              }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary"
           >
             <MaterialCommunityIcons
@@ -135,26 +122,18 @@ const ProScreen = () => {
               }
             />
             <Text
-              style={
-                actualTheme.SecondaryTxt && {
-                  color: actualTheme.SecondaryTxt ?? null,
-                }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter font-medium text-lg text-light-primaryprimary dark:text-dark-primary"
             >
-              Your Themes
+              Themes Available
             </Text>
           </TouchableOpacity>
         </Link>
       </View>
-      <View className="flex-row items-center mt-3 gap-3">
+      {/* <View className="flex-row items-center mt-3 gap-3">
         <Text
-          style={
-            actualTheme.MainTxt && {
-              color: actualTheme?.MainTxt ?? null,
-            }
-          }
-          className="font-inter text-primary dark:text-white font-medium text-lg"
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter text-primary dark:text-white font-semibold text-lg"
         >
           Font Customization
         </Text>
@@ -175,11 +154,7 @@ const ProScreen = () => {
       <View className="flex-row justify-between mt-2 w-full gap-3">
         <Link asChild href={`/${CREATE_THEME_SCREEN}`}>
           <TouchableOpacity
-            style={
-              actualTheme.Secondary && {
-                backgroundColor: actualTheme.Secondary ?? null,
-              }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary"
           >
             <AntDesign
@@ -196,11 +171,7 @@ const ProScreen = () => {
               }
             />
             <Text
-              style={
-                actualTheme.SecondaryTxt && {
-                  color: actualTheme.SecondaryTxt ?? null,
-                }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
             >
               Create Theme
@@ -209,11 +180,7 @@ const ProScreen = () => {
         </Link>
         <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
           <TouchableOpacity
-            style={
-              actualTheme.Secondary && {
-                backgroundColor: actualTheme.Secondary ?? null,
-              }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary"
           >
             <MaterialCommunityIcons
@@ -230,18 +197,14 @@ const ProScreen = () => {
               }
             />
             <Text
-              style={
-                actualTheme.SecondaryTxt && {
-                  color: actualTheme.SecondaryTxt ?? null,
-                }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter font-medium text-lg text-light-primaryprimary dark:text-dark-primary"
             >
               Your Themes
             </Text>
           </TouchableOpacity>
         </Link>
-      </View>
+      </View> */}
     </Container>
   );
 };

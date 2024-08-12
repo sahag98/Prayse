@@ -247,7 +247,7 @@ const Folder = ({ colorScheme, navigation }) => {
             <TouchableOpacity
               style={getPrimaryBackgroundColorStyle(actualTheme)}
               onPress={() => setAddVisible(true)}
-              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl  shadow-gray-300 dark:shadow-none"
             >
               <AntDesign
                 name="plus"
@@ -271,7 +271,7 @@ const Folder = ({ colorScheme, navigation }) => {
             <TouchableOpacity
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               onPress={() => navigation.navigate(PRAYER_ROOM_SCREEN)}
-              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl  shadow-gray-300 dark:shadow-none"
             >
               <MaterialCommunityIcons
                 name="hands-pray"

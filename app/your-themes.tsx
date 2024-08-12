@@ -14,12 +14,70 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import { deleteTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 
 const YourThemesScreen = () => {
   const { colorScheme } = useColorScheme();
+
+  const availableThemes = [
+    {
+      id: 1,
+      Bg: "white",
+      MainTxt: "black",
+      Primary: "black",
+      Secondary: "#efefef",
+      PrimaryTxt: "white",
+      SecondaryTxt: "black",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+    {
+      id: 2,
+      Bg: "#0D0E32",
+      MainTxt: "white",
+      Primary: "#6455CB",
+      Secondary: "#303354",
+      PrimaryTxt: "white",
+      SecondaryTxt: "white",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+    {
+      id: 3,
+      Bg: "#1A1F2A",
+      MainTxt: "white",
+      Primary: "#31CC98",
+      Secondary: "#2E3347",
+      PrimaryTxt: "white",
+      SecondaryTxt: "white",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+    {
+      id: 4,
+      Bg: "white",
+      MainTxt: "#333333",
+      Primary: "#FF7F50",
+      Secondary: "#ffd7c7",
+      PrimaryTxt: "white",
+      SecondaryTxt: "#333333",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+  ];
+
+  console.log(availableThemes[0].Bg);
+
   const dispatch = useDispatch();
   const width = Dimensions.get("window").width - 40;
 
@@ -29,11 +87,8 @@ const YourThemesScreen = () => {
   console.log("actual theme: ", actualTheme);
   return (
     <Container
-      style={
-        colorScheme == "dark"
-          ? { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#121212" }
-          : { backgroundColor: actualTheme.Bg ? actualTheme.Bg : "#F2F7FF" }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background dark:bg-dark-background"
     >
       <HeaderView>
         <Link href="/pro">
@@ -52,20 +107,16 @@ const YourThemesScreen = () => {
               }
             />
             <Text
-              style={
-                actualTheme.MainTxt && {
-                  color: actualTheme?.MainTxt ?? null,
-                }
-              }
+              style={getMainTextColorStyle(actualTheme)}
               className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
             >
-              Your Themes
+              Themes
             </Text>
           </View>
         </Link>
       </HeaderView>
 
-      {customThemeArray.length === 0 ? (
+      {availableThemes.length === 0 ? (
         <View className="flex-1 items-center gap-3 justify-center">
           <Text className="font-inter font-medium text-lg text-light-primary dark:text-white">
             No themes yet.
@@ -82,30 +133,21 @@ const YourThemesScreen = () => {
         <FlatList
           className="flex-1 w-full"
           numColumns={2}
-          columnWrapperClassName="gap-3"
+          columnWrapperClassName=" justify-between"
           keyExtractor={(item) => item.id}
-          data={customThemeArray}
+          data={availableThemes}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => dispatch(selectTheme(item))}
-              style={
-                item.Secondary
-                  ? {
-                      width: width / 2,
-                      backgroundColor: item.Secondary ?? null,
-                    }
-                  : {
-                      width: width / 2,
-                    }
-              }
-              className="bg-light-secondary mb-3 p-3 gap-3 rounded-lg"
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary w-[48%] mb-3 p-3 gap-3 rounded-lg"
             >
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.PrimaryTxt ?? null }}
-                  className="font-inter  font-semibold"
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm  font-semibold"
                 >
-                  Background{" "}
+                  Background
                 </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
@@ -114,8 +156,8 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.PrimaryTxt ?? null }}
-                  className="font-inter  font-semibold"
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm font-semibold"
                 >
                   Primary
                 </Text>
@@ -126,10 +168,10 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.PrimaryTxt ?? null }}
+                  style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter  font-semibold"
                 >
-                  Secondary{" "}
+                  Secondary
                 </Text>
                 <View
                   className="w-7 h-7 border dark:border-white rounded-md"
@@ -138,8 +180,8 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.MainTxt ?? null }}
-                  className="font-inter  font-semibold"
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm font-semibold"
                 >
                   Main Text
                 </Text>
@@ -150,8 +192,8 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.PrimaryTxt ?? null }}
-                  className="font-inter  font-semibold"
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm font-semibold"
                 >
                   Primary Text
                 </Text>
@@ -162,8 +204,8 @@ const YourThemesScreen = () => {
               </View>
               <View className="flex-row items-center justify-between gap-3">
                 <Text
-                  style={{ color: item.PrimaryTxt ?? null }}
-                  className="font-inter  font-semibold"
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm font-semibold"
                 >
                   Secondary Text
                 </Text>
@@ -174,20 +216,12 @@ const YourThemesScreen = () => {
               </View>
 
               <TouchableOpacity
-                style={
-                  item.Primary && {
-                    backgroundColor: item.Primary ?? null,
-                  }
-                }
+                style={getPrimaryBackgroundColorStyle(actualTheme)}
                 onPress={() => dispatch(deleteTheme(item.id))}
                 className="w-full items-center mt-3 justify-center p-3 rounded-md bg-light-primary dark:bg-dark-accent"
               >
                 <Text
-                  style={
-                    item.PrimaryTxt && {
-                      color: actualTheme.PrimaryTxt ?? null,
-                    }
-                  }
+                  style={getPrimaryTextColorStyle(actualTheme)}
                   className="font-inter font-bold text-light-background dark:text-dark-primary"
                 >
                   Delete
