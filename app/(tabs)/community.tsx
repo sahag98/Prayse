@@ -565,6 +565,7 @@ const CommunityHomeScreen = () => {
           pagingEnabled
           snapToInterval={ITEM_WIDTH}
           numColumns={1}
+          showsVerticalScrollIndicator={false}
           windowSize={8}
           ListFooterComponent={() => <View className="h-7" />}
           contentContainerStyle={{ gap: 15 }}

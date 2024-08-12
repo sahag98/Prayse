@@ -14,6 +14,11 @@ const FavoritesScreen = () => {
   const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
+  const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+
   const renderFavoriteVerses = ({ item }) => {
     return <FavoriteVerses item={item.verse} theme={theme} />;
   };
