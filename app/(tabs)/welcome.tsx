@@ -5,7 +5,7 @@ import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Linking, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import { Easing, useSharedValue, withTiming } from "react-native-reanimated";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
@@ -334,9 +334,9 @@ const WelcomeScreen = () => {
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      <TouchableOpacity onPress={() => posthog.capture("Post Hog Click")}>
+      {/* <TouchableOpacity onPress={() => posthog.capture("Post Hog Click")}>
         <Text>Post Hog Click</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <UpdateModal theme={colorScheme} />
       <View className="items-center mb-0 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
