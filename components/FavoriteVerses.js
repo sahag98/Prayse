@@ -1,83 +1,53 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
 
 import { deleteFavoriteVerse } from "../redux/favoritesReducer";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
-const FavoriteVerses = ({ item, theme }) => {
+const FavoriteVerses = ({ item, theme, actualTheme }) => {
   const dispatch = useDispatch();
 
   const dateObject = new Date(item?._updatedAt);
   return (
-    <View style={theme === "dark" ? styles.fvDark : styles.fv} key={item.id}>
-      <View style={{ width: "100%" }}>
+    <View
+      style={getSecondaryBackgroundColorStyle(actualTheme)}
+      className="bg-light-secondary dark:bg-dark-secondary p-3 rounded-lg flex-row items-center"
+      key={item.id}
+    >
+      <View className="w-full">
         <Text
-          style={
-            theme === "dark"
-              ? {
-                  color: "white",
-                  fontSize: 15,
-                  fontFamily: "Inter-Bold",
-                  marginBottom: 2,
-                }
-              : {
-                  color: "#2f2d51",
-                  fontSize: 15,
-                  fontFamily: "Inter-Bold",
-                  marginBottom: 2,
-                }
-          }
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter font-bold text-light-primary dark:text-dark-primary text-lg"
         >
           {dateObject?.toDateString()}
         </Text>
-        <Text style={theme === "dark" ? styles.fvVerseDark : styles.fvVerse}>
+        <Text
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter text-light-primary dark:text-dark-primary leading-6 mt-1"
+        >
           {item.verse}
         </Text>
         <Text
-          style={
-            theme === "dark"
-              ? {
-                  color: "white",
-                  fontSize: 15,
-                  fontFamily: "Inter-Bold",
-                  marginBottom: 2,
-                }
-              : {
-                  color: "#2f2d51",
-                  fontSize: 15,
-                  fontFamily: "Inter-Bold",
-                  marginBottom: 2,
-                }
-          }
-        >
-          {item?.date}
-        </Text>
-        <Text
-          style={
-            theme === "dark"
-              ? [
-                  styles.fvVerseDark,
-                  { textAlign: "right", fontFamily: "Inter-Medium" },
-                ]
-              : [
-                  styles.fvVerse,
-                  { textAlign: "right", fontFamily: "Inter-Medium" },
-                ]
-          }
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="self-end text-light-primary dark:text-dark-primary font-inter font-medium"
         >
           - {item.chapter}
         </Text>
       </View>
       <TouchableOpacity
         onPress={() => dispatch(deleteFavoriteVerse(item.id))}
-        style={{ position: "absolute", top: 5, right: 5 }}
+        className="absolute top-2 right-2"
       >
         <AntDesign
           name="close"
           size={24}
-          color={theme == "dark" ? "#ff6262" : "#ff4e4e"}
+          color={theme === "dark" ? "#ff6262" : "#ff4e4e"}
         />
       </TouchableOpacity>
     </View>
@@ -85,36 +55,3 @@ const FavoriteVerses = ({ item, theme }) => {
 };
 
 export default FavoriteVerses;
-
-const styles = StyleSheet.create({
-  fvDark: {
-    backgroundColor: "#212121",
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  fv: {
-    backgroundColor: "#b7d3ff",
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  fvVerseDark: {
-    width: "95%",
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-    lineHeight: 22,
-    color: "white",
-  },
-  fvVerse: {
-    width: "95%",
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-    lineHeight: 22,
-    color: "#2f2d51",
-  },
-});

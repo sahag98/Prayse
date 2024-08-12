@@ -249,9 +249,9 @@ const VerseOfTheDayScreen = () => {
             {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
               <TouchableOpacity
                 disabled
-                className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
+                className="flex-row w-[33.33%] h-full items-center justify-center"
               >
-                <AntDesign name="staro" size={26} color="#d8d800" />
+                <AntDesign name="staro" size={26} color="#bebe07" />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
