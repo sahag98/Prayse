@@ -48,10 +48,12 @@ const DailyReflection = ({
     clearPreviousDayCompletion();
   }, [isFocused, today]);
 
+  console.log("completed items: ", completedItems);
+
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
-    console.log("currrr: ", currentDate);
+    console.log("today: ", currentDate);
     // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
@@ -72,7 +74,7 @@ const DailyReflection = ({
     yesterday.setDate(currentDate.getDate() - 1); // Get yesterday's date
 
     const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
-    console.log("string: ", yesterdayDateString);
+    console.log("yesterday: ", yesterdayDateString);
 
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
   }

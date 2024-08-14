@@ -193,13 +193,15 @@ export const userSlice = createSlice({
     deletePreviousDayItems: (state, action) => {
       const { yesterday } = action.payload;
       const currentDate = new Date().toLocaleDateString().split("T")[0];
+
+      console.log("current: ", currentDate);
       const dateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === yesterday,
       );
 
-      const currentDateIndex = state.completedItems.findIndex(
-        (entry) => entry?.date === currentDate,
-      );
+      // const currentDateIndex = state.completedItems.findIndex(
+      //   (entry) => entry?.date === currentDate,
+      // );
 
       if (dateIndex >= 0) {
         state.completedItems[dateIndex].items.length = 0;
@@ -212,6 +214,17 @@ export const userSlice = createSlice({
         state.completedItems[state.completedItems.length - 1]?.date;
       const oneBeforeLastItem =
         state.completedItems[state.completedItems.length - 2]?.date;
+
+      // console.log("last: ", lastItem);
+      // console.log("before last: ", oneBeforeLastItem);
+
+      if (dateIndex === -1 && oneBeforeLastItem) {
+        console.log("should erase array.");
+        state.completedItems = [];
+        state.hasIncreasedDevoStreak = false;
+        state.devostreak = 0;
+        return;
+      }
 
       if (lastItem !== currentDate) {
         state.hasIncreasedDevoStreak = false;
@@ -254,9 +267,7 @@ export const userSlice = createSlice({
 
           // state.devostreak = state.devostreak + 1;
           // state.hasIncreasedDevoStreak == true;
-          console.log(
-            "Devo: The oneBeforeLastItemDate is the correct date before the lastItemDate.",
-          );
+
           // Perform your function here
         } else {
           state.devostreak = 0;
@@ -267,7 +278,7 @@ export const userSlice = createSlice({
       }
     },
     deleteCompletedItems: (state) => {
-      console.log("deleting ITEMS>>>");
+      console.log("<<deleting ITEMS>>");
       state.completedItems = [];
       // state.completedItems.length = 0;
     },
