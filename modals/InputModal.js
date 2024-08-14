@@ -238,7 +238,7 @@ const InputModal = ({
                 </View>
               </ModalIcon>
               <StyledInput
-                className="mt-3 items-center border border-light-secondary dark:border-[#d2d2d2] self-center font-inter"
+                className="mt-3 items-center border border-light-primary dark:border-[#d2d2d2] self-center font-inter"
                 style={
                   actualTheme && actualTheme.SecondaryTxt
                     ? {
@@ -259,12 +259,16 @@ const InputModal = ({
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
-                    : "#e0e0e0"
+                    : colorScheme === "dark"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
-                    : "white"
+                    : colorScheme === "dark"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 autoFocus
                 onChangeText={(text) => setPrayerValue(text)}
@@ -501,6 +505,7 @@ const styles = StyleSheet.create({
   category: {
     // backgroundColor: "#2F2D51",
     borderWidth: 1,
+    borderColor: "#2f2d51",
     marginTop: 10,
     height: 50,
     alignItems: "center",
@@ -514,7 +519,8 @@ const styles = StyleSheet.create({
   },
 
   dropdown: {
-    backgroundColor: "#2F2D51",
+    borderColor: "#2f2d51",
+    // backgroundColor: "#2F2D51",
     height: 800,
   },
   dropdownDark: {

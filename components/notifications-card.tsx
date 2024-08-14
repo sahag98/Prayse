@@ -5,7 +5,6 @@ import { Link, useNavigation } from "expo-router";
 import {
   Dimensions,
   FlatList,
-  Image,
   SafeAreaView,
   Text,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -22,8 +22,6 @@ import {
 } from "@lib/customStyles";
 import { deleteReminder } from "@redux/remindersReducer";
 import { REMINDER_SCREEN, TEST_SCREEN } from "@routes";
-
-import noreminder from "../assets/noreminders.png";
 
 interface NotificationsCardProps {
   theme: string;
@@ -100,7 +98,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                   name="add-circle-outline"
                   size={30}
                   color={
-                    actualTheme.SecondaryTxt
+                    actualTheme && actualTheme.SecondaryTxt
                       ? actualTheme.SecondaryTxt
                       : theme === "dark"
                         ? "#A5C9FF"
@@ -113,13 +111,16 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
         </View>
         {reminders.length === 0 ? (
           <View className="flex-1 justify-center items-center gap-[10px]">
-            <Image
-              style={{
-                tintColor: theme === "dark" ? "white" : "#2f2d51",
-                width: 40,
-                height: 40,
-              }}
-              source={noreminder}
+            <AntDesign
+              name="notification"
+              size={24}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : theme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}

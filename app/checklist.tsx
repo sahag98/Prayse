@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useState } from "react";
+import { Link } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,11 +13,18 @@ import {
   Fontisto,
   Ionicons,
 } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 
 import { addToAnsweredPrayer } from "../redux/answeredReducer";
 import { deletePrayer } from "../redux/prayerReducer";
-import { PRAYER_SCREEN } from "../routes";
+import { FOLDER_SCREEN } from "../routes";
 import { Container } from "../styles/appStyles";
 import { AnsweredPrayer, Prayer } from "../types/reduxTypes";
 
@@ -30,6 +39,9 @@ const Checklist = () => {
   const answeredPrayers: AnsweredPrayer[] = useSelector(
     (state: any) => state.answered.answeredPrayers,
   );
+
+  const { colorScheme } = useColorScheme();
+  const actualTheme = useSelector((state) => state.theme.actualTheme);
 
   const handleAddToAnsweredPrayer = (prayer: Prayer) => {
     if (
@@ -59,61 +71,47 @@ const Checklist = () => {
   if (prayers.length == 0) {
     return (
       <Container
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-              }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background dark:bg-dark-background"
       >
-        <View
-          style={{
-            flexDirection: "row",
-
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <Link to={`/${PRAYER_SCREEN}`}>
-            <View style={{ marginRight: 10 }}>
+        <View className="flex-row w-full items-center">
+          <Link asChild href={`/${FOLDER_SCREEN}`}>
+            <TouchableOpacity href={`/${FOLDER_SCREEN}`} className="mr-1">
               <Ionicons
                 name="chevron-back"
                 size={35}
-                color={theme == "light" ? "#2f2d51" : "white"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "light"
+                      ? "#2f2d51"
+                      : "white"
+                }
               />
-            </View>
+            </TouchableOpacity>
           </Link>
           <Text
-            style={{
-              fontFamily: "Inter-Bold",
-              fontSize: 20,
-              color: theme == "dark" ? "white" : "#2f2d51",
-            }}
+            className="font-bold text-2xl font-inter text-light-primary dark:text-dark-primary"
+            style={getMainTextColorStyle(actualTheme)}
           >
             Prayer Checklist
           </Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
+        <View className="flex-1 justify-center gap-3 items-center">
           <FontAwesome5
             name="list-alt"
             size={50}
-            color={theme == "dark" ? "white" : "#2f2d51"}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
           />
           <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Medium",
-            }}
+            className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+            style={getMainTextColorStyle(actualTheme)}
           >
             No prayers added yet!
           </Text>
@@ -124,45 +122,28 @@ const Checklist = () => {
 
   return (
     <Container
-      style={
-        theme == "dark"
-          ? {
-              backgroundColor: "#121212",
-
-              // justifyContent: "center",
-              // alignItems: "center",
-            }
-          : {
-              backgroundColor: "#F2F7FF",
-
-              // justifyContent: "center",
-              // alignItems: "center",
-            }
-      }
+      className="bg-light-background dark:bg-dark-background"
+      style={getMainBackgroundColorStyle(actualTheme)}
     >
-      <View
-        style={{
-          flexDirection: "row",
-
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <Link to={`/${PRAYER_SCREEN}`}>
-          <View style={{ marginRight: 10 }}>
+      <View className="flex-row w-full items-center">
+        <Link asChild href={`/${FOLDER_SCREEN}`}>
+          <TouchableOpacity href={`/${FOLDER_SCREEN}`} className="mr-1">
             <Ionicons
               name="chevron-back"
               size={35}
-              color={theme == "light" ? "#2f2d51" : "white"}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "light"
+                    ? "#2f2d51"
+                    : "white"
+              }
             />
-          </View>
+          </TouchableOpacity>
         </Link>
         <Text
-          style={{
-            fontFamily: "Inter-Bold",
-            fontSize: 20,
-            color: theme == "dark" ? "white" : "#2f2d51",
-          }}
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
         >
           Prayer Checklist
         </Text>
@@ -174,26 +155,17 @@ const Checklist = () => {
         onEndReachedThreshold={0}
         initialNumToRender={8}
         windowSize={8}
-        contentContainerStyle={{ paddingTop: 10 }}
+        contentContainerStyle={{ paddingTop: 10, gap: 10 }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }: { item: Prayer }) => (
           <View
-            style={{
-              backgroundColor: theme == "dark" ? "#212121" : "#b7d3ff",
-              padding: 10,
-              borderRadius: 10,
-              gap: 10,
-              marginBottom: 15,
-            }}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary p-3 rounded-lg gap-3"
           >
             <Text
-              style={{
-                marginBottom: 10,
-                color: theme == "dark" ? "white" : "#2f2d51",
-                fontSize: 15,
-                fontFamily: "Inter-Medium",
-              }}
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter text-lg font-medium mb-3 text-light-primary dark:text-dark-primary"
             >
               {item.prayer}
             </Text>
@@ -201,21 +173,10 @@ const Checklist = () => {
             {selectedItems.includes(item.id) ||
             (selectAnswerAction == item.id &&
               selectedItems.includes(item.id)) ? (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                }}
-              >
+              <View className="flex-row items-center justify-center gap-2">
                 <Text
-                  style={{
-                    color: theme == "dark" ? "grey" : "#2f2d51",
-                    alignSelf: "center",
-                    paddingVertical: 5,
-                    fontFamily: "Inter-Medium",
-                  }}
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter font-medium text-light-primary dark:text-gray-500 self-center py-2"
                 >
                   {selectKeepAction == item.id && "Will Keep"}
                   {selectAnswerAction == item.id && "Marked as answered"}
@@ -223,64 +184,49 @@ const Checklist = () => {
                 <FontAwesome5
                   name="check"
                   size={20}
-                  color={theme == "dark" ? "grey" : "#2f2d51"}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "grey"
+                        : "#2f2d51"
+                  }
                 />
               </View>
             ) : (
               <>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    flex: 1,
-                    gap: 10,
-                  }}
-                >
+                <View className="flex-row items-center justify-between flex-1 gap-3">
                   <TouchableOpacity
                     onPress={() => {
                       setSelectedItems((prev) => [...prev, item.id]);
                       setSelectKeepAction(item.id);
                     }}
-                    style={{
-                      backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-                      padding: 10,
-                      flex: 1,
-                      borderRadius: 10,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
+                    style={getPrimaryBackgroundColorStyle(actualTheme)}
+                    className="p-3 bg-light-primary dark:bg-dark-background flex-1 items-center justify-between flex-row rounded-lg"
                   >
                     <Text
-                      style={{
-                        fontFamily: "Inter-Bold",
-                        color: theme == "dark" ? "white" : "white",
-                      }}
+                      style={getPrimaryTextColorStyle(actualTheme)}
+                      className="font-inter font-bold text-light-background dark:text-dark-primary"
                     >
                       Keep
                     </Text>
-                    <AntDesign name="back" size={24} color="white" />
+                    <AntDesign
+                      name="back"
+                      size={24}
+                      color={
+                        actualTheme && actualTheme.PrimaryTxt
+                          ? actualTheme.PrimaryTxt
+                          : "white"
+                      }
+                    />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={() => handleDelete(item.id)}
-                    style={{
-                      backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-                      padding: 10,
-                      flex: 1,
-                      borderRadius: 10,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
+                    style={getPrimaryBackgroundColorStyle(actualTheme)}
+                    className="p-3 bg-light-primary dark:bg-dark-background flex-1 items-center justify-between flex-row rounded-lg"
                   >
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Bold",
-                        color: theme == "dark" ? "#ff3333" : "#ff3333",
-                      }}
-                    >
+                    <Text className="font-inter font-bold text-red-500">
                       Delete
                     </Text>
                     <Fontisto name="close" size={24} color="#ff3333" />
@@ -292,22 +238,10 @@ const Checklist = () => {
                     setSelectAnswerAction(item.id);
                     handleAddToAnsweredPrayer(item);
                   }}
-                  style={{
-                    backgroundColor: theme == "dark" ? "#121212" : "#2f2d51",
-                    padding: 10,
-                    flex: 1,
-                    borderRadius: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
+                  className="p-3 bg-light-primary dark:bg-dark-background flex-1 items-center justify-between flex-row rounded-lg"
                 >
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      color: theme == "dark" ? "#00cd00" : "#00cd00",
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-green-500">
                     Answered
                   </Text>
                   <FontAwesome

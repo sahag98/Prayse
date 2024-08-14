@@ -45,7 +45,7 @@ const SearchBar = ({ theme, search, setSearch }) => {
           style={styles.textInputStyle}
           value={search}
           placeholder="Search prayers..."
-          placeholderTextColor="#d2d2d2"
+          placeholderTextColor="#a8a8a8"
           selectionColor={theme === "dark" ? "white" : "#2f2d51"}
           onChangeText={(text) => setSearch(text)}
           autoFocus={false}

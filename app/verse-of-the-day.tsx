@@ -118,7 +118,7 @@ const VerseOfTheDayScreen = () => {
           className="mr-2"
           onPress={() => {
             if (routeParams?.previousScreen) {
-              router.back();
+              // router.back();
               navigation.goBack();
             } else {
               router.push(MORE_SCREEN);

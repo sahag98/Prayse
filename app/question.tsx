@@ -148,11 +148,11 @@ const QuestionScreen = () => {
           />
         )}
       </View>
-      <View className="absolute flex right-4 bottom-4 ">
+      <View className="absolute flex left-4 bottom-4 ">
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => setAnswersVisible(true)}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl shadow-gray-300 dark:shadow-none"
         >
           <AntDesign
             name="plus"

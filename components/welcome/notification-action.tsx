@@ -27,7 +27,7 @@ export const NoticationAction: React.FC<NotificationActionProps> = ({
             name="notifications-outline"
             size={20}
             color={
-              actualTheme.MainTxt
+              actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
                   ? "white"

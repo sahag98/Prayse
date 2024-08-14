@@ -31,7 +31,7 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
           name="info"
           size={24}
           color={
-            actualTheme.PrimaryTxt
+            actualTheme && actualTheme.PrimaryTxt
               ? actualTheme.PrimaryTxt
               : theme === "dark"
                 ? "#f1d592"
@@ -51,7 +51,7 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
         name="right"
         size={18}
         color={
-          actualTheme.PrimaryTxt
+          actualTheme && actualTheme.PrimaryTxt
             ? actualTheme.PrimaryTxt
             : theme === "dark"
               ? "#f1d592"
@@ -106,7 +106,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
                 name="logo-google-playstore"
                 size={24}
                 color={
-                  actualTheme.PrimaryTxt
+                  actualTheme && actualTheme.PrimaryTxt
                     ? actualTheme.PrimaryTxt
                     : theme === "dark"
                       ? "#d6d6d6"
@@ -124,7 +124,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
               name="right"
               size={18}
               color={
-                actualTheme.PrimaryTxt
+                actualTheme && actualTheme.PrimaryTxt
                   ? actualTheme.PrimaryTxt
                   : theme === "dark"
                     ? "#d6d6d6"
@@ -148,7 +148,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
                 name="apple1"
                 size={24}
                 color={
-                  actualTheme.PrimaryTxt
+                  actualTheme && actualTheme.PrimaryTxt
                     ? actualTheme.PrimaryTxt
                     : theme === "dark"
                       ? "#d6d6d6"
@@ -166,7 +166,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
               name="right"
               size={18}
               color={
-                actualTheme.PrimaryTxt
+                actualTheme && actualTheme.PrimaryTxt
                   ? actualTheme.PrimaryTxt
                   : theme === "dark"
                     ? "#d6d6d6"

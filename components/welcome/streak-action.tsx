@@ -53,7 +53,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({
             name="hands-pray"
             size={20}
             color={
-              actualTheme.MainTxt
+              actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
                   ? "white"

@@ -223,17 +223,6 @@ const PrayerRoom = () => {
 
   useEffect(() => {
     if (isPraying) {
-      // pulse.value = withRepeat(
-      //   withSequence(
-      //     withTiming(1.1, { duration: 3000, easing: Easing.ease }),
-      //     // withTiming(0.8, { duration: 2000, easing: Easing.ease }),
-      //     withTiming(0.9, { duration: 3000, easing: Easing.ease }),
-      //     withTiming(1.1, { duration: 3000, easing: Easing.ease })
-      //     // withTiming(0, { duration: 2000, easing: Easing.in })
-      //   ),
-      //   1,
-      //   true
-      // );
       opacityValue.value = withSequence(
         withDelay(
           9000,
@@ -373,7 +362,7 @@ const PrayerRoom = () => {
               <Video
                 ref={video}
                 style={styles.video}
-                source={colorScheme == "dark" ? darkGradient : gradient}
+                source={colorScheme === "dark" ? darkGradient : gradient}
                 useNativeControls={false}
                 resizeMode={ResizeMode.COVER}
                 isLooping
@@ -537,7 +526,7 @@ const PrayerRoom = () => {
             <Video
               ref={video}
               style={styles.video}
-              source={theme == "dark" ? darkGradient : gradient}
+              source={colorScheme === "dark" ? darkGradient : gradient}
               useNativeControls={false}
               resizeMode={ResizeMode.COVER}
               isLooping
@@ -625,7 +614,7 @@ const PrayerRoom = () => {
                     key={screenIndex}
                   >
                     <Animated.Text
-                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide my-2"
+                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedMomentFadeInStyle,
@@ -735,7 +724,10 @@ const PrayerRoom = () => {
                 }
               />
             </TouchableOpacity>
-            <Text className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+            >
               Prayer Room
             </Text>
           </View>
@@ -747,8 +739,8 @@ const PrayerRoom = () => {
                 style={{
                   backgroundColor:
                     index === screenIndex
-                      ? actualTheme && actualTheme.Secondary
-                        ? actualTheme.Secondary
+                      ? actualTheme && actualTheme.Primary
+                        ? actualTheme.Primary
                         : colorScheme === "dark"
                           ? "white"
                           : "#2f2d51"
@@ -797,6 +789,7 @@ const PrayerRoom = () => {
                   className="p-4 rounded-full bg-light-primary dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
                   style={[
                     getPrimaryBackgroundColorStyle(actualTheme),
+                    actualTheme && { borderWidth: 0 },
                     animatedFadeInStyle,
                   ]}
                 >
@@ -804,8 +797,8 @@ const PrayerRoom = () => {
                     name="hands-pray"
                     size={55}
                     color={
-                      actualTheme && actualTheme.MainTxt
-                        ? actualTheme.MainTxt
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
                         : colorScheme == "dark"
                           ? "#a5c9ff"
                           : "#b7d3ff"
