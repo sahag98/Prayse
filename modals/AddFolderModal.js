@@ -80,12 +80,16 @@ const AddFolderModal = ({
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : "white"
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : "white"
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
               }
               textAlignVertical="center"
               autoFocus={true}

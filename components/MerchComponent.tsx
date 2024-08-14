@@ -78,7 +78,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
               name="shoppingcart"
               size={22}
               color={
-                actualTheme.PrimaryTxt
+                actualTheme && actualTheme.PrimaryTxt
                   ? actualTheme.PrimaryTxt
                   : theme === "dark"
                     ? "#121212"

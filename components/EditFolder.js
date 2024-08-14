@@ -105,12 +105,16 @@ const EditFolder = ({
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : "white"
+                  : colorScheme === "dark"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : "white"
+                  : colorScheme === "dark"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
               }
               autoFocus
               onChangeText={(text) => setNewFolderName(text)}

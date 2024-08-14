@@ -58,7 +58,6 @@ export const HeaderView = styled.View`
 
 export const HeaderTitle = styled.Text`
   font-size: 24px;
-  color: ${colors.tertiary};
 `;
 export const HeaderButton = styled.TouchableOpacity`
   /* display: flex;

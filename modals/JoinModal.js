@@ -176,7 +176,7 @@ const JoinModal = ({
                 name="left"
                 size={30}
                 color={
-                  actualTheme & actualTheme.MainTxt
+                  actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme === "dark"
                       ? "white"

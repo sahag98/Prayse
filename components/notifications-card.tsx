@@ -100,7 +100,7 @@ export const NoticationsCard: React.FC<NotificationsCardProps> = ({
                   name="add-circle-outline"
                   size={30}
                   color={
-                    actualTheme.SecondaryTxt
+                    actualTheme && actualTheme.SecondaryTxt
                       ? actualTheme.SecondaryTxt
                       : theme === "dark"
                         ? "#A5C9FF"

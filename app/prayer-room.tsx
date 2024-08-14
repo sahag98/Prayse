@@ -223,17 +223,6 @@ const PrayerRoom = () => {
 
   useEffect(() => {
     if (isPraying) {
-      // pulse.value = withRepeat(
-      //   withSequence(
-      //     withTiming(1.1, { duration: 3000, easing: Easing.ease }),
-      //     // withTiming(0.8, { duration: 2000, easing: Easing.ease }),
-      //     withTiming(0.9, { duration: 3000, easing: Easing.ease }),
-      //     withTiming(1.1, { duration: 3000, easing: Easing.ease })
-      //     // withTiming(0, { duration: 2000, easing: Easing.in })
-      //   ),
-      //   1,
-      //   true
-      // );
       opacityValue.value = withSequence(
         withDelay(
           9000,
@@ -373,7 +362,7 @@ const PrayerRoom = () => {
               <Video
                 ref={video}
                 style={styles.video}
-                source={colorScheme == "dark" ? darkGradient : gradient}
+                source={colorScheme === "dark" ? darkGradient : gradient}
                 useNativeControls={false}
                 resizeMode={ResizeMode.COVER}
                 isLooping
@@ -537,7 +526,7 @@ const PrayerRoom = () => {
             <Video
               ref={video}
               style={styles.video}
-              source={theme == "dark" ? darkGradient : gradient}
+              source={colorScheme === "dark" ? darkGradient : gradient}
               useNativeControls={false}
               resizeMode={ResizeMode.COVER}
               isLooping
@@ -625,7 +614,7 @@ const PrayerRoom = () => {
                     key={screenIndex}
                   >
                     <Animated.Text
-                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide my-2"
+                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedMomentFadeInStyle,

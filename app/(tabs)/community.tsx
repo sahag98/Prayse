@@ -461,7 +461,7 @@ const CommunityHomeScreen = () => {
                 color={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
-                    : olorScheme == "dark"
+                    : colorScheme == "dark"
                       ? "white"
                       : "#2f2d51"
                 }

@@ -38,7 +38,7 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
             name="lightning-bolt-outline"
             size={24}
             color={
-              actualTheme.PrimaryTxt
+              actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
                 : theme === "dark"
                   ? "yellow"
@@ -55,7 +55,11 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
         <AntDesign
           name="right"
           size={24}
-          color={actualTheme.PrimaryTxt ? actualTheme.PrimaryTxt : "yellow"}
+          color={
+            actualTheme && actualTheme.PrimaryTxt
+              ? actualTheme.PrimaryTxt
+              : "yellow"
+          }
         />
       </TouchableOpacity>
     </Link>

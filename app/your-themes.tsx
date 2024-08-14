@@ -22,7 +22,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { deleteTheme, selectTheme } from "@redux/themeReducer";
+import { deleteTheme, resetTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 
@@ -98,10 +98,10 @@ const YourThemesScreen = () => {
               size={24}
               color={
                 colorScheme === "dark"
-                  ? actualTheme.MainTxt
+                  ? actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : "white"
-                  : actualTheme.MainTxt
+                  : actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : "#2f2d51"
               }
@@ -130,106 +130,120 @@ const YourThemesScreen = () => {
           </Link>
         </View>
       ) : (
-        <FlatList
-          className="flex-1 w-full"
-          numColumns={2}
-          columnWrapperClassName=" justify-between"
-          keyExtractor={(item) => item.id}
-          data={availableThemes}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => dispatch(selectTheme(item))}
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-secondary w-[48%] mb-3 p-3 gap-3 rounded-lg"
+        <>
+          <TouchableOpacity
+            onPress={() => dispatch(resetTheme())}
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="w-full mb-3 justify-center rounded-lg items-center p-4 bg-light-primary dark:bg-dark-accent"
+          >
+            <Text
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-background dark:text-dark-primary"
             >
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-sm  font-semibold"
-                >
-                  Background
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.Bg }}
-                />
-              </View>
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-sm font-semibold"
-                >
-                  Primary
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.Primary }}
-                />
-              </View>
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter  font-semibold"
-                >
-                  Secondary
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.Secondary }}
-                />
-              </View>
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-sm font-semibold"
-                >
-                  Main Text
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.MainTxt }}
-                />
-              </View>
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-sm font-semibold"
-                >
-                  Primary Text
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.PrimaryTxt }}
-                />
-              </View>
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-sm font-semibold"
-                >
-                  Secondary Text
-                </Text>
-                <View
-                  className="w-7 h-7 border dark:border-white rounded-md"
-                  style={{ backgroundColor: item.SecondaryTxt }}
-                />
-              </View>
-
+              Go back to current theme
+            </Text>
+          </TouchableOpacity>
+          <FlatList
+            className="flex-1 w-full"
+            numColumns={2}
+            columnWrapperClassName=" justify-between"
+            keyExtractor={(item) => item.id}
+            data={availableThemes}
+            renderItem={({ item }) => (
               <TouchableOpacity
-                style={getPrimaryBackgroundColorStyle(actualTheme)}
-                onPress={() => dispatch(deleteTheme(item.id))}
-                className="w-full items-center mt-3 justify-center p-3 rounded-md bg-light-primary dark:bg-dark-accent"
+                onPress={() => dispatch(selectTheme(item))}
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                className="bg-light-secondary w-[48%] mb-3 p-3 gap-3 rounded-lg"
               >
-                <Text
-                  style={getPrimaryTextColorStyle(actualTheme)}
-                  className="font-inter font-bold text-light-background dark:text-dark-primary"
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-sm  font-semibold"
+                  >
+                    Background
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.Bg }}
+                  />
+                </View>
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-sm font-semibold"
+                  >
+                    Primary
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.Primary }}
+                  />
+                </View>
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter  font-semibold"
+                  >
+                    Secondary
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.Secondary }}
+                  />
+                </View>
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-sm font-semibold"
+                  >
+                    Main Text
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.MainTxt }}
+                  />
+                </View>
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-sm font-semibold"
+                  >
+                    Primary Text
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.PrimaryTxt }}
+                  />
+                </View>
+                <View className="flex-row items-center justify-between gap-3">
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-sm font-semibold"
+                  >
+                    Secondary Text
+                  </Text>
+                  <View
+                    className="w-7 h-7 border dark:border-white rounded-md"
+                    style={{ backgroundColor: item.SecondaryTxt }}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
+                  onPress={() => dispatch(deleteTheme(item.id))}
+                  className="w-full items-center mt-3 justify-center p-3 rounded-md bg-light-primary dark:bg-dark-accent"
                 >
-                  Delete
-                </Text>
+                  <Text
+                    style={getPrimaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-light-background dark:text-dark-primary"
+                  >
+                    Delete
+                  </Text>
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          )}
-        />
+            )}
+          />
+        </>
       )}
     </Container>
   );

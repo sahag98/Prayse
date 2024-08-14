@@ -34,10 +34,10 @@ const ProScreen = () => {
               size={24}
               color={
                 colorScheme === "dark"
-                  ? actualTheme.MainTxt
+                  ? actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : "white"
-                  : actualTheme.MainTxt
+                  : actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : "#2f2d51"
               }
@@ -63,10 +63,10 @@ const ProScreen = () => {
           size={20}
           color={
             colorScheme === "dark"
-              ? actualTheme.MainTxt
+              ? actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : "white"
-              : actualTheme.MainTxt
+              : actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : "#2f2d51"
           }
@@ -113,10 +113,10 @@ const ProScreen = () => {
               size={24}
               color={
                 colorScheme === "dark"
-                  ? actualTheme.SecondaryTxt
+                  ? actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : "white"
-                  : actualTheme.SecondaryTxt
+                  : actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : "#2f2d51"
               }

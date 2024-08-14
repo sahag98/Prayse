@@ -6,6 +6,7 @@ import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import {
   CHECKLIST_SCREEN,
   CREATE_THEME_SCREEN,
@@ -41,17 +42,13 @@ const StackContainer = () => {
   return (
     <SafeAreaView
       edges={["bottom"]}
-      style={{
-        flex: 1,
-        backgroundColor:
-          colorScheme === "dark"
-            ? actualTheme.Bg
-              ? actualTheme.Bg
-              : "#121212"
-            : actualTheme.Bg
-              ? actualTheme.Bg
-              : "white",
-      }}
+      style={[
+        {
+          flex: 1,
+          backgroundColor: colorScheme === "dark" ? "#121212" : "white",
+        },
+        getMainBackgroundColorStyle(actualTheme),
+      ]}
     >
       <Stack initialRouteName="(tabs)">
         <Stack.Screen

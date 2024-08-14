@@ -24,6 +24,7 @@ import { StreakAction } from "@components/welcome/streak-action";
 import { UpdateModal } from "@modals/update-modal";
 
 import config from "@config";
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import { addNoti } from "@redux/notiReducer";
@@ -37,8 +38,6 @@ import {
 import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "@types/reduxTypes";
 
-import { posthog } from "../../lib/posthog";
-
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -50,8 +49,6 @@ Notifications.setNotificationHandler({
     };
   },
 });
-
-console.log(posthog);
 
 async function sendToken(expoPushToken) {
   const message = {
@@ -326,11 +323,7 @@ const WelcomeScreen = () => {
   return (
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
-      style={
-        actualTheme.Bg && {
-          backgroundColor: actualTheme.Bg ?? null,
-        }
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >

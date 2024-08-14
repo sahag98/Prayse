@@ -125,18 +125,19 @@ export const themeSlice = createSlice({
       state.customMainTxt = action.payload;
     },
     resetTheme: (state) => {
-      state.customBg = null;
-      state.customPrimary = null;
-      state.customSecondary = null;
-      state.customPrimaryTxt = null;
-      state.customSecondaryTxt = null;
-      state.Bg = null;
-      state.Primary = null;
-      state.Secondary = null;
-      state.PrimaryTxt = null;
-      state.Secondarytxt = null;
-      state.AccentTxt = null;
-      state.MainTxt = null;
+      state.actualTheme = null;
+      // state.customBg = null;
+      // state.customPrimary = null;
+      // state.customSecondary = null;
+      // state.customPrimaryTxt = null;
+      // state.customSecondaryTxt = null;
+      // state.Bg = null;
+      // state.Primary = null;
+      // state.Secondary = null;
+      // state.PrimaryTxt = null;
+      // state.Secondarytxt = null;
+      // state.AccentTxt = null;
+      // state.MainTxt = null;
     },
   },
 });

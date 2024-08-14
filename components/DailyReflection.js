@@ -22,9 +22,11 @@ import {
 
 import StreakSlider from "./StreakSlider";
 import {
+  getMainTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { useRouter } from "expo-router";
 
 const DailyReflection = ({
   completedItems,
@@ -36,7 +38,7 @@ const DailyReflection = ({
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
-
+  const router = useRouter();
   const hasEnteredGiveaway = useSelector(
     (state) => state.user.alreadyEnteredGiveaway
   );
@@ -59,7 +61,6 @@ const DailyReflection = ({
         date: currentDate,
       })
     );
-
     navigation.navigate(selected, {
       previousScreen: HOME_SCREEN,
     });
@@ -92,11 +93,7 @@ const DailyReflection = ({
         isShowingStreak={isShowingStreak}
       />
       <Text
-        style={
-          actualTheme.MainTxt && {
-            color: actualTheme.MainTxt ?? null,
-          }
-        }
+        style={getMainTextColorStyle(actualTheme)}
         className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white"
       >
         Daily Devotions
@@ -107,12 +104,12 @@ const DailyReflection = ({
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[4px] h-3/4 top-1/2 left-[10px]"
+            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -125,12 +122,17 @@ const DailyReflection = ({
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
-              borderWidth: actualTheme.Secondary ? 4 : 0,
-              borderColor: actualTheme.Secondary ?? null,
+              borderWidth: 4,
+              borderColor:
+                actualTheme && actualTheme.Secondary
+                  ? actualTheme.Secondary
+                  : theme === "dark"
+                    ? "#212121"
+                    : "#b7d3ff",
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -156,7 +158,7 @@ const DailyReflection = ({
                 name="hands-pray"
                 size={20}
                 color={
-                  actualTheme.SecondaryTxt
+                  actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : theme === "dark"
                       ? "#d2d2d2"
@@ -192,14 +194,14 @@ const DailyReflection = ({
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[4px] h-1/2 bottom-1/2 left-[10px]"
+            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -210,14 +212,14 @@ const DailyReflection = ({
             }}
           />
           <View
-            className="absolute w-[4px] h-3/4 top-1/2 left-[10px]"
+            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -230,14 +232,19 @@ const DailyReflection = ({
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
-              borderWidth: actualTheme.Secondary ? 4 : 0,
-              borderColor: actualTheme.Secondary ?? null,
+              borderWidth: 4,
+              borderColor:
+                actualTheme && actualTheme.Secondary
+                  ? actualTheme.Secondary
+                  : theme === "dark"
+                    ? "#212121"
+                    : "#b7d3ff",
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -263,7 +270,7 @@ const DailyReflection = ({
                 name="book-open"
                 size={20}
                 color={
-                  actualTheme.SecondaryTxt
+                  actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : theme === "dark"
                       ? "#d2d2d2"
@@ -298,12 +305,12 @@ const DailyReflection = ({
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[4px] h-1/2 bottom-1/2 left-[10px]"
+            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
             style={{
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
@@ -316,12 +323,17 @@ const DailyReflection = ({
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
-              borderWidth: actualTheme.Secondary ? 4 : 0,
-              borderColor: actualTheme.Secondary ?? null,
+              borderWidth: 4,
+              borderColor:
+                actualTheme && actualTheme.Secondary
+                  ? actualTheme.Secondary
+                  : theme === "dark"
+                    ? "#212121"
+                    : "#b7d3ff",
               backgroundColor: completedItems.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
-                ? actualTheme.Primary
+                ? actualTheme && actualTheme.Primary
                   ? actualTheme.Primary
                   : theme === "dark"
                     ? "#a5c9ff"
