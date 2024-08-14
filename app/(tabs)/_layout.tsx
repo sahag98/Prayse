@@ -25,7 +25,16 @@ export default function TabLayout() {
 
   return (
     <>
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <StatusBar
+        style={
+          actualTheme &&
+          (actualTheme.Bg === "#0D0E32" || actualTheme.Bg === "#1A1F2A")
+            ? "light"
+            : colorScheme === "dark"
+              ? "light"
+              : "dark"
+        }
+      />
       <Tabs
         sceneContainerStyle={{
           backgroundColor: colorScheme === "dark" ? "#121212" : "#F2F7FF",

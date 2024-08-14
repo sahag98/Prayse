@@ -218,7 +218,6 @@ export const ModalView = styled.View`
 `;
 
 export const ModalView2 = styled.View`
-  background-color: ${colors.secondary};
   border-radius: 20px;
   padding: 15px;
 `;

@@ -107,19 +107,41 @@ const DailyReflection = ({
         >
           <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
-            style={{
-              backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
-              )
-                ? actualTheme && actualTheme.Primary
-                  ? actualTheme.Primary
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
+            style={
+              actualTheme
+                ? {
+                    backgroundColor:
+                      completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === PRAYER_ROOM_SCREEN
+                        )
+                      ) &&
+                      actualTheme &&
+                      actualTheme.Primary
+                        ? actualTheme.Primary
+                        : actualTheme.Secondary,
+                  }
                 : theme === "dark"
-                  ? "#212121"
-                  : "white",
-            }}
+                  ? {
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === PRAYER_ROOM_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
+                    }
+                  : {
+                      backgroundColor:
+                        completedItems.some((completedItem) =>
+                          completedItem.items.find(
+                            (item) => item === PRAYER_ROOM_SCREEN
+                          )
+                        ) && theme === "dark"
+                          ? "#2f2d51"
+                          : "white",
+                    }
+            }
           />
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
@@ -197,39 +219,79 @@ const DailyReflection = ({
         >
           <View
             className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
-            style={{
-              backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find(
-                  (item) => item === VERSE_OF_THE_DAY_SCREEN
-                )
-              )
-                ? actualTheme && actualTheme.Primary
-                  ? actualTheme.Primary
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
+            style={
+              actualTheme
+                ? {
+                    backgroundColor:
+                      completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      ) &&
+                      actualTheme &&
+                      actualTheme.Primary
+                        ? actualTheme.Primary
+                        : actualTheme.Secondary,
+                  }
                 : theme === "dark"
-                  ? "#212121"
-                  : "white",
-            }}
+                  ? {
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
+                    }
+                  : {
+                      backgroundColor:
+                        completedItems.some((completedItem) =>
+                          completedItem.items.find(
+                            (item) => item === VERSE_OF_THE_DAY_SCREEN
+                          )
+                        ) && theme === "dark"
+                          ? "#2f2d51"
+                          : "white",
+                    }
+            }
           />
           <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
-            style={{
-              backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find(
-                  (item) => item === VERSE_OF_THE_DAY_SCREEN
-                )
-              )
-                ? actualTheme && actualTheme.Primary
-                  ? actualTheme.Primary
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
+            style={
+              actualTheme
+                ? {
+                    backgroundColor:
+                      completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      ) &&
+                      actualTheme &&
+                      actualTheme.Primary
+                        ? actualTheme.Primary
+                        : actualTheme.Secondary,
+                  }
                 : theme === "dark"
-                  ? "#212121"
-                  : "white",
-            }}
+                  ? {
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
+                    }
+                  : {
+                      backgroundColor:
+                        completedItems.some((completedItem) =>
+                          completedItem.items.find(
+                            (item) => item === VERSE_OF_THE_DAY_SCREEN
+                          )
+                        ) && theme === "dark"
+                          ? "#2f2d51"
+                          : "white",
+                    }
+            }
           />
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
@@ -308,19 +370,41 @@ const DailyReflection = ({
         >
           <View
             className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
-            style={{
-              backgroundColor: completedItems.some((completedItem) =>
-                completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
-              )
-                ? actualTheme && actualTheme.Primary
-                  ? actualTheme.Primary
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
+            style={
+              actualTheme
+                ? {
+                    backgroundColor:
+                      completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === DEVO_LIST_SCREEN
+                        )
+                      ) &&
+                      actualTheme &&
+                      actualTheme.Primary
+                        ? actualTheme.Primary
+                        : actualTheme.Secondary,
+                  }
                 : theme === "dark"
-                  ? "#212121"
-                  : "white",
-            }}
+                  ? {
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === DEVO_LIST_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
+                    }
+                  : {
+                      backgroundColor:
+                        completedItems.some((completedItem) =>
+                          completedItem.items.find(
+                            (item) => item === DEVO_LIST_SCREEN
+                          )
+                        ) && theme === "dark"
+                          ? "#2f2d51"
+                          : "white",
+                    }
+            }
           />
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"

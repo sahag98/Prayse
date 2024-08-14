@@ -12,7 +12,10 @@ import {
   FontAwesome,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { getSecondaryTextColorStyle } from "@lib/customStyles";
+import {
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
 import { useIsFocused, useNavigationState } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
@@ -182,25 +185,8 @@ const StreakSlider = ({
           }
         >
           <ModalView2
-            style={
-              actualTheme && actualTheme.Secondary
-                ? {
-                    backgroundColor: actualTheme.Secondary,
-                    width: "95%",
-                    gap: 10,
-                  }
-                : colorScheme === "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      width: "95%",
-                      gap: 10,
-                    }
-                  : {
-                      backgroundColor: "#b7d3ff",
-                      width: "95%",
-                      gap: 10,
-                    }
-            }
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="w-[95%] gap-3 bg-light-secondary dark:bg-dark-secondary"
           >
             <AntDesign
               className="self-end"
@@ -217,7 +203,6 @@ const StreakSlider = ({
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              // style={getMainTextColorStyle(actualTheme)}
               className="text-center font-inter font-bold text-[26px] text-[#2f2d51] dark:text-white"
             >
               Streaks
@@ -285,7 +270,7 @@ const StreakSlider = ({
             >
               Thank you for praising God with us every day.
             </Text>
-            <View className="w-full mt-[10px] gap-[10px]">
+            <View className="w-full mt-[10px] gap-2">
               {streak > GOAL ? null : (
                 <>
                   <Text
@@ -295,7 +280,11 @@ const StreakSlider = ({
                     Devotions Streak: {((streak / GOAL) * 100).toFixed(1)}%
                   </Text>
                   <ProgressBar
-                    style={{ height: 8, borderRadius: 10 }}
+                    style={{
+                      height: 6,
+                      borderRadius: 10,
+                      backgroundColor: "#d2d2d2",
+                    }}
                     progress={streak / GOAL}
                     color="green"
                   />

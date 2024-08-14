@@ -58,7 +58,7 @@ const YourThemesScreen = () => {
       MainTxt: "white",
       Primary: "#31CC98",
       Secondary: "#2E3347",
-      PrimaryTxt: "white",
+      PrimaryTxt: "#1A1F2A",
       SecondaryTxt: "white",
       Accent: "#b4b4b4",
       AccentTxt: "black",

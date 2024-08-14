@@ -724,7 +724,10 @@ const PrayerRoom = () => {
                 }
               />
             </TouchableOpacity>
-            <Text className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+            >
               Prayer Room
             </Text>
           </View>
@@ -736,8 +739,8 @@ const PrayerRoom = () => {
                 style={{
                   backgroundColor:
                     index === screenIndex
-                      ? actualTheme && actualTheme.Secondary
-                        ? actualTheme.Secondary
+                      ? actualTheme && actualTheme.Primary
+                        ? actualTheme.Primary
                         : colorScheme === "dark"
                           ? "white"
                           : "#2f2d51"
@@ -786,6 +789,7 @@ const PrayerRoom = () => {
                   className="p-4 rounded-full bg-light-primary dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
                   style={[
                     getPrimaryBackgroundColorStyle(actualTheme),
+                    actualTheme && { borderWidth: 0 },
                     animatedFadeInStyle,
                   ]}
                 >
@@ -793,8 +797,8 @@ const PrayerRoom = () => {
                     name="hands-pray"
                     size={55}
                     color={
-                      actualTheme && actualTheme.MainTxt
-                        ? actualTheme.MainTxt
+                      actualTheme && actualTheme.PrimaryTxt
+                        ? actualTheme.PrimaryTxt
                         : colorScheme == "dark"
                           ? "#a5c9ff"
                           : "#b7d3ff"
