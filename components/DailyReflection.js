@@ -44,11 +44,12 @@ const DailyReflection = ({
   );
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
-  useEffect(() => {
-    clearPreviousDayCompletion();
-  }, [isFocused, today]);
 
-  console.log("completed items: ", completedItems);
+  // console.log("today:", today);
+  useEffect(() => {
+    console.log("clear previous day");
+    clearPreviousDayCompletion();
+  }, [today]);
 
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
@@ -132,14 +133,13 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor:
-                        completedItems.some((completedItem) =>
-                          completedItem.items.find(
-                            (item) => item === PRAYER_ROOM_SCREEN
-                          )
-                        ) && theme === "dark"
-                          ? "#2f2d51"
-                          : "white",
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === PRAYER_ROOM_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
@@ -244,14 +244,13 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor:
-                        completedItems.some((completedItem) =>
-                          completedItem.items.find(
-                            (item) => item === VERSE_OF_THE_DAY_SCREEN
-                          )
-                        ) && theme === "dark"
-                          ? "#2f2d51"
-                          : "white",
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
@@ -282,14 +281,13 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor:
-                        completedItems.some((completedItem) =>
-                          completedItem.items.find(
-                            (item) => item === VERSE_OF_THE_DAY_SCREEN
-                          )
-                        ) && theme === "dark"
-                          ? "#2f2d51"
-                          : "white",
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
@@ -395,14 +393,13 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor:
-                        completedItems.some((completedItem) =>
-                          completedItem.items.find(
-                            (item) => item === DEVO_LIST_SCREEN
-                          )
-                        ) && theme === "dark"
-                          ? "#2f2d51"
-                          : "white",
+                      backgroundColor: completedItems.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === DEVO_LIST_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
