@@ -22,7 +22,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { deleteTheme, resetTheme, selectTheme } from "@redux/themeReducer";
+import { resetTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 
@@ -140,7 +140,7 @@ const YourThemesScreen = () => {
               style={getPrimaryTextColorStyle(actualTheme)}
               className="font-inter font-bold text-light-background dark:text-dark-primary"
             >
-              Go back to current theme
+              Go back to main theme
             </Text>
           </TouchableOpacity>
           <FlatList
@@ -230,14 +230,14 @@ const YourThemesScreen = () => {
 
                 <TouchableOpacity
                   style={getPrimaryBackgroundColorStyle(actualTheme)}
-                  onPress={() => dispatch(deleteTheme(item.id))}
+                  onPress={() => dispatch(selectTheme(item))}
                   className="w-full items-center mt-3 justify-center p-3 rounded-md bg-light-primary dark:bg-dark-accent"
                 >
                   <Text
                     style={getPrimaryTextColorStyle(actualTheme)}
                     className="font-inter font-bold text-light-background dark:text-dark-primary"
                   >
-                    Delete
+                    Select
                   </Text>
                 </TouchableOpacity>
               </TouchableOpacity>
