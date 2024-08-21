@@ -25,6 +25,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { cn } from "@lib/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -54,7 +55,9 @@ const PrayerGroupScreen = () => {
   const [hasAnnounced, setHasAnnounced] = useState(false);
   const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
+
   const [channel, setChannel] = useState();
+  const [reactionChannel, setReactionChannel] = useState();
   const [isNotifyVisible, setIsNotifyVisible] = useState(false);
   const groupId = params?.group_id;
   const { colorScheme } = useColorScheme();
@@ -370,7 +373,10 @@ const PrayerGroupScreen = () => {
               borderBottomColor: actualTheme.Secondary,
             }
           }
-          className="justify-between border-b border-b-light-primary dark:border-b-dark-secondary p-2 w-full"
+          className={cn(
+            "justify-between border-b border-b-light-primary dark:border-b-dark-secondary p-2 w-full transition-all",
+            prayerToReact && "opacity-50",
+          )}
         >
           <View className="flex-row">
             <Link href={`/${COMMUNITY_SCREEN}`}>
@@ -440,7 +446,7 @@ const PrayerGroupScreen = () => {
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-medium text-sm text-light-primary dark:text-dark-primary"
+              className="font-inter font-bold text-sm text-light-primary dark:text-dark-primary"
             >
               {currentGroup?.code}
             </Text>
@@ -452,6 +458,7 @@ const PrayerGroupScreen = () => {
             theme={colorScheme}
             prayerToReact={prayerToReact}
             setPrayerToReact={setPrayerToReact}
+            setReactionChannel={setReactionChannel}
             actualTheme={actualTheme}
             currentUser={currentUser}
             onlineUsers={onlineUsers}
@@ -487,7 +494,11 @@ const PrayerGroupScreen = () => {
         /> */}
         <BottomModal
           handlePresentModalPress={handleOpenBottomModal}
+          setPrayerToReact={setPrayerToReact}
           prayerToReact={prayerToReact}
+          reactionChannel={reactionChannel}
+          supabase={supabase}
+          currentUser={currentUser}
           bottomSheetModalRef={bottomSheetModalRef}
         />
       </PrayerContainer>

@@ -33,13 +33,13 @@ const YourThemesScreen = () => {
     {
       id: 1,
       Bg: "white",
-      MainTxt: "black",
-      Primary: "black",
+      MainTxt: "#212121",
+      Primary: "#212121",
       Secondary: "#efefef",
       PrimaryTxt: "white",
-      SecondaryTxt: "black",
+      SecondaryTxt: "#212121",
       Accent: "#b4b4b4",
-      AccentTxt: "black",
+      AccentTxt: "#212121",
     },
     {
       id: 2,

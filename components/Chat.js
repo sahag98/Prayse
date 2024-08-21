@@ -17,10 +17,12 @@ import {
   getMainTextColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { cn } from "@lib/utils";
 
 const Chat = ({
   prayerToReact,
   setPrayerToReact,
+  setReactionChannel,
   handleOpenBottomModal,
   theme,
   actualTheme,
@@ -30,7 +32,6 @@ const Chat = ({
   groupMessages,
   setGroupMessages,
   flatListRef,
-
   supabase,
   currGroup,
   setRefreshMsgLikes,
@@ -42,15 +43,19 @@ const Chat = ({
   sendMessage,
 }) => {
   return (
-    <View className="flex-1">
+    <View
+      className={cn("flex-1 transition-all", prayerToReact && "opacity-50")}
+    >
       <View
         style={getMainBackgroundColorStyle(actualTheme)}
         className="flex-row items-center bg-light-background dark:bg-dark-background self-center px-3 py-1 justify-center rounded-full mb-3  shadow-sm gap-1 shadow-green-400"
       >
         <Octicons name="dot-fill" size={24} color="green" />
-        <Text className="font-inter text-sm text-light-primary dark:text-dark-primary">
-          {onlineUsers.length} User{onlineUsers.length > 1 ? "s " : " "}
-          Online
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter text-sm text-light-primary dark:text-dark-primary"
+        >
+          User's Online ({onlineUsers.length})
         </Text>
       </View>
       <View className="flex-1 px-4 w-full relative">
@@ -106,6 +111,7 @@ const Chat = ({
                         theme={theme}
                         handleOpenBottomModal={handleOpenBottomModal}
                         prayerToReact={prayerToReact}
+                        setReactionChannel={setReactionChannel}
                         setPrayerToReact={setPrayerToReact}
                         actualTheme={actualTheme}
                         currentUser={currentUser}

@@ -1,30 +1,62 @@
-import React, { useCallback, useMemo } from "react";
+//@ts-nocheck
+
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { fetchLikes, fetchPraises } from "@functions/reactions/FetchReactions";
+import { toggleLike, togglePraise } from "@functions/reactions/ToogleReactions";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { cn } from "@lib/utils";
 
 const BottomModal = ({
   bottomSheetModalRef,
+  reactionChannel,
+  currentUser,
+  supabase,
   handlePresentModalPress,
+  setPrayerToReact,
   prayerToReact,
 }: any) => {
-  //   console.log(prayerToReact);
+  const [likes, setLikes] = useState();
+  const [praises, setPraises] = useState();
+  const [isLiking, setIsLiking] = useState(false);
+  const [isPraising, setIsPraising] = useState(false);
+  useEffect(() => {
+    async function Load() {
+      if (prayerToReact) {
+        const likesArray = await fetchLikes(prayerToReact?.id, supabase);
+        const praisesArray = await fetchPraises(prayerToReact?.id, supabase);
+        setLikes(likesArray);
+        setPraises(praisesArray);
+      }
+    }
+    Load();
+  }, [prayerToReact, isLiking, isPraising]);
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
 
   // callbacks
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
+
+    if (index === -1) {
+      setPrayerToReact(null);
+    }
   }, []);
+
+  const isLikedByMe = !!likes?.find((like) => like.user_id === currentUser.id);
+  const isPraisedByMe = !!praises?.find(
+    (praise) => praise.user_id === currentUser.id,
+  );
 
   // renders
   return (
@@ -32,7 +64,7 @@ const BottomModal = ({
       <View>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
+          index={0}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
         >
@@ -53,15 +85,59 @@ const BottomModal = ({
             <Text className="font-inter text-light-primary dark:text-dark-background">
               {prayerToReact?.message}
             </Text>
-            <View className="flex-row items-center gap-3">
-              <TouchableOpacity className="bg-gray-100 items-center flex-row gap-2 px-2 py-1 rounded-xl">
+            <View className="flex-row items-center gap-4">
+              <TouchableOpacity
+                disabled={isLikedByMe}
+                onPress={() => {
+                  toggleLike(
+                    prayerToReact.id,
+                    prayerToReact.profiles.expoToken,
+                    prayerToReact.message,
+                    supabase,
+                    setLikes,
+                    likes,
+                    currentUser.id,
+                    reactionChannel,
+                  );
+                  setIsLiking(true);
+                }}
+                className={cn(
+                  "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
+                  isLikedByMe && "bg-green-300",
+                )}
+              >
                 <Text className="font-inter">🙏</Text>
-                <AntDesign name="pluscircleo" size={18} color="#2f2d51" />
+                <AntDesign
+                  name={isLikedByMe ? "check" : "pluscircleo"}
+                  size={18}
+                  color="#2f2d51"
+                />
               </TouchableOpacity>
 
-              <TouchableOpacity className="bg-gray-100 flex-row gap-2 items-center px-2 py-1 rounded-xl">
+              <TouchableOpacity
+                onPress={() =>
+                  togglePraise(
+                    prayerToReact.id,
+                    prayerToReact.profiles.expoToken,
+                    prayerToReact.message,
+                    supabase,
+                    setPraises,
+                    praises,
+                    currentUser.id,
+                    reactionChannel,
+                  )
+                }
+                className={cn(
+                  "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
+                  isPraisedByMe && "bg-green-300",
+                )}
+              >
                 <Text className=" font-inter">🙌</Text>
-                <AntDesign name="pluscircleo" size={18} color="#2f2d51" />
+                <AntDesign
+                  name={isPraisedByMe ? "check" : "pluscircleo"}
+                  size={18}
+                  color="#2f2d51"
+                />
               </TouchableOpacity>
             </View>
           </BottomSheetView>
