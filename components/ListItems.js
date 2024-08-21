@@ -29,8 +29,11 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import PrayerTabs from "./PrayerTabs";
+import { cn } from "@lib/utils";
 
 const ListItems = ({
+  prayer,
   actualTheme,
   colorScheme,
   pickedPrayer,
@@ -40,6 +43,7 @@ const ListItems = ({
   folderId,
 }) => {
   const theme = useSelector((state) => state.user.theme);
+
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
@@ -67,21 +71,21 @@ const ListItems = ({
   const Praise = "Praise";
   const Other = "Other";
 
-  const selected = [All, General, People, Personal, Praise, Other];
+  const titles = ["Active", "Answered", "Archived"];
 
-  const [status, setStatus] = useState(selected[0]);
+  const [activeTab, setActiveTab] = useState(titles[0]);
 
-  const filteredList = prayers
-    .filter((item) => item.category === status)
-    .filter((item) => (search !== "" ? item.prayer.includes(search) : true));
+  const filteredList = prayers.filter((item) => item.status === activeTab);
 
-  const list = prayers.filter((item) =>
-    search !== "" ? item.prayer.includes(search) : true
+  const list = prayers.filter(
+    (item) => item.status === "Active" || !item.status
   );
+
+  console.log("list: ", list);
+  console.log("filteredList: ", filteredList);
 
   const renderItem = ({ item }) => {
     const RowText = TodoText;
-    const categoryItem = item.category;
 
     const addReminder = (item) => {
       navigation.navigate(TEST_SCREEN, {
@@ -151,89 +155,6 @@ const ListItems = ({
                   Reminder
                 </Text>
               </TouchableOpacity>
-              <View className="flex-row items-center gap-4">
-                {categoryItem === "General" && (
-                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#ffdaa5]">
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem === "People" && (
-                  <TodoCategory
-                    style={
-                      actualTheme &&
-                      actualTheme.SecondaryTxt && {
-                        backgroundColor: actualTheme.SecondaryTxt,
-                      }
-                    }
-                    className="py-2 px-3 justify-center items-center rounded-md bg-light-primary dark:bg-dark-accent"
-                  >
-                    <Text
-                      style={
-                        actualTheme &&
-                        actualTheme.Secondary && {
-                          color: actualTheme.Secondary,
-                        }
-                      }
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem === "Praise" && (
-                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#65FFA2]">
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem === "Personal" && (
-                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#FF5858]">
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem === "Other" && (
-                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-white">
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                {categoryItem === "None" && (
-                  <TodoCategory className="py-2 px-3 justify-center items-center rounded-md bg-[#8C8C8C]">
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-sm text-light-primary dark:text-dark-background"
-                    >
-                      {item.category}
-                    </Text>
-                  </TodoCategory>
-                )}
-                <View className="flex-row items-center">
-                  <TodoDate
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="text-light-primary font-inter dark:text-dark-primary"
-                  >
-                    {item.date.split(",")[0]}
-                  </TodoDate>
-                </View>
-              </View>
             </View>
           </>
         </ListView>
@@ -246,44 +167,53 @@ const ListItems = ({
   }
 
   return (
-    <>
+    <View className={cn(prayer && "opacity-50", "transition-all")}>
+      <View className="flex-row items-center my-5 gap-5">
+        <PrayerTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          titles={["Active", "Answered", "Archived"]}
+          actualTheme={actualTheme}
+          colorScheme={colorScheme}
+        />
+        {/* <PrayerTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          title="Answered"
+          actualTheme={actualTheme}
+        />
+        <PrayerTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          title="Archived"
+          actualTheme={actualTheme}
+        /> */}
+      </View>
       {prayers.length === 0 && (
         <View className="flex-1 items-center justify-center mt-20 gap-2">
-          <FontAwesome
-            name="list-alt"
-            size={50}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-          <TodoText
-            style={getMainTextColorStyle(actualTheme)}
-            className="text-center font-inter font-medium text-light-primary dark:text-dark-primary"
+          <View
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
           >
-            No prayers added yet!
-          </TodoText>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="text-center text-2xl font-inter font-semibold text-light-primary dark:text-dark-primary"
+            >
+              Your prayer list is empty.
+            </Text>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="text-left font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+            >
+              Tap the + button to add a prayer to your list and be able to
+              recieve prayer reminders..
+            </Text>
+          </View>
         </View>
       )}
-      <CategoryTabs
-        actualTheme={actualTheme}
-        theme={colorScheme}
-        prayerList={prayers}
-        selected={selected}
-        status={status}
-        setStatus={setStatus}
-      />
+
       {prayers.length !== 0 && (
         <>
-          <SearchBar
-            actualTheme={actualTheme}
-            theme={colorScheme}
-            search={search}
-            setSearch={setSearch}
-          />
           {loading == true && (
             <View className="flex-1 justify-center items-center self-center z-50">
               <LottieView
@@ -296,7 +226,7 @@ const ListItems = ({
           )}
           {loading === false && (
             <FlatList
-              data={status === "All" ? list : filteredList}
+              data={activeTab === "Active" ? list : filteredList}
               keyExtractor={(e, i) => i.toString()}
               onEndReachedThreshold={0}
               scrollEventThrottle={16}
@@ -308,7 +238,7 @@ const ListItems = ({
           )}
         </>
       )}
-    </>
+    </View>
   );
 };
 

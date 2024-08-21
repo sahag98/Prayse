@@ -37,8 +37,16 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { cn } from "@lib/utils";
 
-const Header = ({ actualTheme, colorScheme, folderName, folderId, theme }) => {
+const Header = ({
+  actualTheme,
+  colorScheme,
+  folderName,
+  folderId,
+  theme,
+  prayer,
+}) => {
   const [isShowingModal, setIsShowingModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -89,7 +97,12 @@ const Header = ({ actualTheme, colorScheme, folderName, folderId, theme }) => {
   return (
     <>
       <HeaderView>
-        <View className="flex-row items-center justify-between w-full">
+        <View
+          className={cn(
+            "flex-row items-center justify-between transition-all w-full",
+            prayer && "opacity-50"
+          )}
+        >
           <View className="flex-row items-center gap-2">
             <Link asChild href={`/${FOLDER_SCREEN}`}>
               <TouchableOpacity href={`/${FOLDER_SCREEN}`} className="mr-1">

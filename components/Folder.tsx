@@ -1,20 +1,10 @@
 //@ts-nocheck
 import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  SectionList,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  AntDesign,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
@@ -29,7 +19,6 @@ import { addFolder } from "../redux/folderReducer";
 import { PRAYER_ROOM_SCREEN } from "../routes";
 import { HeaderTitle } from "../styles/appStyles";
 
-import AnsweredPrayer from "./AnsweredPrayer";
 import FolderItem from "./FolderItem";
 
 const Folder = ({ colorScheme, navigation }) => {
@@ -45,7 +34,6 @@ const Folder = ({ colorScheme, navigation }) => {
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
-  const [folderClicked, setFolderClicked] = useState(true);
   const [idToDelete, setIdToDelete] = useState(null);
   const sections = [];
 
@@ -105,26 +93,6 @@ const Folder = ({ colorScheme, navigation }) => {
     // setFolderName("");
   }
 
-  const renderSectionHeader = ({ section }) => {
-    return (
-      <View>
-        <Text className="font-inter font-medium text-lg mb-2 dark:text-[#bebebe] text-[#36345e]">
-          {section.title}
-        </Text>
-      </View>
-    );
-  };
-
-  const renderAnsweredPrayers = ({ item }) => {
-    return (
-      <AnsweredPrayer
-        actualTheme={actualTheme}
-        item={item}
-        theme={colorScheme}
-      />
-    );
-  };
-
   const renderItem = ({ item }) => {
     return (
       <FolderItem
@@ -144,60 +112,20 @@ const Folder = ({ colorScheme, navigation }) => {
   return (
     <View className="relative flex-1">
       <View className="my-4 flex-row justify-between items-center">
-        {folderClicked ? (
-          <TouchableOpacity
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="w-1/2 dark:bg-[#3b3b3b] bg-[#d1e3ff] justify-center items-center rounded-xl py-3"
-            onPress={() => setFolderClicked(true)}
+        <TouchableOpacity
+          // style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="justify-center items-center rounded-xl py-3"
+          onPress={() => setFolderClicked(true)}
+        >
+          <HeaderTitle
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-bold font-inter text-lg text-light-primary dark:text-dark-primary"
           >
-            <HeaderTitle
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-bold font-inter text-lg text-light-primary dark:text-dark-primary"
-            >
-              Prayer Folders
-            </HeaderTitle>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            className="w-1/2 rounded-xl py-3 items-center justify-center"
-            onPress={() => setFolderClicked(true)}
-          >
-            <HeaderTitle
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-primary dark:text-[#979797]"
-            >
-              Prayer Folders
-            </HeaderTitle>
-          </TouchableOpacity>
-        )}
-        {folderClicked ? (
-          <TouchableOpacity
-            className="w-1/2 items-center"
-            onPress={() => setFolderClicked(false)}
-          >
-            <HeaderTitle
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-primary dark:text-dark-[#979797]"
-            >
-              Answered
-            </HeaderTitle>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="w-1/2 dark:bg-[#3b3b3b] bg-[#d1e3ff] justify-center items-center rounded-xl py-3"
-            onPress={() => setFolderClicked(false)}
-          >
-            <HeaderTitle
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
-            >
-              Answered
-            </HeaderTitle>
-          </TouchableOpacity>
-        )}
+            Prayer Folders
+          </HeaderTitle>
+        </TouchableOpacity>
       </View>
-      {folders.length === 0 && folderClicked && (
+      {folders.length === 0 && (
         <View className="flex-1 justify-center items-center gap-2 mt-28">
           <AntDesign
             name="folder1"
@@ -224,93 +152,74 @@ const Folder = ({ colorScheme, navigation }) => {
           </Text>
         </View>
       )}
-      {folderClicked && (
-        <>
-          <FlatList
-            data={folders}
-            keyExtractor={(item) => item.id}
-            onEndReachedThreshold={0}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            initialNumToRender={4}
-            windowSize={8}
-            renderItem={renderItem}
-            numColumns={2}
-            ListFooterComponent={() => <View className="h-20" />}
-            columnWrapperStyle={{
-              justifyContent: "space-between",
-              columnGap: 8,
-            }}
+
+      <FlatList
+        data={folders}
+        keyExtractor={(item) => item.id}
+        onEndReachedThreshold={0}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={4}
+        windowSize={8}
+        renderItem={renderItem}
+        numColumns={2}
+        ListFooterComponent={() => <View className="h-20" />}
+        columnWrapperStyle={{
+          justifyContent: "space-between",
+          columnGap: 8,
+        }}
+      />
+
+      <View className="absolute w-full flex-row justify-between items-center bottom-5 h-16">
+        <TouchableOpacity
+          style={getPrimaryBackgroundColorStyle(actualTheme)}
+          onPress={() => setAddVisible(true)}
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+        >
+          <AntDesign
+            name="plus"
+            size={24}
+            color={
+              actualTheme && actualTheme.PrimaryTxt
+                ? actualTheme.PrimaryTxt
+                : colorScheme === "dark"
+                  ? "#121212"
+                  : "white"
+            }
+          />
+          <Text
+            style={getPrimaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+          >
+            Create Folder
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          onPress={() => navigation.navigate(PRAYER_ROOM_SCREEN)}
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+        >
+          <MaterialCommunityIcons
+            name="hands-pray"
+            size={24}
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme === "dark"
+                  ? "#121212"
+                  : "#2f2d51"
+            }
           />
 
-          <View className="absolute w-full flex-row justify-between items-center bottom-5 h-16">
-            <TouchableOpacity
-              style={getPrimaryBackgroundColorStyle(actualTheme)}
-              onPress={() => setAddVisible(true)}
-              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
-            >
-              <AntDesign
-                name="plus"
-                size={24}
-                color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
-                    : colorScheme === "dark"
-                      ? "#121212"
-                      : "white"
-                }
-              />
-              <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
-              >
-                Create Folder
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              onPress={() => navigation.navigate(PRAYER_ROOM_SCREEN)}
-              className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
-            >
-              <MaterialCommunityIcons
-                name="hands-pray"
-                size={24}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : colorScheme === "dark"
-                      ? "#121212"
-                      : "#2f2d51"
-                }
-              />
-
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-background"
-              >
-                Prayer Room
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-      {!folderClicked && answeredPrayers.length !== 0 && (
-        <SectionList
-          sections={sections}
-          // keyExtractor={[(item, index) => item.id.toString()]}
-          renderSectionHeader={renderSectionHeader}
-          renderItem={renderAnsweredPrayers}
-        />
-      )}
-      {!folderClicked && answeredPrayers.length === 0 && (
-        <View className="items-center justify-center gap-2 flex-1">
-          <FontAwesome name="check-circle-o" size={70} color="#00b400" />
-          <Text className="font-inter font-medium text-lg dark:text-white text-[#2f2d51]">
-            Nothing on the list just yet.
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-lg text-light-primary dark:text-dark-background"
+          >
+            Prayer Room
           </Text>
-        </View>
-      )}
+        </TouchableOpacity>
+      </View>
 
       <AddFolderModal
         actualTheme={actualTheme}
