@@ -309,23 +309,6 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "message_likes",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE"
-              ) {
-                console.log("refresh payload");
-                setRefreshMsgLikes(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
               table: "questions",
             },
             (payload) => {

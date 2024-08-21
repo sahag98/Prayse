@@ -47,8 +47,6 @@ import {
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
-import globeBg from "../../assets/globe-bg.png";
-import questionBg from "../../assets/question-bg.png";
 import config from "../../config";
 import { useSupabase } from "../../context/useSupabase";
 import CreateGroupModal from "../../modals/CreateGroupModal";
@@ -375,13 +373,6 @@ const CommunityHomeScreen = () => {
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
           >
-            <Image
-              source={globeBg}
-              className="absolute bottom-0 right-0 w-24 h-24"
-              style={{
-                tintColor: "#ababac",
-              }}
-            />
             <View className="flex-row gap-3 items-center justify-between">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
@@ -441,13 +432,6 @@ const CommunityHomeScreen = () => {
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
           >
-            <Image
-              source={questionBg}
-              className="absolute bottom-0 right-0 w-24 h-24"
-              style={{
-                tintColor: "#ababac",
-              }}
-            />
             <View className="flex-row justify-between items-center">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
