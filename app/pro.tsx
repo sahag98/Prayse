@@ -106,7 +106,7 @@ const ProScreen = () => {
         <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary"
+            className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary dark:bg-dark-secondary"
           >
             <MaterialCommunityIcons
               name="brush-variant"
