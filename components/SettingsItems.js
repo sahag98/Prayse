@@ -18,7 +18,7 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
             key={option.id}
             onPress={() => Linking.openURL(option.link)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between mb-3"
+            className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between "
           >
             <View className="flex-row items-center">
               {option.icon}
@@ -47,7 +47,7 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
           <Link href={`/${option.screen}`} key={option.id}>
             <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between mb-3"
+              className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between "
             >
               <View className="flex-row items-center">
                 {option.icon}

@@ -138,7 +138,7 @@ const YourThemesScreen = () => {
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-background dark:text-dark-primary"
+              className="font-inter font-bold text-light-background dark:text-dark-background"
             >
               Go back to main theme
             </Text>
@@ -153,12 +153,12 @@ const YourThemesScreen = () => {
               <TouchableOpacity
                 onPress={() => dispatch(selectTheme(item))}
                 style={getSecondaryBackgroundColorStyle(actualTheme)}
-                className="bg-light-secondary w-[48%] mb-3 p-3 gap-3 rounded-lg"
+                className="bg-light-secondary dark:bg-dark-secondary w-[48%] mb-3 p-3 gap-3 rounded-lg"
               >
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm  font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary  font-semibold"
                   >
                     Background
                   </Text>
@@ -170,7 +170,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
                   >
                     Primary
                   </Text>
@@ -182,7 +182,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter  font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
                   >
                     Secondary
                   </Text>
@@ -194,7 +194,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
                   >
                     Main Text
                   </Text>
@@ -206,7 +206,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
                   >
                     Primary Text
                   </Text>
@@ -218,7 +218,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm font-semibold"
+                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
                   >
                     Secondary Text
                   </Text>

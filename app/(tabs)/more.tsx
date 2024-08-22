@@ -129,44 +129,44 @@ const MoreScreen = () => {
       title: "Privacy Policy",
       link: "https://www.prayse.app/privacy",
     },
-    {
-      id: 5,
-      icon: (
-        <MaterialCommunityIcons
-          name="email-edit-outline"
-          className="mr-3"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "Contact Developer",
-      link: "mailto:arzsahag@gmail.com",
-    },
-    {
-      id: 6,
-      icon: (
-        <AntDesign
-          name="instagram"
-          className="mr-3"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "Follow us on Instagram",
-      link: "https://instagram.com/prayse.app",
-    },
+    // {
+    //   id: 5,
+    //   icon: (
+    //     <MaterialCommunityIcons
+    //       name="email-edit-outline"
+    //       className="mr-3"
+    //       size={24}
+    //       color={
+    //         actualTheme && actualTheme.SecondaryTxt
+    //           ? actualTheme.SecondaryTxt
+    //           : colorScheme === "dark"
+    //             ? "white"
+    //             : "#2f2d51"
+    //       }
+    //     />
+    //   ),
+    //   title: "Contact Developer",
+    //   link: "mailto:arzsahag@gmail.com",
+    // },
+    // {
+    //   id: 6,
+    //   icon: (
+    //     <AntDesign
+    //       name="instagram"
+    //       className="mr-3"
+    //       size={24}
+    //       color={
+    //         actualTheme && actualTheme.SecondaryTxt
+    //           ? actualTheme.SecondaryTxt
+    //           : colorScheme === "dark"
+    //             ? "white"
+    //             : "#2f2d51"
+    //       }
+    //     />
+    //   ),
+    //   title: "Follow us on Instagram",
+    //   link: "https://instagram.com/prayse.app",
+    // },
   ];
 
   return (
@@ -174,50 +174,66 @@ const MoreScreen = () => {
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
-      <View className="flex-row justify-between items-center mb-3">
+      <View className="flex-row justify-between items-center mb-4">
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter font-bold text-light-primary dark:text-dark-primary"
         >
           More
         </HeaderTitle>
-        <TouchableOpacity
-          onPress={() => Linking.openURL("https://www.buymeacoffee.com/prayse")}
-          style={getPrimaryBackgroundColorStyle(actualTheme)}
-          className="flex-row items-center justify-center gap-3 p-2 rounded-lg bg-light-primary dark:bg-dark-accent"
-        >
-          <AntDesign name="hearto" size={24} color="#DE3163" />
-          <Text
-            style={getPrimaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-light-background dark:text-dark-background"
-          >
-            Give
-          </Text>
-        </TouchableOpacity>
       </View>
-      <ScrollView className="pt-3" showsVerticalScrollIndicator={false}>
+
+      <ScrollView
+        contentContainerStyle={{ gap: 10 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className=" bg-light-secondary mb-6 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
+        >
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
+          >
+            Donate
+          </Text>
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter leading-6 text-lg text-light-primary dark:text-dark-primary"
+          >
+            Prayse is and will always be free. By donating, you support us to
+            keep working on this app, and to further our mission in spreading
+            the importance of prayer in everyone's walk with God.
+          </Text>
+          <TouchableOpacity
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
+          >
+            <Text
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+            >
+              Donate
+            </Text>
+          </TouchableOpacity>
+        </View>
         <SettingsItems
           actualTheme={actualTheme}
           options={options}
           theme={colorScheme}
         />
 
-        <TouchableOpacity
-          onPress={() => {
-            if (Platform.OS === "ios") {
-              giveFeedback("ios");
-            } else if (Platform.OS === "android") {
-              giveFeedback("android");
-            }
-          }}
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between mb-3"
-        >
-          <View className="flex-row items-center">
-            <MaterialIcons
-              name="feedback"
+        <View className="flex-row justify-around mt-5 items-center">
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL("mailto:prayse.app@gmail.com");
+            }}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"
+          >
+            <MaterialCommunityIcons
+              name="email-edit-outline"
               size={24}
-              className="mr-3"
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -226,25 +242,73 @@ const MoreScreen = () => {
                     : "#2f2d51"
               }
             />
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
-            >
-              Feedback
-            </Text>
-          </View>
-          <AntDesign
-            name="right"
-            size={14}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL("https://instagram.com/prayse.app");
+            }}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"
+          >
+            <AntDesign
+              name="instagram"
+              size={24}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS === "ios") {
+                giveFeedback("ios");
+              } else if (Platform.OS === "android") {
+                giveFeedback("android");
+              }
+            }}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"
+          >
+            <MaterialIcons
+              name="feedback"
+              size={24}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
+        </View>
+        <View className="justify-center gap-1  items-center my-4">
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter text-lg mb-1 text-light-primary dark:text-dark-primary"
+          >
+            Made with 🙏 by Sahag
+          </Text>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter text-sm text-light-primary dark:text-dark-primary"
+          >
+            "Be careful for nothing; but in every thing by prayer and
+            supplication with thanksgiving let your requests be made known unto
+            God. And the peace of God, which passeth all understanding, shall
+            keep your hearts and minds through Christ Jesus."
+          </Text>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter self-end font-medium text-sm text-light-primary dark:text-dark-primary"
+          >
+            - Philippians 4:6-7
+          </Text>
+        </View>
       </ScrollView>
     </Container>
   );
