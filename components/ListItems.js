@@ -176,18 +176,6 @@ const ListItems = ({
           actualTheme={actualTheme}
           colorScheme={colorScheme}
         />
-        {/* <PrayerTabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          title="Answered"
-          actualTheme={actualTheme}
-        />
-        <PrayerTabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          title="Archived"
-          actualTheme={actualTheme}
-        /> */}
       </View>
       {prayers.length === 0 && (
         <View className="flex-1 items-center justify-center mt-20 gap-2">

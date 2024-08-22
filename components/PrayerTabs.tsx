@@ -1,61 +1,94 @@
 import React, { useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
+  Easing,
   interpolateColor,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-const PrayerTabs = ({ actualTheme, titles, activeTab, setActiveTab }: any) => {
-  const animatedValue = useSharedValue(0);
+import { cn } from "@lib/utils";
+
+const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
+  const tab1Value = useSharedValue(0);
+  const tab2Value = useSharedValue(0);
+  const tab3Value = useSharedValue(0);
 
   useEffect(() => {
-    animatedValue.value = withTiming(titles.indexOf(activeTab), {
+    tab1Value.value = withTiming(activeTab === titles[0] ? 1 : 0, {
       duration: 300,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
+    });
+    tab2Value.value = withTiming(activeTab === titles[1] ? 1 : 0, {
+      duration: 300,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
+    });
+    tab3Value.value = withTiming(activeTab === titles[2] ? 1 : 0, {
+      duration: 300,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
     });
   }, [activeTab, titles]);
 
-  const animatedBorderStyle = useAnimatedStyle(() => {
-    const width = 100 / titles.length;
-    return {
-      left: `${animatedValue.value * width}%`,
-      width: `${width}%`,
-      height: 2,
-      position: "absolute",
-      bottom: 0,
-      backgroundColor: actualTheme.MainTxt,
-    };
-  });
+  const animatedStyle1 = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      tab1Value.value,
+      [0, 1],
+      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+    ),
+  }));
 
-  const animatedTextStyles = useDerivedValue(() => {
-    return titles.map((_: string, index: number) => ({
-      color: interpolateColor(
-        animatedValue.value,
-        [index - 0.5, index, index + 0.5],
-        ["grey", actualTheme.MainTxt, "grey"],
-      ),
-    }));
-  });
+  const animatedStyle2 = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      tab2Value.value,
+      [0, 1],
+      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+    ),
+  }));
+
+  const animatedStyle3 = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      tab3Value.value,
+      [0, 1],
+      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+    ),
+  }));
 
   return (
     <View className="flex-row relative">
-      {titles.map((title: string, index: number) => (
-        <TouchableOpacity
-          key={title}
-          onPress={() => setActiveTab(title)}
-          className="flex-1 pb-2"
+      <TouchableOpacity
+        onPress={() => setActiveTab(titles[0])}
+        className="flex-1 gap-2 pb-2"
+      >
+        <Animated.Text
+          style={animatedStyle1}
+          className={cn("font-inter font-semibold text-xl text-center")}
         >
-          <Animated.Text
-            style={animatedTextStyles.value[index]}
-            className="text-light-primary dark:text-dark-primary font-inter font-semibold text-xl text-center"
-          >
-            {title}
-          </Animated.Text>
-        </TouchableOpacity>
-      ))}
-      <Animated.View style={animatedBorderStyle} />
+          {titles[0]}
+        </Animated.Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setActiveTab(titles[1])}
+        className="flex-1 gap-2 pb-2"
+      >
+        <Animated.Text
+          style={animatedStyle2}
+          className={cn("font-inter font-semibold text-xl text-center")}
+        >
+          {titles[1]}
+        </Animated.Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setActiveTab(titles[2])}
+        className="flex-1 gap-2 pb-2"
+      >
+        <Animated.Text
+          style={animatedStyle3}
+          className={cn("font-inter font-semibold text-xl text-center")}
+        >
+          {titles[2]}
+        </Animated.Text>
+      </TouchableOpacity>
     </View>
   );
 };
