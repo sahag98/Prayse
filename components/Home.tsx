@@ -75,6 +75,10 @@ const Home = ({
     prayerBottomSheetModalRef.current?.present();
   };
 
+  const handleCloseBottomModal = () => {
+    prayerBottomSheetModalRef.current?.close();
+  };
+
   function pickedPrayer(prayer) {
     handleOpenBottomModal();
     setPrayer(prayer);
@@ -93,12 +97,9 @@ const Home = ({
   const [prayertoBeEdited, setPrayertoBeEdited] = useState(null);
 
   const handleTriggerEdit = (item) => {
+    console.log("prayer to edit:", item);
     setIsEditing(true);
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 500, // in milliseconds
-      useNativeDriver: true,
-    }).start();
+    handleCloseBottomModal();
     setTaskName("Edit");
     setSelectedEdit("");
     setIsBoxVisible(false);
@@ -153,7 +154,9 @@ const Home = ({
         />
         <PrayerBottomModal
           handlePresentModalPress={handleOpenBottomModal}
+          handleCloseBottomModal={handleCloseBottomModal}
           colorScheme={colorScheme}
+          prayer={prayer}
           setPrayer={setPrayer}
           actualTheme={actualTheme}
           prayerBottomSheetModalRef={prayerBottomSheetModalRef}

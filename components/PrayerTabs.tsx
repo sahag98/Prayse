@@ -10,10 +10,17 @@ import Animated, {
 
 import { cn } from "@lib/utils";
 
-const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
+const PrayerTabs = ({
+  titles,
+  activeTab,
+  setActiveTab,
+  actualTheme,
+  colorScheme,
+}: any) => {
   const tab1Value = useSharedValue(0);
   const tab2Value = useSharedValue(0);
   const tab3Value = useSharedValue(0);
+  const linePosition = useSharedValue(0);
 
   useEffect(() => {
     tab1Value.value = withTiming(activeTab === titles[0] ? 1 : 0, {
@@ -28,13 +35,27 @@ const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
       duration: 300,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
     });
+    linePosition.value = withTiming(
+      activeTab === titles[0] ? 0 : activeTab === titles[1] ? 1 : 2,
+      {
+        duration: 300,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
+      },
+    );
   }, [activeTab, titles]);
 
   const animatedStyle1 = useAnimatedStyle(() => ({
     color: interpolateColor(
       tab1Value.value,
       [0, 1],
-      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+      [
+        "rgb(156, 163, 175)",
+        actualTheme
+          ? actualTheme.MainTxt
+          : colorScheme === "dark"
+            ? "#a5c9ff"
+            : "#2f2d51",
+      ],
     ),
   }));
 
@@ -42,7 +63,14 @@ const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
     color: interpolateColor(
       tab2Value.value,
       [0, 1],
-      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+      [
+        "rgb(156, 163, 175)",
+        actualTheme
+          ? actualTheme.MainTxt
+          : colorScheme === "dark"
+            ? "#a5c9ff"
+            : "#2f2d51",
+      ],
     ),
   }));
 
@@ -50,8 +78,29 @@ const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
     color: interpolateColor(
       tab3Value.value,
       [0, 1],
-      ["rgb(156, 163, 175)", "rgb(59, 130, 246)"],
+      [
+        "rgb(156, 163, 175)",
+        actualTheme
+          ? actualTheme.MainTxt
+          : colorScheme === "dark"
+            ? "#a5c9ff"
+            : "#2f2d51",
+      ],
     ),
+  }));
+
+  const lineStyle = useAnimatedStyle(() => ({
+    left: `${linePosition.value * 33.33}%`,
+    width: "33.33%",
+    height: 3,
+    backgroundColor: actualTheme
+      ? actualTheme.MainTxt
+      : colorScheme === "dark"
+        ? "#a5c9ff"
+        : "#2f2d51",
+    position: "absolute",
+    bottom: 0,
+    transition: { duration: 300 },
   }));
 
   return (
@@ -89,6 +138,7 @@ const PrayerTabs = ({ titles, activeTab, setActiveTab }: any) => {
           {titles[2]}
         </Animated.Text>
       </TouchableOpacity>
+      <Animated.View style={lineStyle} />
     </View>
   );
 };

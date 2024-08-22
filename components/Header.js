@@ -179,7 +179,7 @@ const Header = ({
                         backgroundColor:
                           actualTheme && actualTheme.Secondary
                             ? actualTheme.Secondary
-                            : "rgba(33, 33, 33, 0.8)",
+                            : "rgba(33, 33, 33, 1)",
                       },
                     ]
                   : [
@@ -188,7 +188,7 @@ const Header = ({
                         backgroundColor:
                           actualTheme && actualTheme.Secondary
                             ? actualTheme.Secondary
-                            : "rgba(183, 211, 255,0.8)",
+                            : "rgba(183, 211, 255,1)",
                       },
                     ]
               }

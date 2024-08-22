@@ -45,6 +45,32 @@ export const prayerSlice = createSlice({
         (prayer) => prayer.folderId !== action.payload,
       );
     },
+    archivePrayer: (state, action) => {
+      state.prayer = state.prayer.map((prayer) =>
+        prayer.id === action.payload.id
+          ? {
+              ...prayer,
+              status:
+                prayer.status === "Active" || prayer.status === undefined
+                  ? "Archived"
+                  : "Active",
+            }
+          : prayer,
+      );
+    },
+    switchPrayerStatus: (state, action) => {
+      const currentDate = new Date().toLocaleDateString().split("T")[0];
+      state.prayer = state.prayer.map((prayer) =>
+        prayer.id === action.payload.id
+          ? {
+              ...prayer,
+              status:
+                prayer.status === "Active" || undefined ? "Answered" : "Active",
+              answeredDate: currentDate,
+            }
+          : prayer,
+      );
+    },
     editPrayer: (state, action) => {
       const newPrayers = [...state.prayer];
       const prayerIndex = state.prayer.findIndex(
@@ -59,6 +85,8 @@ export const prayerSlice = createSlice({
 export const {
   addPrayer,
   deletePrayer,
+  switchPrayerStatus,
+  archivePrayer,
   deletePrayerByFolderId,
   editPrayer,
   addAnswer,

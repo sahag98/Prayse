@@ -75,14 +75,24 @@ const ListItems = ({
 
   const [activeTab, setActiveTab] = useState(titles[0]);
 
-  const filteredList = prayers.filter((item) => item.status === activeTab);
-
-  const list = prayers.filter(
+  const answeredList = prayers.filter((item) => item.status === "Answered");
+  const archivedList = prayers.filter((item) => item.status === "Archived");
+  const activeList = prayers.filter(
     (item) => item.status === "Active" || !item.status
   );
 
-  console.log("list: ", list);
-  console.log("filteredList: ", filteredList);
+  const getFilteredList = () => {
+    switch (activeTab) {
+      case "Answered":
+        return answeredList;
+      case "Archived":
+        return archivedList;
+      default:
+        return activeList;
+    }
+  };
+
+  const filteredList = getFilteredList();
 
   const renderItem = ({ item }) => {
     const RowText = TodoText;
@@ -108,53 +118,67 @@ const ListItems = ({
                 {item.prayer}
               </RowText>
             </View>
-            {search.length === 0 && (
-              <TouchableOpacity
-                onPress={() => pickedPrayer(item)}
-                className="absolute top-2 right-1 p-2"
-              >
-                <Entypo
-                  name="dots-three-vertical"
-                  size={18}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : colorScheme == "dark"
-                        ? "white"
-                        : "#2F2D51"
-                  }
-                />
-              </TouchableOpacity>
-            )}
-            <View className="flex-row justify-between mt-8 items-center">
-              <TouchableOpacity
-                onPress={() => addReminder(item.prayer)}
-                style={
-                  actualTheme &&
-                  actualTheme.SecondaryTxt && {
-                    borderColor: actualTheme.SecondaryTxt,
-                  }
+
+            <TouchableOpacity
+              onPress={() => pickedPrayer(item)}
+              className="absolute top-2 right-1 p-2"
+            >
+              <Entypo
+                name="dots-three-vertical"
+                size={18}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme == "dark"
+                      ? "white"
+                      : "#2F2D51"
                 }
-                className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
-              >
-                <AntDesign
-                  name="pluscircleo"
-                  size={15}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : colorScheme === "dark"
-                        ? "#A5C9FF"
-                        : "#2f2d51"
+              />
+            </TouchableOpacity>
+
+            <View className="flex-row justify-between mt-8 items-center">
+              {item.status === "Answered" ? (
+                <View className="flex-row bg-green-300 px-2 py-1 rounded-md items-center">
+                  <Text className="font-inter font-medium text-light-primary dark:text-dark-primary">
+                    Answered on {item?.answeredDate}
+                  </Text>
+                </View>
+              ) : item.status === "Archived" ? (
+                <View className="flex-row bg-gray-300 px-2 py-1 rounded-md items-center">
+                  <Text className="font-inter font-medium text-light-primary dark:text-dark-primary">
+                    Archived
+                  </Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => addReminder(item.prayer)}
+                  style={
+                    actualTheme &&
+                    actualTheme.SecondaryTxt && {
+                      borderColor: actualTheme.SecondaryTxt,
+                    }
                   }
-                />
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                  className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
                 >
-                  Reminder
-                </Text>
-              </TouchableOpacity>
+                  <AntDesign
+                    name="pluscircleo"
+                    size={15}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "#A5C9FF"
+                          : "#2f2d51"
+                    }
+                  />
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                  >
+                    Reminder
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </>
         </ListView>
@@ -177,55 +201,48 @@ const ListItems = ({
           colorScheme={colorScheme}
         />
       </View>
-      {prayers.length === 0 && (
-        <View className="flex-1 items-center justify-center mt-20 gap-2">
-          <View
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
-          >
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-center text-2xl font-inter font-semibold text-light-primary dark:text-dark-primary"
-            >
-              Your prayer list is empty.
-            </Text>
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-left font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
-            >
-              Tap the + button to add a prayer to your list and be able to
-              recieve prayer reminders..
-            </Text>
-          </View>
-        </View>
-      )}
 
-      {prayers.length !== 0 && (
-        <>
-          {loading == true && (
-            <View className="flex-1 justify-center items-center self-center z-50">
-              <LottieView
-                source={require("../assets/4964-check-mark-success-animation.json")}
-                style={styles.animation}
-                autoPlay
-                resizeMode="none"
-              />
+      <FlatList
+        data={filteredList}
+        keyExtractor={(e, i) => i.toString()}
+        onEndReachedThreshold={0}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View className="flex-1 items-center justify-center mt-40 gap-2">
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
+            >
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-center text-2xl font-inter font-semibold text-light-primary dark:text-dark-primary"
+              >
+                Your
+                {activeTab === "Archived"
+                  ? " archive "
+                  : activeTab === "Answered"
+                    ? " answered list "
+                    : " prayer list "}
+                is empty.
+              </Text>
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-left font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+              >
+                {activeTab === "Archived"
+                  ? "When you archive a prayer, it will be moved to this section. You can re-add it to your prayer list by clicking on it and selecting 'Unarchive'."
+                  : activeTab === "Answered"
+                    ? "Mark a prayer as answered by clicking on the three dots on the left of an active prayer and select 'Mark as answered'."
+                    : "Tap the + button to add a prayer to your list and be able to recieve prayer reminders."}
+              </Text>
             </View>
-          )}
-          {loading === false && (
-            <FlatList
-              data={activeTab === "Active" ? list : filteredList}
-              keyExtractor={(e, i) => i.toString()}
-              onEndReachedThreshold={0}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              onScroll={onScroll}
-              renderItem={renderItem}
-              ListFooterComponent={() => <View className="h-20" />}
-            />
-          )}
-        </>
-      )}
+          </View>
+        )}
+        onScroll={onScroll}
+        renderItem={renderItem}
+        ListFooterComponent={() => <View className="h-20" />}
+      />
     </View>
   );
 };
