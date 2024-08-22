@@ -199,12 +199,29 @@ export const userSlice = createSlice({
         (entry) => entry?.date === yesterday,
       );
 
+      const currentDateIndex = state.completedItems.findIndex(
+        (entry) => entry?.date === currentDate,
+      );
+      console.log("dateIndex: ", dateIndex);
+      console.log("currentDateIndex: ", currentDateIndex);
       // const currentDateIndex = state.completedItems.findIndex(
       //   (entry) => entry?.date === currentDate,
       // );
 
       if (dateIndex >= 0) {
         state.completedItems[dateIndex].items.length = 0;
+      }
+
+      if (
+        dateIndex === -1 &&
+        state.completedItems.length > 0 &&
+        currentDateIndex === -1
+      ) {
+        console.log("no yesterday date but there are completed items.");
+        state.completedItems = [];
+        state.hasIncreasedDevoStreak = false;
+        state.devostreak = 0;
+        return;
       }
 
       const lastItemData =

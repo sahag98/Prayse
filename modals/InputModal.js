@@ -39,17 +39,13 @@ import {
 const InputModal = ({
   actualTheme,
   colorScheme,
-  categoryValue,
   setTaskName,
-  categorytoBeEdited,
   isEditing,
   setIsEditing,
-  setCategorytoBeEdited,
   taskName,
   isIOS,
   animatedValue,
   extended,
-  setCategoryValue,
   modalVisible,
   folderName,
   folderId,
@@ -75,7 +71,6 @@ const InputModal = ({
     setModalVisible(false);
     setIsEditing(false);
     setPrayerValue("");
-    setCategoryValue("");
   };
   const dispatch = useDispatch();
   const [fontsLoaded] = useFonts({
@@ -86,29 +81,6 @@ const InputModal = ({
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-
-  const data = [
-    {
-      key: "General",
-      value: "General",
-    },
-    {
-      key: "People",
-      value: "People",
-    },
-    {
-      key: "Personal",
-      value: "Personal",
-    },
-    {
-      key: "Praise",
-      value: "Praise",
-    },
-    {
-      key: "Other",
-      value: "Other",
-    },
-  ];
 
   const handleContentSizeChange = (event) => {
     if (event.nativeEvent.contentSize.height < 60) {
@@ -131,13 +103,13 @@ const InputModal = ({
       alert("Type in a prayer and try again.");
       return;
     }
-    if (!prayertoBeEdited && !categorytoBeEdited) {
+    if (!prayertoBeEdited) {
       dispatch(
         addPrayer({
           prayer: prayerValue,
           folder: folderName,
+          status: "Active",
           folderId,
-          category: categoryValue,
           date: new Date().toLocaleString(),
           id: uuid.v4(),
         })
@@ -148,19 +120,17 @@ const InputModal = ({
           prayer: prayerValue,
           folder: folderName,
           folderId,
-          category: categoryValue,
           date: prayertoBeEdited.date,
           id: prayertoBeEdited.id,
         })
       );
       setIsEditing(false);
-      setCategorytoBeEdited(null);
+
       setPrayertoBeEdited(null);
     }
     setModalVisible(false);
     setPrayerValue("");
     setIsEditing(false);
-    setCategoryValue("");
   };
 
   if (!fontsLoaded) {
@@ -169,18 +139,18 @@ const InputModal = ({
 
   return (
     <View style={{ position: "relative", flex: 1 }}>
-      <View style={styles.actionButtons}>
+      <View className="flex-row items-center justify-center mb-5 mt-auto">
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => {
             setModalVisible(true);
             setTaskName("Add");
           }}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-md shadow-gray-300 dark:shadow-none"
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-gray-300 dark:shadow-none"
         >
           <AntDesign
             name="plus"
-            size={24}
+            size={30}
             color={
               actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
@@ -189,12 +159,6 @@ const InputModal = ({
                   : "white"
             }
           />
-          <Text
-            style={getPrimaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
-          >
-            Add Prayer
-          </Text>
         </TouchableOpacity>
       </View>
 
@@ -238,11 +202,10 @@ const InputModal = ({
                 </View>
               </ModalIcon>
               <StyledInput
-                className="mt-3 items-center border border-light-primary dark:border-[#d2d2d2] self-center font-inter"
+                className="mt-3 min-h-32 max-h-56 items-center border border-light-primary dark:border-[#d2d2d2] self-center font-inter"
                 style={
                   actualTheme && actualTheme.SecondaryTxt
                     ? {
-                        height: inputHeight < 60 ? 60 : inputHeight,
                         borderWidth: 1,
                         color: actualTheme.SecondaryTxt,
                         borderColor: actualTheme.SecondaryTxt,
@@ -283,113 +246,11 @@ const InputModal = ({
                 className="my-2 self-end"
                 onPress={dismissKeyboard}
               >
-                <Text className="font-inter text-red-500 font-semibold">
-                  Dismiss Keyboard
+                <Text className="font-inter text-red-500 mt-1 font-medium">
+                  Close Keyboard
                 </Text>
               </TouchableOpacity>
-              {/* fontSize: 13, paddingVertical: 5, color: "black", fontFamily:
-              "Inter-Regular", */}
-              <Text className="mt-2 font-inter font-semibold">
-                Select a category (optional):
-              </Text>
-              <SelectList
-                placeholder="selectcategory"
-                setSelected={setCategoryValue}
-                data={data}
-                search={false}
-                defaultOption={
-                  isEditing
-                    ? { key: "None", value: categoryValue }
-                    : { key: "None", value: "None" }
-                }
-                fontFamily="Inter"
-                boxStyles={
-                  colorScheme === "dark"
-                    ? [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? {
-                              marginTop: 10,
-                              height: 50,
-                              alignItems: "center",
-                              borderColor: actualTheme.SecondaryTxt,
-                            }
-                          : styles.categoryDark,
-                      ]
-                    : [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? {
-                              marginTop: 10,
-                              height: 50,
-                              alignItems: "center",
-                              borderColor: actualTheme.SecondaryTxt,
-                            }
-                          : styles.category,
-                      ]
-                }
-                dropdownStyles={
-                  colorScheme === "dark"
-                    ? [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? {
-                              marginTop: 10,
-                              height: 50,
-                              borderColor: actualTheme.SecondaryTxt,
-                              height: 800,
-                            }
-                          : styles.dropdownDark,
-                      ]
-                    : [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? {
-                              marginTop: 10,
-                              height: 50,
-                              borderColor: actualTheme.SecondaryTxt,
-                              height: 800,
-                            }
-                          : styles.dropdown,
-                      ]
-                }
-                dropdownTextStyles={
-                  colorScheme === "dark"
-                    ? [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? { color: actualTheme.SecondaryTxt, padding: 10 }
-                          : styles.dropdownTextDark,
-                      ]
-                    : [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? { color: actualTheme.SecondaryTxt, padding: 10 }
-                          : styles.dropdownText,
-                      ]
-                }
-                inputStyles={
-                  colorScheme === "dark"
-                    ? [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? { color: actualTheme.SecondaryTxt }
-                          : styles.inputTextDark,
-                      ]
-                    : [
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? { color: actualTheme.SecondaryTxt }
-                          : styles.inputText,
-                      ]
-                }
-                arrowicon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    color={
-                      actualTheme && actualTheme.SecondaryTxt
-                        ? actualTheme.SecondaryTxt
-                        : colorScheme === "dark"
-                          ? "white"
-                          : "#2f2d51"
-                    }
-                  />
-                }
-                maxHeight="250"
-              />
+
               <ModalActionGroup>
                 <ModalAction color="white" onPress={handleCloseModal}>
                   <AntDesign
