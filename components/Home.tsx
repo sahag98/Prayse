@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { useColorScheme } from "nativewind";
-import { Animated, Platform, View } from "react-native";
+import { Animated, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import PrayerBottomModal from "@modals/PrayerBottomModal";
@@ -13,7 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import InputModal from "../modals/InputModal";
 import { PrayerContainer } from "../styles/appStyles";
 
-import BottomBox from "./BottomBox";
 import Header from "./Header";
 import ListItems from "./ListItems";
 
@@ -197,7 +196,7 @@ const Home = ({
           />
         )}
       </Animated.View>
-      {isBoxVisible && (
+      {/* {isBoxVisible && (
         <View
           style={{
             flex: 1,
@@ -224,7 +223,7 @@ const Home = ({
             setIsBoxVisible={setIsBoxVisible}
           />
         </View>
-      )}
+      )} */}
     </PrayerContainer>
   );
 };

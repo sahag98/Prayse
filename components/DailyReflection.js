@@ -49,7 +49,7 @@ const DailyReflection = ({
   useEffect(() => {
     console.log("clear previous day");
     clearPreviousDayCompletion();
-  }, [today]);
+  }, [isFocused, today]);
 
   function handleComplete(selected) {
     const currentDate = new Date().toLocaleDateString().split("T")[0];
