@@ -191,7 +191,7 @@ const ListItems = ({
   }
 
   return (
-    <View className={cn(prayer && "opacity-50", "transition-all")}>
+    <View className={cn(prayer && "opacity-50", "transition-all flex-1")}>
       <View className="flex-row items-center my-5 gap-5">
         <PrayerTabs
           activeTab={activeTab}
@@ -204,12 +204,13 @@ const ListItems = ({
 
       <FlatList
         data={filteredList}
+        contentContainerStyle={{ flex: 1 }}
         keyExtractor={(e, i) => i.toString()}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
-          <View className="flex-1 items-center justify-center mt-40 gap-2">
+          <View className="flex-1 items-center h-full justify-center mt-40 gap-2">
             <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
@@ -233,7 +234,7 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? "When you archive a prayer, it will be moved to this section. You can re-add it to your prayer list by clicking on it and selecting 'Unarchive'."
                   : activeTab === "Answered"
-                    ? "Mark a prayer as answered by clicking on the three dots on the left of an active prayer and select 'Mark as answered'."
+                    ? "Mark a prayer as answered by clicking on the three dots on the right side of an active prayer and select 'Mark as answered'."
                     : "Tap the + button to add a prayer to your list and be able to recieve prayer reminders."}
               </Text>
             </View>
