@@ -5,6 +5,7 @@ import * as Speech from "expo-speech";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
+  ScrollView,
   Share,
   Text,
   TouchableOpacity,
@@ -144,22 +145,44 @@ const VerseOfTheDayScreen = () => {
           Verse of the Day
         </HeaderTitle>
       </View>
-      <Text
-        style={getMainTextColorStyle(actualTheme)}
-        className="font-inter mb-3 leading-6 text-light-primary dark:text-dark-primary"
+      <ScrollView
+        contentContainerStyle={{ gap: 10 }}
+        showsVerticalScrollIndicator={false}
       >
-        Welcome to the Verse of the Day page! We hope to provide you with a
-        daily reminder of God's love, grace, and wisdom.
-      </Text>
-      <Link href={`/${FAVORITES_SCREEN}`}>
-        <View
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-4"
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter mb-3 leading-6 text-light-primary dark:text-dark-primary"
         >
-          <View className="flex-row items-center gap-2">
+          Welcome to the Verse of the Day page! We hope to provide you with a
+          daily reminder of God's love, grace, and wisdom.
+        </Text>
+        <Link href={`/${FAVORITES_SCREEN}`}>
+          <View
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-4"
+          >
+            <View className="flex-row items-center gap-2">
+              <AntDesign
+                name="staro"
+                size={26}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
+              />
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+              >
+                Favorites
+              </Text>
+            </View>
             <AntDesign
-              name="staro"
-              size={26}
+              name="right"
+              size={20}
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -168,112 +191,95 @@ const VerseOfTheDayScreen = () => {
                     : "#2f2d51"
               }
             />
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
-            >
-              Favorites
-            </Text>
           </View>
-          <AntDesign
-            name="right"
-            size={20}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-        </View>
-      </Link>
+        </Link>
 
-      <View
-        style={[
-          getMainBackgroundColorStyle(actualTheme),
-          actualTheme &&
-            actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
-        ]}
-        className="justify-center mt-3 bg-light-background border border-light-primary dark:border-dark-primary dark:bg-dark-background self-center rounded-lg p-3"
-      >
-        <Text
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter leading-7 text-light-primary dark:text-dark-primary"
+        <View
+          style={[
+            getMainBackgroundColorStyle(actualTheme),
+            actualTheme &&
+              actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
+          ]}
+          className="justify-center mt-3 bg-light-background border border-light-primary dark:border-dark-primary dark:bg-dark-background self-center rounded-lg p-3"
         >
-          {verse[0].verse}
-        </Text>
-        <View>
-          {verse[0] !=
-            "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="self-end font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
-            >
-              - {verse[0].chapter}
-            </Text>
-          )}
-          <View className="items-center flex-row justify-evenly mt-5">
-            <TouchableOpacity
-              onPress={() => onShare(verse[0].verse, verse[0].chapter)}
-              className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
-            >
-              <AntDesign
-                name="sharealt"
-                size={26}
-                color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
-                    : colorScheme === "dark"
-                      ? "#ebebeb"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => speak(verse[0].verse, verse[0].chapter)}
-              className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
-            >
-              <AntDesign
-                name="sound"
-                size={26}
-                color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
-                    : colorScheme === "dark"
-                      ? "#ebebeb"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
-            {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
-              <TouchableOpacity
-                disabled
-                className="flex-row w-[33.33%] h-full items-center justify-center"
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter leading-7 text-lg mb-2 text-light-primary dark:text-dark-primary"
+          >
+            {verse[0].verse}
+          </Text>
+          <View>
+            {verse[0] !=
+              "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="self-end font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
               >
-                <AntDesign name="staro" size={26} color="#bebe07" />
-              </TouchableOpacity>
-            ) : (
+                - {verse[0].chapter}
+              </Text>
+            )}
+            <View className="items-center flex-row justify-evenly mt-5">
               <TouchableOpacity
-                onPress={() => HandleFavorites(verse[0])}
-                className="flex-row w-[33.33%] h-full  items-center justify-center"
+                onPress={() => onShare(verse[0].verse, verse[0].chapter)}
+                className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
               >
                 <AntDesign
-                  name="staro"
+                  name="sharealt"
                   size={26}
                   color={
                     actualTheme && actualTheme.MainTxt
                       ? actualTheme.MainTxt
                       : colorScheme === "dark"
-                        ? "#aaaaaa"
+                        ? "#ebebeb"
                         : "#2f2d51"
                   }
                 />
               </TouchableOpacity>
-            )}
+              <TouchableOpacity
+                onPress={() => speak(verse[0].verse, verse[0].chapter)}
+                className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
+              >
+                <AntDesign
+                  name="sound"
+                  size={26}
+                  color={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : colorScheme === "dark"
+                        ? "#ebebeb"
+                        : "#2f2d51"
+                  }
+                />
+              </TouchableOpacity>
+              {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
+                <TouchableOpacity
+                  disabled
+                  className="flex-row w-[33.33%] h-full items-center justify-center"
+                >
+                  <AntDesign name="staro" size={26} color="#bebe07" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => HandleFavorites(verse[0])}
+                  className="flex-row w-[33.33%] h-full  items-center justify-center"
+                >
+                  <AntDesign
+                    name="staro"
+                    size={26}
+                    color={
+                      actualTheme && actualTheme.MainTxt
+                        ? actualTheme.MainTxt
+                        : colorScheme === "dark"
+                          ? "#aaaaaa"
+                          : "#2f2d51"
+                    }
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </Container>
   );
 };

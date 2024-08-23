@@ -189,7 +189,7 @@ const MoreScreen = () => {
       >
         <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className=" bg-light-secondary mb-6 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
+          className=" bg-light-secondary mb-1 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
