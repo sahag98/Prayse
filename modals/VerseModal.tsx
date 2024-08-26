@@ -1,7 +1,13 @@
 //@ts-nocheck
 
 import React from "react";
-import { ActivityIndicator, Modal, Text, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
@@ -23,7 +29,7 @@ const VerseModal = ({
       animationType="fade"
       transparent
       visible={verseModal}
-      onRequestClose={() => setVerseModal(null)}
+      onRequestClose={() => setVerseModal(false)}
     >
       <ModalContainer
         style={
@@ -37,8 +43,8 @@ const VerseModal = ({
           className="bg-light-secondary gap-2 w-5/6 dark:bg-dark-secondary"
         >
           <TouchableOpacity
-            onPress={() => setVerseModal(null)}
-            className="absolute right-2 top-2 p-2"
+            onPress={() => setVerseModal(false)}
+            className="absolute right-2  z-10 top-2 p-3"
           >
             <AntDesign
               name="close"
@@ -60,7 +66,15 @@ const VerseModal = ({
           </Text>
 
           {isLoadingVerse ? (
-            <ActivityIndicator />
+            <View className="justify-center gap-1 items-center">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary font-inter font-semibold text-lg dark:text-dark-primary"
+              >
+                Please wait...
+              </Text>
+              <ActivityIndicator />
+            </View>
           ) : (
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}

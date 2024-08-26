@@ -11,6 +11,7 @@ import folderReducer from "./folderReducer";
 import messageReducer from "./messageReducer";
 import notiReducer from "./notiReducer";
 import prayerReducer from "./prayerReducer";
+import proReducer from "./proReducer";
 import remindersReducer from "./remindersReducer";
 import themeReducer from "./themeReducer";
 import userReducer from "./userReducer";
@@ -19,6 +20,7 @@ const reducers = combineReducers({
   user: userReducer,
   folder: folderReducer,
   prayer: prayerReducer,
+  pro: proReducer,
   answered: answeredReducer,
   message: messageReducer,
   favorites: favoritesReducer,
@@ -36,6 +38,7 @@ const persistConfig = {
     "noti",
     "message",
     "prayer",
+    "pro",
     "answered",
     "favorites",
     "reminder",
