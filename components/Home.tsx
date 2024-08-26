@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { useColorScheme } from "nativewind";
-import { Animated, Platform } from "react-native";
+import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import PrayerBottomModal from "@modals/PrayerBottomModal";
@@ -130,27 +130,30 @@ const Home = ({
           navigation={navigation}
         />
 
-        <ListItems
-          prayer={prayer}
-          actualTheme={actualTheme}
-          colorScheme={colorScheme}
-          navigation={navigation}
-          prayerList={prayerList}
-          pickedPrayer={pickedPrayer}
-          answeredAlready={answeredAlready}
-          setAnsweredAlready={setAnsweredAlready}
-          loading={loading}
-          opacity={opacity}
-          setOpacity={setOpacity}
-          slideUpValue={slideUpValue}
-          setIsBoxVisible={setIsBoxVisible}
-          selectedEdit={selectedEdit}
-          setSelectedEdit={setSelectedEdit}
-          folderName={folderName}
-          folderId={folderId}
-          onScroll={onScroll}
-          handleTriggerEdit={handleTriggerEdit}
-        />
+        <View style={{ flex: 1 }}>
+          <ListItems
+            prayer={prayer}
+            actualTheme={actualTheme}
+            colorScheme={colorScheme}
+            navigation={navigation}
+            prayerList={prayerList}
+            pickedPrayer={pickedPrayer}
+            answeredAlready={answeredAlready}
+            setAnsweredAlready={setAnsweredAlready}
+            loading={loading}
+            opacity={opacity}
+            setOpacity={setOpacity}
+            slideUpValue={slideUpValue}
+            setIsBoxVisible={setIsBoxVisible}
+            selectedEdit={selectedEdit}
+            setSelectedEdit={setSelectedEdit}
+            folderName={folderName}
+            folderId={folderId}
+            onScroll={onScroll}
+            handleTriggerEdit={handleTriggerEdit}
+          />
+        </View>
+
         <PrayerBottomModal
           handlePresentModalPress={handleOpenBottomModal}
           handleCloseBottomModal={handleCloseBottomModal}

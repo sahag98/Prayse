@@ -138,8 +138,8 @@ const InputModal = ({
   }
 
   return (
-    <View className="relative">
-      <View className="flex-row items-center justify-center mb-5 mt-auto">
+    <View>
+      <View className="flex-row items-center justify-center mb-3 mt-auto">
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => {
