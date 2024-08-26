@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import LottieView from "lottie-react-native";
 import {
@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { TEST_SCREEN } from "../routes";
 import {
@@ -34,6 +34,7 @@ import { cn } from "@lib/utils";
 import { useSupabase } from "@context/useSupabase";
 import { addVerseToPrayer } from "@redux/prayerReducer";
 import VerseModal from "@modals/VerseModal";
+import { checkPrayerVerse } from "@redux/proReducer";
 
 const ListItems = ({
   prayer,
@@ -46,7 +47,7 @@ const ListItems = ({
   folderId,
 }) => {
   const dispatch = useDispatch();
-
+  const versesEnabled = useSelector((state) => state.pro.prayer_verses);
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
@@ -84,11 +85,12 @@ const ListItems = ({
 
   const answeredList = prayers.filter((item) => item.status === "Answered");
   const archivedList = prayers.filter((item) => item.status === "Archived");
+  const [verse, setVerse] = useState(null);
   const activeList = prayers.filter(
     (item) => item.status === "Active" || !item.status
   );
 
-  const [isLoadingVerse, setIsLoadingVerse] = useState(null);
+  const [isLoadingVerse, setIsLoadingVerse] = useState(false);
 
   const getFilteredList = () => {
     switch (activeTab) {
@@ -102,14 +104,15 @@ const ListItems = ({
   };
 
   async function getBibleVerse(item) {
-    console.log(item.id);
+    setVerseModal(true);
     if (item.verse) {
       console.log("verse exists");
+      setVerse(item.verse);
       return;
     }
 
     try {
-      setIsLoadingVerse(item.id);
+      setIsLoadingVerse(true);
       const { data } = await supabase.functions.invoke("get-verse", {
         body: JSON.stringify({
           prayer: item.prayer,
@@ -121,10 +124,11 @@ const ListItems = ({
           verse: data,
         })
       );
+      setVerse(data);
     } catch (error) {
       Alert.alert("Error", "There was an error getting the verse");
     } finally {
-      setIsLoadingVerse(null);
+      setIsLoadingVerse(false);
     }
   }
 
@@ -139,6 +143,7 @@ const ListItems = ({
         type: "Add",
       });
     };
+
     return (
       <>
         <ListView
@@ -155,7 +160,7 @@ const ListItems = ({
               </RowText>
             </View>
 
-            {isLoadingVerse === item.id && (
+            {/* {isLoadingVerse === item.id && (
               <View className="flex-row items-center mt-2 gap-2">
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
@@ -174,7 +179,7 @@ const ListItems = ({
                   }
                 />
               </View>
-            )}
+            )} */}
             {/* <VerseModal
               visible={verseModal}
               setVisible={setVerseModal}
@@ -183,14 +188,14 @@ const ListItems = ({
               colorScheme={colorScheme}
             /> */}
 
-            {item.verse && (
+            {/* {item.verse && (
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary mt-2 font-inter dark:text-dark-primary"
               >
                 {item.verse}
               </Text>
-            )}
+            )} */}
 
             <TouchableOpacity
               onPress={() => pickedPrayer(item)}
@@ -252,24 +257,26 @@ const ListItems = ({
                       Reminder
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => getBibleVerse(item)}
-                    style={
-                      actualTheme &&
-                      actualTheme.SecondaryTxt && {
-                        borderColor: actualTheme.SecondaryTxt,
+                  {versesEnabled && (
+                    <TouchableOpacity
+                      onPress={() => getBibleVerse(item)}
+                      style={
+                        actualTheme &&
+                        actualTheme.SecondaryTxt && {
+                          borderColor: actualTheme.SecondaryTxt,
+                        }
                       }
-                    }
-                    className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
-                  >
-                    <FontAwesome5 name="bible" size={22} color="black" />
-                    {/* <Text
+                      className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
+                    >
+                      <FontAwesome5 name="bible" size={22} color="black" />
+                      {/* <Text
                       style={getSecondaryTextColorStyle(actualTheme)}
                       className="font-inter font-medium text-light-primary dark:text-dark-accent"
                     >
                       Reminder
                     </Text> */}
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  )}
                 </View>
               )}
             </View>
@@ -285,6 +292,14 @@ const ListItems = ({
 
   return (
     <View className={cn(prayer && "opacity-50", "transition-all flex-1")}>
+      <VerseModal
+        verseModal={verseModal}
+        setVerseModal={setVerseModal}
+        isLoadingVerse={isLoadingVerse}
+        verse={verse}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+      />
       <View className="flex-row items-center my-5 gap-5">
         <PrayerTabs
           activeTab={activeTab}
