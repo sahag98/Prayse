@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { TEST_SCREEN } from "../routes";
@@ -31,6 +31,9 @@ import {
 } from "@lib/customStyles";
 import PrayerTabs from "./PrayerTabs";
 import { cn } from "@lib/utils";
+import { useSupabase } from "@context/useSupabase";
+import { addVerseToPrayer } from "@redux/prayerReducer";
+import VerseModal from "@modals/VerseModal";
 
 const ListItems = ({
   prayer,
@@ -42,7 +45,7 @@ const ListItems = ({
   loading,
   folderId,
 }) => {
-  const theme = useSelector((state) => state.user.theme);
+  const dispatch = useDispatch();
 
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
@@ -64,6 +67,10 @@ const ListItems = ({
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
 
+  const [verseModal, setVerseModal] = useState(false);
+
+  const { supabase } = useSupabase();
+
   const All = "All";
   const General = "General";
   const People = "People";
@@ -81,6 +88,8 @@ const ListItems = ({
     (item) => item.status === "Active" || !item.status
   );
 
+  const [isLoadingVerse, setIsLoadingVerse] = useState(null);
+
   const getFilteredList = () => {
     switch (activeTab) {
       case "Answered":
@@ -91,6 +100,33 @@ const ListItems = ({
         return activeList;
     }
   };
+
+  async function getBibleVerse(item) {
+    console.log(item.id);
+    if (item.verse) {
+      console.log("verse exists");
+      return;
+    }
+
+    try {
+      setIsLoadingVerse(item.id);
+      const { data } = await supabase.functions.invoke("get-verse", {
+        body: JSON.stringify({
+          prayer: item.prayer,
+        }),
+      });
+      dispatch(
+        addVerseToPrayer({
+          id: item.id,
+          verse: data,
+        })
+      );
+    } catch (error) {
+      Alert.alert("Error", "There was an error getting the verse");
+    } finally {
+      setIsLoadingVerse(null);
+    }
+  }
 
   const filteredList = getFilteredList();
 
@@ -107,21 +143,58 @@ const ListItems = ({
       <>
         <ListView
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary dark:bg-dark-secondary  relative"
+          className="bg-light-secondary dark:bg-dark-secondary relative"
         >
           <>
             <View className="flex-row items-center justify-between">
               <RowText
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
               >
                 {item.prayer}
               </RowText>
             </View>
 
+            {isLoadingVerse === item.id && (
+              <View className="flex-row items-center mt-2 gap-2">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="text-light-primary font-inter dark:text-dark-primary"
+                >
+                  Loading
+                </Text>
+                <ActivityIndicator
+                  size="small"
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "#A5C9FF"
+                        : "#2f2d51"
+                  }
+                />
+              </View>
+            )}
+            {/* <VerseModal
+              visible={verseModal}
+              setVisible={setVerseModal}
+              verse={item.verse}
+              actualTheme={actualTheme}
+              colorScheme={colorScheme}
+            /> */}
+
+            {item.verse && (
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary mt-2 font-inter dark:text-dark-primary"
+              >
+                {item.verse}
+              </Text>
+            )}
+
             <TouchableOpacity
               onPress={() => pickedPrayer(item)}
-              className="absolute top-2 right-1 p-2"
+              className="absolute top-1 right-0 p-2"
             >
               <Entypo
                 name="dots-three-vertical"
@@ -150,34 +223,54 @@ const ListItems = ({
                   </Text>
                 </View>
               ) : (
-                <TouchableOpacity
-                  onPress={() => addReminder(item.prayer)}
-                  style={
-                    actualTheme &&
-                    actualTheme.SecondaryTxt && {
-                      borderColor: actualTheme.SecondaryTxt,
+                <View className="flex-row items-center w-full justify-between">
+                  <TouchableOpacity
+                    onPress={() => addReminder(item.prayer)}
+                    style={
+                      actualTheme &&
+                      actualTheme.SecondaryTxt && {
+                        borderColor: actualTheme.SecondaryTxt,
+                      }
                     }
-                  }
-                  className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
-                >
-                  <AntDesign
-                    name="pluscircleo"
-                    size={15}
-                    color={
-                      actualTheme && actualTheme.SecondaryTxt
-                        ? actualTheme.SecondaryTxt
-                        : colorScheme === "dark"
-                          ? "#A5C9FF"
-                          : "#2f2d51"
-                    }
-                  />
-                  <Text
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                    className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
                   >
-                    Reminder
-                  </Text>
-                </TouchableOpacity>
+                    <AntDesign
+                      name="pluscircleo"
+                      size={15}
+                      color={
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? actualTheme.SecondaryTxt
+                          : colorScheme === "dark"
+                            ? "#A5C9FF"
+                            : "#2f2d51"
+                      }
+                    />
+                    <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                    >
+                      Reminder
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => getBibleVerse(item)}
+                    style={
+                      actualTheme &&
+                      actualTheme.SecondaryTxt && {
+                        borderColor: actualTheme.SecondaryTxt,
+                      }
+                    }
+                    className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
+                  >
+                    <FontAwesome5 name="bible" size={22} color="black" />
+                    {/* <Text
+                      style={getSecondaryTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                    >
+                      Reminder
+                    </Text> */}
+                  </TouchableOpacity>
+                </View>
               )}
             </View>
           </>
@@ -204,13 +297,13 @@ const ListItems = ({
 
       <FlatList
         data={filteredList}
-        contentContainerStyle={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }} // Increased bottom padding and added flexGrow
         keyExtractor={(e, i) => i.toString()}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
-          <View className="flex-1 items-center h-full justify-center mt-40 gap-2">
+          <View className="flex-1 items-center h-full justify-center gap-2">
             <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
@@ -242,7 +335,6 @@ const ListItems = ({
         )}
         onScroll={onScroll}
         renderItem={renderItem}
-        ListFooterComponent={() => <View className="h-20" />}
       />
     </View>
   );

@@ -35,6 +35,13 @@ export const prayerSlice = createSlice({
           : obj,
       );
     },
+    addVerseToPrayer: (state, action) => {
+      state.prayer = state.prayer.map((prayer) =>
+        prayer.id === action.payload.id
+          ? { ...prayer, verse: action.payload.verse }
+          : prayer,
+      );
+    },
     deletePrayer: (state, action) => {
       state.prayer = state.prayer.filter(
         (prayer) => prayer.id !== action.payload,
@@ -85,6 +92,7 @@ export const prayerSlice = createSlice({
 export const {
   addPrayer,
   deletePrayer,
+  addVerseToPrayer,
   switchPrayerStatus,
   archivePrayer,
   deletePrayerByFolderId,
