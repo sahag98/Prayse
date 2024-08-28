@@ -114,7 +114,7 @@ const ProScreen = () => {
       <View className="flex-row items-center gap-3">
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter text-primary dark:text-white font-semibold text-lg"
+          className="font-inter text-primary dark:text-white font-semibold text-xl"
         >
           Theme Customization
         </Text>
@@ -132,7 +132,7 @@ const ProScreen = () => {
           }
         />
       </View>
-      <View className="flex-row justify-between mt-1 w-full gap-3">
+      <View className="flex-row justify-between mt-2 w-full gap-3">
         <Link asChild href={`/${YOUR_THEMES_SCREEN}`}>
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
@@ -162,13 +162,13 @@ const ProScreen = () => {
       </View>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="mt-3 font-inter text-primary dark:text-white font-semibold text-lg"
+        className="mt-3 font-inter text-primary dark:text-white font-semibold text-xl"
       >
         Additional Features
       </Text>
       <View
         style={getSecondaryBackgroundColorStyle(actualTheme)}
-        className="rounded-lg flex-row w-full  items-center p-3 mt-1 bg-light-secondary gap-1 dark:bg-dark-secondary"
+        className="rounded-lg flex-row w-full  items-center p-3 mt-2 bg-light-secondary gap-1 dark:bg-dark-secondary"
       >
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}

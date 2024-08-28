@@ -203,7 +203,7 @@ const MoreScreen = () => {
           >
             Prayse is and will always be free. By donating, you support us to
             keep working on this app, and to further our mission in spreading
-            the importance of prayer in everyone's walk with God.
+            the importance of prayer in today's world.
           </Text>
           <TouchableOpacity
             style={getPrimaryBackgroundColorStyle(actualTheme)}

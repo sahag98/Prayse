@@ -405,7 +405,7 @@ export default function TestScreen() {
       className="flex-1 dark:bg-[#121212] bg-[#f2f7ff] justify-center items-center p-4"
     >
       <HeaderView style={{ justifyContent: "space-between", width: "100%" }}>
-        <View className="flex-row gap-1">
+        <View className="flex-row gap-2 items-center">
           <TouchableOpacity onPress={clearAll}>
             <AntDesign
               name="left"
@@ -675,9 +675,9 @@ export default function TestScreen() {
             </Text>
           </View>
           <Switch
-            trackColor={{ false: "#767577", true: "#767577" }}
-            thumbColor={isRepeat ? "#4eff4e" : "#f4f3f4"}
-            ios_backgroundColor="#797979"
+            trackColor={{ false: "grey", true: "green" }}
+            thumbColor={isRepeat ? "white" : "white"}
+            ios_backgroundColor="#bbbbbb"
             onValueChange={toggleSwitch}
             value={isRepeat}
           />

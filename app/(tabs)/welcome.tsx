@@ -171,6 +171,8 @@ const WelcomeScreen = () => {
     }
   };
 
+  console.log("load openings:", openings);
+
   useEffect(() => {
     doFadeInAnimation();
     loadIsFirstTime();

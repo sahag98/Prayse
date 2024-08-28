@@ -28,7 +28,9 @@ export default function TabLayout() {
       <StatusBar
         style={
           actualTheme &&
-          (actualTheme.Bg === "#0D0E32" || actualTheme.Bg === "#1A1F2A")
+          (actualTheme.Bg === "#0D0E32" ||
+            actualTheme.Bg === "#1A1F2A" ||
+            actualTheme.Bg === "#0C192F")
             ? "light"
             : colorScheme === "dark"
               ? "light"

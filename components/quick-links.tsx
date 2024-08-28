@@ -8,8 +8,8 @@ import { NewFeaturesModal } from "@modals/new-features-modal";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import {
   getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
-  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 
 const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
@@ -18,7 +18,7 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
   return (
     <TouchableOpacity
       onPress={() => setFeatureVisible(true)}
-      style={getPrimaryBackgroundColorStyle(actualTheme)}
+      style={getSecondaryBackgroundColorStyle(actualTheme)}
       className="w-full dark:bg-[#212121] mb-[5px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
     >
       <NewFeaturesModal
@@ -31,8 +31,8 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
           name="info"
           size={24}
           color={
-            actualTheme && actualTheme.PrimaryTxt
-              ? actualTheme.PrimaryTxt
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
               : theme === "dark"
                 ? "#f1d592"
                 : theme === "BlackWhite"
@@ -41,7 +41,7 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
           }
         />
         <Text
-          style={getPrimaryTextColorStyle(actualTheme)}
+          style={getSecondaryTextColorStyle(actualTheme)}
           className="dark:text-[#f1d592] text-[#bb8b18] ml-[10px] font-inter font-medium"
         >
           What's New in v9.5!
@@ -51,8 +51,8 @@ const VersionLink: React.FC<QuickLinksProps> = ({ theme, actualTheme }) => {
         name="right"
         size={18}
         color={
-          actualTheme && actualTheme.PrimaryTxt
-            ? actualTheme.PrimaryTxt
+          actualTheme && actualTheme.SecondaryTxt
+            ? actualTheme.SecondaryTxt
             : theme === "dark"
               ? "#f1d592"
               : "#bb8b18"
@@ -93,7 +93,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
         <VersionLink actualTheme={actualTheme} theme={theme} />
         {Platform.OS === "android" && (
           <TouchableOpacity
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="w-full dark:bg-dark-secondary mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
             onPress={() =>
               Linking.openURL(
@@ -106,15 +106,15 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
                 name="logo-google-playstore"
                 size={24}
                 color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
                     : theme === "dark"
                       ? "#d6d6d6"
                       : "#606060"
                 }
               />
               <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
+                style={getSecondaryTextColorStyle(actualTheme)}
                 className="font-inter dark:text-[#f0f0f0] text-[#606060] font-medium ml-[10px]"
               >
                 Check for Updates
@@ -124,8 +124,8 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
               name="right"
               size={18}
               color={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
                   : theme === "dark"
                     ? "#d6d6d6"
                     : "#606060"
@@ -135,7 +135,7 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
         )}
         {Platform.OS === "ios" && (
           <TouchableOpacity
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="w-full dark:bg-dark-secondary mb-[10px] rounded-lg bg-white px-[6px] py-3 justify-between items-center flex-row"
             onPress={() =>
               Linking.openURL(
@@ -148,15 +148,15 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
                 name="apple1"
                 size={24}
                 color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
                     : theme === "dark"
                       ? "#d6d6d6"
                       : "#606060"
                 }
               />
               <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
+                style={getSecondaryTextColorStyle(actualTheme)}
                 className="ml-[10px] font-inter font-medium dark:text-[#f0f0f0] text-[#606060]"
               >
                 Check for Updates
@@ -166,8 +166,8 @@ export const QuickLinks: React.FC<QuickLinksProps> = ({
               name="right"
               size={18}
               color={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
                   : theme === "dark"
                     ? "#d6d6d6"
                     : "#2f2d51"

@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import React, { useCallback, useMemo, useState } from "react";
-import { Text, TextInput, TouchableOpacity } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import {
@@ -21,11 +21,15 @@ import { cn } from "@lib/utils";
 const AddQuestionModal = ({
   actualTheme,
   colorScheme,
+  currentUser,
   setIsAddingQuestion,
+  supabase,
   questionBottomSheetModalRef,
 }: any) => {
   const [newQuestion, setNewQuestion] = useState("");
   const [isApproving, setIsApproving] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -38,15 +42,38 @@ const AddQuestionModal = ({
 
     if (index === -1) {
       setIsAddingQuestion(false);
+      setSuccess(false);
+      setError(null);
     }
   }, []);
 
-  function handleApproval() {
+  async function handleApproval() {
     if (newQuestion.length === 0) {
       console.log("Please enter a question");
-    } else {
+      return;
+    }
+    try {
       setIsApproving(true);
       console.log("handleApproval");
+
+      const { data, error } = await supabase.from("approvals").insert({
+        question: newQuestion,
+        user_id: currentUser?.id,
+        user_name: currentUser?.full_name,
+      });
+      console.log("data", data);
+      console.log("error", error);
+
+      if (!error) {
+        setSuccess(true);
+      } else {
+        setError(error);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsApproving(false);
+      setNewQuestion("");
     }
   }
 
@@ -125,6 +152,26 @@ const AddQuestionModal = ({
               Submit for Approval
             </Text>
           </TouchableOpacity>
+          {success && (
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary w-full dark:bg-dark-secondary p-4 rounded-lg"
+            >
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary font-inter text-lg font-bold dark:text-dark-primary"
+              >
+                Question submitted
+              </Text>
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary font-inter dark:text-dark-primary"
+              >
+                We will review your question and get back to you soon!
+              </Text>
+            </View>
+          )}
+          {error && <Text>Error submitting question</Text>}
         </BottomSheetView>
       </BottomSheetModal>
     </BottomSheetModalProvider>
