@@ -29,7 +29,14 @@ const QuestionListScreen = () => {
   const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
-  const { questions, answers, fetchQuestions, fetchAnswers } = useSupabase();
+  const {
+    questions,
+    answers,
+    currentUser,
+    fetchQuestions,
+    supabase,
+    fetchAnswers,
+  } = useSupabase();
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
@@ -142,7 +149,9 @@ const QuestionListScreen = () => {
       />
       <AddQuestionModal
         actualTheme={actualTheme}
+        supabase={supabase}
         colorScheme={colorScheme}
+        currentUser={currentUser}
         setIsAddingQuestion={setIsAddingQuestion}
         questionBottomSheetModalRef={questionBottomSheetModalRef}
       />

@@ -54,6 +54,17 @@ const YourThemesScreen = () => {
     },
     {
       id: 3,
+      Bg: "white",
+      MainTxt: "#333333",
+      Primary: "#FF7F50",
+      Secondary: "#ffd7c7",
+      PrimaryTxt: "white",
+      SecondaryTxt: "#333333",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+    {
+      id: 4,
       Bg: "#1A1F2A",
       MainTxt: "white",
       Primary: "#31CC98",
@@ -64,13 +75,24 @@ const YourThemesScreen = () => {
       AccentTxt: "black",
     },
     {
-      id: 4,
+      id: 5,
       Bg: "white",
       MainTxt: "#333333",
-      Primary: "#FF7F50",
-      Secondary: "#ffd7c7",
+      Primary: "#0156F2",
+      Secondary: "#e0ebff",
       PrimaryTxt: "white",
       SecondaryTxt: "#333333",
+      Accent: "#b4b4b4",
+      AccentTxt: "black",
+    },
+    {
+      id: 6,
+      Bg: "#0C192F",
+      MainTxt: "white",
+      Primary: "#0156F2",
+      Secondary: "#0E223F",
+      PrimaryTxt: "white",
+      SecondaryTxt: "white",
       Accent: "#b4b4b4",
       AccentTxt: "black",
     },
@@ -148,6 +170,7 @@ const YourThemesScreen = () => {
             numColumns={2}
             columnWrapperClassName=" justify-between"
             keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
             data={availableThemes}
             renderItem={({ item }) => (
               <TouchableOpacity

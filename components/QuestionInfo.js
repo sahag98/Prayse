@@ -22,6 +22,8 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
     (answer) => answer.question_id === item.id
   );
 
+  console.log(item);
+
   return (
     <TouchableOpacity
       onPress={() =>
