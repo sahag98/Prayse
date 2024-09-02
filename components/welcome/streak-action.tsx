@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import StreakSlider from "@components/StreakSlider";
 
+import { CheckReview } from "@hooks/useShowReview";
 import { getMainTextColorStyle } from "@lib/customStyles";
 import { increaseAppStreakCounter } from "@redux/userReducer";
 import { ActualTheme } from "@types/reduxTypes";
@@ -26,11 +27,17 @@ export const StreakAction: React.FC<StreakActionProps> = ({
   async function appStreak() {
     const today = new Date().toLocaleDateString("en-CA");
 
+    console.log("today", today);
+
     dispatch(increaseAppStreakCounter({ today }));
   }
 
   useEffect(() => {
     appStreak();
+
+    if (appstreak !== 0 && appstreak % 10 === 0) {
+      CheckReview();
+    }
   }, []);
 
   return (

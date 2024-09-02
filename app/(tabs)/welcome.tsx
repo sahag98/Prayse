@@ -6,7 +6,7 @@ import { useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import { Linking, Platform, View } from "react-native";
-import { Easing, useSharedValue, withTiming } from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,6 +23,7 @@ import { StreakAction } from "@components/welcome/streak-action";
 
 import { UpdateModal } from "@modals/update-modal";
 
+import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -137,13 +138,6 @@ const WelcomeScreen = () => {
 
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
-  const doFadeInAnimation = () => {
-    welcomeFadeIn.value = withTiming(1, {
-      duration: 2000,
-      easing: Easing.ease,
-    });
-  };
-
   const loadIsFirstTime = async () => {
     try {
       const hasIsFirstTime = await AsyncStorage.getItem("isFirstTime");
@@ -171,22 +165,9 @@ const WelcomeScreen = () => {
     }
   };
 
-  console.log("load openings:", openings);
-
   useEffect(() => {
-    doFadeInAnimation();
     loadIsFirstTime();
-    loadAndAddOpenings();
   }, []);
-
-  // Show donation modal on every 20th opening
-  useEffect(() => {
-    if (!openings || openings % 20 !== 0) {
-      return;
-    }
-
-    setDonationModal(true);
-  }, [openings]);
 
   // Register for push notifications
   useEffect(() => {
@@ -349,6 +330,7 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={colorScheme}
       />
+      <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       <ProBanner actualTheme={actualTheme} theme={colorScheme} />
       <NoticationsCard actualTheme={actualTheme} theme={colorScheme} />
       <QuestionOfTheWeek actualTheme={actualTheme} />

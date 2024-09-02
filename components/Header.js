@@ -105,7 +105,7 @@ const Header = ({
         >
           <View className="flex-row items-center gap-2">
             <Link asChild href={`/${FOLDER_SCREEN}`}>
-              <TouchableOpacity href={`/${FOLDER_SCREEN}`} className="mr-1">
+              <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
                 <Ionicons
                   name="chevron-back"
                   size={30}
