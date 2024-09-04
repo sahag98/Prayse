@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Moment from "moment";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ChatBubble from "react-native-chat-bubble";
 import Animated, {
   FadeIn,
@@ -10,7 +16,7 @@ import Animated, {
   withSequence,
   withSpring,
 } from "react-native-reanimated";
-
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useIsFocused } from "@react-navigation/native";
 
 import ReactionModal from "../modals/ReactionModal";
@@ -40,14 +46,23 @@ const GroupPrayerItem = ({
   const [isLoadingLikes, setIsLoadingLikes] = useState(false);
   const isFocused = useIsFocused();
 
+  const loadingSharedValue = useSharedValue();
+
   useEffect(() => {
     async function Load() {
       if (item) {
-        const likesArray = await fetchLikes(item.id, supabase);
-        const praisesArray = await fetchPraises(item.id, supabase);
+        try {
+          setIsLoadingLikes(true);
+          const likesArray = await fetchLikes(item.id, supabase);
+          const praisesArray = await fetchPraises(item.id, supabase);
 
-        setLikes(likesArray);
-        setPraises(praisesArray);
+          setLikes(likesArray);
+          setPraises(praisesArray);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoadingLikes(false);
+        }
       }
     }
 
@@ -69,12 +84,12 @@ const GroupPrayerItem = ({
 
       channel.on("broadcast", { event: "message" }, async ({ payload }) => {
         if (payload.type === "like") {
-          console.log("in like payload:", payload);
-          const likesArray = await fetchLikes(item.id, supabase);
-          setLikes(likesArray);
+          console.log("in like payload");
+
+          setLikes((likes) => [payload, ...likes]);
         } else if (payload.type === "praise") {
-          const praisesArray = await fetchPraises(item.id, supabase);
-          setPraises(praisesArray);
+          console.log("in praise prayload");
+          setPraises((praises) => [payload, ...praises]);
         }
       });
 
@@ -107,7 +122,7 @@ const GroupPrayerItem = ({
         setReactionChannel(undefined);
       };
     }
-  }, [currGroup?.id, currentUser.id, isFocused]);
+  }, [item?.id, currentUser.id, isFocused]);
 
   const notifyPraise = async (expoToken, item) => {
     const message = {
@@ -128,76 +143,6 @@ const GroupPrayerItem = ({
       },
     });
   };
-  const scale = useSharedValue(1);
-
-  // async function fetchLikes(prayerId) {
-  //   //prayer_id for production
-  //   //prayertest_id for testing
-  //   try {
-  //     setLoadingLikes(true);
-  //     const { data: likes, error: likesError } = await supabase
-  //       .from("message_likes")
-  //       .select()
-  //       .eq("prayer_id", prayerId);
-  //     setLikes(likes);
-
-  //     if (likesError) {
-  //       console.log("likesError: ", likesError);
-  //     }
-  //   } catch (error) {
-  //     console.log("fetchLikes" + error);
-  //   }
-  //   setLoadingLikes(false);
-  // }
-
-  async function togglePraise(id, expoToken, message) {
-    if (isPraisedByMe) {
-      scale.value = withSequence(
-        withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 })
-      );
-      await supabase
-        .from("message_praises")
-        .delete()
-        .eq("prayer_id", id)
-        .eq("user_id", currentUser.id);
-
-      channel.send({
-        type: "broadcast",
-        event: "message",
-        payload: {
-          type: "praise",
-          prayer_id: id,
-          user_id: currentUser.id,
-        },
-      });
-      setReactionModalVisibile(false);
-      return;
-    }
-    channel.send({
-      type: "broadcast",
-      event: "message",
-      payload: {
-        type: "praise",
-        prayer_id: id,
-        user_id: currentUser.id,
-      },
-    });
-
-    scale.value = withSequence(
-      withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 })
-    );
-    const { error } = await supabase.from("message_praises").insert({
-      prayer_id: id,
-      user_id: currentUser.id,
-    });
-    notifyPraise(expoToken, message);
-    setReactionModalVisibile(false);
-    if (error) {
-      console.log("insert like err: ", error);
-    }
-  }
 
   const openReactionModal = (item) => {
     console.log("Item: ", item);
@@ -206,6 +151,9 @@ const GroupPrayerItem = ({
   };
 
   const isPrayerLiked = !!likes?.find((like) => like.prayer_id == item.id);
+  const isPrayerPraised = !!praises?.find(
+    (praise) => praise.prayer_id == item.id
+  );
 
   return (
     <TouchableOpacity
@@ -240,27 +188,62 @@ const GroupPrayerItem = ({
       >
         {item.message}
       </Text>
-      <View className="flex-row justify-between p-1 gap-5">
-        <View className="flex-row items-center gap-2">
-          {likes?.length > 0 && (
-            <TouchableOpacity
-              className={cn(
-                "bg-white px-2 py-1 rounded-full",
-                isPrayerLiked ? "flex" : "hidden"
-              )}
+      <View className={cn("flex-row p-1 items-center gap-2")}>
+        {isLoadingLikes && likes?.length === 0 && praises?.length === 0 && (
+          <ActivityIndicator />
+        )}
+        {likes?.length === 0 && praises?.length === 0 && !isLoadingLikes ? (
+          <View
+            className={cn(
+              "flex-row items-center gap-1",
+              isPrayerLiked ? "hidden" : "flex"
+            )}
+          >
+            <MaterialIcons
+              name="touch-app"
+              size={20}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : theme === "dark"
+                    ? "#d2d2d2"
+                    : "#2f2d51"
+              }
+            />
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="text-sm font-inter"
             >
-              <Text className="text-sm font-inter">{likes.length} 🙏</Text>
-            </TouchableOpacity>
-          )}
-          {/* {praises && praises.length > 0 && (
-              <TouchableOpacity className="bg-white px-2 py-1 rounded-full">
-                <Text className="text-sm font-inter">{praises.length} 🙌</Text>
-              </TouchableOpacity>
-            )} */}
-        </View>
+              Tap and hold to react
+            </Text>
+          </View>
+        ) : null}
+
+        {likes && likes?.length > 0 && (
+          <TouchableOpacity
+            className={cn(
+              "bg-white px-2 py-1 flex-row items-center gap-1 rounded-full",
+              isPrayerLiked ? "flex" : "hidden"
+            )}
+          >
+            <Text className="text-sm font-inter">{likes.length}</Text>
+            <Text className="text-sm font-inter">🙏</Text>
+          </TouchableOpacity>
+        )}
+        {praises && praises.length > 0 && (
+          <TouchableOpacity
+            className={cn(
+              "bg-white px-2 py-1 flex-row items-center gap-1 rounded-full",
+              isPrayerPraised ? "flex" : "hidden"
+            )}
+          >
+            <Text className="text-sm font-inter">{praises.length}</Text>
+            <Text className="text-sm font-inter">🙌</Text>
+          </TouchableOpacity>
+        )}
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="self-end font-inter text-sm text-light-primary dark:text-gray-500"
+          className="ml-auto font-inter text-sm text-light-primary dark:text-gray-500"
         >
           {Moment(item.created_at).fromNow()}
         </Text>

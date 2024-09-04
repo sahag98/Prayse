@@ -10,49 +10,30 @@ export async function toggleLike(
   userId,
   channel,
 ) {
-  // const updatedLikes = [...likes, { prayer_id: id, user_id: userId }];
-  // setLikes(updatedLikes);
-  // if (isLikedByMe) {
-  //   scale.value = withSequence(
-  //     withSpring(1.2, { damping: 2, stiffness: 80 }),
-  //     withSpring(1, { damping: 2, stiffness: 80 })
-  //   );
-  //   await supabase
-  //     .from("message_likes")
-  //     .delete()
-  //     .eq("prayer_id", id)
-  //     .eq("user_id", currentUser.id);
+  const currentDate = new Date();
+  const isoDateString = currentDate.toISOString();
+  const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
+  const { data, error } = await supabase
+    .from("message_likes")
+    .insert({
+      prayer_id: id,
+      user_id: userId,
+    })
+    .select()
+    .single();
 
-  //   channel.send({
-  //     type: "broadcast",
-  //     event: "message",
-  //     payload: {
-  //       type: "like",
-  //       prayer_id: id,
-  //       user_id: currentUser.id,
-  //     },
-  //   });
-  //   setReactionModalVisibile(false);
-  //   return;
-  // }
+  console.log("id insert: ", data.id);
 
   channel.send({
     type: "broadcast",
     event: "message",
     payload: {
       type: "like",
+      id: data.id,
+      createdAt: isoStringWithOffset,
       prayer_id: id,
       user_id: userId,
     },
-  });
-
-  // scale.value = withSequence(
-  //   withSpring(1.2, { damping: 2, stiffness: 80 }),
-  //   withSpring(1, { damping: 2, stiffness: 80 })
-  // );
-  const { error } = await supabase.from("message_likes").insert({
-    prayer_id: id,
-    user_id: userId,
   });
 
   console.log(message);
@@ -93,49 +74,29 @@ export async function togglePraise(
   userId,
   channel,
 ) {
-  const updatedPraises = [...praises, { prayer_id: id, user_id: userId }];
-  setPraises(updatedPraises);
-  // if (isLikedByMe) {
-  //   scale.value = withSequence(
-  //     withSpring(1.2, { damping: 2, stiffness: 80 }),
-  //     withSpring(1, { damping: 2, stiffness: 80 })
-  //   );
-  //   await supabase
-  //     .from("message_likes")
-  //     .delete()
-  //     .eq("prayer_id", id)
-  //     .eq("user_id", currentUser.id);
+  const currentDate = new Date();
+  const isoDateString = currentDate.toISOString();
+  const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
 
-  //   channel.send({
-  //     type: "broadcast",
-  //     event: "message",
-  //     payload: {
-  //       type: "like",
-  //       prayer_id: id,
-  //       user_id: currentUser.id,
-  //     },
-  //   });
-  //   setReactionModalVisibile(false);
-  //   return;
-  // }
+  const { data, error } = await supabase
+    .from("message_praises")
+    .insert({
+      prayer_id: id,
+      user_id: userId,
+    })
+    .select()
+    .single();
 
   channel.send({
     type: "broadcast",
     event: "message",
     payload: {
       type: "praise",
+      id: data.id,
+      createdAt: isoStringWithOffset,
       prayer_id: id,
       user_id: userId,
     },
-  });
-
-  // scale.value = withSequence(
-  //   withSpring(1.2, { damping: 2, stiffness: 80 }),
-  //   withSpring(1, { damping: 2, stiffness: 80 })
-  // );
-  const { error } = await supabase.from("message_praises").insert({
-    prayer_id: id,
-    user_id: userId,
   });
 
   // notifyLike(expoToken, message);

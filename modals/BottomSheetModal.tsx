@@ -1,7 +1,13 @@
 //@ts-nocheck
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { fetchLikes, fetchPraises } from "@functions/reactions/FetchReactions";
@@ -26,13 +32,22 @@ const BottomModal = ({
   const [praises, setPraises] = useState();
   const [isLiking, setIsLiking] = useState(false);
   const [isPraising, setIsPraising] = useState(false);
+  const [isLoadingReactions, setIsLoadingReactions] = useState(false);
   useEffect(() => {
     async function Load() {
       if (prayerToReact) {
-        const likesArray = await fetchLikes(prayerToReact?.id, supabase);
-        const praisesArray = await fetchPraises(prayerToReact?.id, supabase);
-        setLikes(likesArray);
-        setPraises(praisesArray);
+        try {
+          setIsLoadingReactions(true);
+
+          const likesArray = await fetchLikes(prayerToReact?.id, supabase);
+          const praisesArray = await fetchPraises(prayerToReact?.id, supabase);
+          setLikes(likesArray);
+          setPraises(praisesArray);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoadingReactions(false);
+        }
       }
     }
     Load();
@@ -85,61 +100,66 @@ const BottomModal = ({
             <Text className="font-inter text-light-primary dark:text-dark-background">
               {prayerToReact?.message}
             </Text>
-            <View className="flex-row items-center gap-4">
-              <TouchableOpacity
-                disabled={isLikedByMe}
-                onPress={() => {
-                  toggleLike(
-                    prayerToReact.id,
-                    prayerToReact.profiles.expoToken,
-                    prayerToReact.message,
-                    supabase,
-                    setLikes,
-                    likes,
-                    currentUser.id,
-                    reactionChannel,
-                  );
-                  setIsLiking(true);
-                }}
-                className={cn(
-                  "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
-                  isLikedByMe && "bg-green-300",
-                )}
-              >
-                <Text className="font-inter">🙏</Text>
-                <AntDesign
-                  name={isLikedByMe ? "check" : "pluscircleo"}
-                  size={18}
-                  color="#2f2d51"
-                />
-              </TouchableOpacity>
+            {isLoadingReactions ? (
+              <ActivityIndicator className="self-start" />
+            ) : (
+              <View className="flex-row items-center gap-4">
+                <TouchableOpacity
+                  disabled={isLikedByMe}
+                  onPress={() => {
+                    toggleLike(
+                      prayerToReact.id,
+                      prayerToReact.profiles.expoToken,
+                      prayerToReact.message,
+                      supabase,
+                      setLikes,
+                      likes,
+                      currentUser.id,
+                      reactionChannel,
+                    );
+                    setIsLiking(true);
+                  }}
+                  className={cn(
+                    "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
+                    isLikedByMe && "bg-green-300",
+                  )}
+                >
+                  <Text className="font-inter">🙏</Text>
+                  <AntDesign
+                    name={isLikedByMe ? "check" : "pluscircleo"}
+                    size={18}
+                    color="#2f2d51"
+                  />
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() =>
-                  togglePraise(
-                    prayerToReact.id,
-                    prayerToReact.profiles.expoToken,
-                    prayerToReact.message,
-                    supabase,
-                    setPraises,
-                    praises,
-                    currentUser.id,
-                    reactionChannel,
-                  )
-                }
-                className={cn(
-                  "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
-                  isPraisedByMe && "bg-green-300",
-                )}
-              >
-                <Text className=" font-inter">🙌</Text>
-                <AntDesign
-                  name={isPraisedByMe ? "check" : "pluscircleo"}
-                  size={18}
-                  color="#2f2d51"
-                />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  disabled={isPraisedByMe}
+                  onPress={() =>
+                    togglePraise(
+                      prayerToReact.id,
+                      prayerToReact.profiles.expoToken,
+                      prayerToReact.message,
+                      supabase,
+                      setPraises,
+                      praises,
+                      currentUser.id,
+                      reactionChannel,
+                    )
+                  }
+                  className={cn(
+                    "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
+                    isPraisedByMe && "bg-green-300",
+                  )}
+                >
+                  <Text className=" font-inter">🙌</Text>
+                  <AntDesign
+                    name={isPraisedByMe ? "check" : "pluscircleo"}
+                    size={18}
+                    color="#2f2d51"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
           </BottomSheetView>
         </BottomSheetModal>
       </View>
