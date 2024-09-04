@@ -411,7 +411,8 @@ const PrayerGroupScreen = () => {
           {/* {groupInfoVisible && (
             <GroupInfoModal
               group={currGroup}
-              theme={theme}
+              theme={colorScheme}
+              actualTheme={actualTheme}
               supabase={supabase}
               allUsers={allGroups}
               currentUser={currentUser}

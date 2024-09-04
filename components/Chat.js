@@ -46,7 +46,7 @@ const Chat = ({
     <View
       className={cn("flex-1 transition-all", prayerToReact && "opacity-50")}
     >
-      <View
+      {/* <View
         style={getMainBackgroundColorStyle(actualTheme)}
         className="flex-row items-center bg-light-background dark:bg-dark-background self-center px-3 py-1 justify-center rounded-full mb-3  shadow-sm gap-1 shadow-green-400"
       >
@@ -57,7 +57,7 @@ const Chat = ({
         >
           User's Online ({onlineUsers.length})
         </Text>
-      </View>
+      </View> */}
       <View className="flex-1 px-4 w-full relative">
         {areMessagesLoading ? (
           <View className="flex-1 justify-center items-center">

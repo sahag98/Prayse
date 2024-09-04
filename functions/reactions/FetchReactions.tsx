@@ -5,14 +5,15 @@ export async function fetchLikes(prayerId, supabase) {
   let likesArray;
   try {
     // setIsLoadingLikes(true);
-    const { data: likes, error: likesError } = await supabase
+    const { data, error: likesError } = await supabase
       .from("message_likes")
       .select()
       .eq("prayer_id", prayerId);
 
     // console.log("likes: ", likes);
     // setLikes(likes);
-    likesArray = likes;
+    likesArray = data;
+    // setLikes(data);
     if (likesError) {
       console.log("likesError: ", likesError);
     }
@@ -26,11 +27,11 @@ export async function fetchLikes(prayerId, supabase) {
 export async function fetchPraises(prayerId, supabase) {
   let praisesArray;
   try {
-    const { data: praises, error: praisesError } = await supabase
+    const { data, error: praisesError } = await supabase
       .from("message_praises")
       .select()
       .eq("prayer_id", prayerId);
-    praisesArray = praises;
+    praisesArray = data;
     if (praisesError) {
       console.log("praiseError: ", praisesError);
     }
