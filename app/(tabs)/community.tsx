@@ -44,6 +44,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
@@ -400,7 +401,8 @@ const CommunityHomeScreen = () => {
                 Public prayers posted by our users.
               </Text>
               <Link href={`/${PUBLIC_COMMUNITY_SCREEN}`}>
-                <View
+                <TouchableOpacity
+                  onPress={() => posthog.capture("Public prayers")}
                   style={getPrimaryBackgroundColorStyle(actualTheme)}
                   className="flex-row items-center rounded-md justify-between w-full px-3 py-2 bg-light-primary dark:bg-dark-accent"
                 >
@@ -421,7 +423,7 @@ const CommunityHomeScreen = () => {
                           : "white"
                     }
                   />
-                </View>
+                </TouchableOpacity>
               </Link>
             </View>
           </View>
@@ -498,7 +500,10 @@ const CommunityHomeScreen = () => {
         <View className="flex-row items-center gap-3">
           <TouchableOpacity
             style={getPrimaryBackgroundColorStyle(actualTheme)}
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              setModalVisible(true);
+              posthog.capture("Create group");
+            }}
             className="flex-row items-center rounded-lg gap-2 p-2"
           >
             <Text
@@ -510,7 +515,10 @@ const CommunityHomeScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            onPress={() => setJoinVisible(true)}
+            onPress={() => {
+              setJoinVisible(true);
+              posthog.capture("Join group");
+            }}
             className="flex-row items-center rounded-lg gap-2 p-2"
           >
             <Text

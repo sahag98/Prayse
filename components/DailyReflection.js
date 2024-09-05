@@ -27,6 +27,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useRouter } from "expo-router";
+import { posthog } from "@lib/posthog";
 
 const DailyReflection = ({
   completedItems,
@@ -42,6 +43,7 @@ const DailyReflection = ({
   const hasEnteredGiveaway = useSelector(
     (state) => state.user.alreadyEnteredGiveaway
   );
+
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
 
@@ -55,6 +57,8 @@ const DailyReflection = ({
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
     console.log("today: ", currentDate);
+
+    posthog.capture("Doing Devotions");
     // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());

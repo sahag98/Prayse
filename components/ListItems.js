@@ -35,6 +35,7 @@ import { useSupabase } from "@context/useSupabase";
 import { addVerseToPrayer } from "@redux/prayerReducer";
 import VerseModal from "@modals/VerseModal";
 import { checkPrayerVerse } from "@redux/proReducer";
+import { posthog } from "@lib/posthog";
 
 const ListItems = ({
   prayer,
@@ -138,6 +139,7 @@ const ListItems = ({
     const RowText = TodoText;
 
     const addReminder = (item) => {
+      posthog.capture("Create reminder");
       navigation.navigate(TEST_SCREEN, {
         reminder: item,
         type: "Add",

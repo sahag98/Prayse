@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 import { MerchComponent } from "@components/MerchComponent";
-import { NoticationsCard } from "@components/notifications-card";
 import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
 import { QuickLinks } from "@components/quick-links";
@@ -310,7 +309,7 @@ const WelcomeScreen = () => {
       // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      {/* <TouchableOpacity onPress={() => posthog.capture("Post Hog Click")}>
+      {/* <TouchableOpacity onPress={() => posthog.capture("Streaks click!!")}>
         <Text>Post Hog Click</Text>
       </TouchableOpacity> */}
       <UpdateModal theme={colorScheme} />
@@ -332,7 +331,7 @@ const WelcomeScreen = () => {
       />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       <ProBanner actualTheme={actualTheme} theme={colorScheme} />
-      <NoticationsCard actualTheme={actualTheme} theme={colorScheme} />
+      {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
       <QuestionOfTheWeek actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />
       <MerchComponent actualTheme={actualTheme} theme={colorScheme} />

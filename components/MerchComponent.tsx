@@ -16,6 +16,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 
 import merch from "../assets/merch.png";
 
@@ -59,7 +60,10 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
           </Text>
 
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://shop.prayse.app/")}
+            onPress={() => {
+              Linking.openURL("https://shop.prayse.app/");
+              posthog.capture("Shop now");
+            }}
             className="dark:bg-dark-accent bg-light-primary justify-center items-center flex-row gap-[10px] p-3 rounded-lg"
             style={[
               getPrimaryBackgroundColorStyle(actualTheme),
