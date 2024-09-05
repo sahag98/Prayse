@@ -23,6 +23,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 import NetInfo from "@react-native-community/netinfo";
 import { useIsFocused } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
@@ -170,6 +171,7 @@ const DevotionalScreen = () => {
           <Link asChild className="w-full" href={`/${DEVO_LIST_SCREEN}`}>
             <TouchableOpacity
               href={`/${DEVO_LIST_SCREEN}`}
+              onPress={() => posthog.capture("View devotional")}
               className="w-full mt-3 p-4 justify-center items-center rounded-lg bg-light-primary dark:bg-dark-background"
               style={getPrimaryBackgroundColorStyle(actualTheme)}
             >

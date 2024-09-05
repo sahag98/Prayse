@@ -8,6 +8,7 @@ import StreakSlider from "@components/StreakSlider";
 
 import { CheckReview } from "@hooks/useShowReview";
 import { getMainTextColorStyle } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 import { increaseAppStreakCounter } from "@redux/userReducer";
 import { ActualTheme } from "@types/reduxTypes";
 
@@ -51,7 +52,10 @@ export const StreakAction: React.FC<StreakActionProps> = ({
         isShowingStreak={isShowingStreak}
       />
       <TouchableOpacity
-        onPress={() => setIsShowingStreak((prev) => !prev)}
+        onPress={() => {
+          setIsShowingStreak((prev) => !prev);
+          posthog.capture("Checking streaks modal");
+        }}
         className="flex-row p-2 items-center"
       >
         <View className="flex-row items-center gap-1">

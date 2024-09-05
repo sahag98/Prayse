@@ -6,6 +6,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 import { useNavigation } from "@react-navigation/native";
 import { QUESTION_SCREEN } from "@routes";
 
@@ -32,12 +33,13 @@ export const QuestionOfTheWeek: React.FC = ({ actualTheme }) => {
         </View>
       ) : (
         <TouchableOpacity
-          onPress={() =>
+          onPress={() => {
+            posthog.capture("Checking QOW");
             navigation.navigate(QUESTION_SCREEN, {
               title: latestQuestion?.title,
               question_id: latestQuestion?.id,
-            })
-          }
+            });
+          }}
           className="w-full rounded-lg gap-[15px]"
         >
           <View className="flex-row items-center justify-between">

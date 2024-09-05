@@ -6,6 +6,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 
 import { GOSPEL_SCREEN } from "../routes";
 import { ActualTheme } from "../types/reduxTypes";
@@ -18,6 +19,7 @@ export const GospelOfJesus = ({
   return (
     <Link asChild href={`/${GOSPEL_SCREEN}`}>
       <TouchableOpacity
+        onPress={() => posthog.capture("Checking Gospel")}
         style={getSecondaryBackgroundColorStyle(actualTheme)}
         className="bg-white dark:bg-dark-secondary mb-[15px] w-full p-[15px] rounded-lg gap-[15px]"
       >

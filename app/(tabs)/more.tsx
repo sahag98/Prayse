@@ -26,6 +26,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 
 import SettingsItems from "../../components/SettingsItems";
 import config from "../../config";
@@ -206,6 +207,7 @@ const MoreScreen = () => {
             the importance of prayer in today's world.
           </Text>
           <TouchableOpacity
+            onPress={() => posthog.capture("Donate")}
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
           >
@@ -286,10 +288,10 @@ const MoreScreen = () => {
             />
           </TouchableOpacity>
         </View>
-        <View className="justify-center gap-1  items-center my-4">
+        <View className="justify-center  items-center my-4">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter text-lg mb-1 text-light-primary dark:text-dark-primary"
+            className="font-inter font-medium text-lg mb-1 text-light-primary dark:text-dark-primary"
           >
             Made with 🙏 by Sahag
           </Text>

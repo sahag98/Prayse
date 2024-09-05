@@ -12,6 +12,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { posthog } from "@lib/posthog";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AddFolderModal from "../modals/AddFolderModal";
@@ -173,7 +174,10 @@ const Folder = ({ colorScheme, navigation }) => {
       <View className="absolute w-full flex-row justify-between items-center bottom-5 h-16">
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
-          onPress={() => setAddVisible(true)}
+          onPress={() => {
+            setAddVisible(true);
+            posthog.capture("Create folder");
+          }}
           className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
         >
           <AntDesign
@@ -197,7 +201,10 @@ const Folder = ({ colorScheme, navigation }) => {
 
         <TouchableOpacity
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          onPress={() => navigation.navigate(PRAYER_ROOM_SCREEN)}
+          onPress={() => {
+            posthog.capture("Prayer room");
+            navigation.navigate(PRAYER_ROOM_SCREEN);
+          }}
           className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
         >
           <MaterialCommunityIcons

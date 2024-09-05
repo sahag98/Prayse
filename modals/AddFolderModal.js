@@ -37,7 +37,7 @@ const AddFolderModal = ({
 }) => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent
       visible={addVisible}
       onRequestClose={handleCloseModal}
@@ -49,8 +49,8 @@ const AddFolderModal = ({
         <ModalContainer
           style={
             colorScheme == "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+              ? { backgroundColor: "rgba(0, 0, 0, 0.3)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.3)" }
           }
         >
           <ModalView
