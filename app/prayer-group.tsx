@@ -38,10 +38,8 @@ const PrayerGroupScreen = () => {
   const params = useLocalSearchParams();
 
   const theme = useSelector((state) => state.user.theme);
-  // const msgs = useSelector((state) => state.message.messages);
   const [groupMessages, setGroupMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  // const [inputHeight, setInputHeight] = useState(45);
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
 
@@ -90,7 +88,7 @@ const PrayerGroupScreen = () => {
     async function fetchCurrGroupUsers() {
       const { data } = await supabase
         .from("members")
-        .select("*,profiles(full_name, avatar_url, expoToken)")
+        .select("*,profiles(id,full_name, avatar_url, expoToken)")
         .eq("group_id", groupId);
 
       setGroupUsers(data);
@@ -194,14 +192,6 @@ const PrayerGroupScreen = () => {
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
     showToast("success", "Copied to Clipboard.");
-  };
-
-  const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 45) {
-      setInputHeight(45);
-    } else {
-      setInputHeight(event.nativeEvent.contentSize.height);
-    }
   };
 
   const showToast = (type, content) => {
@@ -433,7 +423,6 @@ const PrayerGroupScreen = () => {
           showToast={showToast}
           newMessage={newMessage}
           setNewMessage={setNewMessage}
-          handleContentSizeChange={handleContentSizeChange}
           sendMessage={sendMessage}
         />
 

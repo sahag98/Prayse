@@ -181,8 +181,6 @@ const GroupInfoModal = ({
   supabase,
 }) => {
   const navigation = useNavigation();
-  const [groupName, setGroupName] = useState(group?.groups?.name);
-  const [openEdit, setOpenEdit] = useState(false);
 
   const insets = useSafeAreaInsets();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -190,17 +188,13 @@ const GroupInfoModal = ({
   const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-  const [groupImage, setGroupImage] = useState(null);
-  const [isShowingGroupTemplates, setIsShowingGroupTemplates] = useState(false);
 
-  const [imgUrl, setImgUrl] = useState(null);
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
 
-  const opacity = useSharedValue(0);
-
   const removeUser = async (user) => {
+    console.log("user to remove: ", user.id);
     await supabase
       .from("messages")
       .delete()
@@ -222,9 +216,10 @@ const GroupInfoModal = ({
     setShowLeaveConfirmation(true);
   };
 
-  const handleRemoveConfirmation = () => {
+  const handleRemoveConfirmation = (user) => {
     console.log("handle remove");
     setShowRemoveConfirmation(true);
+    setUserToEdit(user);
   };
 
   const leaveGroup = async () => {
@@ -239,14 +234,7 @@ const GroupInfoModal = ({
 
   const handleDeleteConfirmation = () => {
     setShowConfirmation(true);
-    opacity.value = withTiming(1, { duration: 1000, easing: Easing.inOut });
   };
-
-  const opacityAnimationStyle = useAnimatedStyle(() => {
-    return {
-      opacity: opacity.value,
-    };
-  });
 
   const handleCloseRemove = () => {
     setShowRemoveConfirmation(false);
@@ -254,6 +242,7 @@ const GroupInfoModal = ({
   };
 
   const handleEditUser = (user) => {
+    console.log("user to edit: ", user);
     setUserToEdit(user);
     setShowMenu(true);
   };
@@ -276,6 +265,10 @@ const GroupInfoModal = ({
     }
     navigation.navigate(COMMUNITY_SCREEN);
     setGroupInfoVisible(false);
+  };
+
+  const handleRemoveUser = async (user) => {
+    console.log("User to remove: ", user);
   };
 
   const showToast = (type, content) => {
@@ -365,13 +358,12 @@ const GroupInfoModal = ({
                 >
                   <Text
                     style={getMainTextColorStyle(actualTheme)}
-                    className="font-inter font-medium text-xl text-light-primary dark:text-dark-primary"
+                    className="font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
                   >
                     Members
                   </Text>
                 </View>
               }
-              ListHeaderComponentStyle={{ marginBottom: 10 }}
               keyExtractor={(e, i) => i.toString()}
               initialNumToRender={30}
               // ItemSeparatorComponent={
@@ -379,7 +371,8 @@ const GroupInfoModal = ({
               // }
               renderItem={({ item }) => {
                 return (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => handleEditUser(item.profiles)}
                     style={
                       actualTheme &&
                       actualTheme.Secondary && {
@@ -402,25 +395,34 @@ const GroupInfoModal = ({
                           style={getMainTextColorStyle(actualTheme)}
                           className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
                         >
-                          {currentUser.full_name == item.profiles.full_name
+                          {currentUser.full_name === item.profiles.full_name
                             ? "You"
                             : item.profiles.full_name}
                         </Text>
                       </View>
-                      <Entypo
-                        onPress={() => handleEditUser(item.profiles)}
-                        name="chevron-right"
-                        size={24}
-                        color={
-                          actualTheme && actualTheme.MainTxt
-                            ? actualTheme.MainTxt
-                            : theme === "dark"
-                              ? "white"
-                              : "#2f2d51"
-                        }
-                      />
+                      {currentUser.full_name !== item.profiles.full_name &&
+                        group?.admin_id === currentUser.id && (
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleRemoveConfirmation(item.profiles)
+                            }
+                            className="p-3 bg-red-100 border border-red-300 rounded-full"
+                          >
+                            <Ionicons
+                              name="person-remove-outline"
+                              size={20}
+                              color={
+                                actualTheme && actualTheme.MainTxt
+                                  ? actualTheme.MainTxt
+                                  : theme === "dark"
+                                    ? "white"
+                                    : "#2f2d51"
+                              }
+                            />
+                          </TouchableOpacity>
+                        )}
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 );
               }}
             />
@@ -436,8 +438,9 @@ const GroupInfoModal = ({
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
                 onPress={handleDeleteConfirmation}
-                className="bg-light-secondary dark:bg-dark-secondary flex-row gap-3 justify-center items-center p-3 rounded-lg mb-3"
+                className="bg-light-secondary w-11/12 self-center dark:bg-dark-secondary flex-row gap-3 justify-center items-center p-3 rounded-lg mb-3"
               >
                 <MaterialCommunityIcons
                   name="delete-outline"
@@ -451,7 +454,7 @@ const GroupInfoModal = ({
             )}
           </View>
         </ModalContainer>
-        {showMenu && (
+        {/* {showMenu && (
           <GroupInfoMenu
             theme={theme}
             actualTheme={actualTheme}
@@ -463,7 +466,7 @@ const GroupInfoModal = ({
             setUserToEdit={setUserToEdit}
             currentUser={currentUser}
           />
-        )}
+        )} */}
         {showRemoveConfirmation && (
           <View className="flex-1 justify-center items-center absolute top-0 right-0 bottom-0 left-0 bg-black/25">
             <View
@@ -474,8 +477,9 @@ const GroupInfoModal = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="font-inter text-lg text-light-primary dark:text-dark-primary"
               >
-                Are you sure you want to remove {userToEdit.full_name} from this
-                group ?
+                Are you sure you want to remove{" "}
+                <Text className="font-semibold">{userToEdit.full_name}</Text>{" "}
+                from this group ?
               </Text>
               <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity onPress={handleCloseRemove}>
@@ -485,7 +489,7 @@ const GroupInfoModal = ({
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => removeUser(userToEdit)}>
                   <Text
-                    style={getPrimaryTextColorStyle(actualTheme)}
+                    style={getSecondaryTextColorStyle(actualTheme)}
                     className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
@@ -533,10 +537,7 @@ const GroupInfoModal = ({
             className="flex-1 justify-center items-center absolute top-0 right-0 bottom-0 left-0 bg-black/25"
           >
             <Animated.View
-              style={[
-                getSecondaryBackgroundColorStyle(actualTheme),
-                opacityAnimationStyle,
-              ]}
+              style={[getSecondaryBackgroundColorStyle(actualTheme)]}
               className="p-5 rounded-lg w-4/5 items-center bg-light-secondary dark:bg-dark-secondary"
             >
               <Text
