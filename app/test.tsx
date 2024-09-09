@@ -1,7 +1,12 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
-import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  Link,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Image,
@@ -123,6 +128,8 @@ export default function TestScreen() {
     // }
   }, [isFocused]);
 
+  const router = useRouter();
+
   const showToast = (type, content) => {
     Toast.show({
       type,
@@ -130,7 +137,7 @@ export default function TestScreen() {
       text2: "View",
       visibilityTime: 3000,
       position: "bottom",
-      onPress: () => navigation.navigate(HOME_SCREEN),
+      onPress: () => router.replace("/(tabs)/reminder"),
     });
   };
 

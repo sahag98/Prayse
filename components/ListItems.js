@@ -156,7 +156,7 @@ const ListItems = ({
             <View className="flex-row items-center justify-between">
               <RowText
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter text-light-primary dark:text-dark-primary"
               >
                 {item.prayer}
               </RowText>

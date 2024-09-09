@@ -8,9 +8,9 @@ import { useSelector } from "react-redux";
 
 import {
   COMMUNITY_SCREEN,
-  DEVOTIONAL_SCREEN,
   FOLDER_SCREEN,
   MORE_SCREEN,
+  REMINDER_SCREEN,
   WELCOME_SCREEN,
 } from "@routes";
 
@@ -108,7 +108,7 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name={DEVOTIONAL_SCREEN}
           options={{
             title: "Devotional",
@@ -132,6 +132,31 @@ export default function TabLayout() {
               />
             ),
           }}
+        /> */}
+        <Tabs.Screen
+          name={REMINDER_SCREEN}
+          options={{
+            title: "Reminders",
+            tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
+            tabBarStyle: {
+              height: 58,
+              paddingBottom: 5,
+              paddingTop: 2,
+              backgroundColor:
+                actualTheme && actualTheme.Bg
+                  ? actualTheme.Bg
+                  : colorScheme === "dark"
+                    ? "#121212"
+                    : "white",
+            },
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons
+                name={focused ? "time-outline" : "time-outline"}
+                color={color}
+                size={30}
+              />
+            ),
+          }}
         />
         <Tabs.Screen
           name={COMMUNITY_SCREEN}
@@ -151,7 +176,7 @@ export default function TabLayout() {
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
-                name={focused ? "globe" : "globe-outline"}
+                name={focused ? "globe-outline" : "globe-outline"}
                 color={color}
                 size={size}
               />
