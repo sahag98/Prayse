@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {
-  Animated,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -31,6 +30,18 @@ import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
 import EditGroupModal from "./EditGroupModal";
 import GroupTemplateModal from "./GroupTemplateModal";
+import {
+  getMainTextColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const GroupInfoMenu = ({
   theme,
@@ -41,31 +52,8 @@ const GroupInfoMenu = ({
   setShowMenu,
   onAnimationComplete,
 }) => {
-  const [slideAnim] = useState(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: false,
-    }).start(() => onAnimationComplete());
-  }, [onAnimationComplete, slideAnim]);
   return (
-    <Animated.View
-      style={[
-        styles.menuContainer,
-        {
-          transform: [
-            {
-              translateY: slideAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [400, 0],
-              }),
-            },
-          ],
-        },
-      ]}
-    >
+    <View style={[styles.menuContainer]}>
       <View
         style={
           theme === "dark"
@@ -178,22 +166,21 @@ const GroupInfoMenu = ({
             </View>
           )}
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
 const GroupInfoModal = ({
   groupInfoVisible,
+  actualTheme,
   group,
   setGroupInfoVisible,
   currentUser,
-  allUsers,
+  groupUsers,
   theme,
   supabase,
 }) => {
   const navigation = useNavigation();
-  const [groupName, setGroupName] = useState(group.groups.name);
-  const [openEdit, setOpenEdit] = useState(false);
 
   const insets = useSafeAreaInsets();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -201,25 +188,23 @@ const GroupInfoModal = ({
   const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-  const [groupImage, setGroupImage] = useState(null);
-  const [isShowingGroupTemplates, setIsShowingGroupTemplates] = useState(false);
 
-  const [imgUrl, setImgUrl] = useState(null);
   const handleCloseModal = () => {
     setGroupInfoVisible(false);
   };
 
   const removeUser = async (user) => {
+    console.log("user to remove: ", user.id);
     await supabase
       .from("messages")
       .delete()
-      .eq("group_id", group.group_id)
+      .eq("group_id", group.id)
       .eq("user_id", user.id);
 
     await supabase
       .from("members")
       .delete()
-      .eq("group_id", group.group_id)
+      .eq("group_id", group.id)
       .eq("user_id", user.id);
 
     setShowMenu(false);
@@ -231,15 +216,17 @@ const GroupInfoModal = ({
     setShowLeaveConfirmation(true);
   };
 
-  const handleRemoveConfirmation = () => {
+  const handleRemoveConfirmation = (user) => {
+    console.log("handle remove");
     setShowRemoveConfirmation(true);
+    setUserToEdit(user);
   };
 
   const leaveGroup = async () => {
     await supabase
       .from("members")
       .delete()
-      .eq("group_id", group.group_id)
+      .eq("group_id", group.id)
       .eq("user_id", currentUser.id);
     navigation.navigate(COMMUNITY_SCREEN);
     setGroupInfoVisible(false);
@@ -255,6 +242,7 @@ const GroupInfoModal = ({
   };
 
   const handleEditUser = (user) => {
+    console.log("user to edit: ", user);
     setUserToEdit(user);
     setShowMenu(true);
   };
@@ -269,7 +257,7 @@ const GroupInfoModal = ({
     const { error } = await supabase
       .from("groups")
       .delete()
-      .eq("id", group.group_id)
+      .eq("id", group.id)
       .eq("admin_id", currentUser.id);
 
     if (error) {
@@ -279,82 +267,16 @@ const GroupInfoModal = ({
     setGroupInfoVisible(false);
   };
 
+  const handleRemoveUser = async (user) => {
+    console.log("User to remove: ", user);
+  };
+
   const showToast = (type, content) => {
     Toast.show({
       type,
       text1: content,
       visibilityTime: 3000,
     });
-  };
-
-  const photoPermission = async () => {
-    if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        showToast(
-          "error",
-          "We need camera roll permissions to make this work!",
-        );
-      } else {
-        pickImage();
-      }
-    }
-  };
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setGroupImage(result.assets[0].uri);
-      const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1,
-      );
-
-      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
-
-      const filePath = `${fileName}`;
-      const formData = new FormData();
-      formData.append("files", {
-        uri: result.assets[0].uri,
-        name: fileName,
-        type: result.assets[0].type ? `image/${ext}` : `video/${ext}`,
-      });
-
-      const { error: uploadError } = await supabase.storage
-        .from("group")
-        .upload(filePath, formData);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: imageData, error: getUrlError } = await supabase.storage
-        .from("group")
-        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
-
-      setImgUrl(imageData.signedUrl);
-      if (getUrlError) {
-        throw getUrlError;
-      }
-
-      const { error } = await supabase
-        .from("groups")
-        .update({
-          group_img: imageData.signedUrl,
-        })
-        .eq("id", group.group_id);
-
-      if (error) {
-        throw error;
-      }
-    }
   };
 
   return (
@@ -369,320 +291,100 @@ const GroupInfoModal = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ModalContainer
+          className="bg-light-background dark:bg-dark-background"
           style={
-            theme == "dark"
+            actualTheme && actualTheme.Bg
               ? {
-                  backgroundColor: "#121212",
+                  backgroundColor: actualTheme.Bg,
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   paddingTop: Platform.OS == "ios" ? insets.top : 0,
                   paddingBottom: insets.bottom,
                 }
-              : {
-                  backgroundColor: "#F2F7FF",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                  paddingBottom: insets.bottom,
-                }
+              : theme == "dark"
+                ? {
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                    paddingBottom: insets.bottom,
+                  }
+                : {
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                    paddingBottom: insets.bottom,
+                  }
           }
         >
-          <HeaderView
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              gap: 10,
-            }}
-          >
+          <HeaderView className="flex-row gap-3">
             <TouchableOpacity onPress={handleCloseModal}>
               <AntDesign
                 name="close"
                 size={33}
-                color={theme == "dark" ? "white" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : theme == "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
               />
             </TouchableOpacity>
             <HeaderTitle
-              style={
-                theme == "dark"
-                  ? { fontFamily: "Inter-Bold", color: "white" }
-                  : { fontFamily: "Inter-Bold", color: "#2F2D51" }
-              }
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-light-primary dark:text-dark-primary"
             >
               Group Settings
             </HeaderTitle>
           </HeaderView>
-          {group.user_id == currentUser.id && group.is_admin == true ? (
-            <>
-              <View style={styles.iconContainer}>
-                <Image
-                  style={[
-                    styles.profileImg,
-                    {
-                      backgroundColor: group.groups.group_img ? null : "grey",
-                      borderWidth: 1,
-                      borderColor: theme == "dark" ? "#a5c9ff" : "#2f2d51",
-                    },
-                  ]}
-                  source={
-                    imgUrl
-                      ? { uri: imgUrl }
-                      : !imgUrl && !group.groups.group_img
-                        ? groupBg
-                        : {
-                            uri: group.groups.group_img,
-                          }
-                  }
-                />
-                <Text
-                  style={{
-                    fontFamily: "Inter-Medium",
-                    color: theme == "dark" ? "white" : "#2f2d51",
-                  }}
-                >
-                  Choose group image from:
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: theme == "dark" ? "#212121" : "#deebff",
-                      flexDirection: "row",
-                      padding: 10,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: theme == "dark" ? "#212121" : "#2f2d51",
-                      alignItems: "center",
-                      gap: 10,
-                    }}
-                    onPress={() => setIsShowingGroupTemplates(true)}
-                  >
-                    <Ionicons
-                      name="images-outline"
-                      size={20}
-                      color={theme == "dark" ? "white" : "black"}
-                    />
-
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Medium",
-                        color: theme == "dark" ? "white" : "#2f2d51",
-                      }}
-                    >
-                      Templates
-                    </Text>
-                    <GroupTemplateModal
-                      theme={theme}
-                      group={group}
-                      isShowingGroupTemplates={isShowingGroupTemplates}
-                      setIsShowingGroupTemplates={setIsShowingGroupTemplates}
-                      setImgUrl={setImgUrl}
-                      setGroupImage={setGroupImage}
-                      supabase={supabase}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: theme == "dark" ? "#212121" : "#deebff",
-                      flexDirection: "row",
-                      padding: 10,
-                      borderRadius: 10,
-                      alignItems: "center",
-                      borderWidth: 1,
-                      borderColor: theme == "dark" ? "#212121" : "#2f2d51",
-                      gap: 10,
-                    }}
-                    onPress={photoPermission}
-                  >
-                    <AntDesign
-                      name="plus"
-                      size={20}
-                      color={theme == "dark" ? "white" : "black"}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: "Inter-Medium",
-                        color: theme == "dark" ? "white" : "#2f2d51",
-                      }}
-                    >
-                      Photo Library
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => setOpenEdit(true)}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  width: "100%",
-                  gap: 5,
-                  marginBottom: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "white",
-                          fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 22,
-                          textAlign: "center",
-                        }
-                      : {
-                          color: "#2f2d51",
-                          fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 22,
-                          textAlign: "center",
-                        }
-                  }
-                >
-                  {group.groups.name}
-                </Text>
-                <Feather
-                  style={{ marginBottom: 5 }}
-                  name="edit-2"
-                  size={22}
-                  color={theme == "dark" ? "white" : "#2f2d51"}
-                />
-              </TouchableOpacity>
-              <EditGroupModal
-                theme={theme}
-                group={group}
-                supabase={supabase}
-                groupName={groupName}
-                setGroupInfoVisible={setGroupInfoVisible}
-                setGroupName={setGroupName}
-                openEdit={openEdit}
-                setOpenEdit={setOpenEdit}
-              />
-            </>
-          ) : (
-            <>
-              <View style={styles.iconContainer}>
-                <Image
-                  style={[
-                    styles.profileImg,
-                    { backgroundColor: group.groups.group_img ? null : "grey" },
-                  ]}
-                  source={
-                    groupImage
-                      ? groupImage
-                      : !groupImage && !group.groups.group_img
-                        ? groupBg
-                        : {
-                            uri: group.groups.group_img,
-                          }
-                  }
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  width: "100%",
-                  gap: 5,
-                  marginBottom: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? {
-                          color: "white",
-                          fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 22,
-                          textAlign: "center",
-                        }
-                      : {
-                          color: "#2f2d51",
-                          fontFamily: "Inter-Bold",
-                          marginBottom: 5,
-                          fontSize: 22,
-                          textAlign: "center",
-                        }
-                  }
-                >
-                  {group.groups.name}
-                </Text>
-              </View>
-            </>
-          )}
-
-          <View style={{ width: "100%", flex: 1 }}>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="text-center self-center my-5 font-semibold text-2xl text-light-primary dark:text-dark-primary"
+          >
+            {group.name}
+          </Text>
+          <View className="w-full flex-1">
             <FlatList
-              data={allUsers}
+              data={groupUsers}
               ListHeaderComponent={
-                <Text
+                <View
                   style={
-                    theme == "dark"
-                      ? {
-                          color: "white",
-                          fontFamily: "Inter-Medium",
-                          fontSize: 17,
-                        }
-                      : {
-                          color: "#2f2d51",
-                          fontFamily: "Inter-Medium",
-                          fontSize: 17,
-                        }
+                    actualTheme &&
+                    actualTheme.Secondary && {
+                      borderBottomColor: actualTheme.Secondary,
+                    }
                   }
+                  className="border-b-2 border-b-light-secondary dark:border-b-dark-[#d2d2d2] p-1"
                 >
-                  Group Members:
-                </Text>
+                  <Text
+                    style={getMainTextColorStyle(actualTheme)}
+                    className="font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
+                  >
+                    Members
+                  </Text>
+                </View>
               }
-              ListHeaderComponentStyle={{ marginBottom: 10 }}
               keyExtractor={(e, i) => i.toString()}
               initialNumToRender={30}
-              ItemSeparatorComponent={
-                <View style={{ width: "100%", height: 3 }} />
-              }
+              // ItemSeparatorComponent={
+              //   <View style={{ width: "100%", height: 3 }} />
+              // }
               renderItem={({ item }) => {
                 return (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => handleEditUser(item.profiles)}
                     style={
-                      theme == "dark"
-                        ? {
-                            backgroundColor: "#212121",
-                            borderRadius: 10,
-                            width: "100%",
-                            padding: 12,
-                          }
-                        : {
-                            backgroundColor: "#b7d3ff",
-                            borderRadius: 10,
-                            width: "100%",
-                            padding: 12,
-                          }
+                      actualTheme &&
+                      actualTheme.Secondary && {
+                        borderBottomColor: actualTheme.Secondary,
+                      }
                     }
+                    className="border-b border-b-light-secondary dark:border-b-dark-[#d2d2d2] p-3"
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 10,
-                        }}
-                      >
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex-row items-center gap-3">
                         <Image
-                          style={{ width: 50, height: 50, borderRadius: 50 }}
+                          className="size-14 rounded-full"
                           source={{
                             uri:
                               item.profiles.avatar_url ||
@@ -690,180 +392,72 @@ const GroupInfoModal = ({
                           }}
                         />
                         <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  color: "white",
-                                  fontFamily: "Inter-Medium",
-                                  fontSize: 15,
-                                }
-                              : {
-                                  color: "#2f2d51",
-                                  fontFamily: "Inter-Medium",
-                                  fontSize: 15,
-                                }
-                          }
+                          style={getMainTextColorStyle(actualTheme)}
+                          className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
                         >
-                          {currentUser.full_name == item.profiles.full_name
+                          {currentUser.full_name === item.profiles.full_name
                             ? "You"
                             : item.profiles.full_name}
                         </Text>
                       </View>
-                      <Entypo
-                        onPress={() => handleEditUser(item.profiles)}
-                        name="chevron-right"
-                        size={24}
-                        color={theme === "dark" ? "white" : "#2f2d51"}
-                      />
-                      {/* <View
-                        style={
-                          theme == "dark"
-                            ? {
-                                marginLeft: "auto",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                padding: 5,
-                                borderRadius: 10,
-                                backgroundColor: "#121212",
+                      {currentUser.full_name !== item.profiles.full_name &&
+                        group?.admin_id === currentUser.id && (
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleRemoveConfirmation(item.profiles)
+                            }
+                            className="p-3 bg-red-100 border border-red-300 rounded-full"
+                          >
+                            <Ionicons
+                              name="person-remove-outline"
+                              size={20}
+                              color={
+                                actualTheme && actualTheme.MainTxt
+                                  ? actualTheme.MainTxt
+                                  : theme === "dark"
+                                    ? "white"
+                                    : "#2f2d51"
                               }
-                            : {
-                                marginLeft: "auto",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                padding: 5,
-                                borderRadius: 10,
-                                backgroundColor: "white",
-                              }
-                        }
-                      >
-                        <Text
-                          style={
-                            theme == "dark"
-                              ? {
-                                  color:
-                                    item.is_admin == true ? "#ff3b3b" : "white",
-                                  fontSize: 12,
-                                  fontFamily: "Inter-Medium",
-                                }
-                              : {
-                                  color:
-                                    item.is_admin == true
-                                      ? "#ff3b3b"
-                                      : "#2f2d51",
-                                  fontSize: 12,
-                                  fontFamily: "Inter-Medium",
-                                }
-                          }
-                        >
-                          {item.is_admin == true ? "Admin" : "Member"}
-                        </Text>
-                      </View> */}
+                            />
+                          </TouchableOpacity>
+                        )}
                     </View>
-                    {/* {group.user_id == currentUser.id &&
-                      group.is_admin == true &&
-                      currentUser.id != item.profiles.id && (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 15,
-                            marginTop: 10,
-                            alignSelf: "flex-end",
-                          }}
-                        >
-                          <TouchableOpacity
-                            onPress={() =>
-                              handleRemoveConfirmation(
-                                item.profiles.id,
-                                item.profiles.full_name
-                              )
-                            }
-                            style={{ alignSelf: "flex-end" }}
-                          >
-                            <Text
-                              style={{
-                                color: "#a5c9ff",
-                                fontFamily: "Inter-Bold",
-                              }}
-                            >
-                              Make Admin
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() =>
-                              handleRemoveConfirmation(
-                                item.profiles.id,
-                                item.profiles.full_name
-                              )
-                            }
-                            style={{ alignSelf: "flex-end" }}
-                          >
-                            <Text
-                              style={{
-                                color: "#ff2727",
-                                fontFamily: "Inter-Bold",
-                              }}
-                            >
-                              Remove
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      )} */}
-                  </View>
+                  </TouchableOpacity>
                 );
               }}
             />
-            {group.groups.admin_id !== currentUser.id && (
+            {group?.admin_id !== currentUser.id ? (
               <TouchableOpacity
                 onPress={handleLeaveConfirmation}
-                style={{
-                  backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
-                  flexDirection: "row",
-                  gap: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 8,
-                  marginBottom: 10,
-                  borderRadius: 10,
-                }}
+                className="bg-light-secondary dark:bg-dark-secondary flex-row gap-3 justify-center items-center p-3 rounded-lg mb-3"
               >
-                <Ionicons name="exit-outline" size={36} color="#ff2727" />
-                <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
+                <Ionicons name="exit-outline" size={33} color="#ff2727" />
+                <Text className="font-inter font-bold text-lg text-red-500">
                   Leave group
                 </Text>
               </TouchableOpacity>
-            )}
-            {group.groups.admin_id === currentUser.id && (
-              <>
-                <TouchableOpacity
-                  onPress={handleDeleteConfirmation}
-                  style={{
-                    backgroundColor: theme === "dark" ? "#212121" : "#2f2d51",
-                    flexDirection: "row",
-                    gap: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: 8,
-                    marginBottom: 10,
-                    borderRadius: 10,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="delete-outline"
-                    size={36}
-                    color="#ff2727"
-                  />
-                  <Text style={{ color: "#ff2727", fontFamily: "Inter-Bold" }}>
-                    Delete group
-                  </Text>
-                </TouchableOpacity>
-              </>
+            ) : (
+              <TouchableOpacity
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                onPress={handleDeleteConfirmation}
+                className="bg-light-secondary w-11/12 self-center dark:bg-dark-secondary flex-row gap-3 justify-center items-center p-3 rounded-lg mb-3"
+              >
+                <MaterialCommunityIcons
+                  name="delete-outline"
+                  size={33}
+                  color="#ff2727"
+                />
+                <Text className="font-inter font-bold text-lg text-red-500">
+                  Delete group
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
         </ModalContainer>
-        {showMenu && (
+        {/* {showMenu && (
           <GroupInfoMenu
             theme={theme}
+            actualTheme={actualTheme}
             handleRemoveConfirmation={handleRemoveConfirmation}
             userToEdit={userToEdit}
             group={group}
@@ -872,66 +466,31 @@ const GroupInfoModal = ({
             setUserToEdit={setUserToEdit}
             currentUser={currentUser}
           />
-        )}
+        )} */}
         {showRemoveConfirmation && (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-            }}
-          >
+          <View className="flex-1 justify-center items-center absolute top-0 right-0 bottom-0 left-0 bg-black/25">
             <View
-              style={{
-                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
-                padding: 20,
-                borderRadius: 10,
-                width: "80%",
-                alignItems: "center",
-              }}
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="p-5 rounded-lg w-4/5 items-center bg-light-secondary dark:bg-dark-secondary"
             >
               <Text
-                style={{
-                  color: theme === "dark" ? "white" : "#2f2d51",
-                  fontFamily: "Inter-Regular",
-                  fontSize: 15,
-                }}
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-lg text-light-primary dark:text-dark-primary"
               >
-                Are you sure you want to remove {userToEdit.full_name} from this
-                group ?
+                Are you sure you want to remove{" "}
+                <Text className="font-semibold">{userToEdit.full_name}</Text>{" "}
+                from this group ?
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  marginTop: 20,
-                }}
-              >
+              <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity onPress={handleCloseRemove}>
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: "red",
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => removeUser(userToEdit)}>
                   <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                    }}
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
@@ -941,65 +500,29 @@ const GroupInfoModal = ({
           </View>
         )}
         {showLeaveConfirmation && (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-            }}
-          >
+          <View className="flex-1 justify-center items-center absolute top-0 right-0 bottom-0 left-0 bg-black/25">
             <View
-              style={{
-                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
-                padding: 20,
-                borderRadius: 10,
-                width: "80%",
-                alignItems: "center",
-              }}
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="p-5 rounded-lg w-4/5 items-center bg-light-secondary dark:bg-dark-secondary"
             >
               <Text
-                style={{
-                  color: theme === "dark" ? "white" : "#2f2d51",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 18,
-                }}
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-lg text-light-primary dark:text-dark-primary"
               >
                 Are you sure you want to leave this group?
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  marginTop: 20,
-                }}
-              >
+              <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity
                   onPress={() => setShowLeaveConfirmation(false)}
                 >
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: "red",
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={leaveGroup}>
                   <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                    }}
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
@@ -1009,71 +532,38 @@ const GroupInfoModal = ({
           </View>
         )}
         {showConfirmation && (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-            }}
+          <Animated.View
+            // style={opacityAnimationStyle}
+            className="flex-1 justify-center items-center absolute top-0 right-0 bottom-0 left-0 bg-black/25"
           >
-            <View
-              style={{
-                backgroundColor: theme === "dark" ? "#212121" : "#b7d3ff",
-                padding: 20,
-                borderRadius: 10,
-                width: "80%",
-                alignItems: "center",
-              }}
+            <Animated.View
+              style={[getSecondaryBackgroundColorStyle(actualTheme)]}
+              className="p-5 rounded-lg w-4/5 items-center bg-light-secondary dark:bg-dark-secondary"
             >
               <Text
-                style={{
-                  color: theme === "dark" ? "white" : "#2f2d51",
-                  fontFamily: "Inter-Medium",
-                  fontSize: 18,
-                }}
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-lg text-light-primary dark:text-dark-primary"
               >
                 Are you sure you want to delete this group? This action will
                 also remove all members.
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  marginTop: 20,
-                }}
-              >
+              <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity onPress={() => setShowConfirmation(false)}>
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: "red",
-                    }}
-                  >
+                  <Text className="font-inter font-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={deleteGroup}>
                   <Text
-                    style={{
-                      fontFamily: "Inter-Bold",
-                      fontSize: 16,
-                      color: theme === "dark" ? "#a5c9ff" : "#2f2d51",
-                    }}
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          </View>
+            </Animated.View>
+          </Animated.View>
         )}
       </KeyboardAvoidingView>
     </Modal>

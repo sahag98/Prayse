@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
 import { Link, useLocalSearchParams } from "expo-router";
@@ -16,6 +16,7 @@ import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
 import BottomModal from "@modals/BottomSheetModal";
+import GroupInfoModal from "@modals/GroupInfoModal";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -26,11 +27,9 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
-import GroupPrayerList from "../components/GroupPrayerList";
 import { useSupabase } from "../context/useSupabase";
 import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
@@ -39,32 +38,26 @@ const PrayerGroupScreen = () => {
   const params = useLocalSearchParams();
 
   const theme = useSelector((state) => state.user.theme);
-  const msgs = useSelector((state) => state.message.messages);
-  const [toggle, setToggle] = useState("chat");
-  const [messages, setMessages] = useState([]);
   const [groupMessages, setGroupMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [inputHeight, setInputHeight] = useState(45);
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
-  const currGroup = params?.group;
-  const allGroups = params?.allGroups;
+
   const [isGroupRemoved, setIsGroupRemoved] = useState(false);
-  const [countdown, setCountdown] = useState(300);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [hasAnnounced, setHasAnnounced] = useState(false);
-  const [isAnnouncingMeeting, setIsAnnouncingMeeting] = useState(false);
+
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
 
   const [channel, setChannel] = useState();
   const [reactionChannel, setReactionChannel] = useState();
-  const [isNotifyVisible, setIsNotifyVisible] = useState(false);
+
   const groupId = params?.group_id;
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
   const [currentGroup, setCurrentGroup] = useState();
+  const [groupUsers, setGroupUsers] = useState();
 
   const [prayerToReact, setPrayerToReact] = useState();
 
@@ -82,14 +75,25 @@ const PrayerGroupScreen = () => {
 
   useEffect(() => {
     async function fetchCurrGroup() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("groups")
         .select("admin_id,code,description,id,name")
         .eq("id", groupId)
         .single();
+
       setCurrentGroup(data);
     }
     fetchCurrGroup();
+
+    async function fetchCurrGroupUsers() {
+      const { data } = await supabase
+        .from("members")
+        .select("*,profiles(id,full_name, avatar_url, expoToken)")
+        .eq("group_id", groupId);
+
+      setGroupUsers(data);
+    }
+    fetchCurrGroupUsers();
   }, [groupId]);
 
   useEffect(() => {
@@ -190,28 +194,6 @@ const PrayerGroupScreen = () => {
     showToast("success", "Copied to Clipboard.");
   };
 
-  useEffect(() => {
-    let interval;
-
-    if (hasAnnounced) {
-      interval = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    }
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [hasAnnounced]);
-
-  const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 45) {
-      setInputHeight(45);
-    } else {
-      setInputHeight(event.nativeEvent.contentSize.height);
-    }
-  };
-
   const showToast = (type, content) => {
     Toast.show({
       type,
@@ -221,39 +203,20 @@ const PrayerGroupScreen = () => {
   };
 
   async function getSingleGroup() {
-    const { data: groups, error } = await supabase
+    const { data: groups } = await supabase
       .from("groups")
       .select("*")
       .eq("id", groupId);
     return groups;
   }
 
-  async function notifyOnFirstMsg() {
-    // await AsyncStorage.removeItem("isNotify");
-    try {
-      const isChecked = await AsyncStorage.getItem("isNotify");
-      console.log(isChecked);
-      if (isChecked == null) {
-        console.log("it is the first time to send noti");
-        setIsNotifyVisible(true);
-        await AsyncStorage.setItem("isNotify", "true");
-      } else if (isChecked != null) {
-        setIsNotifyVisible(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   const sendMessage = async () => {
-    if (newMessage.length == 0) {
+    if (newMessage.length === 0) {
       return;
     }
 
-    await notifyOnFirstMsg();
-
     const groups = await getSingleGroup();
-    if (groups.length == 0) {
+    if (groups.length === 0) {
       setNewMessage("");
       Keyboard.dismiss();
       setIsGroupRemoved(true);
@@ -273,6 +236,10 @@ const PrayerGroupScreen = () => {
       })
       .select();
 
+    if (error) {
+      console.log(error);
+    }
+
     channel.send({
       type: "broadcast",
       event: "message",
@@ -285,14 +252,14 @@ const PrayerGroupScreen = () => {
       },
     });
 
-    const { data: members, error: membersError } = await supabase
+    const { data: members } = await supabase
       .from("members")
       .select("*, profiles(id, expoToken)")
       .eq("group_id", groupId)
       .order("id", { ascending: false });
 
     members.map(async (m) => {
-      if (m.profiles.expoToken != currentUser.expoToken) {
+      if (m.profiles.expoToken !== currentUser.expoToken) {
         const message = {
           to: m.profiles.expoToken,
           sound: "default",
@@ -325,30 +292,9 @@ const PrayerGroupScreen = () => {
     bottomSheetModalRef.current?.present();
   };
 
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  // const openGroupInfo = async () => {
-  //   console.log("open");
-  //   const groups = await getSingleGroup();
-  //   if (groups.length == 0) {
-  //     console.log("this group has been removed");
-  //     setIsGroupRemoved(true);
-  //     return;
-  //   }
-  //   setGroupInfoVisible(true);
-  // };
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
   const copyCode = async () => {
     const groups = await getSingleGroup();
-    if (groups.length == 0) {
+    if (groups.length === 0) {
       console.log("this group has been removed");
       setIsGroupRemoved(true);
       return;
@@ -393,7 +339,10 @@ const PrayerGroupScreen = () => {
               />
             </Link>
 
-            <TouchableOpacity className="pb-1 ml-3 gap-2">
+            <TouchableOpacity
+              onPress={() => setGroupInfoVisible(true)}
+              className="pb-1 ml-3 gap-2"
+            >
               <HeaderTitle
                 style={getMainTextColorStyle(actualTheme)}
                 className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
@@ -404,23 +353,23 @@ const PrayerGroupScreen = () => {
                 style={getMainTextColorStyle(actualTheme)}
                 className="text-sm underline font-inter font-medium text-light-primary dark:text-dark-primary/50"
               >
-                Tap for group info
+                Tap for more info
               </Text>
             </TouchableOpacity>
           </View>
-          {/* {groupInfoVisible && (
+          {groupInfoVisible && (
             <GroupInfoModal
-              group={currGroup}
+              group={currentGroup}
               theme={colorScheme}
               actualTheme={actualTheme}
               supabase={supabase}
-              allUsers={allGroups}
+              groupUsers={groupUsers}
               currentUser={currentUser}
               groupInfoVisible={groupInfoVisible}
               setGroupInfoVisible={setGroupInfoVisible}
             />
           )}
-          {isGroupRemoved && (
+          {/* {isGroupRemoved && (
             <RemovedGroupModal
               isGroupRemoved={isGroupRemoved}
               setRefreshGroup={setRefreshGroup}
@@ -454,40 +403,29 @@ const PrayerGroupScreen = () => {
           </TouchableOpacity>
         </HeaderView>
 
-        {toggle == "chat" ? (
-          <Chat
-            theme={colorScheme}
-            prayerToReact={prayerToReact}
-            setPrayerToReact={setPrayerToReact}
-            setReactionChannel={setReactionChannel}
-            actualTheme={actualTheme}
-            currentUser={currentUser}
-            onlineUsers={onlineUsers}
-            handleOpenBottomModal={handleOpenBottomModal}
-            areMessagesLoading={areMessagesLoading}
-            groupMessages={groupMessages}
-            setGroupMessages={setGroupMessages}
-            flatListRef={flatListRef}
-            supabase={supabase}
-            currGroup={currentGroup}
-            setRefreshMsgLikes={setRefreshMsgLikes}
-            refreshMsgLikes={refreshMsgLikes}
-            showToast={showToast}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            handleContentSizeChange={handleContentSizeChange}
-            sendMessage={sendMessage}
-          />
-        ) : (
-          <GroupPrayerList
-            theme={theme}
-            currentUser={currentUser}
-            onlineUsers={onlineUsers}
-            supabase={supabase}
-            currGroup={currGroup}
-            allGroups={allGroups}
-          />
-        )}
+        <Chat
+          theme={colorScheme}
+          prayerToReact={prayerToReact}
+          setPrayerToReact={setPrayerToReact}
+          setReactionChannel={setReactionChannel}
+          actualTheme={actualTheme}
+          currentUser={currentUser}
+          onlineUsers={onlineUsers}
+          handleOpenBottomModal={handleOpenBottomModal}
+          areMessagesLoading={areMessagesLoading}
+          groupMessages={groupMessages}
+          setGroupMessages={setGroupMessages}
+          flatListRef={flatListRef}
+          supabase={supabase}
+          currGroup={currentGroup}
+          setRefreshMsgLikes={setRefreshMsgLikes}
+          refreshMsgLikes={refreshMsgLikes}
+          showToast={showToast}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          sendMessage={sendMessage}
+        />
+
         {/* <Button
           onPress={handleOpenBottomModal}
           title="Present Modal"
