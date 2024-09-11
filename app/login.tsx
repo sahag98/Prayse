@@ -1,8 +1,9 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
+import { Stack, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
+import { useColorScheme } from "nativewind";
 import {
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Linking,
@@ -17,9 +18,21 @@ import {
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import { ActualTheme } from "@types/reduxTypes";
 
-import googleIcon from "../assets/google-icon.png";
 import { useSupabase } from "../context/useSupabase";
 import {
   Container,
@@ -42,6 +55,11 @@ const LoginScreen = () => {
   } = useSupabase();
   const [passVisible, setPassVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
+  const router = useRouter();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+  const { colorScheme, setColorScheme } = useColorScheme();
   useEffect(() => {
     WebBrowser.warmUpAsync();
 
@@ -60,7 +78,7 @@ const LoginScreen = () => {
 
   const SignUp = () => {
     if (email.length == 0 || password.length == 0) {
-      showToast("error", "Email and password field can't be empty.");
+      showToast("error", "Email and password fields can't be empty.");
     } else {
       register(email, password);
       setIsLoggingIn(true);
@@ -125,168 +143,128 @@ const LoginScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
+      <Stack.Screen options={{ headerShown: false }} />
+
       <Container
-        style={
-          theme == "dark"
-            ? {
-                backgroundColor: "#121212",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-            : {
-                backgroundColor: "#F2F7FF",
-                justifyContent: "center",
-                alignItems: "center",
-              }
-        }
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="bg-light-background relative dark:bg-dark-background justify-center items-center"
       >
-        <View style={{ alignItems: "center", gap: 5, marginBottom: 15 }}>
+        <AntDesign
+          onPress={() => router.replace("/(tabs)/welcome")}
+          className="self-start"
+          name="left"
+          size={24}
+          color="black"
+        />
+        <View className="items-center gap-2 mb-4">
           <Text
-            style={{
-              color: theme == "dark" ? "white" : "#2f2d51",
-              fontFamily: "Inter-Bold",
-              fontSize: 30,
-            }}
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-bold text-light-primary dark:text-dark-primary text-3xl"
           >
             {isLoggingIn ? "Sign In" : "Sign Up"}
           </Text>
-          <Text style={theme == "dark" ? styles.introDark : styles.intro}>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter text-lg text-light-primary dark:text-dark-primary"
+          >
             Connect and pray for one another.
           </Text>
         </View>
         {isLoggingIn && (
           <>
             <View
-              style={
-                theme == "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      flexDirection: "row",
-                      padding: 15,
-                      marginBottom: 10,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "#b7d3ff",
-                      flexDirection: "row",
-                      padding: 15,
-                      marginBottom: 10,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full bg-light-secondary dark:bg-dark-secondary flex-row p-5 mb-3 rounded-lg relative justify-between items-center"
             >
               <TextInput
+                style={getSecondaryTextColorStyle(actualTheme)}
                 onChangeText={(text) => setEmail(text)}
                 autoCapitalize="none"
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
                 value={email}
                 blurOnSubmit
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "white",
-                        width: "75%",
-
-                        fontFamily: "Inter-Regular",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        width: "75%",
-                        fontFamily: "Inter-Regular",
-                      }
-                }
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
                 placeholder="Enter email"
               />
             </View>
             <View
-              style={
-                theme == "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      flexDirection: "row",
-                      padding: 13,
-                      marginBottom: 5,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "#b7d3ff",
-                      flexDirection: "row",
-                      padding: 13,
-                      marginBottom: 5,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full bg-light-secondary dark:bg-dark-secondary flex-row p-5 mb-3 rounded-lg relative justify-between items-center"
             >
               <TextInput
+                style={getSecondaryTextColorStyle(actualTheme)}
                 cursorColor={theme == "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
                 blurOnSubmit
                 secureTextEntry={!passVisible}
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "white",
-                        width: "75%",
-
-                        fontFamily: "Inter-Regular",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        width: "75%",
-                        fontFamily: "Inter-Regular",
-                      }
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
                 }
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
                 placeholder="Enter password"
               />
               <TouchableOpacity
                 onPress={() => setPassVisible(!passVisible)}
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                className="justify-center items-center"
               >
                 {passVisible ? (
                   <Ionicons
                     name="eye-off-outline"
-                    size={20}
-                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                    size={17}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "#d6d6d6"
+                          : "#2f2d51"
+                    }
                   />
                 ) : (
                   <Ionicons
                     name="eye-outline"
-                    size={20}
-                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                    size={17}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "#d6d6d6"
+                          : "#2f2d51"
+                    }
                   />
                 )}
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={() => setForgotModal(true)}
-              style={{
-                alignSelf: "flex-end",
-                marginBottom: 10,
-              }}
+              className="self-end mb-3"
             >
-              <Text style={{ color: "#ff6262", fontSize: 13 }}>
+              <Text className="font-inter font-medium text-red-500 text-sm">
                 Forgot password?
               </Text>
             </TouchableOpacity>
@@ -300,82 +278,43 @@ const LoginScreen = () => {
             >
               <ModalContainer
                 style={
-                  theme == "dark"
-                    ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-                    : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+                  colorScheme === "dark"
+                    ? { backgroundColor: "rgba(0, 0, 0, 0.5)" }
+                    : { backgroundColor: "rgba(0, 0, 0, 0.5)" }
                 }
               >
                 <ModalView
-                  style={
-                    theme == "dark"
-                      ? { backgroundColor: "#121212", width: "100%" }
-                      : { backgroundColor: "#b7d3ff" }
-                  }
+                  style={getSecondaryBackgroundColorStyle(actualTheme)}
+                  className="bg-light-secondary dark:bg-dark-secondary w-5/6"
                 >
                   <Text
-                    style={
-                      theme == "dark"
-                        ? {
-                            color: "white",
-                            fontFamily: "Inter-Regular",
-                            textAlign: "center",
-                          }
-                        : {
-                            color: "#2f2d51",
-                            fontFamily: "Inter-Regular",
-                            textAlign: "center",
-                          }
-                    }
+                    className="font-inter font-bold text-center text-2xl text-light-primary dark:text-dark-primary"
+                    style={getSecondaryTextColorStyle(actualTheme)}
                   >
-                    Password recovery has not been implemented yet. Contact
-                    Developer to reset your account.
+                    Forgot Password
                   </Text>
 
                   <ModalActionGroup>
                     <TouchableOpacity
                       onPress={resetAccount}
-                      style={
-                        theme == "dark"
-                          ? {
-                              backgroundColor: "#A5C9FF",
-                              width: "100%",
-                              flexDirection: "row",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              padding: 15,
-                              borderRadius: 10,
-                            }
-                          : {
-                              backgroundColor: "#2f2d51",
-                              width: "100%",
-                              flexDirection: "row",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              padding: 15,
-                              borderRadius: 10,
-                            }
-                      }
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
+                      className="bg-light-primary dark:bg-dark-accent w-full flex-row items-center justify-center p-4 rounded-lg"
                     >
                       <MaterialCommunityIcons
                         name="email-edit-outline"
-                        style={{ marginRight: 10 }}
+                        className="mr-3"
                         size={24}
-                        color={theme == "dark" ? "#121212" : "white"}
+                        color={
+                          actualTheme && actualTheme.PrimaryTxt
+                            ? actualTheme.PrimaryTxt
+                            : colorScheme === "dark"
+                              ? "#121212"
+                              : "white"
+                        }
                       />
                       <Text
-                        style={
-                          theme == "dark"
-                            ? {
-                                color: "#121212",
-                                fontSize: 15,
-                                fontFamily: "Inter-Bold",
-                              }
-                            : {
-                                color: "white",
-                                fontSize: 15,
-                                fontFamily: "Inter-Bold",
-                              }
-                        }
+                        style={getPrimaryTextColorStyle(actualTheme)}
+                        className="font-inter font-semibold  text-light-background dark:text-dark-background"
                       >
                         Contact Developer
                       </Text>
@@ -387,53 +326,37 @@ const LoginScreen = () => {
 
             <TouchableOpacity
               onPress={() => {
+                if (email.length === 0 && password.length === 0) {
+                  showToast(
+                    "error",
+                    "Email and password field can't be empty.",
+                  );
+                  return;
+                }
                 login(email, password);
                 setEmail("");
                 setPassword("");
                 Keyboard.dismiss();
+                router.replace("profile-setup");
               }}
-              style={
-                theme == "dark" ? styles.signInButtonDark : styles.signInButton
-              }
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg w-full justify-center items-center"
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#212121",
-                        fontSize: 15,
-                        fontFamily: "Inter-Bold",
-                      }
-                    : { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
-                }
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
               >
                 Log In
               </Text>
             </TouchableOpacity>
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View className="w-full justify-center items-center">
               <View
-                style={{
-                  width: "100%",
-                  height: 1,
-                  position: "absolute",
-                  alignSelf: "center",
-                  backgroundColor: theme == "dark" ? "#474747" : "#423f72",
-                }}
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                className="w-full h-[2px] absolute self-center bg-light-secondary dark:bg-dark-secondary"
               />
               <Text
-                style={{
-                  marginVertical: 10,
-                  color: theme == "dark" ? "#d2d2d2" : "#2f2d51",
-                  padding: 8,
-                  backgroundColor: theme == "dark" ? "#121212" : "#f2f7ff",
-                  fontFamily: "Inter-Regular",
-                }}
+                style={getMainBackgroundColorStyle(actualTheme)}
+                className="my-2 p-3 font-inter font-semibold bg-light-background dark:bg-dark-background"
               >
                 Or
               </Text>
@@ -443,63 +366,34 @@ const LoginScreen = () => {
                 onSignInWithGoogle();
                 Keyboard.dismiss();
               }}
-              style={
-                theme == "dark"
-                  ? [
-                      styles.signInButtonDark,
-                      {
-                        backgroundColor: "#212121",
-                        marginBottom: 10,
-                        paddingVertical: 10,
-                      },
-                    ]
-                  : [
-                      styles.signInButton,
-                      {
-                        backgroundColor: "#b7d3ff",
-                        marginBottom: 10,
-                        paddingVertical: 10,
-                      },
-                    ]
-              }
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg justify-center items-center w-full flex-row gap-3"
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
-                    : {
-                        color: "#2f2d51",
-                        fontSize: 15,
-                        fontFamily: "Inter-Bold",
-                      }
-                }
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
               >
                 Log In with Google
               </Text>
-              <Image style={styles.img} source={googleIcon} />
+              <AntDesign
+                name="google"
+                size={24}
+                color={
+                  actualTheme && actualTheme.PrimaryTxt
+                    ? actualTheme.PrimaryTxt
+                    : colorScheme === "dark"
+                      ? "#121212"
+                      : "#2f2d51"
+                }
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setIsLoggingIn(false)}
-              style={
-                theme == "dark" ? styles.signUpButtonDark : styles.signUpButton
-              }
+              className="mt-5"
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#A5C9FF",
-                        textDecorationLine: "underline",
-                        fontSize: 13,
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontSize: 13,
-                        textDecorationLine: "underline",
-                        fontFamily: "Inter-Medium",
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="underline underline-offset-2 text-sm font-inter font-medium text-light-primary dark:text-dark-accent"
               >
                 Don't have an account yet? Sign up.
               </Text>
@@ -508,159 +402,115 @@ const LoginScreen = () => {
         )}
         {!isLoggingIn && (
           <>
-            <TextInput
-              onChangeText={(text) => setEmail(text)}
-              placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
-              value={email}
-              autoCapitalize="none"
-              blurOnSubmit
-              style={
-                theme == "dark"
-                  ? {
-                      backgroundColor: "#212121",
-                      padding: 15,
-                      color: "white",
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 10,
-                      borderRadius: 10,
-                    }
-                  : {
-                      backgroundColor: "#b7d3ff",
-                      padding: 15,
-                      color: "#2f2d51",
-                      width: "100%",
-                      fontFamily: "Inter-Regular",
-                      marginBottom: 10,
-                      borderRadius: 10,
-                    }
-              }
-              placeholder="Enter email"
-            />
             <View
-              style={
-                theme == "dark"
-                  ? {
-                      width: "100%",
-                      backgroundColor: "#212121",
-                      flexDirection: "row",
-                      padding: 13,
-                      marginBottom: 5,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-                  : {
-                      width: "100%",
-                      backgroundColor: "#b7d3ff",
-                      flexDirection: "row",
-                      padding: 13,
-                      marginBottom: 5,
-                      borderRadius: 10,
-                      position: "relative",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-              }
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full bg-light-secondary dark:bg-dark-secondary flex-row p-5 mb-3 rounded-lg relative justify-between items-center"
             >
               <TextInput
+                style={getSecondaryTextColorStyle(actualTheme)}
+                onChangeText={(text) => setEmail(text)}
+                autoCapitalize="none"
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
+                value={email}
+                blurOnSubmit
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
+                placeholder="Enter email"
+              />
+            </View>
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full bg-light-secondary dark:bg-dark-secondary flex-row p-5 mb-3 rounded-lg relative justify-between items-center"
+            >
+              <TextInput
+                style={getSecondaryTextColorStyle(actualTheme)}
                 cursorColor={theme == "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
                 blurOnSubmit
                 secureTextEntry={!passVisible}
-                placeholderTextColor={theme == "dark" ? "#d6d6d6" : "#423f72"}
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "white",
-                        width: "75%",
-                        fontFamily: "Inter-Regular",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        width: "75%",
-                        fontFamily: "Inter-Regular",
-                      }
+                selectionColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
                 }
+                placeholderTextColor={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d6d6d6"
+                      : "#423f72"
+                }
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
                 placeholder="Enter password"
               />
               <TouchableOpacity
                 onPress={() => setPassVisible(!passVisible)}
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                className="justify-center items-center"
               >
                 {passVisible ? (
                   <Ionicons
                     name="eye-off-outline"
-                    size={20}
-                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                    size={17}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "#d6d6d6"
+                          : "#2f2d51"
+                    }
                   />
                 ) : (
                   <Ionicons
                     name="eye-outline"
-                    size={20}
-                    color={theme == "dark" ? "#d6d6d6" : "#2f2d51"}
+                    size={17}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "#d6d6d6"
+                          : "#2f2d51"
+                    }
                   />
                 )}
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={SignUp}
-              style={
-                theme == "dark"
-                  ? [
-                      styles.signInButtonDark,
-                      { backgroundColor: "#f1d592", marginTop: 15 },
-                    ]
-                  : [
-                      styles.signInButton,
-                      { backgroundColor: "#2f2d51", marginTop: 15 },
-                    ]
-              }
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg justify-center items-center w-full flex-row gap-3"
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#212121",
-                        fontSize: 15,
-                        fontFamily: "Inter-Bold",
-                      }
-                    : { color: "white", fontSize: 15, fontFamily: "Inter-Bold" }
-                }
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
               >
                 Sign Up
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setIsLoggingIn(true)}
-              style={
-                theme == "dark" ? styles.signUpButtonDark : styles.signUpButton
-              }
+              className="mt-5"
             >
               <Text
-                style={
-                  theme == "dark"
-                    ? {
-                        color: "#A5C9FF",
-                        fontSize: 13,
-                        textDecorationLine: "underline",
-                        fontFamily: "Inter-Medium",
-                      }
-                    : {
-                        color: "#2f2d51",
-                        fontSize: 13,
-                        textDecorationLine: "underline",
-                        fontFamily: "Inter-Medium",
-                      }
-                }
+                style={getMainTextColorStyle(actualTheme)}
+                className="underline underline-offset-2 text-sm font-inter font-medium text-light-primary dark:text-dark-accent"
               >
-                Already have an account? Log in.
+                Already have an account yet? Sign in.
               </Text>
             </TouchableOpacity>
           </>

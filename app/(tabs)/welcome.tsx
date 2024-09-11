@@ -110,7 +110,7 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const { colorScheme, setColorScheme } = useColorScheme();
+
   const welcomeFadeIn = useSharedValue(0);
 
   const [openings, setOpenings] = useState(0);
@@ -125,10 +125,11 @@ const WelcomeScreen = () => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
+
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-
+  const { colorScheme, setColorScheme } = useColorScheme();
   // const posthog = usePostHog();
   // useEffect(() => {
   //   console.log("hereee");

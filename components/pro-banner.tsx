@@ -29,7 +29,7 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
     <Link
       href={`/${PRO_SCREEN}`}
       style={getPrimaryBackgroundColorStyle(actualTheme)}
-      className="w-full flex-row items-center justify-between p-5 mb-3 rounded-lg bg-light-primary dark:bg-dark-secondary"
+      className="w-full flex-row items-center justify-between p-5 mb-4 rounded-lg bg-light-primary dark:bg-dark-secondary"
       asChild
     >
       <TouchableOpacity className="w-full flex-row items-center justify-between p-5 rounded-lg bg-light-primary dark:bg-dark-secondary">

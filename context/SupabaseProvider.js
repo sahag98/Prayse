@@ -186,7 +186,7 @@ export const SupabaseProvider = (props) => {
   }
 
   const checkIfUserIsLoggedIn = async () => {
-    console.log("checking user");
+    console.log("CHECKING USER");
     const result = await supabase.auth.getSession();
     setSession(result.data.session ? result.data.session : null);
     setLoggedIn(result.data.session !== null);
@@ -196,6 +196,8 @@ export const SupabaseProvider = (props) => {
         .from("profiles")
         .select("*")
         .eq("id", result.data.session.user.id);
+
+      console.log(profiles[0]);
 
       if (profileError) {
         console.log(profileError);

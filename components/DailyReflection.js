@@ -85,7 +85,7 @@ const DailyReflection = ({
   }
 
   return (
-    <View className="flex-1 justify-start items-start w-full mb-4 gap-3">
+    <View className="flex-1 justify-start items-start w-full mb-4 gap-2">
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
         theme={theme}
@@ -103,7 +103,7 @@ const DailyReflection = ({
         style={getMainTextColorStyle(actualTheme)}
         className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white"
       >
-        Daily Devotions
+        Start here
       </Text>
       <View className="gap-3 relative w-full">
         <TouchableOpacity

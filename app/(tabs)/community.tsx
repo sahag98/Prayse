@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
 import * as Notifications from "expo-notifications";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Dimensions,
@@ -53,7 +53,6 @@ import { useSupabase } from "../../context/useSupabase";
 import CreateGroupModal from "../../modals/CreateGroupModal";
 import JoinModal from "../../modals/JoinModal";
 import ProfileModal from "../../modals/ProfileModal";
-import WelcomeModal from "../../modals/WelcomeModal";
 import {
   PRAYER_GROUP_SCREEN,
   PUBLIC_COMMUNITY_SCREEN,
@@ -110,6 +109,8 @@ const CommunityHomeScreen = () => {
   );
   // const routeParams = useLocalSearchParams();
 
+  console.log("current user: ", currentUser);
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotateZ: `${rotation.value}deg` }],
@@ -133,7 +134,6 @@ const CommunityHomeScreen = () => {
   useEffect(() => {
     const checkConnection = async () => {
       const connected = await Network.getNetworkStateAsync();
-      console.log("connection: ", connected.isConnected);
       if (!connected.isConnected) {
         setHasConnection(false);
       }
@@ -258,19 +258,13 @@ const CommunityHomeScreen = () => {
 
   const width = Dimensions.get("window").width - 30;
 
+  if (!currentUser) {
+    console.log("not logged in!!!", currentUser);
+    return <Redirect href="login" />;
+  }
+
   if (currentUser && currentUser?.full_name === null) {
-    return (
-      <WelcomeModal
-        actualTheme={actualTheme}
-        colorScheme={colorScheme}
-        supabase={supabase}
-        getUserGroups={getUserGroups}
-        setCurrentUser={setCurrentUser}
-        isShowingWelcome
-        setIsShowingWelcome={setIsShowingWelcome}
-        user={currentUser}
-      />
-    );
+    return <Redirect href="profile-setup" />;
   }
 
   if (!hasConnection) {

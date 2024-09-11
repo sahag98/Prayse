@@ -1,12 +1,15 @@
+//@ts-nocheck
+
 import React, { useState } from "react";
 import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
+import { Stack, useRouter } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   StyleSheet,
   Text,
@@ -19,11 +22,6 @@ import uuid from "react-native-uuid";
 import { useSelector } from "react-redux";
 
 import { Feather } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
-
-import config from "../config";
-import { useSupabase } from "../context/useSupabase";
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -32,20 +30,28 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useRouter } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
 
-const WelcomeModal = ({
-  user,
-  getUserGroups,
-  isShowingWelcome,
-  actualTheme,
-  colorScheme,
-  supabase,
-  setCurrentUser,
-  setIsShowingWelcome,
-}) => {
-  const theme = useSelector((state) => state.user.theme);
-  const { logout } = useSupabase();
+import config from "../config";
+import { useSupabase } from "../context/useSupabase";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+
+const ProfileSetup = ({}) => {
+  const { colorScheme } = useColorScheme();
+
+  const {
+    currentUser,
+    setCurrentUser,
+    session,
+    refreshMembers,
+    setRefreshMembers,
+    logout,
+    supabase,
+  } = useSupabase();
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+
   const [name, setName] = useState("");
   const router = useRouter();
   const [isUnique, setIsUnique] = useState(true);
@@ -58,8 +64,8 @@ const WelcomeModal = ({
   };
 
   const handleBacktoSignIn = async () => {
-    ogout();
-    router.push("login");
+    logout();
+    router.replace("login");
   };
 
   const showToast = (type, content) => {
@@ -77,7 +83,7 @@ const WelcomeModal = ({
       if (status !== "granted") {
         showToast(
           "error",
-          "We need camera roll permissions to make this work!"
+          "We need camera roll permissions to make this work!",
         );
       } else {
         pickImage();
@@ -89,7 +95,7 @@ const WelcomeModal = ({
     const { data: profiles } = await supabase
       .from("profiles")
       .select()
-      .eq("id", user?.id);
+      .eq("id", currentUser?.id);
     setCurrentUser(profiles[0]);
   }
 
@@ -105,7 +111,7 @@ const WelcomeModal = ({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
+        result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
@@ -139,7 +145,7 @@ const WelcomeModal = ({
         .update({
           avatar_url: imageData.signedUrl,
         })
-        .eq("id", user.id);
+        .eq("id", currentUser.id);
 
       if (error) {
         throw error;
@@ -152,7 +158,7 @@ const WelcomeModal = ({
     const { data: profiles } = await supabase
       .from("profiles")
       .select("full_name")
-      .neq("id", user.id);
+      .neq("id", currentUser.id);
 
     const isUnique = profiles.every((prof) => {
       const profileName = prof.full_name || ""; // Handle null or undefined
@@ -168,22 +174,27 @@ const WelcomeModal = ({
       showToast("error", "Username field is required.");
       return;
     }
+
     const isUniqueName = await checkIfUnique();
+
     if (!isUniqueName) {
       setIsUnique(false);
     }
 
     if (isUniqueName) {
+      console.log("is unique");
+
+      console.log("current user id: ", currentUser.id);
       const { data } = await supabase
         .from("profiles")
         .update({
           full_name: name,
         })
-        .eq("id", user.id)
+        .eq("id", currentUser.id)
         .select();
       showToast("success", "Profile has been created.");
       setCurrentUser(data[0]);
-      setIsShowingWelcome(false);
+      router.replace("/(tabs)/community");
     }
   };
 
@@ -192,7 +203,7 @@ const WelcomeModal = ({
     const newId = id.substring(0, 3);
     setName(`Anonymous${newId}`);
     setImage(
-      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559"
+      "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
     );
     await supabase
       .from("profiles")
@@ -201,7 +212,7 @@ const WelcomeModal = ({
         avatar_url:
           "https://cdn.glitch.global/9c6cd6b6-a7ae-4da4-be68-09611ad266da/user_3177440.png?v=1692410467559",
       })
-      .eq("id", user.id)
+      .eq("id", currentUser.id)
       .select();
   }
 
@@ -209,7 +220,7 @@ const WelcomeModal = ({
     await supabase
       .from("profiles")
       .update({ expoToken: expoPushToken })
-      .eq("id", user?.id)
+      .eq("id", currentUser?.id)
       .select();
   }
 
@@ -244,20 +255,19 @@ const WelcomeModal = ({
   }
 
   return (
-    <Modal
-      onShow={getPermission}
-      animationType="fade"
-      transparent
-      visible={isShowingWelcome}
-      onRequestClose={handleCloseModal}
+    <Container
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="flex-1 justify-center w-full gap-2 items-center bg-light-background dark:bg-dark-background"
     >
+      <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAvoidingView
+        className="w-full"
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ModalContainer
+        <View
           style={getMainBackgroundColorStyle(actualTheme)}
-          className="bg-light-background dark:bg-dark-background justify-center items-center gap-5"
+          className="bg-light-background flex-1 w-full dark:bg-dark-background justify-center items-center gap-5"
         >
           <HeaderView className="items-center justify-center">
             <HeaderTitle
@@ -387,13 +397,13 @@ const WelcomeModal = ({
               Back to Sign in
             </Text>
           </View>
-        </ModalContainer>
+        </View>
       </KeyboardAvoidingView>
-    </Modal>
+    </Container>
   );
 };
 
-export default WelcomeModal;
+export default ProfileSetup;
 
 const styles = StyleSheet.create({
   inputField: {
