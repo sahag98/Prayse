@@ -49,6 +49,7 @@ const LoginScreen = () => {
   const {
     register,
     login,
+    currentUser,
     forgotPassword,
     getGoogleOAuthUrl,
     setOAuthSession,
@@ -325,7 +326,7 @@ const LoginScreen = () => {
             </Modal>
 
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 if (email.length === 0 && password.length === 0) {
                   showToast(
                     "error",
@@ -333,11 +334,14 @@ const LoginScreen = () => {
                   );
                   return;
                 }
-                login(email, password);
+                await login(email, password);
+                // console.log("user in login: ", currentUser);
+
                 setEmail("");
                 setPassword("");
                 Keyboard.dismiss();
-                router.replace("profile-setup");
+
+                // router.replace("/(tabs)/community");
               }}
               style={getPrimaryBackgroundColorStyle(actualTheme)}
               className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg w-full justify-center items-center"

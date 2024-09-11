@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
 import * as Notifications from "expo-notifications";
-import { Link, Redirect } from "expo-router";
+import { Link, Redirect, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Dimensions,
@@ -104,12 +104,19 @@ const CommunityHomeScreen = () => {
   const [isFetchingUserGroups, setIsFetchingUserGroups] = useState(false);
   const rotation = useSharedValue(0);
   const { colorScheme } = useColorScheme();
+  const router = useRouter();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
   // const routeParams = useLocalSearchParams();
 
-  console.log("current user: ", currentUser);
+  // console.log("current user: ", currentUser);
+
+  useEffect(() => {
+    if (!currentUser) {
+      router.push("login");
+    }
+  }, [currentUser]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -245,7 +252,7 @@ const CommunityHomeScreen = () => {
         })
       ).data;
     } else {
-      console.log("Must use physical device for Push Notifications");
+      return;
     }
     sendToken(token);
   }
@@ -264,6 +271,7 @@ const CommunityHomeScreen = () => {
   }
 
   if (currentUser && currentUser?.full_name === null) {
+    console.log("should redirect to setup");
     return <Redirect href="profile-setup" />;
   }
 

@@ -32,6 +32,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { useRouter } from "expo-router";
 
 const ProfileModal = ({
   actualTheme,
@@ -53,6 +54,8 @@ const ProfileModal = ({
   const [isUnique, setIsUnique] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
+
+  const router = useRouter();
   const navigation = useNavigation();
   useEffect(() => {
     getUserPrayers();
@@ -77,6 +80,17 @@ const ProfileModal = ({
       .select()
       .eq("id", user?.id);
     setCurrentUser(profiles[0]);
+  }
+
+  async function handleLogOut() {
+    const error = await logout();
+
+    if (!error) {
+      setCurrentUser(null);
+      router.push("/(tabs)/welcome");
+      // // router.push("login");
+      setProfileVisible(false);
+    }
   }
 
   function onModalShow() {
@@ -418,7 +432,7 @@ const ProfileModal = ({
             />
           )}
           <TouchableOpacity
-            onPress={logout}
+            onPress={handleLogOut}
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             className="self-end my-3 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
           >

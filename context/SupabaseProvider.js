@@ -9,6 +9,7 @@ import config from "../config";
 import { SupabaseContext } from "./SupabaseContext";
 
 import "react-native-url-polyfill/auto";
+import { useRouter } from "expo-router";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -24,6 +25,7 @@ const ExpoSecureStoreAdapter = {
 };
 
 export const SupabaseProvider = (props) => {
+  const router = useRouter();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [session, setSession] = useState(null);
@@ -123,10 +125,12 @@ export const SupabaseProvider = (props) => {
 
   const logout = async () => {
     console.log("logging out");
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
     setLoggedIn(false);
     setSession(null);
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+
+    return error;
   };
 
   const fetchPublicGroups = async () => {
@@ -197,12 +201,17 @@ export const SupabaseProvider = (props) => {
         .select("*")
         .eq("id", result.data.session.user.id);
 
-      console.log(profiles[0]);
+      console.log("profiles 0: ", profiles[0]);
+      setCurrentUser(profiles[0]);
+      if (profiles[0] && profiles[0].full_name !== null) {
+        router.push("/(tabs)/community");
+      } else if (profiles[0] && profiles[0].full_name === null) {
+        router.push("profile-setup");
+      }
 
       if (profileError) {
         console.log(profileError);
       }
-      setCurrentUser(profiles[0]);
 
       return profiles;
     }
