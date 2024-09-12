@@ -15,9 +15,7 @@ import { GospelOfJesus } from "@components/gospel-of-jesus";
 import { MerchComponent } from "@components/MerchComponent";
 import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
-import { QuickLinks } from "@components/quick-links";
 import { Greeting } from "@components/welcome/greeting";
-import { NoticationAction } from "@components/welcome/notification-action";
 import { StreakAction } from "@components/welcome/streak-action";
 
 import { UpdateModal } from "@modals/update-modal";
@@ -314,12 +312,12 @@ const WelcomeScreen = () => {
         <Text>Post Hog Click</Text>
       </TouchableOpacity> */}
       <UpdateModal theme={colorScheme} />
-      <View className="items-center mb-0 flex-row justify-between w-full">
+      <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row items-center">
           <View className="flex items-center flex-row">
             <StreakAction actualTheme={actualTheme} theme={colorScheme} />
-            <NoticationAction actualTheme={actualTheme} theme={colorScheme} />
+            {/* <NoticationAction actualTheme={actualTheme} theme={colorScheme} /> */}
           </View>
         </View>
       </View>
@@ -336,7 +334,7 @@ const WelcomeScreen = () => {
       <QuestionOfTheWeek actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />
       <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
-      <QuickLinks actualTheme={actualTheme} theme={colorScheme} />
+      {/* <QuickLinks actualTheme={actualTheme} theme={colorScheme} /> */}
     </WelcomeContainer>
   );
 };

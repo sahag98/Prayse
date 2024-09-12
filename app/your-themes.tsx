@@ -258,7 +258,7 @@ const YourThemesScreen = () => {
                 >
                   <Text
                     style={getPrimaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-background dark:text-dark-primary"
+                    className="font-inter font-bold text-light-background dark:text-dark-background"
                   >
                     Select
                   </Text>

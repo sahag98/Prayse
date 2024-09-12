@@ -1,13 +1,7 @@
 // @ts-nocheck
 import React from "react";
-import {
-  Image,
-  Linking,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image } from "expo-image";
+import { Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import {
@@ -18,19 +12,29 @@ import {
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
 
-import merch from "../assets/merch.png";
+import pfeBlackBack from "../assets/merch/pfe-black-back.png";
+import pfeBlackFront from "../assets/merch/pfe-black-front.png";
+import pfeBlueBack from "../assets/merch/pfe-blue-back.png";
+import pfeBlueFront from "../assets/merch/pfe-blue-front.png";
+// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
+// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
+// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
 
 interface MerchComponentProps {
   theme: string;
 }
+
+const blurhash = "LFFs=QodDNRju6oJogR+VVa#xvof";
+
 export const MerchComponent: React.FC<MerchComponentProps> = ({
   theme,
   actualTheme,
 }) => {
+  const merchImages = [pfeBlueBack, pfeBlueFront, pfeBlackBack, pfeBlackFront];
   return (
     <View
       style={getSecondaryBackgroundColorStyle(actualTheme)}
-      className="flex-1 dark:bg-dark-secondary bg-light-secondary mb-4 p-[10px] rounded-lg dark:border-[#474747] dark:border-2"
+      className="flex-1 dark:bg-dark-secondary bg-light-secondary mb-24 p-[10px] rounded-lg dark:border-[#474747] dark:border-2"
     >
       <View
         className="w-full justify-between items-center flex-1"
@@ -50,13 +54,14 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter font-bold text-xl dark:text-white text-light-primary"
           >
-            Prayse Merch
+            Pray for Everyone
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter font-normal mb-[10px] text-light-primary dark:text-[#bebebe]"
           >
-            Reminding us of the power of prayer and praise in our walk with God.
+            Reminding us to pray for our neighbors, leaders and everyone in
+            between.
           </Text>
 
           <TouchableOpacity
@@ -76,7 +81,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
               style={getPrimaryTextColorStyle(actualTheme)}
               className="text-white dark:text-dark-background font-inter font-bold text-[15px]"
             >
-              Shop Now
+              Check it Out
             </Text>
             <AntDesign
               name="shoppingcart"
@@ -92,10 +97,14 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
           </TouchableOpacity>
         </View>
         <Image
-          source={merch}
+          source={pfeBlueBack}
+          placeholder={{ blurhash }}
+          contentFit="cover"
+          transition={500}
           style={{
             flex: 1,
             width: "100%",
+            borderRadius: 10,
             height: 350,
             aspectRatio: Platform.isPad ? 1 / 1 : null,
           }}

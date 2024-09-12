@@ -1,10 +1,9 @@
+//@ts-nocheck
+
 import { useState } from "react";
 import {
   Dimensions,
   FlatList,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,22 +12,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
-
-import { editFolderName } from "../redux/folderReducer";
-import { PRAYER_SCREEN } from "../routes";
-import {
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+
+import { editFolderName } from "../redux/folderReducer";
+import { PRAYER_SCREEN } from "../routes";
 
 const FolderItem = ({ colorScheme, actualTheme, item, theme, navigation }) => {
   const dispatch = useDispatch();
@@ -61,7 +51,7 @@ const FolderItem = ({ colorScheme, actualTheme, item, theme, navigation }) => {
       editFolderName({
         name: newFolderName,
         id,
-      })
+      }),
     );
     setOpenEdit(false);
   }
@@ -84,16 +74,17 @@ const FolderItem = ({ colorScheme, actualTheme, item, theme, navigation }) => {
         ]}
       >
         <View className="relative flex-1 justify-between">
-          <View className="w-full flex-row justify-between items-center">
+          <View className="w-full flex-row gap-2 justify-between items-center">
             <Text
+              numberOfLines={1}
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-2xl dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter font-bold"
+              className="text-2xl flex-1 dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter font-bold"
             >
               {item.name}
             </Text>
             <AntDesign
               name="folder1"
-              size={28}
+              size={25}
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt

@@ -99,7 +99,14 @@ export const SupabaseProvider = (props) => {
       email,
       password,
     });
-    await checkIfUserIsLoggedIn();
+
+    const profiles = await checkIfUserIsLoggedIn();
+
+    if (profiles[0] && profiles[0].full_name !== null) {
+      router.push("/(tabs)/community");
+    } else if (profiles[0] && profiles[0].full_name === null) {
+      router.push("profile-setup");
+    }
     if (error) showToast("error", "Invalid login credentials.");
     if (error) throw error;
     setLoggedIn(true);
@@ -203,11 +210,6 @@ export const SupabaseProvider = (props) => {
 
       console.log("profiles 0: ", profiles[0]);
       setCurrentUser(profiles[0]);
-      if (profiles[0] && profiles[0].full_name !== null) {
-        router.push("/(tabs)/community");
-      } else if (profiles[0] && profiles[0].full_name === null) {
-        router.push("profile-setup");
-      }
 
       if (profileError) {
         console.log(profileError);

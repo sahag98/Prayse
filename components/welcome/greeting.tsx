@@ -81,7 +81,7 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
         onPress={() => {
           setColorScheme(colorScheme === "light" ? "dark" : "light");
         }}
-        className="text-xl tracking-wide font-inter font-bold text-light-primary dark:text-[#d2d2d2]"
+        className="text-xl tracking-wide font-inter font-semibold text-light-primary dark:text-[#d2d2d2]"
       >
         {greeting}
       </Animated.Text>

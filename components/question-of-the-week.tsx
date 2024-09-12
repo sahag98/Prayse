@@ -49,9 +49,6 @@ export const QuestionOfTheWeek: React.FC = ({ actualTheme }) => {
             >
               Question of the Week
             </Text>
-            <Text className="text-red-500  text-base font-inter font-medium">
-              New
-            </Text>
           </View>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}

@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
 import Constants from "expo-constants";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import { useColorScheme } from "nativewind";
@@ -28,7 +28,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useSelector } from "react-redux";
+import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Feather,
@@ -40,9 +41,11 @@ import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
 } from "@lib/customStyles";
 import { useIsFocused } from "@react-navigation/native";
+import { addFolder } from "@redux/folderReducer";
 
 import Ebpad from "../assets/audio/Ebpad.mp3";
 import OrganicG from "../assets/audio/OrganicG.mp3";
@@ -55,9 +58,12 @@ const PrayerRoom = () => {
   const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
+  const folders = useSelector((state) => state.folder.folders);
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
   const [isPraying, setIsPraying] = useState(false);
+
+  const router = useRouter();
 
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
@@ -79,6 +85,8 @@ const PrayerRoom = () => {
   const [sound, setSound] = useState();
   const [isPlayingSound, setIsPlayingSound] = useState(false);
   const [permissionResponse, requestPermission] = Audio.usePermissions();
+
+  const dispatch = useDispatch();
 
   const statusBarHeight = Constants.statusBarHeight;
   async function playSound(soundFile) {
@@ -246,6 +254,17 @@ const PrayerRoom = () => {
     }
   }, [isPraying, isFocused]);
 
+  function handleCreateFolder() {
+    dispatch(
+      addFolder({
+        id: uuid.v4(),
+        name: "Folder",
+        prayers: [],
+      }),
+    );
+    router.push("folder");
+  }
+
   const onContinue = () => {
     const isLastScreen = screenIndex === prayers.length - 1;
     if (isLastScreen) {
@@ -324,10 +343,10 @@ const PrayerRoom = () => {
             Prayer Room
           </Text>
         </View>
-        <View className="flex-1 justify-center items-center gap-3">
+        <View className="flex-1 justify-center w-11/12 self-center items-center gap-3">
           <FontAwesome5
             name="list-alt"
-            size={50}
+            size={60}
             color={
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
@@ -336,12 +355,36 @@ const PrayerRoom = () => {
                   : "#2f2d51"
             }
           />
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
-          >
-            No prayers added yet!
-          </Text>
+          {folders.length === 0 ? (
+            <>
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter text-center font-medium text-lg text-light-primary dark:text-dark-primary"
+              >
+                No prayers added yet! Create a prayer folder and add prayers to
+                it.
+              </Text>
+              <TouchableOpacity
+                onPress={handleCreateFolder}
+                style={getPrimaryBackgroundColorStyle(actualTheme)}
+                className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg justify-center items-center"
+              >
+                <Text
+                  style={getPrimaryTextColorStyle(actualTheme)}
+                  className="text-light-background dark:text-dark-background font-inter font-bold"
+                >
+                  Create Folder
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter text-center font-medium text-lg text-light-primary dark:text-dark-primary"
+            >
+              No prayers added yet! Add prayers to your folders.
+            </Text>
+          )}
         </View>
       </Container>
     );
