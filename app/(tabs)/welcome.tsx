@@ -305,19 +305,14 @@ const WelcomeScreen = () => {
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
       style={getMainBackgroundColorStyle(actualTheme)}
-      // contentContainerStyle={{ alignItems: "flex-start" }}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      {/* <TouchableOpacity onPress={() => posthog.capture("Streaks click!!")}>
-        <Text>Post Hog Click</Text>
-      </TouchableOpacity> */}
       <UpdateModal theme={colorScheme} />
       <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row items-center">
           <View className="flex items-center flex-row">
             <StreakAction actualTheme={actualTheme} theme={colorScheme} />
-            {/* <NoticationAction actualTheme={actualTheme} theme={colorScheme} /> */}
           </View>
         </View>
       </View>

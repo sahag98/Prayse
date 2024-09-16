@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import { useNavigation } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { router, useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 import {
   Image,
   Pressable,
@@ -23,29 +23,48 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
+
 import bible from "../assets/Bible.png";
 import cm2 from "../assets/cm2.png";
-import prayseIcon from "../assets/prayer.png";
-import { HOME_SCREEN } from "../routes";
+import prayseIcon from "../assets/prayse-logo.png";
+import reminderIcon from "../assets/reminder2.png";
 
 const onboardingSteps = [
   {
     icon: prayseIcon,
     title: "Welcome To Prayse",
     description:
-      "An app where you can create and manage your prayer list, helping you stay organized in your spiritual walk with God.",
+      "An app where you can create and manage your prayer list, helping you stay organized in your walk with God.",
+    verse:
+      "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.",
+    reference: "Philippians 4:6",
+  },
+  {
+    icon: reminderIcon,
+    title: "Reminders",
+    description:
+      "Setup prayer reminders to remember and pray for those in need of prayer.",
+    verse:
+      "And he spake a parable unto them to this end, that men ought always to pray, and not to faint;",
+    reference: "Luke 18:1",
   },
   {
     icon: cm2,
     title: "Community",
     description:
-      "Whether you're looking to deepen your own prayer life or connect with others in your community, our app is a valuable tool for anyone seeking to grow in their faith.",
+      "Create prayer groups and pray with others, strengthening your relationship with God alongside others.",
+    verse:
+      "Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much.",
+    reference: "James 5:16",
   },
   {
     icon: bible,
-    title: "Devotionals & Verse of the Day",
+    title: "Verse of the Day",
     description:
-      "Meditate daily on devotionals provided by @triedbyfire, and daily verses, reminding you of God's Word.",
+      "Meditate daily on a daily verse, helping you stay focused and reminded of God's Word.",
+    verse: "Thy word is a lamp unto my feet, and a light unto my path.",
+    reference: "Psalm 119:105",
   },
 ];
 
@@ -55,6 +74,11 @@ export default function OnboardingScreen() {
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
   const data = onboardingSteps[screenIndex];
+
+  const actualTheme = useSelector(
+    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+  );
+  const { colorScheme, setColorScheme } = useColorScheme();
 
   const onContinue = () => {
     const isLastScreen = screenIndex === onboardingSteps.length - 1;
@@ -76,7 +100,8 @@ export default function OnboardingScreen() {
 
   const endOnboarding = () => {
     setScreenIndex(0);
-    navigation.navigate(HOME_SCREEN);
+    router.push("/(tabs)/welcome");
+    // navigation.navigate("/(tabs)");
     // router.push("/");
   };
 
@@ -87,24 +112,19 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView
-      style={
-        theme == "dark"
-          ? [styles.page, { backgroundColor: "#121212" }]
-          : styles.page
-      }
+      style={getMainBackgroundColorStyle(actualTheme)}
+      className="justify-center bg-light-background dark:bg-dark-background flex-1"
     >
-      <StatusBar style="light" />
-
-      <View style={styles.stepIndicatorContainer}>
+      <View className="flex-row gap-2 mx-4">
         {onboardingSteps.map((step, index) => (
           <View
             key={index}
+            className="flex-1 h-1 bg-gray-500 rounded-lg"
             style={[
-              styles.stepIndicator,
               {
                 backgroundColor:
                   index === screenIndex
-                    ? theme == "dark"
+                    ? colorScheme === "dark"
                       ? "white"
                       : "#2f2d51"
                     : "#acacac",
@@ -113,83 +133,72 @@ export default function OnboardingScreen() {
           />
         ))}
       </View>
-
       <GestureDetector gesture={swipes}>
-        <View style={styles.pageContent} key={screenIndex}>
+        <View
+          className="p-5 justify-center items-center flex-1"
+          key={screenIndex}
+        >
           <Animated.View
-            style={{ borderRadius: 200, overflow: "hidden" }}
+            className="rounded-full mt-20 overflow-hidden"
             entering={FadeIn}
             exiting={FadeOut}
           >
             <Image
               style={
-                theme == "dark"
-                  ? data.title == "Welcome To Prayse"
+                colorScheme === "dark"
+                  ? data.title === "Welcome To Prayse"
                     ? [styles.image]
                     : [styles.image, { tintColor: "white" }]
                   : styles.image
               }
               source={data.icon}
             />
-            {/* <FontAwesome5
-              
-              name={data.icon}
-              size={150}
-              color="#121212"
-            /> */}
           </Animated.View>
 
-          <View style={styles.footer}>
+          <View className="flex-1 items-center">
             <Animated.Text
               entering={SlideInRight}
               exiting={SlideOutLeft}
-              style={
-                theme == "dark"
-                  ? [styles.title, { color: "white" }]
-                  : styles.title
-              }
+              className="font-inter font-bold text-3xl mb-5 self-center text-light-primary dark:text-dark-primary"
             >
               {data.title}
             </Animated.Text>
             <Animated.Text
               entering={SlideInRight.delay(50)}
               exiting={SlideOutLeft}
-              style={
-                theme == "dark"
-                  ? [styles.description, { color: "#d2d2d2" }]
-                  : styles.description
-              }
+              className="font-inter text-light-primary font-medium dark:text-dark-primary text-xl"
             >
               {data.description}
             </Animated.Text>
-
-            <View style={styles.buttonsRow}>
+            <View className="mt-10">
+              <Animated.Text
+                entering={SlideInRight.delay(100)}
+                exiting={SlideOutLeft}
+                className="font-inter text-light-primary dark:text-dark-primary"
+              >
+                "{data.verse}"
+              </Animated.Text>
+              <Animated.Text
+                entering={SlideInRight.delay(100)}
+                exiting={SlideOutLeft}
+                className="font-inter self-end text-light-primary dark:text-dark-primary"
+              >
+                {data.reference}
+              </Animated.Text>
+            </View>
+            <View className="mt-auto flex-row w-full items-center gap-5">
               <Text
                 onPress={endOnboarding}
-                style={
-                  theme == "dark"
-                    ? [styles.buttonText, { color: "white" }]
-                    : styles.buttonText
-                }
+                className="font-inter text-lg font-bold text-center w-1/4"
               >
                 Skip
               </Text>
 
               <Pressable
                 onPress={onContinue}
-                style={
-                  theme == "dark"
-                    ? [styles.button, { backgroundColor: "#A5C9FF" }]
-                    : styles.button
-                }
+                className="bg-light-primary dark:bg-dark-accent p-5 flex-1 rounded-xl justify-center items-center"
               >
-                <Text
-                  style={
-                    theme == "dark"
-                      ? [{ color: "#121212" }, styles.buttonText]
-                      : [{ color: "white" }, styles.buttonText]
-                  }
-                >
+                <Text className="font-inter text-lg font-bold text-light-background dark:text-dark-background ">
                   Continue
                 </Text>
               </Pressable>
@@ -202,76 +211,13 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  page: {
-    justifyContent: "center",
-    flex: 1,
-    backgroundColor: "#f2f7ff",
-  },
-  pageContent: {
-    padding: 20,
-
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
   image: {
     alignSelf: "center",
-    width: 180,
+    width: 150,
     borderRadius: 100,
-    height: 180,
+    padding: 10,
+    height: 150,
     margin: 20,
     marginTop: 70,
-  },
-  title: {
-    color: "#2f2d51",
-    fontSize: 30,
-    fontFamily: "Inter-Bold",
-    letterSpacing: 1.3,
-    textAlign: "center",
-    marginVertical: 20,
-  },
-  description: {
-    color: "#2f2d51",
-    fontSize: 17,
-
-    lineHeight: 28,
-  },
-  footer: {
-    // marginTop: "auto",
-
-    flex: 1,
-  },
-
-  buttonsRow: {
-    marginTop: "auto",
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    gap: 20,
-  },
-  button: {
-    backgroundColor: "#2f2d51",
-    borderRadius: 50,
-    alignItems: "center",
-    flex: 1,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontFamily: "Inter-Bold",
-    padding: 15,
-    paddingHorizontal: 25,
-  },
-
-  // steps
-  stepIndicatorContainer: {
-    flexDirection: "row",
-    gap: 8,
-    marginHorizontal: 15,
-  },
-  stepIndicator: {
-    flex: 1,
-    height: 3,
-    backgroundColor: "gray",
-    borderRadius: 10,
   },
 });

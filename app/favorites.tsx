@@ -66,22 +66,24 @@ const FavoritesScreen = () => {
           Favorite Verses
         </HeaderTitle>
       </View>
-      {favorites.length == 0 && (
-        <View className="flex-1 pt-32 justify-center items-center">
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
-          >
-            Nothing added just yet!
-          </Text>
-        </View>
-      )}
+
       <FlatList
         data={favorites}
         keyExtractor={(e, i) => i.toString()}
         onEndReachedThreshold={0}
-        contentContainerStyle={{ gap: 5 }}
+        contentContainerStyle={{ gap: 5, flex: 1 }}
         scrollEventThrottle={16}
+        ListEmptyComponent={() => (
+          <View className="flex-1 justify-center items-center">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter text-center w-11/12 font-medium text-lg text-light-primary dark:text-dark-primary"
+            >
+              Your favorites list is empty. Add a daily verse to this list by
+              clicking the bookmark on the verse.
+            </Text>
+          </View>
+        )}
         showsVerticalScrollIndicator={false}
         renderItem={renderFavoriteVerses}
       />

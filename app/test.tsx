@@ -72,6 +72,7 @@ export default function TestScreen() {
 
   useEffect(() => {
     if (routeParams.reminder != undefined && routeParams.type == "Add") {
+      console.log("router reminder: ", routeParams);
       setReminderDate("");
       setRepeatOption("");
       setIsRepeat(false);
@@ -343,6 +344,7 @@ export default function TestScreen() {
     const newReminderObj = {
       id: uuid.v4(),
       message: newReminder,
+      prayer_id: routeParams.reminderId,
       note: newNote,
       time: combinedDate,
     };
@@ -505,7 +507,7 @@ export default function TestScreen() {
         >
           <TextInput
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="dark:text-white text-[#2f2d51] min-h-8"
+            className="dark:text-white text-[#2f2d51] min-h-10 max-h-12"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
@@ -542,7 +544,7 @@ export default function TestScreen() {
                   ? "#a1a1a1"
                   : "#808080"
             }
-            className="min-h-12 dark:text-white text-[#2f2d51]"
+            className="min-h-20 max-h-40 dark:text-white text-[#2f2d51]"
             placeholder="Notes"
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt

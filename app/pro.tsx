@@ -87,7 +87,7 @@ const ProScreen = () => {
       className="bg-light-background dark:bg-dark-background"
     >
       <HeaderView>
-        <Link href="/">
+        <Link href="/welcome">
           <View className="flex-row items-center justify-between gap-2">
             <AntDesign
               name="left"

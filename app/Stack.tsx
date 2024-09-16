@@ -4,6 +4,7 @@ import React from "react";
 import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
+// import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import { getMainBackgroundColorStyle } from "@lib/customStyles";

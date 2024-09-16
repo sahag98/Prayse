@@ -62,63 +62,59 @@ const FolderItem = ({ colorScheme, actualTheme, item, theme, navigation }) => {
 
   return (
     <TouchableOpacity
-      className="w-1/2"
       onPress={() => handleOpen(item)}
       key={item.id}
+      className="bg-light-secondary w-1/2 aspect-square dark:bg-dark-secondary p-3  mb-4 rounded-lg"
+      style={[
+        { width: width / 2 - 8 },
+        getSecondaryBackgroundColorStyle(actualTheme),
+      ]}
     >
-      <View
-        className="bg-light-secondary w-full aspect-square dark:bg-dark-secondary p-3  flex-1 mb-4 rounded-lg"
-        style={[
-          { width: width / 2 - 8 },
-          getSecondaryBackgroundColorStyle(actualTheme),
-        ]}
-      >
-        <View className="relative flex-1 justify-between">
-          <View className="w-full flex-row gap-2 justify-between items-center">
-            <Text
-              numberOfLines={1}
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-2xl flex-1 dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter font-bold"
-            >
-              {item.name}
-            </Text>
-            <AntDesign
-              name="folder1"
-              size={25}
-              color={
-                actualTheme && actualTheme.SecondaryTxt
-                  ? actualTheme.SecondaryTxt
-                  : "#e8bb4e"
-              }
-            />
-          </View>
-          {prayers?.length === 0 ? (
-            <View>
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-sm dark:text-dark-primary text-light-primary"
-              >
-                No prayers yet.
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={prayers?.slice(0, 2)}
-              keyExtractor={(item) => item.id}
-              className="gap-1"
-              renderItem={({ item }) => (
-                <View className="flex-row items-center">
-                  <Text
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="dark:text-[#d2d2d2] text-light-primary text-sm"
-                  >
-                    {truncateWords(item.prayer)}
-                  </Text>
-                </View>
-              )}
-            />
-          )}
+      <View className="relative flex-1 justify-between">
+        <View className="w-full flex-row gap-2 justify-between items-center">
+          <Text
+            numberOfLines={1}
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="text-2xl flex-1 dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter font-bold"
+          >
+            {item.name}
+          </Text>
+          <AntDesign
+            name="folder1"
+            size={25}
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : "#e8bb4e"
+            }
+          />
         </View>
+        {prayers?.length === 0 ? (
+          <View>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter text-sm dark:text-dark-primary text-light-primary"
+            >
+              Click to add prayers.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={prayers?.slice(0, 2)}
+            keyExtractor={(item) => item.id}
+            className="gap-1"
+            renderItem={({ item }) => (
+              <View className="flex-row items-center">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="dark:text-[#d2d2d2] font-inter font-medium text-light-primary text-sm"
+                >
+                  {truncateWords(item.prayer)}
+                </Text>
+              </View>
+            )}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );

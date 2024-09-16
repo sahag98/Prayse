@@ -66,8 +66,11 @@ const ListItems = ({
   };
 
   const prayers = prayerList.filter((item) => item.folderId === folderId);
+  const reminders = useSelector((state) => state.reminder.reminders);
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
+
+  console.log("folder prayers: ", prayers);
 
   const [verseModal, setVerseModal] = useState(false);
 
@@ -141,10 +144,15 @@ const ListItems = ({
     const addReminder = (item) => {
       posthog.capture("Create reminder");
       navigation.navigate(TEST_SCREEN, {
-        reminder: item,
+        reminder: item.prayer,
+        reminderId: item.id,
         type: "Add",
       });
     };
+
+    const isReminder = reminders.find(
+      (reminder) => reminder.reminder.prayer_id === item.id
+    );
 
     return (
       <>
@@ -154,12 +162,12 @@ const ListItems = ({
         >
           <>
             <View className="flex-row items-center justify-between">
-              <RowText
+              <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-light-primary dark:text-dark-primary"
+                className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
               >
                 {item.prayer}
-              </RowText>
+              </Text>
             </View>
 
             {/* {isLoadingVerse === item.id && (
@@ -231,34 +239,54 @@ const ListItems = ({
                 </View>
               ) : (
                 <View className="flex-row items-center w-full justify-between">
-                  <TouchableOpacity
-                    onPress={() => addReminder(item.prayer)}
-                    style={
-                      actualTheme &&
-                      actualTheme.SecondaryTxt && {
-                        borderColor: actualTheme.SecondaryTxt,
+                  {isReminder?.reminder.prayer_id === item.id ? (
+                    <View className=" rounded-lg flex-row items-center gap-2">
+                      <Text className="font-inter text-sm text-light-primary dark:text-dark-primary">
+                        Reminder
+                      </Text>
+                      <AntDesign
+                        name="check"
+                        size={20}
+                        color={
+                          actualTheme && actualTheme.SecondaryTxt
+                            ? actualTheme.SecondaryTxt
+                            : colorScheme === "dark"
+                              ? "#a5c9ff"
+                              : "#2f2d51"
+                        }
+                      />
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => addReminder(item)}
+                      style={
+                        actualTheme &&
+                        actualTheme.SecondaryTxt && {
+                          borderColor: actualTheme.SecondaryTxt,
+                        }
                       }
-                    }
-                    className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
-                  >
-                    <AntDesign
-                      name="pluscircleo"
-                      size={15}
-                      color={
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? actualTheme.SecondaryTxt
-                          : colorScheme === "dark"
-                            ? "#A5C9FF"
-                            : "#2f2d51"
-                      }
-                    />
-                    <Text
-                      style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-light-primary dark:text-dark-accent"
+                      className="flex-row items-center bg-light-primary dark:bg-dark-accent px-2 py-1 rounded-md gap-2"
                     >
-                      Reminder
-                    </Text>
-                  </TouchableOpacity>
+                      <AntDesign
+                        name="pluscircleo"
+                        size={20}
+                        color={
+                          actualTheme && actualTheme.SecondaryTxt
+                            ? actualTheme.SecondaryTxt
+                            : colorScheme === "dark"
+                              ? "#121212"
+                              : "#f2f7ff"
+                        }
+                      />
+                      <Text
+                        style={getSecondaryTextColorStyle(actualTheme)}
+                        className="font-inter font-semibold text-sm text-light-background dark:text-dark-background"
+                      >
+                        Reminder
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
                   {versesEnabled && (
                     <TouchableOpacity
                       onPress={() => getBibleVerse(item)}

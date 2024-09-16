@@ -66,7 +66,7 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   return (
     <Animated.View
       className="flex flex-row items-center gap-2"
-      style={[animatedWelcomeFadeInStyle]}
+      // style={[animatedWelcomeFadeInStyle]}
     >
       {/* <Text
         onPress={() =>

@@ -109,7 +109,7 @@ const ReminderItem = ({
         {reminder.ocurrence === "Daily" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm  dark:text-[#f1d592] text-[#dda41c]"
+            className="font-inter text-sm  text-light-primary dark:text-dark-primary"
           >
             {reminder.ocurrence} at {formattedDate}
           </Text>
@@ -117,7 +117,7 @@ const ReminderItem = ({
         {reminder.ocurrence === "Weekly" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm dark:text-[#f1d592] text-[#dda41c]"
+            className="font-inter text-sm text-light-primary dark:text-dark-primary"
           >
             {reminder.ocurrence} on {dayOfWeekName}s at {formattedDate}
           </Text>
@@ -125,15 +125,26 @@ const ReminderItem = ({
         {reminder.ocurrence === "None" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm dark:text-[#f1d592] text-[#dda41c]"
+            className="font-inter text-sm text-light-primary dark:text-dark-primary"
           >
             {formattedDate}
           </Text>
         )}
       </View>
-      <Text numberOfLines={3} className="font-inter leading-6">
+      <Text
+        numberOfLines={3}
+        className="font-inter font-medium text-light-primary dark:text-dark-primary text-lg"
+      >
         {content.message}
       </Text>
+      {content.note && (
+        <Text
+          numberOfLines={5}
+          className="font-inter text-light-primary dark:text-dark-primary leading-6"
+        >
+          {content.note}
+        </Text>
+      )}
       <View className="flex-row gap-3 self-end items-center mt-auto">
         <TouchableOpacity
           onPress={() =>

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
-import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
@@ -9,11 +9,10 @@ import {
   Platform,
   Share,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, {
+import {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -21,11 +20,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { AntDesign, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
-  getSecondaryBackgroundColorStyle,
 } from "@lib/customStyles";
 import NetInfo from "@react-native-community/netinfo";
 import { useIsFocused } from "@react-navigation/native";
@@ -37,12 +35,8 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import useIsReady from "../hooks/useIsReady";
 import { client } from "../lib/client";
-import {
-  COMMUNITY_SCREEN,
-  DEVOTIONAL_SCREEN,
-  REFLECTION_SCREEN,
-} from "../routes";
-import { Container, HeaderView } from "../styles/appStyles";
+import { COMMUNITY_SCREEN, DEVOTIONAL_SCREEN } from "../routes";
+import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
 const DevoListScreen = () => {
@@ -272,12 +266,12 @@ const DevoListScreen = () => {
               }
             />
           </TouchableOpacity>
-          <Text
+          <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-2xl ml-3 text-light-primary dark:text-dark-primary"
+            className="font-inter ml-2 font-bold text-light-primary dark:text-dark-primary"
           >
             Devotional
-          </Text>
+          </HeaderTitle>
         </HeaderView>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -285,7 +279,7 @@ const DevoListScreen = () => {
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
         >
           {devotionals?.map((d, index) => (
-            <View className="flex-1" key={d._id}>
+            <View className="flex-1 mt-10" key={d._id}>
               <DevoItem
                 theme={colorScheme}
                 actualTheme={actualTheme}
@@ -303,7 +297,7 @@ const DevoListScreen = () => {
                 convertDigitIn={convertDigitIn}
                 devo={d}
               />
-              <View
+              {/* <View
                 style={getSecondaryBackgroundColorStyle(actualTheme)}
                 className="absolute bottom-3 w-3/4 flex-row items-center justify-around self-center p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary"
               >
@@ -402,7 +396,7 @@ const DevoListScreen = () => {
                     }
                   />
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </View>
           ))}
         </KeyboardAvoidingView>

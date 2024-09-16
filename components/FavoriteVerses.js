@@ -35,7 +35,7 @@ const FavoriteVerses = ({ item, theme, actualTheme }) => {
         </Text>
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="self-end text-light-primary dark:text-dark-primary font-inter font-medium"
+          className="self-end mt-2 text-light-primary dark:text-dark-primary font-inter font-medium"
         >
           - {item.chapter}
         </Text>
