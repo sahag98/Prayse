@@ -155,7 +155,13 @@ const LoginScreen = () => {
           className="self-start"
           name="left"
           size={24}
-          color="black"
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
         />
         <View className="items-center gap-2 mb-4">
           <Text
@@ -350,7 +356,7 @@ const LoginScreen = () => {
                 style={getPrimaryTextColorStyle(actualTheme)}
                 className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
               >
-                Log In
+                Login
               </Text>
             </TouchableOpacity>
             <View className="w-full justify-center items-center">
@@ -377,7 +383,7 @@ const LoginScreen = () => {
                 style={getPrimaryTextColorStyle(actualTheme)}
                 className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
               >
-                Log In with Google
+                Login with Google
               </Text>
               <AntDesign
                 name="google"
@@ -520,9 +526,10 @@ const LoginScreen = () => {
           </>
         )}
         <View>
-          <Text style={theme == "dark" ? styles.anonDark : styles.anon}>
-            For where two or three are gathered together in my name, there am I
-            in the midst of them. - Matthew 18:20
+          <Text className="dark:text-dark-primary text-light-primary font-inter  mt-5 text-sm">
+            Confess your faults one to another, and pray one for another, that
+            ye may be healed. The effectual fervent prayer of a righteous man
+            availeth much. - James 5:16
           </Text>
         </View>
       </Container>

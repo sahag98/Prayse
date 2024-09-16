@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -109,12 +109,14 @@ const VerseOfTheDayScreen = () => {
     return <BusyIndicator />;
   }
 
+  console.log(new Date(verse[0]._updatedAt).toDateString());
+
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
-      <View className="my-3 flex-row items-center">
+      <View className="mb-10 flex-row items-center">
         <TouchableOpacity
           className="mr-2"
           onPress={() => {
@@ -145,44 +147,15 @@ const VerseOfTheDayScreen = () => {
           Verse of the Day
         </HeaderTitle>
       </View>
-      <ScrollView
-        contentContainerStyle={{ gap: 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter mb-3 leading-6 text-light-primary dark:text-dark-primary"
+      <Link href={`/${FAVORITES_SCREEN}`}>
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-3"
         >
-          Welcome to the Verse of the Day page! We hope to provide you with a
-          daily reminder of God's love, grace, and wisdom.
-        </Text>
-        <Link href={`/${FAVORITES_SCREEN}`}>
-          <View
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-4"
-          >
-            <View className="flex-row items-center gap-2">
-              <AntDesign
-                name="staro"
-                size={26}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : colorScheme === "dark"
-                      ? "white"
-                      : "#2f2d51"
-                }
-              />
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
-              >
-                Favorites
-              </Text>
-            </View>
-            <AntDesign
-              name="right"
-              size={20}
+          <View className="flex-row items-center gap-2">
+            <Feather
+              name="bookmark"
+              size={40}
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -191,16 +164,52 @@ const VerseOfTheDayScreen = () => {
                     : "#2f2d51"
               }
             />
-          </View>
-        </Link>
 
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+            >
+              Saved Verses
+            </Text>
+          </View>
+          <AntDesign
+            name="right"
+            size={20}
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
+          />
+        </View>
+      </Link>
+      <ScrollView
+        contentContainerClassName="justify-center gap-3 flex-1 items-center"
+        // contentContainerStyle={{ gap: 10 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter mb-3 leading-6 text-light-primary dark:text-dark-primary"
+        >
+          Welcome to the Verse of the Day page! We hope to provide you with a
+          daily reminder of God's love, grace, and wisdom.
+        </Text> */}
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+        >
+          {new Date(verse[0]?._updatedAt).toDateString()}
+        </Text>
         <View
           style={[
             getMainBackgroundColorStyle(actualTheme),
             actualTheme &&
               actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
           ]}
-          className="justify-center mt-3 bg-light-background border border-light-primary dark:border-dark-primary dark:bg-dark-background self-center rounded-lg p-3"
+          className="justify-center w-11/12 bg-light-secondary  border-light-primary dark:border-dark-primary dark:bg-dark-background self-center rounded-lg p-3"
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
@@ -223,8 +232,8 @@ const VerseOfTheDayScreen = () => {
                 onPress={() => onShare(verse[0].verse, verse[0].chapter)}
                 className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
               >
-                <AntDesign
-                  name="sharealt"
+                <Feather
+                  name="share"
                   size={26}
                   color={
                     actualTheme && actualTheme.MainTxt
@@ -256,21 +265,26 @@ const VerseOfTheDayScreen = () => {
                   disabled
                   className="flex-row w-[33.33%] h-full items-center justify-center"
                 >
-                  <AntDesign name="staro" size={26} color="#bebe07" />
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter text-light-primary dark:text-dark-primary font-bold text-lg"
+                  >
+                    Saved
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={() => HandleFavorites(verse[0])}
                   className="flex-row w-[33.33%] h-full  items-center justify-center"
                 >
-                  <AntDesign
-                    name="staro"
-                    size={26}
+                  <Feather
+                    name="bookmark"
+                    size={30}
                     color={
-                      actualTheme && actualTheme.MainTxt
-                        ? actualTheme.MainTxt
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
                         : colorScheme === "dark"
-                          ? "#aaaaaa"
+                          ? "white"
                           : "#2f2d51"
                     }
                   />

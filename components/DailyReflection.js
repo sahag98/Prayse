@@ -58,7 +58,7 @@ const DailyReflection = ({
 
     console.log("today: ", currentDate);
 
-    posthog.capture("Doing Devotions");
+    // posthog.capture("Doing Devotions");
     // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
@@ -175,10 +175,10 @@ const DailyReflection = ({
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
-            <View className="flex-row items-center gap-[10px]">
+            <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter font-light"
+                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter"
               >
                 Pray
               </Text>
@@ -199,7 +199,7 @@ const DailyReflection = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary dark:text-white font-bold font-inter text-2xl"
               >
-                Take a moment to pray.
+                Take a moment and pray.
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
@@ -328,7 +328,7 @@ const DailyReflection = ({
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter text-[14px]"
               >
                 Verse of the Day
               </Text>
@@ -438,7 +438,7 @@ const DailyReflection = ({
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter font-light text-[14px]"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter text-[14px]"
               >
                 Devotional
               </Text>

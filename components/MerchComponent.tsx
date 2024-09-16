@@ -16,6 +16,7 @@ import pfeBlackBack from "../assets/merch/pfe-black-back.png";
 import pfeBlackFront from "../assets/merch/pfe-black-front.png";
 import pfeBlueBack from "../assets/merch/pfe-blue-back.png";
 import pfeBlueFront from "../assets/merch/pfe-blue-front.png";
+import prayseDefinition from "../assets/merch/prayse-definition.png";
 // import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
 // import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
 // import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
@@ -24,7 +25,7 @@ interface MerchComponentProps {
   theme: string;
 }
 
-const blurhash = "LFFs=QodDNRju6oJogR+VVa#xvof";
+const blurhash = "JEI#ryj[IofR~qfj";
 
 export const MerchComponent: React.FC<MerchComponentProps> = ({
   theme,
@@ -54,14 +55,13 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter font-bold text-xl dark:text-white text-light-primary"
           >
-            Pray for Everyone
+            Prayse Definition
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter font-normal mb-[10px] text-light-primary dark:text-[#bebebe]"
           >
-            Reminding us to pray for our neighbors, leaders and everyone in
-            between.
+            Reminding us of the power of prayer and praise in our walk with God.
           </Text>
 
           <TouchableOpacity
@@ -97,13 +97,14 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
           </TouchableOpacity>
         </View>
         <Image
-          source={pfeBlueBack}
+          source={prayseDefinition}
           placeholder={{ blurhash }}
           contentFit="cover"
           transition={500}
           style={{
             flex: 1,
             width: "100%",
+            marginVertical: 10,
             borderRadius: 10,
             height: 350,
             aspectRatio: Platform.isPad ? 1 / 1 : null,

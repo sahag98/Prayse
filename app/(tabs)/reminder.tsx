@@ -34,6 +34,8 @@ const ReminderScreen = () => {
     await Notifications.cancelScheduledNotificationAsync(item.identifier);
   };
 
+  console.log(reminders[0]?.reminder);
+
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}

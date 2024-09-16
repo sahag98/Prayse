@@ -48,9 +48,9 @@ const AddFolderModal = ({
       >
         <ModalContainer
           style={
-            colorScheme == "dark"
-              ? { backgroundColor: "rgba(0, 0, 0, 0.3)" }
-              : { backgroundColor: "rgba(0, 0, 0, 0.3)" }
+            colorScheme === "dark"
+              ? { backgroundColor: "rgba(0, 0, 0, 0.5)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.5)" }
           }
         >
           <ModalView

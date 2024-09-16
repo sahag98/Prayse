@@ -1,5 +1,5 @@
 //@ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AddFolderModal from "../modals/AddFolderModal";
 import { addFolder } from "../redux/folderReducer";
@@ -36,40 +35,6 @@ const Folder = ({ colorScheme, navigation }) => {
   const [addVisible, setAddVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [idToDelete, setIdToDelete] = useState(null);
-  const sections = [];
-
-  useEffect(() => {
-    const checkFirstTime = async () => {
-      // await AsyncStorage.removeItem("hasPressedPrayerTab");
-      try {
-        const value = await AsyncStorage.getItem("hasPressedChecklist");
-        if (value === null) {
-          // First time pressing the "Prayer" tab
-          setShowNewBadge(true);
-          AsyncStorage.setItem("hasPressedChecklist", "true");
-        }
-      } catch (error) {
-        console.error("Error retrieving data from AsyncStorage:", error);
-      }
-    };
-
-    checkFirstTime();
-  }, []);
-
-  answeredPrayers?.forEach((prayer) => {
-    const date = prayer.answeredDate;
-    const sectionIndex = sections.findIndex(
-      (section) => section.title === date,
-    );
-    if (sectionIndex === -1) {
-      sections.push({
-        title: date,
-        data: [prayer],
-      });
-    } else {
-      sections[sectionIndex].data.push(prayer);
-    }
-  });
 
   const dispatch = useDispatch();
   const handleCloseModal = () => {
@@ -126,33 +91,6 @@ const Folder = ({ colorScheme, navigation }) => {
           </HeaderTitle>
         </TouchableOpacity>
       </View>
-      {folders.length === 0 && (
-        <View className="flex-1 justify-center items-center gap-2 mt-28">
-          <AntDesign
-            name="folder1"
-            size={50}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "dark"
-                  ? "#e8bb4e"
-                  : "#2f2d51"
-            }
-          />
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-bold font-inter text-light-primary dark:text-white text-2xl"
-          >
-            Create a prayer folder.
-          </Text>
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter dark:text-[#d2d2d2] text-base text-[#2f2d51]"
-          >
-            (These folders are only visible to you.)
-          </Text>
-        </View>
-      )}
 
       <FlatList
         data={folders}
@@ -161,9 +99,38 @@ const Folder = ({ colorScheme, navigation }) => {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         initialNumToRender={4}
+        // style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1 }}
         windowSize={8}
         renderItem={renderItem}
         numColumns={2}
+        ListEmptyComponent={() => (
+          <View className="flex-1 justify-center items-center">
+            <AntDesign
+              name="folder1"
+              size={80}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "#e8bb4e"
+                    : "#2f2d51"
+              }
+            />
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-bold font-inter text-light-primary dark:text-white text-2xl"
+            >
+              Create a prayer folder.
+            </Text>
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter dark:text-[#d2d2d2] text-base text-[#2f2d51]"
+            >
+              (These folders are only visible to you)
+            </Text>
+          </View>
+        )}
         ListFooterComponent={() => <View className="h-20" />}
         columnWrapperStyle={{
           justifyContent: "space-between",
