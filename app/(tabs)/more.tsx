@@ -30,7 +30,11 @@ import { posthog } from "@lib/posthog";
 
 import SettingsItems from "../../components/SettingsItems";
 import config from "../../config";
-import { SETTINGS_SCREEN, VERSE_OF_THE_DAY_SCREEN } from "../../routes";
+import {
+  DEVO_LIST_SCREEN,
+  SETTINGS_SCREEN,
+  VERSE_OF_THE_DAY_SCREEN,
+} from "../../routes";
 import { Container, HeaderTitle } from "../../styles/appStyles";
 
 const MoreScreen = () => {
@@ -76,6 +80,25 @@ const MoreScreen = () => {
     {
       id: 2,
       icon: (
+        <Feather
+          name="book"
+          className="mr-3"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Devotional",
+      screen: DEVO_LIST_SCREEN,
+    },
+    {
+      id: 3,
+      icon: (
         <AntDesign
           name="setting"
           className="mr-3"
@@ -93,7 +116,7 @@ const MoreScreen = () => {
       screen: SETTINGS_SCREEN,
     },
     {
-      id: 3,
+      id: 4,
       icon: (
         <AntDesign
           name="infocirlceo"
@@ -112,7 +135,7 @@ const MoreScreen = () => {
       link: "https://www.prayse.app/",
     },
     {
-      id: 4,
+      id: 5,
       icon: (
         <Feather
           name="shield"
@@ -130,44 +153,6 @@ const MoreScreen = () => {
       title: "Privacy Policy",
       link: "https://www.prayse.app/privacy",
     },
-    // {
-    //   id: 5,
-    //   icon: (
-    //     <MaterialCommunityIcons
-    //       name="email-edit-outline"
-    //       className="mr-3"
-    //       size={24}
-    //       color={
-    //         actualTheme && actualTheme.SecondaryTxt
-    //           ? actualTheme.SecondaryTxt
-    //           : colorScheme === "dark"
-    //             ? "white"
-    //             : "#2f2d51"
-    //       }
-    //     />
-    //   ),
-    //   title: "Contact Developer",
-    //   link: "mailto:arzsahag@gmail.com",
-    // },
-    // {
-    //   id: 6,
-    //   icon: (
-    //     <AntDesign
-    //       name="instagram"
-    //       className="mr-3"
-    //       size={24}
-    //       color={
-    //         actualTheme && actualTheme.SecondaryTxt
-    //           ? actualTheme.SecondaryTxt
-    //           : colorScheme === "dark"
-    //             ? "white"
-    //             : "#2f2d51"
-    //       }
-    //     />
-    //   ),
-    //   title: "Follow us on Instagram",
-    //   link: "https://instagram.com/prayse.app",
-    // },
   ];
 
   return (
@@ -190,7 +175,7 @@ const MoreScreen = () => {
       >
         <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className=" bg-light-secondary mb-1 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
+          className=" bg-light-secondary mb-5 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
@@ -207,7 +192,10 @@ const MoreScreen = () => {
             the importance of prayer in today's world.
           </Text>
           <TouchableOpacity
-            onPress={() => posthog.capture("Donate")}
+            onPress={() => {
+              posthog.capture("Donate");
+              Linking.openURL("https://buymeacoffee.com/prayse");
+            }}
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
           >

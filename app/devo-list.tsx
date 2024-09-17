@@ -35,7 +35,7 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import useIsReady from "../hooks/useIsReady";
 import { client } from "../lib/client";
-import { COMMUNITY_SCREEN, DEVOTIONAL_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
@@ -250,7 +250,7 @@ const DevoListScreen = () => {
               if (routeParams?.previousScreen) {
                 navigation.goBack();
               } else {
-                navigation.navigate(DEVOTIONAL_SCREEN);
+                navigation.navigate(MORE_SCREEN);
               }
             }}
           >
