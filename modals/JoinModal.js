@@ -138,137 +138,137 @@ const JoinModal = ({
   };
 
   return (
-    <SafeAreaProvider>
-      <Modal
-        animationType="slide"
-        transparent
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <ModalContainer
-          className="bg-light-background dark:bg-dark-background items-center"
-          style={
-            actualTheme && actualTheme.Bg
+    // <SafeAreaProvider>
+    <Modal
+      animationType="slide"
+      transparent
+      visible={modalVisible}
+      onRequestClose={handleCloseModal}
+    >
+      <ModalContainer
+        className="bg-light-background dark:bg-dark-background items-center"
+        style={
+          actualTheme && actualTheme.Bg
+            ? {
+                justifyContent: "flex-start",
+                backgroundColor: actualTheme.Bg,
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }
+            : theme === "dark"
               ? {
                   justifyContent: "flex-start",
-                  backgroundColor: actualTheme.Bg,
+
                   paddingTop: Platform.OS === "ios" ? insets.top : 0,
                   paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
                 }
-              : theme === "dark"
-                ? {
-                    justifyContent: "flex-start",
+              : {
+                  justifyContent: "flex-start",
 
-                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                  }
-                : {
-                    justifyContent: "flex-start",
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+                }
+        }
+      >
+        <HeaderView className="flex-row w-full justify-between">
+          <TouchableOpacity onPress={handleCloseModal}>
+            <AntDesign
+              name="left"
+              size={30}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : theme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
+        </HeaderView>
 
-                    paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                    paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                  }
-          }
-        >
-          <HeaderView className="flex-row w-full justify-between">
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="left"
-                size={30}
-                color={
+        <View className="flex-1 mb-14 gap-2 self-center items-center w-full justify-center">
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="text-3xl mb-2 font-inter font-bold text-light-primary dark:text-dark-primary"
+          >
+            Join Prayer Group
+          </Text>
+          <View className="w-full flex-row items-center justify-between">
+            <Animated.View
+              className="border p-4 rounded-lg border-light-primary dark:border-dark-secondary"
+              style={[
+                inputAnimatedStyle,
+                actualTheme &&
+                  actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
+              ]}
+            >
+              <TextInput
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-medium"
+                // autoFocus={modalVisible}
+                maxLength={6}
+                keyboardType="numeric"
+                placeholder="Enter 6 digit group code"
+                placeholderTextColor={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme === "dark"
-                      ? "white"
+                      ? "#d6d6d6"
                       : "#2f2d51"
                 }
+                selectionColor={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : theme === "dark"
+                      ? "#a5c9ff"
+                      : "#2f2d51"
+                }
+                value={code}
+                on
+                onChangeText={(text) => setCode(text)}
               />
-            </TouchableOpacity>
-          </HeaderView>
-
-          <View className="flex-1 mb-14 gap-2 self-center items-center w-full justify-center">
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="text-3xl mb-2 font-inter font-bold text-light-primary dark:text-dark-primary"
-            >
-              Join Prayer Group
-            </Text>
-            <View className="w-full flex-row items-center justify-between">
-              <Animated.View
-                className="border p-4 rounded-lg border-light-primary dark:border-dark-secondary"
-                style={[
-                  inputAnimatedStyle,
-                  actualTheme &&
-                    actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
-                ]}
-              >
-                <TextInput
-                  style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter font-medium"
-                  // autoFocus={modalVisible}
-                  maxLength={6}
-                  keyboardType="numeric"
-                  placeholder="Enter 6 digit group code"
-                  placeholderTextColor={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : theme === "dark"
-                        ? "#d6d6d6"
-                        : "#2f2d51"
-                  }
-                  selectionColor={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
+            </Animated.View>
+            <TouchableOpacity onPress={joinGroup}>
+              <Animated.View style={[slideAnimatedStyle]}>
+                <AntDesign
+                  name="rightcircle"
+                  size={42}
+                  color={
+                    actualTheme && actualTheme.Primary
+                      ? actualTheme.Primary
                       : theme === "dark"
                         ? "#a5c9ff"
                         : "#2f2d51"
                   }
-                  value={code}
-                  on
-                  onChangeText={(text) => setCode(text)}
                 />
               </Animated.View>
-              <TouchableOpacity onPress={joinGroup}>
-                <Animated.View style={[slideAnimatedStyle]}>
-                  <AntDesign
-                    name="rightcircle"
-                    size={42}
-                    color={
-                      actualTheme && actualTheme.Primary
-                        ? actualTheme.Primary
-                        : theme === "dark"
-                          ? "#a5c9ff"
-                          : "#2f2d51"
-                    }
-                  />
-                </Animated.View>
-              </TouchableOpacity>
-            </View>
-            {joinError && (
-              <Text className="font-inter self-start font-medium text-sm text-red-500">
-                Group doesn't exist try again.
-              </Text>
-            )}
-
-            <View className="mt-2 w-full">
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="font-inter text-sm font-medium text-light-primary dark:text-dark-primary"
-              >
-                "For where two or three are gathered together in my name, there
-                am I in the midst of them."
-              </Text>
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="self-end text-light-primary dark:text-dark-primary font-inter font-semibold"
-              >
-                - Matthew 18:20
-              </Text>
-            </View>
+            </TouchableOpacity>
           </View>
-        </ModalContainer>
-      </Modal>
-    </SafeAreaProvider>
+          {joinError && (
+            <Text className="font-inter self-start font-medium text-sm text-red-500">
+              Group doesn't exist try again.
+            </Text>
+          )}
+
+          <View className="mt-2 w-full">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter text-sm font-medium text-light-primary dark:text-dark-primary"
+            >
+              "For where two or three are gathered together in my name, there am
+              I in the midst of them."
+            </Text>
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="self-end text-light-primary dark:text-dark-primary font-inter font-semibold"
+            >
+              - Matthew 18:20
+            </Text>
+          </View>
+        </View>
+      </ModalContainer>
+    </Modal>
+    // </SafeAreaProvider>
   );
 };
 

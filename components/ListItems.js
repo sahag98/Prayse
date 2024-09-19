@@ -26,6 +26,7 @@ import CategoryTabs from "./CategoryTabs";
 import SearchBar from "./SearchBar";
 import {
   getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
@@ -224,7 +225,7 @@ const ListItems = ({
               />
             </TouchableOpacity>
 
-            <View className="flex-row justify-between mt-8 items-center">
+            <View className="flex-row justify-between mt-8 items-end">
               {item.status === "Answered" ? (
                 <View className="flex-row bg-green-300 px-2 py-1 rounded-md items-center">
                   <Text className="font-inter font-medium text-light-primary dark:text-dark-primary">
@@ -238,7 +239,7 @@ const ListItems = ({
                   </Text>
                 </View>
               ) : (
-                <View className="flex-row items-center w-full justify-between">
+                <View className="flex-row items-end w-full justify-between">
                   {isReminder?.reminder.prayer_id === item.id ? (
                     <View className=" rounded-lg flex-row items-center gap-2">
                       <Text className="font-inter text-sm text-light-primary dark:text-dark-primary">
@@ -259,12 +260,7 @@ const ListItems = ({
                   ) : (
                     <TouchableOpacity
                       onPress={() => addReminder(item)}
-                      style={
-                        actualTheme &&
-                        actualTheme.SecondaryTxt && {
-                          borderColor: actualTheme.SecondaryTxt,
-                        }
-                      }
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
                       className="flex-row items-center bg-light-primary dark:bg-dark-accent px-2 py-1 rounded-md gap-2"
                     >
                       <AntDesign
@@ -290,15 +286,10 @@ const ListItems = ({
                   {versesEnabled && (
                     <TouchableOpacity
                       onPress={() => getBibleVerse(item)}
-                      style={
-                        actualTheme &&
-                        actualTheme.SecondaryTxt && {
-                          borderColor: actualTheme.SecondaryTxt,
-                        }
-                      }
-                      className="flex-row items-center border dark:border-dark-primary border-light-primary p-2 rounded-md gap-2"
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
+                      className="flex-row items-center bg-light-primary dark:bg-dark-accent p-2 rounded-md gap-2"
                     >
-                      <FontAwesome5 name="bible" size={22} color="black" />
+                      <FontAwesome5 name="bible" size={22} color="white" />
                       {/* <Text
                       style={getSecondaryTextColorStyle(actualTheme)}
                       className="font-inter font-medium text-light-primary dark:text-dark-accent"

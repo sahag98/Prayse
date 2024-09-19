@@ -243,7 +243,7 @@ const GroupPrayerItem = ({
         )}
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="ml-auto font-inter text-sm text-light-primary dark:text-gray-500"
+          className="ml-auto font-inter text-xs text-light-primary/60 dark:text-gray-500"
         >
           {Moment(item.created_at).fromNow()}
         </Text>

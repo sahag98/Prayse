@@ -90,169 +90,169 @@ const CreateGroupModal = ({
   };
 
   return (
-    <SafeAreaProvider>
-      <Modal
-        animationType="slide"
-        transparent
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
+    // <SafeAreaProvider>
+    <Modal
+      animationType="slide"
+      transparent
+      visible={modalVisible}
+      onRequestClose={handleCloseModal}
+    >
+      <ModalContainer
+        className="bg-light-background dark:bg-dark-background items-center"
+        style={
+          actualTheme && actualTheme.Bg
+            ? {
+                backgroundColor: actualTheme.Bg,
+                justifyContent: "flex-start",
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }
+            : {
+                justifyContent: "flex-start",
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }
+        }
       >
-        <ModalContainer
-          className="bg-light-background dark:bg-dark-background items-center"
-          style={
-            actualTheme && actualTheme.Bg
-              ? {
-                  backgroundColor: actualTheme.Bg,
-                  justifyContent: "flex-start",
-                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
-              : {
-                  justifyContent: "flex-start",
-                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
-          }
-        >
-          <HeaderView className="flex-row w-full justify-between">
-            <TouchableOpacity onPress={handleCloseModal}>
-              <AntDesign
-                name="left"
-                size={30}
-                color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
-                    : theme === "dark"
-                      ? "white"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={groupName.length === 0}
-              className="flex-row justify-center items-center py-3 px-4 rounded-full"
-              style={
-                actualTheme && actualTheme.Primary
-                  ? {
-                      backgroundColor:
-                        groupName.length === 0 ? "grey" : actualTheme.Primary,
-                    }
-                  : {
-                      backgroundColor:
-                        theme === "dark"
-                          ? groupName.length === 0
-                            ? "#212121"
-                            : "#a5c9ff"
-                          : groupName.length === 0
-                            ? "grey"
-                            : "#2f2d51",
-                    }
+        <HeaderView className="flex-row w-full justify-between">
+          <TouchableOpacity onPress={handleCloseModal}>
+            <AntDesign
+              name="left"
+              size={30}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : theme === "dark"
+                    ? "white"
+                    : "#2f2d51"
               }
-              onPress={createGroup}
-            >
-              <Text
-                className="font-inter font-bold text-lg"
-                style={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? {
-                        color:
-                          groupName.length === 0
-                            ? "white"
-                            : actualTheme.PrimaryTxt,
-                      }
-                    : theme == "dark"
-                      ? {
-                          color: groupName.length === 0 ? "grey" : "#121212",
-                        }
-                      : {
-                          color: groupName.length === 0 && "white",
-                        }
-                }
-              >
-                Create
-              </Text>
-            </TouchableOpacity>
-          </HeaderView>
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter mt-5 font-bold text-2xl text-light-primary dark:text-dark-primary"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={groupName.length === 0}
+            className="flex-row justify-center items-center py-3 px-4 rounded-full"
+            style={
+              actualTheme && actualTheme.Primary
+                ? {
+                    backgroundColor:
+                      groupName.length === 0 ? "grey" : actualTheme.Primary,
+                  }
+                : {
+                    backgroundColor:
+                      theme === "dark"
+                        ? groupName.length === 0
+                          ? "#212121"
+                          : "#a5c9ff"
+                        : groupName.length === 0
+                          ? "grey"
+                          : "#2f2d51",
+                  }
+            }
+            onPress={createGroup}
           >
-            Create Prayer Group
-          </Text>
+            <Text
+              className="font-inter font-bold text-lg"
+              style={
+                actualTheme && actualTheme.PrimaryTxt
+                  ? {
+                      color:
+                        groupName.length === 0
+                          ? "white"
+                          : actualTheme.PrimaryTxt,
+                    }
+                  : theme == "dark"
+                    ? {
+                        color: groupName.length === 0 ? "grey" : "#121212",
+                      }
+                    : {
+                        color: groupName.length === 0 && "white",
+                      }
+              }
+            >
+              Create
+            </Text>
+          </TouchableOpacity>
+        </HeaderView>
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter mt-5 font-bold text-2xl text-light-primary dark:text-dark-primary"
+        >
+          Create Prayer Group
+        </Text>
 
-          <View className="mt-5 gap-2 justify-center items-center my-3 w-full">
-            <TextInput
-              style={[
-                getMainTextColorStyle(actualTheme),
-                actualTheme &&
-                  actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
-              ]}
-              className="border border-light-primary font-inter font-medium  dark:border-dark-primary w-full p-4 rounded-md"
-              autoFocus={false}
-              placeholder="Group name here"
-              placeholderTextColor={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : theme === "dark"
-                    ? "#d6d6d6"
-                    : "#2f2d51"
-              }
-              selectionColor={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
-              }
-              value={groupName}
-              onChangeText={(text) => setGroupName(text)}
-            />
-            <TextInput
-              style={[
-                getMainTextColorStyle(actualTheme),
-                actualTheme &&
-                  actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
-              ]}
-              className="border border-light-primary font-inter font-medium dark:border-dark-primary w-full p-4 rounded-md"
-              autoFocus={false}
-              placeholder="Group description here (Optional)"
-              placeholderTextColor={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : theme === "dark"
-                    ? "#d6d6d6"
-                    : "#2f2d51"
-              }
-              selectionColor={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : theme === "dark"
-                    ? "#a5c9ff"
-                    : "#2f2d51"
-              }
-              value={groupDescription}
-              onChangeText={(text) => setGroupDescription(text)}
-            />
+        <View className="mt-5 gap-2 justify-center items-center my-3 w-full">
+          <TextInput
+            style={[
+              getMainTextColorStyle(actualTheme),
+              actualTheme &&
+                actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
+            ]}
+            className="border border-light-primary font-inter font-medium  dark:border-dark-primary w-full p-4 rounded-md"
+            autoFocus={false}
+            placeholder="Group name here"
+            placeholderTextColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "#d6d6d6"
+                  : "#2f2d51"
+            }
+            selectionColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+            }
+            value={groupName}
+            onChangeText={(text) => setGroupName(text)}
+          />
+          <TextInput
+            style={[
+              getMainTextColorStyle(actualTheme),
+              actualTheme &&
+                actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
+            ]}
+            className="border border-light-primary font-inter font-medium dark:border-dark-primary w-full p-4 rounded-md"
+            autoFocus={false}
+            placeholder="Group description here (Optional)"
+            placeholderTextColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "#d6d6d6"
+                  : "#2f2d51"
+            }
+            selectionColor={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "#a5c9ff"
+                  : "#2f2d51"
+            }
+            value={groupDescription}
+            onChangeText={(text) => setGroupDescription(text)}
+          />
 
-            <View className="mt-3 w-full">
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-sm text-light-primary dark:text-[#efefef]"
-              >
-                "Iron sharpeneth iron; so a man sharpeneth the countenance of
-                his friend."
-              </Text>
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="font-inter self-end font-semibold text-light-primary dark:text-dark-primary"
-              >
-                - Proverbs 27:17
-              </Text>
-            </View>
+          <View className="mt-3 w-full">
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-medium text-sm text-light-primary dark:text-[#efefef]"
+            >
+              "Iron sharpeneth iron; so a man sharpeneth the countenance of his
+              friend."
+            </Text>
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter self-end font-semibold text-light-primary dark:text-dark-primary"
+            >
+              - Proverbs 27:17
+            </Text>
           </View>
-        </ModalContainer>
-      </Modal>
-    </SafeAreaProvider>
+        </View>
+      </ModalContainer>
+    </Modal>
+    // </SafeAreaProvider>
   );
 };
 
