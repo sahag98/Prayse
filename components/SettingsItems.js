@@ -44,8 +44,8 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
             />
           </TouchableOpacity>
         ) : (
-          <Link href={`/${option.screen}`} key={option.id}>
-            <View
+          <Link asChild href={`/${option.screen}`} key={option.id}>
+            <TouchableOpacity
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 rounded-lg justify-between "
             >
@@ -70,7 +70,7 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
                       : "#2f2d51"
                 }
               />
-            </View>
+            </TouchableOpacity>
           </Link>
         )
       )}

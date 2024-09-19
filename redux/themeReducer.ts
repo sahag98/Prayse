@@ -126,18 +126,6 @@ export const themeSlice = createSlice({
     },
     resetTheme: (state) => {
       state.actualTheme = null;
-      // state.customBg = null;
-      // state.customPrimary = null;
-      // state.customSecondary = null;
-      // state.customPrimaryTxt = null;
-      // state.customSecondaryTxt = null;
-      // state.Bg = null;
-      // state.Primary = null;
-      // state.Secondary = null;
-      // state.PrimaryTxt = null;
-      // state.Secondarytxt = null;
-      // state.AccentTxt = null;
-      // state.MainTxt = null;
     },
   },
 });

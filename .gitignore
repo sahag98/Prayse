@@ -9,6 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 .env
+/android
+/ios
 prayer-app.jks
 google-services.json
 eas.json

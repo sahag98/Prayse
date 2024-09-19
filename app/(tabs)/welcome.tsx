@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { useNavigation } from "expo-router";
+import { Redirect, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import { Linking, Platform, View } from "react-native";
@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 import { MerchComponent } from "@components/MerchComponent";
-import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
 import { Greeting } from "@components/welcome/greeting";
 import { StreakAction } from "@components/welcome/streak-action";
@@ -27,7 +26,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import { addNoti } from "@redux/notiReducer";
 import {
-  ONBOARDING_SCREEN,
   PRAYER_GROUP_SCREEN,
   QUESTION_SCREEN,
   REFLECTION_SCREEN,
@@ -298,7 +296,8 @@ const WelcomeScreen = () => {
   }, [lastNotificationResponse]);
 
   if (isFirst === true) {
-    navigation.navigate(ONBOARDING_SCREEN);
+    return <Redirect href="/onboarding" />;
+    // navigation.navigate(ONBOARDING_SCREEN);
   }
 
   return (
@@ -324,7 +323,7 @@ const WelcomeScreen = () => {
         theme={colorScheme}
       />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      <ProBanner actualTheme={actualTheme} theme={colorScheme} />
+      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
       <QuestionOfTheWeek actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />

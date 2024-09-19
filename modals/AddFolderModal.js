@@ -68,6 +68,7 @@ const AddFolderModal = ({
 
             <TextInput
               style={[
+                getSecondaryTextColorStyle(actualTheme),
                 getSecondaryBackgroundColorStyle(actualTheme),
                 actualTheme &&
                   actualTheme.SecondaryTxt && {
@@ -75,7 +76,7 @@ const AddFolderModal = ({
                     borderColor: actualTheme.SecondaryTxt,
                   },
               ]}
-              className="w-full border border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
+              className="w-full border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
               placeholder="Enter folder name"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt

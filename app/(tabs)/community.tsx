@@ -28,8 +28,6 @@ import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
 import {
-  AntDesign,
-  Entypo,
   Feather,
   FontAwesome,
   Ionicons,
@@ -53,11 +51,7 @@ import { useSupabase } from "../../context/useSupabase";
 import CreateGroupModal from "../../modals/CreateGroupModal";
 import JoinModal from "../../modals/JoinModal";
 import ProfileModal from "../../modals/ProfileModal";
-import {
-  PRAYER_GROUP_SCREEN,
-  PUBLIC_COMMUNITY_SCREEN,
-  QUESTION_LIST_SCREEN,
-} from "../../routes";
+import { PRAYER_GROUP_SCREEN, QUESTION_LIST_SCREEN } from "../../routes";
 import { HeaderTitle } from "../../styles/appStyles";
 
 Notifications.setNotificationHandler({
@@ -108,6 +102,8 @@ const CommunityHomeScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
+
+  const reminders = useSelector((state) => state.reminder.reminders);
   // const routeParams = useLocalSearchParams();
 
   // console.log("current user: ", currentUser);
@@ -192,6 +188,7 @@ const CommunityHomeScreen = () => {
   }
 
   async function getUserGroups() {
+    console.log("fetching user groups...");
     try {
       setIsFetchingUserGroups(true);
       const { data: groups, error } = await supabase
@@ -371,75 +368,15 @@ const CommunityHomeScreen = () => {
         </TouchableOpacity>
       </View>
       <View className="flex-row w-full gap-3 items-center">
-        <Link className="w-1/2" href={`/${PUBLIC_COMMUNITY_SCREEN}`}>
-          <View
+        <Link asChild className="w-full" href={`/${QUESTION_LIST_SCREEN}`}>
+          <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
-          >
-            <View className="flex-row gap-3 items-center justify-between">
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
-              >
-                Public Prayers
-              </Text>
-              <Entypo
-                name="globe"
-                size={24}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : colorScheme === "dark"
-                      ? "#a5c9ff"
-                      : "#2f2d51"
-                }
-              />
-            </View>
-            <View className="gap-3">
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-sm text-light-primary dark:text-dark-primary"
-              >
-                Public prayers posted by our users.
-              </Text>
-              <Link href={`/${PUBLIC_COMMUNITY_SCREEN}`}>
-                <TouchableOpacity
-                  onPress={() => posthog.capture("Public prayers")}
-                  style={getPrimaryBackgroundColorStyle(actualTheme)}
-                  className="flex-row items-center rounded-md justify-between w-full px-3 py-2 bg-light-primary dark:bg-dark-accent"
-                >
-                  <Text
-                    style={getPrimaryTextColorStyle(actualTheme)}
-                    className="font-inter font-semibold text-light-background dark:text-dark-background"
-                  >
-                    View
-                  </Text>
-                  <AntDesign
-                    name="right"
-                    size={24}
-                    color={
-                      actualTheme && actualTheme.PrimaryTxt
-                        ? actualTheme.PrimaryTxt
-                        : colorScheme === "dark"
-                          ? "#121212"
-                          : "white"
-                    }
-                  />
-                </TouchableOpacity>
-              </Link>
-            </View>
-          </View>
-        </Link>
-
-        <Link className="w-1/2" href={`/${QUESTION_LIST_SCREEN}`}>
-          <View
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="flex-1 min-h-32 max-h-40 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
+            className="flex-1 justify-between relative p-3 gap-5 rounded-lg bg-light-secondary dark:bg-dark-secondary"
           >
             <View className="flex-row justify-between items-center">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
               >
                 Questions
               </Text>
@@ -457,118 +394,265 @@ const CommunityHomeScreen = () => {
             </View>
             <View className="gap-3">
               <Text
-                className="font-inter text-sm text-light-primary dark:text-dark-primary"
+                className="font-inter leading-6 text-light-primary dark:text-dark-primary"
                 style={getSecondaryTextColorStyle(actualTheme)}
               >
-                Weekly questions to reflect on.
+                Weekly biblical, and thought-provoking questions to answer and
+                reflect on.
               </Text>
-              <Link href={`/${QUESTION_LIST_SCREEN}`}>
-                <View
+              <Link
+                asChild
+                className="w-full"
+                href={`/${QUESTION_LIST_SCREEN}`}
+              >
+                <TouchableOpacity
                   style={getPrimaryBackgroundColorStyle(actualTheme)}
-                  className="flex-row items-center rounded-md justify-between w-full px-3 py-2 bg-light-primary dark:bg-dark-accent"
+                  className="flex-row items-center rounded-md justify-center w-full p-3 bg-light-primary dark:bg-dark-accent"
                 >
                   <Text
                     style={getPrimaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-background dark:text-dark-background"
+                    className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
                   >
                     View
                   </Text>
-                  <AntDesign
-                    name="right"
-                    size={24}
-                    color={
-                      actualTheme && actualTheme.PrimaryTxt
-                        ? actualTheme.PrimaryTxt
-                        : colorScheme === "dark"
-                          ? "#121212"
-                          : "#2f2d51"
-                    }
-                  />
-                </View>
+                </TouchableOpacity>
               </Link>
             </View>
-          </View>
+          </TouchableOpacity>
         </Link>
       </View>
-      <View className="flex-row justify-between items-center">
-        <View className="flex-row items-center gap-2">
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
-          >
-            Prayer Groups
-          </Text>
-        </View>
-        <View className="flex-row items-center gap-3">
-          <TouchableOpacity
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
-            onPress={() => {
-              setModalVisible(true);
-              posthog.capture("Create group");
-            }}
-            className="flex-row items-center rounded-lg gap-2 p-2"
-          >
+      <CreateGroupModal
+        getUserGroups={getUserGroups}
+        getGroupUsers={getGroupUsers}
+        supabase={supabase}
+        actualTheme={actualTheme}
+        theme={colorScheme}
+        user={currentUser}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+      <JoinModal
+        getUserGroups={getUserGroups}
+        getGroupUsers={getGroupUsers}
+        supabase={supabase}
+        actualTheme={actualTheme}
+        theme={colorScheme}
+        user={currentUser}
+        modalVisible={joinVisible}
+        setModalVisible={setJoinVisible}
+      />
+      <View className="flex-1 mt-2">
+        <View className="flex-row justify-between items-center">
+          <View className="flex-row items-center gap-2">
             <Text
-              style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
             >
-              Create
+              Prayer Groups
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            onPress={() => {
-              setJoinVisible(true);
-              posthog.capture("Join group");
-            }}
-            className="flex-row items-center rounded-lg gap-2 p-2"
-          >
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+          </View>
+          <View className="flex-row items-center gap-3">
+            <TouchableOpacity
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              onPress={() => {
+                setModalVisible(true);
+                posthog.capture("Create group");
+              }}
+              className="flex-row bg-light-primary dark:bg-dark-accent items-center rounded-lg gap-2 p-2"
             >
-              Join
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+              >
+                Create
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              onPress={() => {
+                setJoinVisible(true);
+                posthog.capture("Join group");
+              }}
+              className="flex-row items-center rounded-lg gap-2 p-2"
+            >
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+              >
+                Join
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {userGroups?.length == 0 && (
-        <View className="flex-1 pt-10 gap-3 justify-center items-center">
-          <FontAwesome
-            name="group"
-            size={40}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme == "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-semibold text-light-primary dark:text-dark-primary"
-          >
-            No groups created or joined.
-          </Text>
-        </View>
-      )}
-      {userGroups?.length > 0 && (
         <FlatList
-          pagingEnabled
-          snapToInterval={ITEM_WIDTH}
-          numColumns={1}
+          data={userGroups}
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1 }} // Increased bottom padding and added flexGrow
+          keyExtractor={(e, i) => i.toString()}
+          onEndReachedThreshold={0}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View className="flex-1 gap-3 justify-center items-center">
+              <FontAwesome
+                name="group"
+                size={40}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme == "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
+              />
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-semibold text-light-primary dark:text-dark-primary"
+              >
+                No groups created or joined.
+              </Text>
+            </View>
+          )}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(PRAYER_GROUP_SCREEN, {
+                  group_id: item.group_id,
+                  // group: item,
+                  // allGroups: groups.filter(
+                  //   (g) => g.group_id === item.group_id
+                  // ),
+                })
+              }
+              style={
+                actualTheme &&
+                actualTheme.MainTxt && {
+                  borderColor: actualTheme.MainTxt,
+                }
+              }
+              className="w-full p-3 mt-3 flex-1 bg-light-secondary rounded-lg"
+            >
+              <View className="flex-1 justify-between gap-5">
+                <View className="gap-3">
+                  <View className="flex-row justify-between">
+                    <Text
+                      numberOfLines={1}
+                      style={getMainTextColorStyle(actualTheme)}
+                      className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
+                    >
+                      {item.groups.name}
+                    </Text>
+                    <TouchableOpacity
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
+                      className="bg-light-primary flex-row gap-1 p-1.5 rounded-lg dark:bg-dark-secondary items-center justify-between"
+                    >
+                      <Feather
+                        name="copy"
+                        size={16}
+                        color={
+                          actualTheme && actualTheme.PrimaryTxt
+                            ? actualTheme.PrimaryTxt
+                            : colorScheme === "dark"
+                              ? "white"
+                              : "white"
+                        }
+                      />
+                      <Text
+                        style={getPrimaryTextColorStyle(actualTheme)}
+                        className="text-light-background text-sm font-inter font-semibold dark:text-dark-primary"
+                      >
+                        {item.groups.code}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {item.groups.description && (
+                    <Text
+                      numberOfLines={1}
+                      style={getMainTextColorStyle(actualTheme)}
+                      className="font-inter  text-light-primary dark:text-dark-primary"
+                    >
+                      {item.groups?.description}
+                    </Text>
+                  )}
+                </View>
+
+                <View className="flex-row px-3 w-full items-center">
+                  {groups
+                    .filter((g) => g.group_id === item.group_id)
+                    .slice(0, 3)
+                    .map((g, index) => (
+                      <View
+                        key={index}
+                        style={{
+                          position: "relative",
+                          marginLeft: index > 0 ? -10 : 0,
+                        }}
+                      >
+                        <Image
+                          className="w-9 h-9 rounded-full"
+                          source={{
+                            uri: g.profiles?.avatar_url
+                              ? g.profiles?.avatar_url
+                              : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
+                          }}
+                        />
+                      </View>
+                    ))}
+                  <View>
+                    {groups?.length > 3 &&
+                      groups.filter((g) => g.group_id === item.group_id)
+                        ?.length > 3 && (
+                        <Text
+                          style={getMainTextColorStyle(actualTheme)}
+                          className="ml-1 font-inter text-light-primary dark:text-dark-primary"
+                        >
+                          +
+                          {groups.filter((g) => g.group_id === item.group_id)
+                            ?.length - 3}
+                        </Text>
+                      )}
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        {/* <FlatList
           showsVerticalScrollIndicator={false}
           windowSize={8}
-          ListFooterComponent={() => <View className="h-7" />}
-          contentContainerStyle={{ gap: 15 }}
-          showsHorizontalScrollIndicator={false}
+          className="flex-1 bg-red-300"
+          onEndReachedThreshold={0}
+          scrollEventThrottle={16}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ gap: 15, flex: 1, flexGrow: 1 }}
           data={userGroups}
-          keyExtractor={(e, i) => i.toString()}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={() => (
+            <View className="flex-1 gap-3 justify-center items-center">
+              <FontAwesome
+                name="group"
+                size={40}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme == "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
+              />
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter font-semibold text-light-primary dark:text-dark-primary"
+              >
+                No groups created or joined.
+              </Text>
+            </View>
+          )}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity
+              <View
                 onPress={() =>
                   navigation.navigate(PRAYER_GROUP_SCREEN, {
                     group_id: item.group_id,
@@ -584,7 +668,7 @@ const CommunityHomeScreen = () => {
                     borderColor: actualTheme.MainTxt,
                   }
                 }
-                className=" p-3 w-full border border-light-primary rounded-lg"
+                className="w-full p-3 flex-1 bg-light-secondary rounded-lg"
               >
                 <View className="flex-1 justify-between gap-5">
                   <View className="gap-1 ">
@@ -666,32 +750,11 @@ const CommunityHomeScreen = () => {
                     </View>
                   </View>
                 </View>
-              </TouchableOpacity>
+              </View>
             );
           }}
-        />
-      )}
-
-      <CreateGroupModal
-        getUserGroups={getUserGroups}
-        getGroupUsers={getGroupUsers}
-        supabase={supabase}
-        actualTheme={actualTheme}
-        theme={colorScheme}
-        user={currentUser}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
-      <JoinModal
-        getUserGroups={getUserGroups}
-        getGroupUsers={getGroupUsers}
-        supabase={supabase}
-        actualTheme={actualTheme}
-        theme={colorScheme}
-        user={currentUser}
-        modalVisible={joinVisible}
-        setModalVisible={setJoinVisible}
-      />
+        /> */}
+      </View>
     </View>
   );
 };

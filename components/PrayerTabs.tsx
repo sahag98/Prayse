@@ -50,7 +50,7 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme
+        actualTheme && actualTheme.MainTxt
           ? actualTheme.MainTxt
           : colorScheme === "dark"
             ? "#a5c9ff"
@@ -65,7 +65,7 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme
+        actualTheme && actualTheme.MainTxt
           ? actualTheme.MainTxt
           : colorScheme === "dark"
             ? "#a5c9ff"
@@ -80,7 +80,7 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme
+        actualTheme && actualTheme.MainTxt
           ? actualTheme.MainTxt
           : colorScheme === "dark"
             ? "#a5c9ff"
@@ -93,11 +93,12 @@ const PrayerTabs = ({
     left: `${linePosition.value * 33.33}%`,
     width: "33.33%",
     height: 3,
-    backgroundColor: actualTheme
-      ? actualTheme.MainTxt
-      : colorScheme === "dark"
-        ? "#a5c9ff"
-        : "#2f2d51",
+    backgroundColor:
+      actualTheme && actualTheme.MainTxt
+        ? actualTheme.MainTxt
+        : colorScheme === "dark"
+          ? "#a5c9ff"
+          : "#2f2d51",
     position: "absolute",
     bottom: 0,
     transition: { duration: 300 },
