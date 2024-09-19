@@ -15,6 +15,7 @@ prayer-app.jks
 google-services.json
 eas.json
 app.json
+credentials.json
 credentials/
 
 # macOS
