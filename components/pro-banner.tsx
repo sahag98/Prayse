@@ -71,9 +71,9 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
   };
 
   async function subscribeToPro() {
-    if (await isSubscribed()) {
-      router.push(`/${PRO_SCREEN}`);
-    }
+    // if (await isSubscribed()) {
+    router.push(`/${PRO_SCREEN}`);
+    // }
   }
 
   return (

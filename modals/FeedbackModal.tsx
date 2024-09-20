@@ -59,7 +59,7 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
             style={getSecondaryTextColorStyle(actualTheme)}
             className="text-xl font-inter text-center font-bold mb-3"
           >
-            We'd love your feedback!
+            Feedback
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
