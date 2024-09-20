@@ -147,8 +147,8 @@ const VerseOfTheDayScreen = () => {
           Verse of the Day
         </HeaderTitle>
       </View>
-      <Link href={`/${FAVORITES_SCREEN}`}>
-        <View
+      <Link asChild href={`/${FAVORITES_SCREEN}`}>
+        <TouchableOpacity
           style={getSecondaryBackgroundColorStyle(actualTheme)}
           className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-3"
         >
@@ -183,7 +183,7 @@ const VerseOfTheDayScreen = () => {
                   : "#2f2d51"
             }
           />
-        </View>
+        </TouchableOpacity>
       </Link>
       <ScrollView
         contentContainerClassName="justify-center gap-3 flex-1 items-center"
@@ -209,7 +209,7 @@ const VerseOfTheDayScreen = () => {
             actualTheme &&
               actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
           ]}
-          className="justify-center w-11/12 bg-light-secondary  border-light-primary dark:border-dark-primary dark:bg-dark-background self-center rounded-lg p-3"
+          className="justify-center w-11/12 bg-light-secondary dark:bg-dark-secondary self-center rounded-lg p-3"
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}

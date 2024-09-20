@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -54,6 +60,14 @@ const DailyReflection = ({
   }, [isFocused, today]);
 
   function handleComplete(selected) {
+    if (
+      completedItems.find((completedItem) =>
+        completedItem.items.find((item) => item === selected)
+      )
+    ) {
+      console.log("already exists return");
+      return;
+    }
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
     console.log("today: ", currentDate);
@@ -68,6 +82,7 @@ const DailyReflection = ({
         date: currentDate,
       })
     );
+
     navigation.navigate(selected, {
       previousScreen: HOME_SCREEN,
     });
@@ -113,7 +128,7 @@ const DailyReflection = ({
           <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
-              actualTheme
+              actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
                       completedItems.some((completedItem) =>
@@ -170,10 +185,11 @@ const DailyReflection = ({
                   : "white",
             }}
           />
+
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-3 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
               <Text
@@ -224,7 +240,7 @@ const DailyReflection = ({
           <View
             className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
             style={
-              actualTheme
+              actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
                       completedItems.some((completedItem) =>
@@ -261,7 +277,7 @@ const DailyReflection = ({
           <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
-              actualTheme
+              actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
                       completedItems.some((completedItem) =>
@@ -373,7 +389,7 @@ const DailyReflection = ({
           <View
             className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
             style={
-              actualTheme
+              actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
                       completedItems.some((completedItem) =>

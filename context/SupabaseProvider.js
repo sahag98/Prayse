@@ -208,7 +208,6 @@ export const SupabaseProvider = (props) => {
         .select("*")
         .eq("id", result.data.session.user.id);
 
-      console.log("profiles 0: ", profiles[0]);
       setCurrentUser(profiles[0]);
 
       if (profileError) {

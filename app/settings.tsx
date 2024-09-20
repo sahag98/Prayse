@@ -185,7 +185,7 @@ const SettingsScreen = () => {
           >
             APPEARANCE
           </Text>
-          {actualTheme ? (
+          {actualTheme && actualTheme.MainTxt ? (
             <Text
               style={getMainTextColorStyle(actualTheme)}
               className="font-inter text-light-primary dark:text-dark-primary"
