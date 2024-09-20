@@ -19,6 +19,7 @@ import { Greeting } from "@components/welcome/greeting";
 import { StreakAction } from "@components/welcome/streak-action";
 
 import { UpdateModal } from "@modals/update-modal";
+import WriteFeedbackModal from "@modals/WriteFeedbackModal";
 
 import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
@@ -115,6 +116,8 @@ const WelcomeScreen = () => {
   const [notification, setNotification] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
   const [donationModal, setDonationModal] = useState(false);
+
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -313,7 +316,7 @@ const WelcomeScreen = () => {
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row gap-2 items-center">
           <Ionicons
-            onPress={{}}
+            onPress={() => setFeedbackVisible(true)}
             name="chatbubble-ellipses-outline"
             size={24}
             color={
@@ -323,6 +326,12 @@ const WelcomeScreen = () => {
                   ? "white"
                   : "#2f2d51"
             }
+          />
+          <WriteFeedbackModal
+            feedbackVisible={feedbackVisible}
+            setFeedbackVisible={setFeedbackVisible}
+            theme={colorScheme}
+            actualTheme={actualTheme}
           />
           <View className="flex items-center flex-row">
             <StreakAction actualTheme={actualTheme} theme={colorScheme} />

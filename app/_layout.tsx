@@ -6,7 +6,7 @@ import { SplashScreen } from "expo-router";
 import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -138,7 +138,7 @@ export default function App() {
           </Provider>
         </GestureHandlerRootView>
       </AnimatedSplash>
-      {/* <Toast config={toastConfig} /> */}
+      <Toast config={toastConfig} />
     </>
   );
 }
