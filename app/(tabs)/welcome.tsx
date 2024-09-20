@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 import { MerchComponent } from "@components/MerchComponent";
+import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
 import { Greeting } from "@components/welcome/greeting";
 import { StreakAction } from "@components/welcome/streak-action";
@@ -21,6 +22,7 @@ import { UpdateModal } from "@modals/update-modal";
 
 import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
@@ -309,7 +311,19 @@ const WelcomeScreen = () => {
       <UpdateModal theme={colorScheme} />
       <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
-        <View className="relative flex-row items-center">
+        <View className="relative flex-row gap-2 items-center">
+          <Ionicons
+            onPress={{}}
+            name="chatbubble-ellipses-outline"
+            size={24}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
+          />
           <View className="flex items-center flex-row">
             <StreakAction actualTheme={actualTheme} theme={colorScheme} />
           </View>
@@ -323,7 +337,7 @@ const WelcomeScreen = () => {
         theme={colorScheme}
       />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
+      <ProBanner actualTheme={actualTheme} theme={colorScheme} />
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
       <QuestionOfTheWeek actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />

@@ -257,8 +257,6 @@ export const userSlice = createSlice({
         const lastItemDate = parseLocaleDateString(lastItem);
         const oneBeforeLastItemDate = parseLocaleDateString(oneBeforeLastItem);
 
-        console.log("date: ", lastItemDate);
-
         // Normalize both dates to the start of their respective days
         lastItemDate.setHours(0, 0, 0, 0);
         oneBeforeLastItemDate.setHours(0, 0, 0, 0);

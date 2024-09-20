@@ -31,7 +31,6 @@ interface ProBannerProps {
 export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
   useEffect(() => {
     if (Platform.OS === "ios") {
-      console.log(process.env.EXPO_PUBLIC_RC_IOS);
       if (!process.env.EXPO_PUBLIC_RC_IOS) {
         Alert.alert("Error configuring RC: IOS api key undefined");
       } else {
@@ -87,7 +86,7 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
     <TouchableOpacity
       style={getPrimaryBackgroundColorStyle(actualTheme)}
       onPress={subscribeToPro}
-      className="w-full flex-row items-center justify-between p-5 rounded-lg bg-light-primary dark:bg-dark-secondary"
+      className="w-full mb-4 flex-row items-center justify-between p-5 rounded-lg bg-light-primary dark:bg-dark-accent"
     >
       <View className="flex-row items-center gap-3">
         <MaterialCommunityIcons
@@ -97,13 +96,13 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
             actualTheme && actualTheme.PrimaryTxt
               ? actualTheme.PrimaryTxt
               : theme === "dark"
-                ? "yellow"
+                ? "#121212"
                 : "yellow"
           }
         />
         <Text
           style={getPrimaryTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-lg dark:text-yellow text-yellow-200"
+          className="font-inter font-bold text-lg dark:text-dark-background text-yellow-200"
         >
           Pro Features
         </Text>
@@ -114,7 +113,9 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
         color={
           actualTheme && actualTheme.PrimaryTxt
             ? actualTheme.PrimaryTxt
-            : "yellow"
+            : theme === "dark"
+              ? "#121212"
+              : "yellow"
         }
       />
     </TouchableOpacity>
