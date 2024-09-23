@@ -124,13 +124,13 @@ const Chat = ({
                         refreshMsgLikes={refreshMsgLikes}
                         showToast={showToast}
                       />
-                      {item.user_id !== currentUser.id && (
+                      {/* {item.user_id !== currentUser.id && (
                         <View className="flex-row items-center ml-2 mb-2 gap-2">
                           <Text className="font-inter text-sm text-gray-500">
                             Press and hold to pray or praise.
                           </Text>
                         </View>
-                      )}
+                      )} */}
                     </View>
                   );
                 }}

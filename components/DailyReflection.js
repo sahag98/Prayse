@@ -55,7 +55,6 @@ const DailyReflection = ({
 
   // console.log("today:", today);
   useEffect(() => {
-    console.log("clear previous day");
     clearPreviousDayCompletion();
   }, [isFocused, today]);
 
@@ -65,12 +64,9 @@ const DailyReflection = ({
         completedItem.items.find((item) => item === selected)
       )
     ) {
-      console.log("already exists return");
       return;
     }
     const currentDate = new Date().toLocaleDateString().split("T")[0];
-
-    console.log("today: ", currentDate);
 
     // posthog.capture("Doing Devotions");
     // dispatch(resetGiveaway());
@@ -94,7 +90,6 @@ const DailyReflection = ({
     yesterday.setDate(currentDate.getDate() - 1); // Get yesterday's date
 
     const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
-    console.log("yesterday: ", yesterdayDateString);
 
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
   }
@@ -114,12 +109,12 @@ const DailyReflection = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <Text
+      {/* <Text
         style={getMainTextColorStyle(actualTheme)}
         className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white"
       >
         Start here
-      </Text>
+      </Text> */}
       <View className="gap-3 relative w-full">
         <TouchableOpacity
           onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}

@@ -31,7 +31,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
 import { useSupabase } from "../context/useSupabase";
-import { COMMUNITY_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, PRAYER_GROUP_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroupScreen = () => {
@@ -260,12 +260,14 @@ const PrayerGroupScreen = () => {
 
     members.map(async (m) => {
       if (m.profiles.expoToken !== currentUser.expoToken) {
+        console.log("tokens to send: ", m.profiles.expoToken);
         const message = {
           to: m.profiles.expoToken,
           sound: "default",
           title: `${currentGroup.name} 📢`,
           body: `${currentUser?.full_name}: ${newMessage}`,
           data: {
+            screen: PRAYER_GROUP_SCREEN,
             group_id: groupId,
           },
         };

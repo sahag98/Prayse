@@ -27,6 +27,8 @@ interface UserState {
   prayers: any[];
   fontSize: number;
   selectedId: string | null;
+
+  hasSubmittedReview: boolean;
 }
 
 const initialState: UserState = {
@@ -50,12 +52,17 @@ const initialState: UserState = {
   prayers: [],
   fontSize: 15,
   selectedId: null,
+
+  hasSubmittedReview: false,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    isSubmittingReview: (state, action) => {
+      state.hasSubmittedReview = true;
+    },
     setNeededValues: (state) => {
       state.PercentValue = 25;
       state.isShowingCongratsModal = false;
@@ -341,6 +348,7 @@ export const userSlice = createSlice({
 export const {
   addUser,
   setToken,
+  isSubmittingReview,
   checkUserGroups,
   closeTool,
   addFolder,

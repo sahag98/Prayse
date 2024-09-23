@@ -12,7 +12,6 @@ import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { SupabaseProvider } from "@context/SupabaseProvider";
-import { useRouterNotifications } from "@hooks/router";
 import { store } from "@redux/store";
 
 import splashScreenIcon from "../assets/prayse-transparent.png";
@@ -28,8 +27,6 @@ global.Buffer = Buffer;
 const persistor = persistStore(store);
 
 export default function App() {
-  useRouterNotifications();
-
   const toastConfig = {
     /*
       Overwrite 'success' type,
@@ -125,7 +122,6 @@ export default function App() {
         logoHeight={150}
         logoWidth={150}
       >
-        {/* <Text>Hey</Text> */}
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
