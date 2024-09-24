@@ -27,6 +27,7 @@ import SearchBar from "./SearchBar";
 import {
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
@@ -71,7 +72,7 @@ const ListItems = ({
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
 
-  console.log("folder prayers: ", prayers);
+  console.log("font size: ", size);
 
   const [verseModal, setVerseModal] = useState(false);
 
@@ -164,7 +165,10 @@ const ListItems = ({
           <>
             <View className="flex-row items-center justify-between">
               <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
+                style={[
+                  getSecondaryTextColorStyle(actualTheme),
+                  { fontSize: size ? size : 16 },
+                ]}
                 className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
               >
                 {item.prayer}
@@ -233,15 +237,16 @@ const ListItems = ({
                   </Text>
                 </View>
               ) : item.status === "Archived" ? (
-                <View className="flex-row bg-gray-300 px-2 py-1 rounded-md items-center">
-                  <Text className="font-inter font-medium text-light-primary dark:text-dark-primary">
-                    Archived
-                  </Text>
-                </View>
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter text-sm font-medium text-light-primary dark:text-dark-primary"
+                >
+                  Archived
+                </Text>
               ) : (
                 <View className="flex-row items-end w-full justify-between">
                   {isReminder?.reminder.prayer_id === item.id ? (
-                    <View className=" rounded-lg flex-row items-center gap-2">
+                    <View className="rounded-lg flex-row items-center gap-2">
                       <Text className="font-inter text-sm text-light-primary dark:text-dark-primary">
                         Reminder
                       </Text>
@@ -265,17 +270,17 @@ const ListItems = ({
                     >
                       <AntDesign
                         name="pluscircleo"
-                        size={20}
+                        size={18}
                         color={
-                          actualTheme && actualTheme.SecondaryTxt
-                            ? actualTheme.SecondaryTxt
+                          actualTheme && actualTheme.PrimaryTxt
+                            ? actualTheme.PrimaryTxt
                             : colorScheme === "dark"
                               ? "#121212"
                               : "#f2f7ff"
                         }
                       />
                       <Text
-                        style={getSecondaryTextColorStyle(actualTheme)}
+                        style={getPrimaryTextColorStyle(actualTheme)}
                         className="font-inter font-semibold text-sm text-light-background dark:text-dark-background"
                       >
                         Reminder
@@ -289,7 +294,11 @@ const ListItems = ({
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
                       className="flex-row items-center bg-light-primary dark:bg-dark-accent p-2 rounded-md gap-2"
                     >
-                      <FontAwesome5 name="bible" size={22} color="white" />
+                      <FontAwesome5
+                        name="bible"
+                        size={22}
+                        color={colorScheme === "dark" ? "#121212" : "white"}
+                      />
                       {/* <Text
                       style={getSecondaryTextColorStyle(actualTheme)}
                       className="font-inter font-medium text-light-primary dark:text-dark-accent"
@@ -312,7 +321,7 @@ const ListItems = ({
   }
 
   return (
-    <View className={cn(prayer && "opacity-50", "transition-all flex-1")}>
+    <View className={cn(prayer && "opacity-25", "transition-all flex-1")}>
       <VerseModal
         verseModal={verseModal}
         setVerseModal={setVerseModal}
@@ -342,11 +351,11 @@ const ListItems = ({
           <View className="flex-1 items-center h-full justify-center gap-2">
             <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-secondary gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-5 rounded-lg"
+              className="bg-light-secondary  gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-3 rounded-lg"
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-center text-2xl font-inter font-semibold text-light-primary dark:text-dark-primary"
+                className="text-center text-2xl font-inter font-bold text-light-primary dark:text-dark-primary"
               >
                 Your
                 {activeTab === "Archived"
@@ -358,13 +367,13 @@ const ListItems = ({
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-left font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+                className="text-center font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
               >
                 {activeTab === "Archived"
-                  ? "When you archive a prayer, it will be moved to this section. You can re-add it to your prayer list by clicking on it and selecting 'Unarchive'."
+                  ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
                   : activeTab === "Answered"
-                    ? "Mark a prayer as answered by clicking on the three dots on the right side of an active prayer and select 'Mark as answered'."
-                    : "Tap the + button to add a prayer to your list and be able to recieve prayer reminders."}
+                    ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
+                    : "Tap the + button to add a prayer to your list."}
               </Text>
             </View>
           </View>

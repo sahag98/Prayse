@@ -78,18 +78,12 @@ const Folder = ({ colorScheme, navigation }) => {
   return (
     <View className="relative flex-1">
       <View className="my-4 flex-row justify-between items-center">
-        <TouchableOpacity
-          // style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="justify-center items-center rounded-xl py-3"
-          onPress={() => setFolderClicked(true)}
+        <HeaderTitle
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-bold py-3 font-inter text-lg text-light-primary dark:text-dark-primary"
         >
-          <HeaderTitle
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-bold font-inter text-lg text-light-primary dark:text-dark-primary"
-          >
-            Prayer Folders
-          </HeaderTitle>
-        </TouchableOpacity>
+          Prayer Folders
+        </HeaderTitle>
       </View>
 
       <FlatList

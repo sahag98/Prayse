@@ -214,7 +214,7 @@ export const ModalContainer = styled.View`
 export const ModalView = styled.View`
   /* background-color: ${colors.secondary}; */
   border-radius: 20px;
-  padding: 25px;
+  padding: 20px;
 `;
 
 export const ModalView2 = styled.View`

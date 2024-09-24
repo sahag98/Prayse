@@ -90,10 +90,28 @@ const PrayerBottomModal = ({
         <BottomSheetModal
           ref={prayerBottomSheetModalRef}
           index={0}
+          handleIndicatorStyle={{
+            backgroundColor:
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                  ? "white"
+                  : "#f2f7ff",
+          }}
+          handleStyle={{
+            borderTopWidth: 1,
+            borderTopColor: "gainsboro",
+            backgroundColor:
+              actualTheme && actualTheme.Bg
+                ? actualTheme.Bg
+                : colorScheme === "dark"
+                  ? "#121212"
+                  : "#f2f7ff",
+          }}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
         >
-          <BottomSheetView className="flex-1 gap-3 p-4">
+          <BottomSheetView className="flex-1 dark:bg-dark-background gap-3 p-4">
             <TouchableOpacity
               onPress={handleDelete}
               className="bg-red-400 flex-row justify-between items-center p-4 rounded-md"

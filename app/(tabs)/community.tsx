@@ -359,7 +359,7 @@ const CommunityHomeScreen = () => {
               color={
                 actualTheme && actualTheme.PrimaryTxt
                   ? actualTheme.PrimaryTxt
-                  : colorScheme === "dark "
+                  : colorScheme === "dark"
                     ? "#121212"
                     : "white"
               }
@@ -519,19 +519,10 @@ const CommunityHomeScreen = () => {
               onPress={() =>
                 navigation.navigate(PRAYER_GROUP_SCREEN, {
                   group_id: item.group_id,
-                  // group: item,
-                  // allGroups: groups.filter(
-                  //   (g) => g.group_id === item.group_id
-                  // ),
                 })
               }
-              style={
-                actualTheme &&
-                actualTheme.MainTxt && {
-                  borderColor: actualTheme.MainTxt,
-                }
-              }
-              className="w-full p-3 mt-3 flex-1 bg-light-secondary rounded-lg"
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="w-full p-3 mt-3 flex-1 bg-light-secondary dark:bg-dark-secondary rounded-lg"
             >
               <View className="flex-1 justify-between gap-5">
                 <View className="gap-3">

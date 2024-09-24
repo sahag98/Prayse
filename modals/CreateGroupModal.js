@@ -90,7 +90,6 @@ const CreateGroupModal = ({
   };
 
   return (
-    // <SafeAreaProvider>
     <Modal
       animationType="slide"
       transparent
@@ -130,7 +129,7 @@ const CreateGroupModal = ({
           </TouchableOpacity>
           <TouchableOpacity
             disabled={groupName.length === 0}
-            className="flex-row justify-center items-center py-3 px-4 rounded-full"
+            className="flex-row justify-center items-center py-3 px-4 rounded-lg"
             style={
               actualTheme && actualTheme.Primary
                 ? {
@@ -179,15 +178,20 @@ const CreateGroupModal = ({
         >
           Create Prayer Group
         </Text>
-
-        <View className="mt-5 gap-2 justify-center items-center my-3 w-full">
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter mt-2 font-medium text-light-primary mb-2 dark:text-dark-primary"
+        >
+          Create a group to have a prayer list for your group.
+        </Text>
+        <View className="mt-3 gap-2 justify-center items-center my-3 w-full">
           <TextInput
             style={[
               getMainTextColorStyle(actualTheme),
               actualTheme &&
                 actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
             ]}
-            className="border border-light-primary font-inter font-medium  dark:border-dark-primary w-full p-4 rounded-md"
+            className="border border-light-primary text-light-primary dark:text-dark-primary font-inter font-medium  dark:border-dark-primary w-full p-4 rounded-md"
             autoFocus={false}
             placeholder="Group name here"
             placeholderTextColor={
@@ -213,7 +217,7 @@ const CreateGroupModal = ({
               actualTheme &&
                 actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
             ]}
-            className="border border-light-primary font-inter font-medium dark:border-dark-primary w-full p-4 rounded-md"
+            className="border border-light-primary font-inter text-light-primary dark:text-dark-primary font-medium dark:border-dark-primary w-full p-4 rounded-md"
             autoFocus={false}
             placeholder="Group description here (Optional)"
             placeholderTextColor={
@@ -252,7 +256,6 @@ const CreateGroupModal = ({
         </View>
       </ModalContainer>
     </Modal>
-    // </SafeAreaProvider>
   );
 };
 

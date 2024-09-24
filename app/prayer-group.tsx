@@ -31,7 +31,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
 import { useSupabase } from "../context/useSupabase";
-import { COMMUNITY_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, PRAYER_GROUP_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 
 const PrayerGroupScreen = () => {
@@ -260,12 +260,14 @@ const PrayerGroupScreen = () => {
 
     members.map(async (m) => {
       if (m.profiles.expoToken !== currentUser.expoToken) {
+        console.log("tokens to send: ", m.profiles.expoToken);
         const message = {
           to: m.profiles.expoToken,
           sound: "default",
           title: `${currentGroup.name} 📢`,
           body: `${currentUser?.full_name}: ${newMessage}`,
           data: {
+            screen: PRAYER_GROUP_SCREEN,
             group_id: groupId,
           },
         };
@@ -324,7 +326,7 @@ const PrayerGroupScreen = () => {
             prayerToReact && "opacity-50",
           )}
         >
-          <View className="flex-row">
+          <View className="flex-row flex-1">
             <Link href={`/${COMMUNITY_SCREEN}`}>
               <AntDesign
                 name="left"
@@ -344,6 +346,7 @@ const PrayerGroupScreen = () => {
               className="pb-1 ml-3 gap-2"
             >
               <HeaderTitle
+                numberOfLines={1}
                 style={getMainTextColorStyle(actualTheme)}
                 className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
               >
@@ -369,19 +372,11 @@ const PrayerGroupScreen = () => {
               setGroupInfoVisible={setGroupInfoVisible}
             />
           )}
-          {/* {isGroupRemoved && (
-            <RemovedGroupModal
-              isGroupRemoved={isGroupRemoved}
-              setRefreshGroup={setRefreshGroup}
-              setIsGroupRemoved={setIsGroupRemoved}
-              theme={theme}
-            />
-          )} */}
 
           <TouchableOpacity
             onPress={copyCode}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="p-2 flex-row items-center bg-light-secondary dark:bg-dark-secondary rounded-lg gap-2"
+            className="p-2 ml-5 flex-row items-center bg-light-secondary dark:bg-dark-secondary rounded-lg gap-2"
           >
             <Feather
               name="copy"

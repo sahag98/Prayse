@@ -118,7 +118,7 @@ const WriteFeedbackModal = ({
                     getMainBackgroundColorStyle(actualTheme),
                   ]}
                   numberOfLines={1}
-                  className="dark:bg-dark-background p-3 text-light-primary dark:text-dark-primary rounded-lg"
+                  className="dark:bg-dark-background bg-light-background p-3 text-light-primary dark:text-dark-primary rounded-lg"
                   value={name}
                   selectionColor={
                     actualTheme && actualTheme.MainTxt
@@ -149,7 +149,7 @@ const WriteFeedbackModal = ({
                         ? "white"
                         : "#2f2d51"
                   }
-                  className="dark:bg-dark-background text-start text-light-primary dark:text-dark-primary p-3 rounded-lg"
+                  className="dark:bg-dark-background bg-light-background text-start text-light-primary dark:text-dark-primary p-3 rounded-lg"
                   value={feedback}
                   onChangeText={setFeedback}
                   onSubmitEditing={(e: any) => {

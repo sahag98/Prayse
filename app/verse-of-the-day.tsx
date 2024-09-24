@@ -190,13 +190,6 @@ const VerseOfTheDayScreen = () => {
         // contentContainerStyle={{ gap: 10 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* <Text
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter mb-3 leading-6 text-light-primary dark:text-dark-primary"
-        >
-          Welcome to the Verse of the Day page! We hope to provide you with a
-          daily reminder of God's love, grace, and wisdom.
-        </Text> */}
         <Text
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"

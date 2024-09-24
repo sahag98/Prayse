@@ -3,7 +3,7 @@ import React from "react";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import ReminderItem from "@components/ReminderItem";
@@ -42,20 +42,14 @@ const ReminderScreen = () => {
       className="dark:bg-[#121212] bg-[#f2f7ff] flex-1"
     >
       <HeaderView className="justify-between  w-full">
-        <TouchableOpacity
-          // style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="justify-center my-1 items-center rounded-xl py-3"
-          onPress={() => setFolderClicked(true)}
+        <HeaderTitle
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-bold font-inter py-3 text-lg text-light-primary dark:text-dark-primary"
         >
-          <HeaderTitle
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-bold font-inter text-lg text-light-primary dark:text-dark-primary"
-          >
-            Reminders
-          </HeaderTitle>
-        </TouchableOpacity>
+          Reminders
+        </HeaderTitle>
       </HeaderView>
-      <View className="gap-1 mb-5">
+      <View className="mb-5">
         <Text
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter text-light-primary text-base dark:text-dark-primary"
@@ -64,7 +58,7 @@ const ReminderScreen = () => {
         </Text>
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-medium text-light-primary text-base dark:text-dark-primary"
+          className="font-inter self-end font-medium text-light-primary text-base dark:text-dark-primary"
         >
           Colossians 4:2
         </Text>
@@ -83,7 +77,7 @@ const ReminderScreen = () => {
             <View className="gap-1 mb-10 items-center">
               <Ionicons
                 name="time-outline"
-                size={45}
+                size={70}
                 color={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
@@ -102,7 +96,7 @@ const ReminderScreen = () => {
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className=" text-center font-inter leading-5 font-medium text-light-primary dark:text-dark-primary"
               >
-                Navigate to the prayer tab to add prayers to your folders and
+                Navigate to the prayer tab to add prayers to your folders, and
                 setup reminders for each.
               </Text>
             </View>

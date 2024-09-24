@@ -346,7 +346,7 @@ const ProfileModal = ({
               Change username
             </Text>
             <TextInput
-              className="font-inter w-full border-b border-b-light-primary dark:border-b-dark-primary p-2"
+              className="font-inter w-full border-b text-light-primary dark:text-dark-primary border-b-light-primary dark:border-b-dark-primary p-2"
               style={getMainTextColorStyle(actualTheme)}
               selectionColor={
                 actualTheme && actualTheme.MainTxt
@@ -384,57 +384,11 @@ const ProfileModal = ({
               </Text>
             </TouchableOpacity>
           </View>
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="p-3 text-xl text-center font-inter font-semibold w-full text-light-primary dark:text-dark-primary"
-          >
-            Prayers Shared
-          </Text>
-          {userPrayers?.length === 0 ? (
-            <View
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="w-full gap-1 min-h-32 max-h-56 bg-light-secondary dark:bg-dark-secondary items-center justify-center rounded-lg"
-            >
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-light-primary dark:text-dark-primary"
-              >
-                You haven't posted any prayers yet.
-              </Text>
-              <TouchableOpacity onPress={addPrayer}>
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-lg font-bold underline text-light-primary dark:text-dark-primary"
-                >
-                  Post a prayer
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <FlatList
-              className="w-full bg-light-secondary dark:bg-dark-secondary"
-              data={userPrayers}
-              keyExtractor={(i) => i.toString()}
-              onEndReachedThreshold={0}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator
-              renderItem={({ item }) => (
-                <ProfilePrayers
-                  item={item}
-                  theme={colorScheme}
-                  actualTheme={actualTheme}
-                  user={user}
-                  getUserPrayers={getUserPrayers}
-                  supabase={supabase}
-                  getPrayers={getPrayers}
-                />
-              )}
-            />
-          )}
+
           <TouchableOpacity
             onPress={handleLogOut}
             style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="self-end my-3 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
+            className="self-end mt-auto mb-4 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}

@@ -102,51 +102,51 @@ const QuestionScreen = () => {
       >
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-semibold text-2xl dark:text-dark-primary text-light-primary mb-4"
+          className="font-inter font-bold text-2xl dark:text-dark-primary text-light-primary mb-4"
         >
           {itemTitle}
         </Text>
       </View>
 
       <View className="flex-1 w-full">
-        {answersArray.length == 0 ? (
-          <View className="flex-1 justify-center items-center">
-            <MaterialIcons
-              name="question-answer"
-              size={50}
-              color={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : colorScheme == "dark"
-                    ? "#A5C9FF"
-                    : "#2f2d51"
-              }
-            />
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-medium mt-3 dark:text-dark-accent text-light-primary"
-            >
-              No answers at this moment.
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={answersArray}
-            keyExtractor={(e, i) => i.toString()}
-            onEndReachedThreshold={0}
-            scrollEventThrottle={16}
-            contentContainerStyle={{ gap: 5 }}
-            showsVerticalScrollIndicator={false}
-            ListFooterComponent={() => <View className="h-24" />}
-            renderItem={({ item }) => (
-              <AnswerItem
-                actualTheme={actualTheme}
-                item={item}
-                theme={colorScheme}
+        <FlatList
+          data={answersArray}
+          keyExtractor={(e, i) => i.toString()}
+          onEndReachedThreshold={0}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ gap: 5, flex: 1 }}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={() => <View className="h-24" />}
+          ListEmptyComponent={() => (
+            <View className="flex-1 justify-center items-center">
+              <MaterialIcons
+                name="question-answer"
+                size={80}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme == "dark"
+                      ? "#A5C9FF"
+                      : "#2f2d51"
+                }
               />
-            )}
-          />
-        )}
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter w-3/4 text-center font-medium mt-3 dark:text-dark-accent text-light-primary"
+              >
+                Looks like there are no answers yet! Be the first to share your
+                thoughts and start the conversation.
+              </Text>
+            </View>
+          )}
+          renderItem={({ item }) => (
+            <AnswerItem
+              actualTheme={actualTheme}
+              item={item}
+              theme={colorScheme}
+            />
+          )}
+        />
       </View>
       <View className="absolute flex left-4 bottom-4 ">
         <TouchableOpacity

@@ -42,7 +42,6 @@ import {
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
-  getSecondaryBackgroundColorStyle,
 } from "@lib/customStyles";
 import { useIsFocused } from "@react-navigation/native";
 import { addFolder } from "@redux/folderReducer";
@@ -58,6 +57,10 @@ const PrayerRoom = () => {
   const navigation = useNavigation();
   const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
+
+  const UnarchivedPrayers = prayers.filter(
+    (prayer) => prayer.status !== "Archived",
+  );
   const folders = useSelector((state) => state.folder.folders);
   const [screenIndex, setScreenIndex] = useState(0);
   const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
@@ -69,7 +72,7 @@ const PrayerRoom = () => {
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
   const routeParams = useLocalSearchParams();
-  const data = prayers[screenIndex];
+  const data = UnarchivedPrayers[screenIndex];
   const { colorScheme } = useColorScheme();
   const pulse = useSharedValue(0);
   const opacityValue = useSharedValue(0);
@@ -266,7 +269,7 @@ const PrayerRoom = () => {
   }
 
   const onContinue = () => {
-    const isLastScreen = screenIndex === prayers.length - 1;
+    const isLastScreen = screenIndex === UnarchivedPrayers.length - 1;
     if (isLastScreen) {
       endChecklist();
     } else {
@@ -300,7 +303,7 @@ const PrayerRoom = () => {
     Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
   );
 
-  if (prayers.length == 0) {
+  if (UnarchivedPrayers?.length == 0) {
     return (
       <Container
         style={getMainBackgroundColorStyle(actualTheme)}
@@ -453,7 +456,7 @@ const PrayerRoom = () => {
                 </View>
 
                 <View className="flex-row gap-2 mx-4 mt-2">
-                  {prayers.map((step, index) => (
+                  {UnarchivedPrayers.map((step, index) => (
                     <View
                       key={index}
                       className="flex-1 h-2 bg-gray-400 rounded-lg"
@@ -472,7 +475,7 @@ const PrayerRoom = () => {
                 </View>
                 <TouchableOpacity
                   onPress={checkSound}
-                  style={getSecondaryBackgroundColorStyle(actualTheme)}
+                  style={getPrimaryBackgroundColorStyle(actualTheme)}
                   className="self-end mt-3 bg-light-primary dark:bg-dark-accent p-4 mr-4 rounded-full"
                 >
                   <Feather
@@ -505,7 +508,7 @@ const PrayerRoom = () => {
                       <Animated.Text
                         entering={SlideInRight}
                         exiting={SlideOutLeft}
-                        className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
+                        className="font-inter font-semibold text-2xl text-light-primary dark:text-dark-primary"
                         style={[
                           getMainTextColorStyle(actualTheme),
                           animatedPrayerFadeInStyle,
@@ -513,6 +516,19 @@ const PrayerRoom = () => {
                       >
                         {data.prayer}
                       </Animated.Text>
+                      {data.verse && (
+                        <Animated.Text
+                          entering={SlideInRight}
+                          exiting={SlideOutLeft}
+                          className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                          style={[
+                            getMainTextColorStyle(actualTheme),
+                            animatedPrayerFadeInStyle,
+                          ]}
+                        >
+                          Verse: {data.verse}
+                        </Animated.Text>
+                      )}
                     </View>
                     <Animated.Text
                       className="font-inter font-medium text-light-primary dark:text-dark-primary"
@@ -521,7 +537,7 @@ const PrayerRoom = () => {
                         animatedOpacityStyle,
                       ]}
                     >
-                      {screenIndex === prayers.length - 1
+                      {screenIndex === UnarchivedPrayers.length - 1
                         ? "Swipe right to go to checklist"
                         : "Swipe right to go to the next prayer."}
                     </Animated.Text>
@@ -617,7 +633,7 @@ const PrayerRoom = () => {
                   </Text>
                 </View>
                 <View className="flex-row gap-2 mx-4 mt-2">
-                  {prayers.map((step, index) => (
+                  {UnarchivedPrayers.map((step, index) => (
                     <View
                       key={index}
                       className="flex-1 h-2 bg-gray-400 rounded-lg"
@@ -685,7 +701,7 @@ const PrayerRoom = () => {
                         animatedOpacityStyle,
                       ]}
                     >
-                      {screenIndex === prayers.length - 1
+                      {screenIndex === UnarchivedPrayers.length - 1
                         ? "Swipe right to go to checklist"
                         : "Swipe right to go to the next prayer."}
                     </Animated.Text>
@@ -775,7 +791,7 @@ const PrayerRoom = () => {
             </Text>
           </View>
           <View className="flex-row gap-2 mx-4 mt-2">
-            {prayers.map((step, index) => (
+            {UnarchivedPrayers.map((step, index) => (
               <View
                 key={index}
                 className="flex-1 h-2 bg-gray-400 rounded-lg"

@@ -2,12 +2,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Redirect, useNavigation } from "expo-router";
+import { Redirect, useNavigation, useRootNavigationState } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import { Linking, Platform, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
-import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import DailyReflection from "@components/DailyReflection";
@@ -27,7 +26,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import { addNoti } from "@redux/notiReducer";
 import {
   PRAYER_GROUP_SCREEN,
   QUESTION_SCREEN,
@@ -50,6 +48,7 @@ Notifications.setNotificationHandler({
 });
 
 async function sendToken(expoPushToken) {
+  console.log("expo token: ", expoPushToken);
   const message = {
     to: expoPushToken,
     sound: "default",
@@ -137,8 +136,6 @@ const WelcomeScreen = () => {
   //   posthog.capture("Welcome Screen");
   // }, [posthog]);
 
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-
   const loadIsFirstTime = async () => {
     try {
       const hasIsFirstTime = await AsyncStorage.getItem("isFirstTime");
@@ -202,19 +199,6 @@ const WelcomeScreen = () => {
           } else if (url === "Question") {
             url = QUESTION_SCREEN;
           }
-
-          dispatch(
-            addNoti({
-              noti_id: uuid.v4(),
-              date: formattedDate,
-              notification: content.body,
-              url,
-              title: content.data?.title,
-              question_id: content.data?.question_id,
-              prayerId: content.data?.prayerId,
-              identifier: notification.request.identifier,
-            }),
-          );
         }
 
         setNotification(notification);
@@ -224,85 +208,96 @@ const WelcomeScreen = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log("response: ", response);
         const body = response.notification.request.content.body;
-        const res = response.notification.request.content.data;
+        const data = response.notification.request.content.data;
+
+        console.log("data: ", data);
+
+        // if (data && data.group_id) {
+        //   navigation.navigate(PRAYER_GROUP_SCREEN, {
+        //     group_id: data.group_id,
+        //   });
+        // }
       });
 
     return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current,
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current,
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
   // Handle notification response
+
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
+  const rootNavigationState = useRootNavigationState();
+  const navigatorReady = rootNavigationState?.key != null;
+
   useEffect(() => {
-    if (!lastNotificationResponse?.notification?.request?.content) {
-      return;
-    }
+    if (!navigatorReady) return; // Exit if navigation is not ready yet
 
-    const { data, body } =
-      lastNotificationResponse.notification.request.content;
+    const processNotification = async () => {
+      // Get the last notification response if it's not provided via hook
+      const notificationResponse =
+        lastNotificationResponse ||
+        (await Notifications.getLastNotificationResponseAsync());
 
-    if (data?.updateLink) {
-      if (Platform.OS === "ios") {
-        Linking.openURL(
-          "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
-        );
-      } else if (Platform.OS === "android") {
-        Linking.openURL(
-          "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
-        );
+      if (!notificationResponse?.notification?.request?.content) return;
+
+      const { data, body } = notificationResponse.notification.request.content;
+
+      if (data?.updateLink) {
+        if (Platform.OS === "ios") {
+          Linking.openURL(
+            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+          );
+        } else if (Platform.OS === "android") {
+          Linking.openURL(
+            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+          );
+        }
       }
-    }
 
-    if (data?.anyLink) {
-      Linking.openURL(data.anyLink);
-    }
-
-    const url = data?.url || data?.screen;
-
-    if (url) {
-      //navigate to the screen specified in the data object
-      if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
-        navigation.navigate(VERSE_OF_THE_DAY_SCREEN, {
-          verse: body,
-          title: data.verseTitle,
-        });
-      } else if (
-        ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
-        data.group &&
-        data.allGroups
-      ) {
-        navigation.navigate(PRAYER_GROUP_SCREEN, {
-          group: data.group,
-          allGroups: data.allGroups,
-        });
-      } else if (
-        ["Reflection", REFLECTION_SCREEN].includes(url) &&
-        data.devoTitle
-      ) {
-        navigation.navigate(REFLECTION_SCREEN, {
-          devoTitle: data.devoTitle,
-        });
-      } else if (
-        ["Question", QUESTION_SCREEN].includes(url) &&
-        data.title &&
-        data.question_id
-      ) {
-        navigation.navigate(QUESTION_SCREEN, {
-          title: data.title,
-          question_id: data.question_id,
-        });
-      } else {
-        navigation.navigate(url);
+      if (data?.anyLink) {
+        Linking.openURL(data.anyLink);
       }
-    }
-  }, [lastNotificationResponse]);
+
+      const url = data?.url || data?.screen;
+
+      if (url) {
+        console.log("url exists!!");
+
+        if (
+          ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
+          data.group_id
+        ) {
+          navigation.navigate(PRAYER_GROUP_SCREEN, {
+            group_id: data.group_id,
+          });
+        } else if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
+          navigation.navigate(VERSE_OF_THE_DAY_SCREEN);
+        } else if (
+          ["Question", QUESTION_SCREEN].includes(url) &&
+          data.title &&
+          data.question_id
+        ) {
+          navigation.navigate(QUESTION_SCREEN, {
+            title: data.title,
+            question_id: data.question_id,
+          });
+        } else {
+          navigation.navigate(url);
+        }
+      }
+    };
+
+    processNotification();
+  }, [navigatorReady, lastNotificationResponse]);
 
   if (isFirst === true) {
     return <Redirect href="/onboarding" />;
-    // navigation.navigate(ONBOARDING_SCREEN);
   }
 
   return (
@@ -348,7 +343,7 @@ const WelcomeScreen = () => {
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       <ProBanner actualTheme={actualTheme} theme={colorScheme} />
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
-      <QuestionOfTheWeek actualTheme={actualTheme} />
+      <QuestionOfTheWeek theme={colorScheme} actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />
       <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
       {/* <QuickLinks actualTheme={actualTheme} theme={colorScheme} /> */}

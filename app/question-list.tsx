@@ -52,6 +52,7 @@ const QuestionListScreen = () => {
     setRefreshing(false);
   }, []);
 
+  console.log("questions enabled: ", questionsEnabled);
   // console.log(questionBottomSheetModalRef.current);
 
   return (
@@ -89,7 +90,7 @@ const QuestionListScreen = () => {
           {questionsEnabled && (
             <TouchableOpacity
               style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-primary dark:bg-dark-primary p-2 rounded-lg"
+              className="bg-light-primary dark:bg-dark-accent p-2 rounded-lg"
               onPress={() => {
                 setIsAddingQuestion(true);
                 questionBottomSheetModalRef.current?.present();
@@ -102,7 +103,7 @@ const QuestionListScreen = () => {
                   actualTheme && actualTheme.PrimaryTxt
                     ? actualTheme.PrimaryTxt
                     : colorScheme === "dark"
-                      ? "#c8c8c8"
+                      ? "#121212"
                       : "white"
                 }
               />

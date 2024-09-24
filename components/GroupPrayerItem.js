@@ -212,7 +212,7 @@ const GroupPrayerItem = ({
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-sm font-inter"
+              className="text-sm text-light-primary dark:text-[#d2d2d2] font-inter"
             >
               Tap and hold to react
             </Text>
@@ -243,7 +243,7 @@ const GroupPrayerItem = ({
         )}
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="ml-auto font-inter text-xs text-light-primary/60 dark:text-gray-500"
+          className="ml-auto font-inter text-xs text-light-primary/60 dark:text-[#d2d2d2]"
         >
           {Moment(item.created_at).fromNow()}
         </Text>

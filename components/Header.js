@@ -17,7 +17,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   AntDesign,
   Entypo,
@@ -99,11 +99,11 @@ const Header = ({
       <HeaderView>
         <View
           className={cn(
-            "flex-row items-center justify-between transition-all w-full",
-            prayer && "opacity-50"
+            "flex-row flex-1 items-center justify-between transition-all w-full",
+            prayer && "opacity-25"
           )}
         >
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center">
             <Link asChild href={`/${FOLDER_SCREEN}`}>
               <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
                 <Ionicons
@@ -119,42 +119,59 @@ const Header = ({
                 />
               </TouchableOpacity>
             </Link>
-            <HeaderTitle
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-primary dark:text-dark-primary"
-            >
-              {folderName}
-            </HeaderTitle>
-            <AntDesign
-              name="folderopen"
-              size={28}
-              style={{ marginLeft: 10 }}
+            <View className="flex-row gap-3">
+              <HeaderTitle
+                style={getMainTextColorStyle(actualTheme)}
+                numberOfLines={1}
+                className="font-inter font-bold text-light-primary dark:text-dark-primary"
+              >
+                {folderName}
+              </HeaderTitle>
+              <AntDesign
+                name="folderopen"
+                size={28}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "#e8bb4e"
+                      : "#f1d592"
+                }
+              />
+            </View>
+          </View>
+          <View className="flex-row items-center">
+            {/* <TouchableOpacity className="bg-light-secondary dark:bg-dark-secondary p-3 rounded-full">
+              <FontAwesome
+                name="text-height"
+                size={20}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
+              />
+            </TouchableOpacity> */}
+
+            <Entypo
+              name="dots-three-vertical"
+              onPress={() => {
+                setIsShowingModal(true);
+                doSlideUpAnimation();
+              }}
+              size={20}
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "#e8bb4e"
-                    : "#f1d592"
+                    ? "white"
+                    : "#2F2D51"
               }
             />
           </View>
-          <Entypo
-            name="dots-three-vertical"
-            onPress={() => {
-              setIsShowingModal(true);
-              doSlideUpAnimation();
-            }}
-            size={20}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2F2D51"
-            }
-          />
         </View>
-
         <Modal
           animationType="fade"
           transparent
