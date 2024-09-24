@@ -202,7 +202,7 @@ const InputModal = ({
                 </View>
               </ModalIcon>
               <StyledInput
-                className="mt-3 items-center border border-light-primary dark:border-[#d2d2d2] self-center font-inter"
+                className="mt-3 items-center border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#d2d2d2] self-center font-inter"
                 style={
                   actualTheme && actualTheme.SecondaryTxt
                     ? {

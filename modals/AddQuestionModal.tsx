@@ -83,12 +83,22 @@ const AddQuestionModal = ({
       <BottomSheetModal
         ref={questionBottomSheetModalRef}
         index={1}
+        handleIndicatorStyle={{
+          backgroundColor:
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#f2f7ff",
+        }}
         handleStyle={{
+          borderTopWidth: 1,
+          borderTopColor: "gainsboro",
           backgroundColor:
             actualTheme && actualTheme.Bg
               ? actualTheme.Bg
               : colorScheme === "dark"
-                ? "#2f2d51"
+                ? "#121212"
                 : "#f2f7ff",
         }}
         snapPoints={snapPoints}
@@ -100,26 +110,25 @@ const AddQuestionModal = ({
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="text-2xl font-bold font-inter"
+            className="text-2xl text-light-primary dark:text-dark-primary font-bold font-inter"
           >
-            Add Question
+            Write a Question
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
             className=" text-light-primary dark:text-dark-primary font-inter"
           >
-            Please be sure to keep your question short and to the point.
+            Please be sure to keep your question biblical and to the point.
           </Text>
           <TextInput
             style={[
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
-              { textAlignVertical: "top" },
             ]}
             onSubmitEditing={(e) => {
               e.key === "Enter" && e.preventDefault();
             }}
-            className="w-full font-inter rounded-lg bg-light-secondary dark:bg-dark-secondary p-4"
+            className="w-full font-inter min-h-32 max-h-40 rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary dark:bg-dark-secondary p-4"
             placeholder="What is your question?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
@@ -136,7 +145,8 @@ const AddQuestionModal = ({
                   : "#2f2d51"
             }
             value={newQuestion}
-            onChangeText={(text) => setNewQuestion(text)}
+            multiline
+            onChangeText={setNewQuestion}
           />
           <TouchableOpacity
             onPress={handleApproval}

@@ -135,11 +135,11 @@ const QuestionModal = ({
             }
           >
             <StyledInput
-              className="font-inter font-normal mb-2 bg-light-primary dark:bg-dark-secondary"
+              className="font-inter font-normal text-light-primary dark:text-dark-primary mb-2 bg-light-background dark:bg-dark-background"
               style={
-                actualTheme && actualTheme.Primary
+                actualTheme && actualTheme.Bg
                   ? {
-                      backgroundColor: actualTheme.Primary,
+                      backgroundColor: actualTheme.Bg,
                       height: inputHeight < 100 ? 100 : inputHeight,
                       verticalAlign: "top",
                     }
@@ -155,13 +155,13 @@ const QuestionModal = ({
               }
               placeholder="Add answer"
               placeholderTextColor={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
                   : "#e0e0e0"
               }
               selectionColor={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
                   : "white"
               }
               autoFocus
@@ -173,8 +173,11 @@ const QuestionModal = ({
               }}
               multiline
             />
-            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-              <Text className="text-red-500 font-inter font-normal text-sm">
+            <TouchableOpacity
+              className="self-end"
+              onPress={() => Keyboard.dismiss()}
+            >
+              <Text className="text-red-500 font-inter font-medium text-sm">
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>

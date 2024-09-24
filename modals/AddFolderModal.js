@@ -55,7 +55,7 @@ const AddFolderModal = ({
         >
           <ModalView
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-secondary w-5/6 dark:bg-dark-secondary"
+            className="bg-light-secondary w-11/12 dark:bg-dark-secondary"
           >
             <ModalIcon>
               <HeaderTitle
@@ -65,7 +65,12 @@ const AddFolderModal = ({
                 Create Folder
               </HeaderTitle>
             </ModalIcon>
-
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="mb-3 text-center font-inter font-medium text-light-primary dark:text-dark-primary"
+            >
+              Create a prayer folder to add your prayers to it.
+            </Text>
             <TextInput
               style={[
                 getSecondaryTextColorStyle(actualTheme),

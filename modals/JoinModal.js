@@ -193,9 +193,15 @@ const JoinModal = ({
           >
             Join Prayer Group
           </Text>
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter font-medium text-light-primary mb-2 dark:text-dark-primary"
+          >
+            Join a group, and share prayer requests with others.
+          </Text>
           <View className="w-full flex-row items-center justify-between">
             <Animated.View
-              className="border p-4 rounded-lg border-light-primary dark:border-dark-secondary"
+              className="border p-4 rounded-lg border-light-primary dark:border-[#d2d2d2]"
               style={[
                 inputAnimatedStyle,
                 actualTheme &&
@@ -204,8 +210,8 @@ const JoinModal = ({
             >
               <TextInput
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium"
-                // autoFocus={modalVisible}
+                className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                autoFocus={modalVisible}
                 maxLength={6}
                 keyboardType="numeric"
                 placeholder="Enter 6 digit group code"
@@ -220,7 +226,7 @@ const JoinModal = ({
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme === "dark"
-                      ? "#a5c9ff"
+                      ? "white"
                       : "#2f2d51"
                 }
                 value={code}

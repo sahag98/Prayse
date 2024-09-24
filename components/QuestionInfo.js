@@ -22,8 +22,6 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
     (answer) => answer.question_id === item.id
   );
 
-  console.log(item);
-
   return (
     <TouchableOpacity
       onPress={() =>
@@ -45,11 +43,11 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
         <View className="flex-row items-center gap-3">
           <View
             style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-primary rounded-xl px-2 py-1"
+            className="bg-light-primary dark:bg-dark-accent rounded-xl px-2 py-1"
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter text-sm font-semibold text-light-background dark:text-dark-primary"
+              className="font-inter text-xs font-semibold text-light-background dark:text-dark-background"
             >
               Posted by: Prayse
             </Text>

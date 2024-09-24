@@ -95,7 +95,7 @@ const DailyReflection = ({
   }
 
   return (
-    <View className="flex-1 justify-start items-start w-full mb-4 gap-2">
+    <View className="flex-1 justify-start items-start w-full my-4 gap-2">
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
         theme={theme}
@@ -109,12 +109,7 @@ const DailyReflection = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      {/* <Text
-        style={getMainTextColorStyle(actualTheme)}
-        className="text-light-primary font-inter font-bold tracking-wide text-2xl dark:text-white"
-      >
-        Start here
-      </Text> */}
+
       <View className="gap-3 relative w-full">
         <TouchableOpacity
           onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}

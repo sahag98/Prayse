@@ -77,7 +77,7 @@ const Chat = ({
               <View className="flex-1 justify-center gap-1 items-center">
                 <FontAwesome5
                   name="list-alt"
-                  size={50}
+                  size={80}
                   color={
                     actualTheme && actualTheme.MainTxt
                       ? actualTheme.MainTxt
@@ -88,9 +88,10 @@ const Chat = ({
                 />
                 <Text
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                  className="font-inter w-3/4 text-center font-medium  text-light-primary dark:text-dark-primary"
                 >
-                  No prayers yet.
+                  Looks like there are no prayers yet! Be the first to share a
+                  prayer.
                 </Text>
               </View>
             ) : (
@@ -102,6 +103,27 @@ const Chat = ({
                 estimatedListSize={{ height: 800, width: 450 }}
                 data={groupMessages}
                 ListHeaderComponent={() => <View className="h-8" />}
+                ListEmptyComponent={() => (
+                  <View className="flex-1 justify-center gap-1 items-center">
+                    <FontAwesome5
+                      name="list-alt"
+                      size={50}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : theme === "dark"
+                            ? "white"
+                            : "#2f2d51"
+                      }
+                    />
+                    <Text
+                      style={getMainTextColorStyle(actualTheme)}
+                      className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                    >
+                      No prayers yet.
+                    </Text>
+                  </View>
+                )}
                 keyExtractor={(item) => item.id}
                 initialNumToRender={30}
                 renderItem={({ item }) => {
@@ -144,14 +166,14 @@ const Chat = ({
           actualTheme &&
           actualTheme.MainTxt && { borderTopColor: actualTheme.MainTxt }
         }
-        className="flex-row p-4 justify-between items-center w-full self-center border-t border-t-light-primary dark:border-t-dark-secondary"
+        className="flex-row p-4 justify-between items-center w-full self-center border-t border-t-light-primary dark:border-t-[#aeaeae]"
       >
         <View
           style={
             actualTheme &&
             actualTheme.MainTxt && { borderColor: actualTheme.MainTxt }
           }
-          className="flex-1 min-h-9 max-h-52 w-5/6 rounded-lg border border-light-primary dark:border-dark-secondary p-3 justify-center"
+          className="flex-1 min-h-9 max-h-52 w-5/6 rounded-lg border border-light-primary dark:border-[#aeaeae] p-3 justify-center"
         >
           <TextInput
             className="w-full font-inter text-light-primary dark:text-dark-primary"

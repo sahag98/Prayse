@@ -16,7 +16,6 @@ import {
   Feather,
   Ionicons,
   MaterialCommunityIcons,
-  MaterialIcons,
 } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
@@ -45,15 +44,11 @@ const MoreScreen = () => {
   );
 
   function giveFeedback(market: string) {
-    if (market == "android") {
-      Linking.openURL(
-        `market://details?id=${config.androidPackageName}&showAllReviews=true`,
-      );
+    if (market === "android") {
+      Linking.openURL(`market://details?id=${config.androidPackageName}`);
     }
-    if (market == "ios") {
-      Linking.openURL(
-        `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${config.iosItemId}?action=write-review`,
-      );
+    if (market === "ios") {
+      Linking.openURL(`itms-apps://itunes.apple.com/app/id${config.iosItemId}`);
     }
   }
 
@@ -96,27 +91,9 @@ const MoreScreen = () => {
       title: "Devotional",
       screen: DEVO_LIST_SCREEN,
     },
+
     {
       id: 3,
-      icon: (
-        <AntDesign
-          name="setting"
-          className="mr-3"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "Settings",
-      screen: SETTINGS_SCREEN,
-    },
-    {
-      id: 4,
       icon: (
         <AntDesign
           name="infocirlceo"
@@ -134,8 +111,9 @@ const MoreScreen = () => {
       title: "About",
       link: "https://www.prayse.app/",
     },
+
     {
-      id: 5,
+      id: 4,
       icon: (
         <Feather
           name="shield"
@@ -152,6 +130,25 @@ const MoreScreen = () => {
       ),
       title: "Privacy Policy",
       link: "https://www.prayse.app/privacy",
+    },
+    {
+      id: 5,
+      icon: (
+        <AntDesign
+          name="setting"
+          className="mr-3"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Settings",
+      screen: SETTINGS_SCREEN,
     },
   ];
 
@@ -263,8 +260,8 @@ const MoreScreen = () => {
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"
           >
-            <MaterialIcons
-              name="feedback"
+            <Feather
+              name="share"
               size={24}
               color={
                 actualTheme && actualTheme.SecondaryTxt

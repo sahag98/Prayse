@@ -343,7 +343,7 @@ const WelcomeScreen = () => {
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       <ProBanner actualTheme={actualTheme} theme={colorScheme} />
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
-      <QuestionOfTheWeek actualTheme={actualTheme} />
+      <QuestionOfTheWeek theme={colorScheme} actualTheme={actualTheme} />
       <GospelOfJesus actualTheme={actualTheme} />
       <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
       {/* <QuickLinks actualTheme={actualTheme} theme={colorScheme} /> */}

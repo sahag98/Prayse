@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
@@ -17,12 +17,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import {
-  checkPrayerQuestions,
-  checkPrayerVerse,
-  togglePrayerQuestions,
-  togglePrayerVerses,
-} from "@redux/proReducer";
+import { togglePrayerQuestions, togglePrayerVerses } from "@redux/proReducer";
 import { YOUR_THEMES_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 const ProScreen = () => {
@@ -35,51 +30,12 @@ const ProScreen = () => {
 
   const dispatch = useDispatch();
 
-  const [isVersesEnabled, setIsVersesEnabled] = useState(false);
-  const [isQuestionsEnabled, setIsQuestionsEnabled] = useState(
-    questionsEnabled ? questionsEnabled : true,
-  );
-
-  useEffect(() => {
-    if (currentUser) {
-      setIsVersesEnabled(currentUser?.VersesEnabled);
-      dispatch(checkPrayerVerse(currentUser?.VersesEnabled));
-      setIsQuestionsEnabled(currentUser?.QuestionsEnabled);
-      dispatch(checkPrayerQuestions(currentUser?.QuestionsEnabled));
-    }
-  }, [currentUser]);
-  // console.log(currentUser);
-
-  console.log("enabled", isVersesEnabled);
-
   async function handleVersesEnabled() {
     console.log("verses switch");
     dispatch(togglePrayerVerses());
-    setIsVersesEnabled(!isVersesEnabled);
-
-    if (currentUser) {
-      await supabase
-        .from("profiles")
-        .update({
-          VersesEnabled: !isVersesEnabled,
-        })
-        .eq("id", currentUser?.id)
-        .select();
-    }
   }
   async function handleQuestionsEnabled() {
-    dispatch(togglePrayerQuestions());
-    setIsQuestionsEnabled(!isQuestionsEnabled);
-
-    if (currentUser) {
-      await supabase
-        .from("profiles")
-        .update({
-          QuestionsEnabled: !isQuestionsEnabled,
-        })
-        .eq("id", currentUser?.id)
-        .select();
-    }
+    await dispatch(togglePrayerQuestions());
   }
   return (
     <Container
@@ -179,10 +135,10 @@ const ProScreen = () => {
 
         <Switch
           trackColor={{ false: "grey", true: "green" }}
-          thumbColor={isVersesEnabled ? "white" : "white"}
+          thumbColor={versesEnabled ? "white" : "white"}
           ios_backgroundColor="#bbbbbb"
           onValueChange={handleVersesEnabled}
-          value={isVersesEnabled}
+          value={versesEnabled}
           className="ml-auto"
         />
       </View>
@@ -206,10 +162,10 @@ const ProScreen = () => {
 
         <Switch
           trackColor={{ false: "grey", true: "green" }}
-          thumbColor={isQuestionsEnabled ? "white" : "white"}
+          thumbColor={questionsEnabled ? "white" : "white"}
           ios_backgroundColor="#bbbbbb"
-          onValueChange={setIsQuestionsEnabled}
-          value={isQuestionsEnabled}
+          onValueChange={handleQuestionsEnabled}
+          value={questionsEnabled}
           className="ml-auto"
         />
       </TouchableOpacity>

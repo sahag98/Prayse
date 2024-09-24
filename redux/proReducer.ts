@@ -21,7 +21,9 @@ export const proSlice = createSlice({
       state.prayer_verses = !state.prayer_verses;
     },
     togglePrayerQuestions: (state) => {
-      state.prayer_questions = !state.prayer_questions;
+      console.log("STATE QUESTIONS: ", state.prayer_questions);
+      letQuestionsEnabled = state.prayer_questions;
+      state.prayer_questions = !letQuestionsEnabled;
     },
     checkPrayerVerse: (state, action) => {
       state.prayer_verses = action.payload;

@@ -2,6 +2,7 @@
 import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
@@ -12,7 +13,7 @@ import { QUESTION_SCREEN } from "@routes";
 
 import { useSupabase } from "../context/useSupabase";
 
-export const QuestionOfTheWeek: React.FC = ({ actualTheme }) => {
+export const QuestionOfTheWeek: React.FC = ({ actualTheme, theme }) => {
   const navigation = useNavigation();
   const { latestQuestion } = useSupabase();
 
@@ -29,7 +30,15 @@ export const QuestionOfTheWeek: React.FC = ({ actualTheme }) => {
           >
             Question of the Week
           </Text>
-          <ActivityIndicator />
+          <ActivityIndicator
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
+          />
         </View>
       ) : (
         <TouchableOpacity
@@ -40,28 +49,35 @@ export const QuestionOfTheWeek: React.FC = ({ actualTheme }) => {
               question_id: latestQuestion?.id,
             });
           }}
-          className="w-full rounded-lg gap-[15px]"
+          className="w-full flex-row items-center justify-between rounded-lg gap-[15px]"
         >
-          <View className="flex-row items-center justify-between">
+          <View className="gap-3 flex-1">
+            <View className="flex-row items-center justify-between">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter text-base font-medium text-light-primary dark:text-[#d2d2d2]"
+              >
+                Question of the Week
+              </Text>
+            </View>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter text-base font-medium text-light-primary dark:text-[#d2d2d2]"
+              className="font-inter font-bold text-xl leading-6 text-light-primary dark:text-white"
             >
-              Question of the Week
+              {latestQuestion?.title}
             </Text>
           </View>
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter font-semibold text-xl leading-6 text-light-primary dark:text-white"
-          >
-            {latestQuestion?.title}
-          </Text>
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="text-base font-inter font-normal text-light-primary dark:text-dark-accent leading-6 underline"
-          >
-            Click here to answer
-          </Text>
+          <AntDesign
+            name="right"
+            size={24}
+            color={
+              actualTheme && actualTheme.SecondaryTxt
+                ? actualTheme.SecondaryTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
+          />
         </TouchableOpacity>
       )}
     </View>
