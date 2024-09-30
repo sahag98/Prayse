@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Image,
@@ -69,16 +69,13 @@ const onboardingSteps = [
 ];
 
 export default function OnboardingScreen() {
-  const navigation = useNavigation();
-  const theme = useSelector((state) => state.user.theme);
   const [screenIndex, setScreenIndex] = useState(0);
-  const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
   const data = onboardingSteps[screenIndex];
 
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-  const { colorScheme, setColorScheme } = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const onContinue = () => {
     const isLastScreen = screenIndex === onboardingSteps.length - 1;
@@ -159,14 +156,14 @@ export default function OnboardingScreen() {
             <Animated.Text
               entering={SlideInRight}
               exiting={SlideOutLeft}
-              className="font-inter font-bold text-3xl mb-5 self-center text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-3xl mb-5 self-center text-light-primary dark:text-dark-primary"
             >
               {data.title}
             </Animated.Text>
             <Animated.Text
               entering={SlideInRight.delay(50)}
               exiting={SlideOutLeft}
-              className="font-inter text-light-primary font-medium dark:text-dark-primary text-xl"
+              className="font-inter-medium text-light-primary dark:text-dark-primary text-xl"
             >
               {data.description}
             </Animated.Text>
@@ -174,14 +171,14 @@ export default function OnboardingScreen() {
               <Animated.Text
                 entering={SlideInRight.delay(100)}
                 exiting={SlideOutLeft}
-                className="font-inter text-light-primary dark:text-dark-primary"
+                className="font-inter-regular text-light-primary dark:text-dark-primary"
               >
                 "{data.verse}"
               </Animated.Text>
               <Animated.Text
                 entering={SlideInRight.delay(100)}
                 exiting={SlideOutLeft}
-                className="font-inter self-end text-light-primary dark:text-dark-primary"
+                className="font-inter-regular self-end text-light-primary dark:text-dark-primary"
               >
                 {data.reference}
               </Animated.Text>
@@ -189,7 +186,7 @@ export default function OnboardingScreen() {
             <View className="mt-auto flex-row w-full items-center gap-5">
               <Text
                 onPress={endOnboarding}
-                className="font-inter text-lg font-bold text-center w-1/4"
+                className="font-inter-bold text-light-primary dark:text-dark-primary text-lg text-center w-1/4"
               >
                 Skip
               </Text>
@@ -198,7 +195,7 @@ export default function OnboardingScreen() {
                 onPress={onContinue}
                 className="bg-light-primary dark:bg-dark-accent p-5 flex-1 rounded-xl justify-center items-center"
               >
-                <Text className="font-inter text-lg font-bold text-light-background dark:text-dark-background ">
+                <Text className="font-inter-bold text-lg text-light-background dark:text-dark-background ">
                   Continue
                 </Text>
               </Pressable>

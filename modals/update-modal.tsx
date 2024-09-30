@@ -11,6 +11,13 @@ import {
 } from "react-native";
 
 import { useSupabase } from "@context/useSupabase";
+import {
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import { ActualTheme } from "@types/reduxTypes";
 
 import {
   HeaderTitle,
@@ -21,8 +28,12 @@ import {
 
 interface UpdateModalProps {
   theme: string;
+  actualTheme: ActualTheme;
 }
-export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
+export const UpdateModal: React.FC<UpdateModalProps> = ({
+  theme,
+  actualTheme,
+}) => {
   const { supabase } = useSupabase();
   const [hasUpdate, setHasUpdate] = React.useState(false);
 
@@ -70,29 +81,27 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
         }
       >
         <ModalView
-          style={
-            theme === "dark"
-              ? { backgroundColor: "#212121", width: "85%" }
-              : { backgroundColor: "#b7d3ff", width: "85%" }
-          }
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="bg-light-secondary dark:bg-dark-secondary w-11/12"
         >
-          <ModalIcon>
+          <ModalIcon className="gap-2">
             <HeaderTitle
-              style={
-                theme === "dark"
-                  ? { fontFamily: "Inter-Bold", fontSize: 20, color: "white" }
-                  : { fontSize: 20, color: "#2f2d51", fontFamily: "Inter-Bold" }
-              }
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
             >
               An Update is Available!
             </HeaderTitle>
-            <Text className="dark:text-white text-light-primary mt-1 text-center font-inter">
-              Update your app to the latest version and check out our newly
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="dark:text-white text-light-primary mt-1 text-center font-inter-regular"
+            >
+              Update your app to the latest version and check out the newly
               added features!
             </Text>
           </ModalIcon>
           <View className="mt-2 items-center justify-between">
             <TouchableOpacity
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
               onPress={() => {
                 if (Platform.OS === "android") {
                   Linking.openURL(
@@ -108,22 +117,14 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({ theme }) => {
               className="dark:bg-dark-accent bg-light-primary justify-center items-center w-full p-4 rounded-lg"
             >
               <Text
-                className="dark:text-dark-secondary text-white text-lg font-inter font-bold"
-                style={
-                  theme === "dark"
-                    ? {
-                        color: "#212121",
-                        fontSize: 15,
-                        fontFamily: "Inter-Bold",
-                      }
-                    : { color: "white", fontFamily: "Inter-Bold" }
-                }
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="dark:text-dark-secondary text-white text-lg font-inter-bold"
               >
                 Update Now
               </Text>
             </TouchableOpacity>
             <TouchableOpacity className="mt-2" onPress={handleCloseModal}>
-              <Text className="underline underline-offset-2 p-2 font-inter dark:text-white text-light-primary">
+              <Text className="underline underline-offset-4 p-2 font-inter-medium dark:text-white text-light-primary">
                 Later
               </Text>
             </TouchableOpacity>

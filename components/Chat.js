@@ -27,7 +27,6 @@ const Chat = ({
   theme,
   actualTheme,
   currentUser,
-  onlineUsers,
   areMessagesLoading,
   groupMessages,
   setGroupMessages,
@@ -46,18 +45,6 @@ const Chat = ({
     <View
       className={cn("flex-1 transition-all", prayerToReact && "opacity-50")}
     >
-      {/* <View
-        style={getMainBackgroundColorStyle(actualTheme)}
-        className="flex-row items-center bg-light-background dark:bg-dark-background self-center px-3 py-1 justify-center rounded-full mb-3  shadow-sm gap-1 shadow-green-400"
-      >
-        <Octicons name="dot-fill" size={24} color="green" />
-        <Text
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter text-sm text-light-primary dark:text-dark-primary"
-        >
-          User's Online ({onlineUsers.length})
-        </Text>
-      </View> */}
       <View className="flex-1 px-4 w-full relative">
         {areMessagesLoading ? (
           <View className="flex-1 justify-center items-center">
@@ -88,7 +75,7 @@ const Chat = ({
                 />
                 <Text
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter w-3/4 text-center font-medium  text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium w-3/4 text-center  text-light-primary dark:text-dark-primary"
                 >
                   Looks like there are no prayers yet! Be the first to share a
                   prayer.
@@ -118,7 +105,7 @@ const Chat = ({
                     />
                     <Text
                       style={getMainTextColorStyle(actualTheme)}
-                      className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                      className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
                     >
                       No prayers yet.
                     </Text>
@@ -146,13 +133,6 @@ const Chat = ({
                         refreshMsgLikes={refreshMsgLikes}
                         showToast={showToast}
                       />
-                      {/* {item.user_id !== currentUser.id && (
-                        <View className="flex-row items-center ml-2 mb-2 gap-2">
-                          <Text className="font-inter text-sm text-gray-500">
-                            Press and hold to pray or praise.
-                          </Text>
-                        </View>
-                      )} */}
                     </View>
                   );
                 }}
@@ -176,7 +156,7 @@ const Chat = ({
           className="flex-1 min-h-9 max-h-52 w-5/6 rounded-lg border border-light-primary dark:border-[#aeaeae] p-3 justify-center"
         >
           <TextInput
-            className="w-full font-inter text-light-primary dark:text-dark-primary"
+            className="w-full font-inter-regular text-light-primary dark:text-dark-primary"
             style={
               actualTheme && actualTheme.MainTxt
                 ? [

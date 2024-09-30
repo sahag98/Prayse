@@ -16,7 +16,6 @@ import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const FavoritesScreen = () => {
-  const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
 
   const { colorScheme } = useColorScheme();
@@ -60,7 +59,7 @@ const FavoritesScreen = () => {
           </TouchableOpacity>
         </Link>
         <HeaderTitle
-          className="font-inter font-bold text-light-primary dark:text-dark-primary"
+          className="font-inter-bold text-light-primary dark:text-dark-primary"
           style={getMainTextColorStyle(actualTheme)}
         >
           Favorite Verses
@@ -69,15 +68,14 @@ const FavoritesScreen = () => {
 
       <FlatList
         data={favorites}
-        keyExtractor={(e, i) => i.toString()}
-        onEndReachedThreshold={0}
+        keyExtractor={(i) => i.toString()}
         contentContainerStyle={{ gap: 5, flex: 1 }}
         scrollEventThrottle={16}
         ListEmptyComponent={() => (
           <View className="flex-1 justify-center items-center">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-center w-11/12 font-medium text-lg text-light-primary dark:text-dark-primary"
+              className="font-inter-medium text-center w-11/12 text-lg text-light-primary dark:text-dark-primary"
             >
               Your favorites list is empty. Add a daily verse to this list by
               clicking the bookmark on the verse.

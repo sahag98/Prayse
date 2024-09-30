@@ -33,7 +33,7 @@ const VerseModal = ({
     >
       <ModalContainer
         style={
-          colorScheme == "dark"
+          colorScheme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
@@ -60,7 +60,7 @@ const VerseModal = ({
           </TouchableOpacity>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="text-light-primary font-inter font-bold text-2xl dark:text-dark-primary"
+            className="text-light-primary font-inter-bold text-2xl dark:text-dark-primary"
           >
             Bible Verse
           </Text>
@@ -69,7 +69,7 @@ const VerseModal = ({
             <View className="justify-center gap-1 items-center">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary font-inter font-semibold text-lg dark:text-dark-primary"
+                className="text-light-primary font-inter-semibold text-lg dark:text-dark-primary"
               >
                 Please wait...
               </Text>
@@ -78,7 +78,7 @@ const VerseModal = ({
           ) : (
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-light-primary font-inter text-lg dark:text-dark-primary"
+              className="text-light-primary font-inter-regular text-lg dark:text-dark-primary"
             >
               {verse}
             </Text>

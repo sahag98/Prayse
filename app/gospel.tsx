@@ -10,7 +10,6 @@ import {
   FlatList,
   Linking,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -38,7 +37,6 @@ import {
 
 const Gospel = () => {
   const navigation = useNavigation();
-  const theme = useSelector((state: any) => state.user.theme);
   const { colorScheme } = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const actualTheme = useSelector(
@@ -90,29 +88,38 @@ const Gospel = () => {
   ];
 
   const Item = ({ title, verse, chapter, content }) => (
-    <View className="gap-2 mb-5">
+    <View
+      style={
+        actualTheme &&
+        actualTheme.MainTxt && {
+          borderBottomWidth: 1,
+          borderBottomColor: actualTheme.MainTxt,
+        }
+      }
+      className="gap-1 border-b border-b-light-primary dark:border-b-[#7b7b7b]"
+    >
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="dark:text-dark-primary text-light-primary font-inter font-bold text-2xl"
+        className="dark:text-dark-primary pt-2 text-light-primary font-inter-bold text-2xl"
       >
         {title}
       </Text>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="dark:text-dark-primary text-light-primary font-inter font-medium text-xl"
+        className="dark:text-dark-primary mb-1 text-light-primary font-inter-semibold text-xl"
       >
         {content}
       </Text>
 
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="dark:text-dark-primary text-light-primary font-inter font-semibold text-lg"
+        className="dark:text-dark-primary text-light-primary font-inter-medium text-lg"
       >
         "{verse}"
       </Text>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="dark:text-[#b4b4b4] self-end text-light-primary font-inter font-semibold text-lg"
+        className="dark:text-dark-primary pb-2 self-end text-light-primary font-inter-semibold text-lg"
       >
         - {chapter}
       </Text>
@@ -142,14 +149,6 @@ const Gospel = () => {
     setClearModalVisible(false);
   };
 
-  const BusyIndicator = () => {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="white" />
-      </View>
-    );
-  };
-
   const handleSubmit = () => {
     setClearModalVisible(false);
     Alert.alert(
@@ -169,17 +168,6 @@ const Gospel = () => {
     );
   };
 
-  const [fontsLoaded] = useFonts({
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-    "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-    "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
-  }
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
@@ -194,7 +182,7 @@ const Gospel = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "light"
+                  : colorScheme === "light"
                     ? "#2f2d51"
                     : "white"
               }
@@ -224,9 +212,9 @@ const Gospel = () => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-center text-xl dark:text-dark-background text-white"
+                className="font-inter-bold text-center text-xl dark:text-dark-background text-white"
               >
-                Take Next Step
+                Pray
               </Text>
             </TouchableOpacity>
           </View>
@@ -238,13 +226,16 @@ const Gospel = () => {
         visible={clearModalVisible}
         onRequestClose={handleCloseModal}
       >
-        <ModalContainer className="bg-light-background dark:bg-dark-background">
+        <ModalContainer
+          style={getMainBackgroundColorStyle(actualTheme)}
+          className="bg-light-background dark:bg-dark-background"
+        >
           <ModalView
             className="gap-2 w-[95%] bg-light-secondary dark:bg-dark-secondary"
             style={
               actualTheme && actualTheme.Secondary
                 ? { backgroundColor: actualTheme.Secondary }
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? { backgroundColor: "#212121" }
                   : { backgroundColor: "#b7d3ff" }
             }
@@ -252,13 +243,13 @@ const Gospel = () => {
             <ModalIcon style={{ gap: 5 }}>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-center dark:text-dark-primary text-light-primary font-inter font-bold text-2xl mb-3"
+                className="text-center dark:text-dark-primary text-light-primary font-inter-bold text-2xl mb-3"
               >
-                Pray this Short Prayer
+                Pray this prayer
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary mb-2 font-inter font-normal text-lg"
+                className="dark:text-dark-primary text-light-primary mb-2 font-inter-regular text-lg"
               >
                 Dear God, I recognize that I am a sinner and have been seperated
                 from you. From this point on, I accept you Jesus as my Lord and
@@ -267,7 +258,7 @@ const Gospel = () => {
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary font-inter font-medium text-lg"
+                className="dark:text-dark-primary text-light-primary font-inter-medium text-lg"
               >
                 In Jesus' name I pray, Amen.
               </Text>
@@ -280,7 +271,7 @@ const Gospel = () => {
               >
                 <Text
                   style={getPrimaryTextColorStyle(actualTheme)}
-                  className="dark:text-dark-background text-white font-inter font-bold text-lg"
+                  className="dark:text-dark-background text-white font-inter-bold text-lg"
                 >
                   Amen
                 </Text>
@@ -292,188 +283,5 @@ const Gospel = () => {
     </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  heading: {
-    fontSize: 24,
-    color: "#2F2D51",
-    textAlign: "center",
-
-    fontFamily: "Inter-Bold",
-  },
-
-  headingDark: {
-    fontSize: 24,
-    fontFamily: "Inter-Bold",
-    color: "white",
-    textAlign: "center",
-  },
-
-  fabStyle3: {
-    bottom: 10,
-    borderRadius: 20,
-    marginRight: 10,
-    justifyContent: "center",
-    backgroundColor: "#2F2D51",
-    width: 70,
-  },
-  fabStyle3Dark: {
-    bottom: 10,
-    borderRadius: 20,
-    marginRight: 10,
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-    width: 70,
-  },
-
-  button: {
-    alignSelf: "center",
-    backgroundColor: "#2F2D51",
-    padding: 15,
-    width: "100%",
-    borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 999,
-  },
-
-  buttonDark: {
-    alignSelf: "center",
-    backgroundColor: "#A5C9FF",
-    padding: 15,
-    width: "100%",
-    borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 999,
-  },
-
-  started: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 16,
-    fontFamily: "Inter-Bold",
-  },
-
-  startedDark: {
-    color: "#080808",
-    textAlign: "center",
-    fontSize: 16,
-    fontFamily: "Inter-Bold",
-  },
-
-  footer: {
-    fontFamily: "Inter-Medium",
-    fontSize: 15,
-    color: "#2F2D51",
-    textAlign: "center",
-    padding: 10,
-  },
-
-  footerDark: {
-    fontFamily: "Inter-Medium",
-    fontSize: 15,
-    color: "white",
-    textAlign: "center",
-    padding: 10,
-  },
-
-  footerContainer: {
-    padding: 0,
-  },
-
-  footerDarkContainer: {
-    padding: 0,
-  },
-
-  item: {
-    gap: 10,
-    marginBottom: 20,
-  },
-
-  title: {
-    color: "#2f2d51",
-    fontSize: 23,
-    fontFamily: "Inter-Bold",
-  },
-
-  titleDark: {
-    color: "white",
-    fontSize: 23,
-    fontFamily: "Inter-Bold",
-  },
-
-  prayTitle: {
-    color: "#2f2d51",
-    fontSize: 20,
-    fontFamily: "Inter-Bold",
-    paddingBottom: 5,
-  },
-
-  prayTitleDark: {
-    color: "white",
-    fontSize: 20,
-    fontFamily: "Inter-Bold",
-    textAlign: "center",
-    paddingBottom: 5,
-  },
-
-  verse: {
-    color: "#2f2d51",
-
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-  },
-
-  verseDark: {
-    color: "#b4b4b4",
-
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-  },
-  content: {
-    color: "#2f2d51",
-    marginTop: 5,
-    fontSize: 18,
-    fontFamily: "Inter-Medium",
-  },
-
-  contentDark: {
-    color: "white",
-    marginTop: 5,
-    fontSize: 18,
-    fontFamily: "Inter-Medium",
-  },
-
-  pray: {
-    color: "#2f2d51",
-    lineHeight: 24,
-    fontSize: 16,
-    fontFamily: "Inter-Regular",
-  },
-
-  prayDark: {
-    color: "white",
-    lineHeight: 24,
-    fontSize: 16,
-    fontFamily: "Inter-Regular",
-  },
-
-  chapter: {
-    alignSelf: "flex-end",
-    color: "#2F2D51",
-    fontSize: 15,
-    fontFamily: "Inter-Medium",
-  },
-
-  chapterDark: {
-    alignSelf: "flex-end",
-    color: "white",
-    fontSize: 15,
-    fontFamily: "Inter-Medium",
-  },
-});
 
 export default Gospel;

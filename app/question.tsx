@@ -2,13 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
@@ -49,19 +43,6 @@ const QuestionScreen = () => {
     }
   }, [isFocused]);
 
-  const theme = useSelector((state) => state.user.theme);
-
-  const [inputHeight, setInputHeight] = useState(60);
-  const [questionHelpModal, setQuestionHelpModal] = useState(false);
-
-  const handleContentSizeChange = (event) => {
-    if (event.nativeEvent.contentSize.height < 60) {
-      setInputHeight(60);
-    } else {
-      setInputHeight(event.nativeEvent.contentSize.height);
-    }
-  };
-
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
@@ -76,7 +57,7 @@ const QuestionScreen = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -84,7 +65,7 @@ const QuestionScreen = () => {
           </Link>
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold dark:text-dark-primary text-light-primary"
+            className="font-inter-bold dark:text-dark-primary text-light-primary"
           >
             Question
           </HeaderTitle>
@@ -102,7 +83,7 @@ const QuestionScreen = () => {
       >
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-2xl dark:text-dark-primary text-light-primary mb-4"
+          className="font-inter-bold text-2xl dark:text-dark-primary text-light-primary mb-4"
         >
           {itemTitle}
         </Text>
@@ -111,7 +92,7 @@ const QuestionScreen = () => {
       <View className="flex-1 w-full">
         <FlatList
           data={answersArray}
-          keyExtractor={(e, i) => i.toString()}
+          keyExtractor={(i) => i.toString()}
           onEndReachedThreshold={0}
           scrollEventThrottle={16}
           contentContainerStyle={{ gap: 5, flex: 1 }}
@@ -125,14 +106,14 @@ const QuestionScreen = () => {
                 color={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
-                    : colorScheme == "dark"
+                    : colorScheme === "dark"
                       ? "#A5C9FF"
                       : "#2f2d51"
                 }
               />
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter w-3/4 text-center font-medium mt-3 dark:text-dark-accent text-light-primary"
+                className="font-inter-medium w-3/4 text-center mt-3 dark:text-dark-accent text-light-primary"
               >
                 Looks like there are no answers yet! Be the first to share your
                 thoughts and start the conversation.
@@ -167,9 +148,9 @@ const QuestionScreen = () => {
           />
           <Text
             style={getPrimaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+            className="font-inter-bold text-lg text-light-background dark:text-dark-background"
           >
-            Add answer
+            Answer
           </Text>
         </TouchableOpacity>
       </View>
@@ -184,7 +165,6 @@ const QuestionScreen = () => {
         answersArray={answersArray}
         colorScheme={colorScheme}
         actualTheme={actualTheme}
-        theme={theme}
         supabase={supabase}
         setAnswersVisible={setAnswersVisible}
         answersVisible={answersVisible}
@@ -194,71 +174,3 @@ const QuestionScreen = () => {
 };
 
 export default QuestionScreen;
-
-const styles = StyleSheet.create({
-  questionDark: {
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "grey",
-  },
-  question: {
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#2f2d51",
-  },
-  actionButtons: {
-    position: "absolute",
-    right: 15,
-    bottom: 15,
-    display: "flex",
-  },
-  fabStyleDark: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-  },
-  fabStyle: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "flex-end",
-    backgroundColor: "#2f2d51",
-  },
-
-  fabStyleCustom: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "flex-end",
-    backgroundColor: "#2f2d51",
-  },
-
-  inputField: {
-    marginVertical: 10,
-    height: 50,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    alignSelf: "center",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "85%",
-    borderColor: "#212121",
-    backgroundColor: "#212121",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "85%",
-    borderColor: "#2f2d51",
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-});

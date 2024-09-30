@@ -11,6 +11,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import {
+  getMainBackgroundColorStyle,
   getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
@@ -25,13 +26,8 @@ const PrayerBottomModal = ({
   colorScheme,
   prayerBottomSheetModalRef,
   setPrayer,
-  setIsEditing,
   prayer,
   handleTriggerEdit,
-  // answeredAlready,
-  opacity,
-  // selectedEdit,
-  // setSelectedEdit,
   actualTheme,
 }: any) => {
   console.log(prayer);
@@ -51,13 +47,6 @@ const PrayerBottomModal = ({
     console.log("will switch to archived");
     dispatch(archivePrayer(prayer));
     handleCloseBottomModal();
-    // dispatch(
-    //   addToAnsweredPrayer({
-    //     answeredDate: new Date().toDateString(),
-    //     prayer,
-    //     id: uuid.v4(),
-    //   })
-    // );
   };
 
   const handleDelete = () => {
@@ -96,7 +85,7 @@ const PrayerBottomModal = ({
                 ? actualTheme.MainTxt
                 : colorScheme === "dark"
                   ? "white"
-                  : "#f2f7ff",
+                  : "#2f2d51",
           }}
           handleStyle={{
             borderTopWidth: 1,
@@ -106,49 +95,54 @@ const PrayerBottomModal = ({
                 ? actualTheme.Bg
                 : colorScheme === "dark"
                   ? "#121212"
-                  : "#f2f7ff",
+                  : "white",
           }}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
         >
-          <BottomSheetView className="flex-1 dark:bg-dark-background gap-3 p-4">
+          <BottomSheetView
+            style={getMainBackgroundColorStyle(actualTheme)}
+            className="flex-1 dark:bg-dark-background gap-3 p-4"
+          >
             <TouchableOpacity
               onPress={handleDelete}
               className="bg-red-400 flex-row justify-between items-center p-4 rounded-md"
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-lg text-dark-primary dark:text-dark-primary"
+                className="font-inter-semibold text-lg text-dark-primary dark:text-dark-primary"
               >
                 Delete prayer
               </Text>
               <Feather name="trash-2" size={22} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleArchivePrayer}
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
-            >
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+            {prayer?.status !== "Answered" && (
+              <TouchableOpacity
+                onPress={handleArchivePrayer}
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
               >
-                {prayer?.status === "Archived"
-                  ? "Unarchive prayer"
-                  : "Archive prayer"}
-              </Text>
-              <Feather
-                name="archive"
-                size={22}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : colorScheme === "dark"
-                      ? "#A5C9FF"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
+                >
+                  {prayer?.status === "Archived"
+                    ? "Unarchive prayer"
+                    : "Archive prayer"}
+                </Text>
+                <Feather
+                  name="archive"
+                  size={22}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "#A5C9FF"
+                        : "#2f2d51"
+                  }
+                />
+              </TouchableOpacity>
+            )}
             {prayer?.status !== "Archived" && prayer?.status !== "Answered" && (
               <>
                 <TouchableOpacity
@@ -158,7 +152,7 @@ const PrayerBottomModal = ({
                 >
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+                    className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
                   >
                     Edit prayer
                   </Text>
@@ -183,7 +177,7 @@ const PrayerBottomModal = ({
                   >
                     <Text
                       style={getSecondaryTextColorStyle(actualTheme)}
-                      className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+                      className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
                     >
                       Mark as answered
                     </Text>
@@ -202,29 +196,31 @@ const PrayerBottomModal = ({
                 )}
               </>
             )}
-            <TouchableOpacity
-              onPress={onShare}
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
-            >
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+            {prayer?.status !== "Answered" && (
+              <TouchableOpacity
+                onPress={onShare}
+                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
               >
-                Share
-              </Text>
-              <Feather
-                name="share"
-                size={22}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : colorScheme === "dark"
-                      ? "#A5C9FF"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
+                >
+                  Share
+                </Text>
+                <Feather
+                  name="share"
+                  size={22}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : colorScheme === "dark"
+                        ? "#A5C9FF"
+                        : "#2f2d51"
+                  }
+                />
+              </TouchableOpacity>
+            )}
           </BottomSheetView>
         </BottomSheetModal>
       </View>

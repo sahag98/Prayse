@@ -3,10 +3,8 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
-  View,
 } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -60,14 +58,14 @@ const AddFolderModal = ({
             <ModalIcon>
               <HeaderTitle
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
               >
                 Create Folder
               </HeaderTitle>
             </ModalIcon>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="mb-3 text-center font-inter font-medium text-light-primary dark:text-dark-primary"
+              className="mb-3 text-center font-inter-medium text-light-primary dark:text-dark-primary"
             >
               Create a prayer folder to add your prayers to it.
             </Text>
@@ -81,7 +79,7 @@ const AddFolderModal = ({
                     borderColor: actualTheme.SecondaryTxt,
                   },
               ]}
-              className="w-full border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
+              className="w-full border text-light-primary font-inter-regular dark:text-dark-primary border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
               placeholder="Enter folder name"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
@@ -144,32 +142,3 @@ const AddFolderModal = ({
 };
 
 export default AddFolderModal;
-
-const styles = StyleSheet.create({
-  inputDark: {
-    width: 250,
-    paddingHorizontal: 10,
-    color: "white",
-    paddingVertical: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    fontSize: 14,
-    fontFamily: "Inter-Regular",
-    backgroundColor: "#121212",
-  },
-  input: {
-    width: 250,
-    fontSize: 14,
-    color: "white",
-    marginTop: 10,
-    // height: 40,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    alignSelf: "center",
-    textAlignVertical: "center",
-    fontFamily: "Inter-Regular",
-    backgroundColor: "#2F2D51",
-  },
-});

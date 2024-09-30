@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "expo-router";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
@@ -21,25 +22,19 @@ export const GospelOfJesus = ({
       <TouchableOpacity
         onPress={() => posthog.capture("Checking Gospel")}
         style={getSecondaryBackgroundColorStyle(actualTheme)}
-        className="bg-white dark:bg-dark-secondary mb-[15px] w-full p-[15px] rounded-lg gap-[15px]"
+        className="bg-white dark:bg-dark-secondary mb-4 w-full p-4 rounded-lg gap-3"
       >
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="text-light-primary dark:text-[#d2d2d2] font-inter text-lg font-medium"
+          className="text-light-primary dark:text-[#d2d2d2] font-inter-medium"
         >
           Gospel of Jesus
         </Text>
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="leading-6 font-inter font-bold text-light-primary dark:text-white text-xl"
+          className="leading-6 font-inter-bold text-light-primary dark:text-white text-xl"
         >
-          How can someone receive Jesus and get saved?
-        </Text>
-        <Text
-          style={getSecondaryTextColorStyle(actualTheme)}
-          className="leading-6 underline font-inter font-normal text-base text-light-primary dark:text-dark-accent"
-        >
-          Click here to learn more
+          How can someone receive Jesus, and get saved?
         </Text>
       </TouchableOpacity>
     </Link>

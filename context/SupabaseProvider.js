@@ -226,8 +226,11 @@ export const SupabaseProvider = (props) => {
     const fetchData = async () => {
       const profiles = await checkIfUserIsLoggedIn();
 
+      if (!profiles) {
+        return;
+      }
       // Check if user is logged in before setting up subscriptions
-      if (profiles[0] && profiles.length > 0) {
+      if (profiles[0] && profiles?.length > 0) {
         //prayers for production
         //prayers_test for testing
         const prayersChannel = supabase
@@ -245,22 +248,6 @@ export const SupabaseProvider = (props) => {
                 profiles[0].id !== payload.new.user_id
               ) {
                 setNewPost(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "answers",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" &&
-                profiles[0].id !== payload.new.user_id
-              ) {
-                setNewAnswer(true);
               }
             }
           )

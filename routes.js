@@ -9,6 +9,7 @@ export const DEVOTIONAL_SCREEN = "devotional";
 export const DEVO_LIST_SCREEN = "devo-list";
 export const ROADMAP_SCREEN = "roadmap";
 export const PUBLIC_GROUPS_SCREEN = "public-groups";
+export const WALLPAPERS_SCREEN = "wallpapers";
 export const OLD_PRAYER_SCREEN = "old-prayer";
 export const ONBOARDING_SCREEN = "onboarding";
 export const QUESTION_LIST_SCREEN = "question-list";

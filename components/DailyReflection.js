@@ -64,6 +64,9 @@ const DailyReflection = ({
         completedItem.items.find((item) => item === selected)
       )
     ) {
+      navigation.navigate(selected, {
+        previousScreen: HOME_SCREEN,
+      });
       return;
     }
     const currentDate = new Date().toLocaleDateString().split("T")[0];
@@ -95,7 +98,7 @@ const DailyReflection = ({
   }
 
   return (
-    <View className="flex-1 justify-start items-start w-full my-4 gap-2">
+    <View className="flex-1 justify-start items-start w-full my-3 gap-2">
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
         theme={theme}
@@ -109,6 +112,25 @@ const DailyReflection = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
+      <View className="flex-row items-center gap-3">
+        <Feather
+          name="check-circle"
+          size={20}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : theme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter-semibold mb-1 text-xl text-light-primary dark:text-dark-primary"
+        >
+          Daily Devotions
+        </Text>
+      </View>
 
       <View className="gap-3 relative w-full">
         <TouchableOpacity
@@ -171,7 +193,7 @@ const DailyReflection = ({
                     ? "#a5c9ff"
                     : "#2f2d51"
                 : theme === "dark"
-                  ? "#212121"
+                  ? "#121212"
                   : "white",
             }}
           />
@@ -184,7 +206,7 @@ const DailyReflection = ({
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter"
+                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter-regular"
               >
                 Pray
               </Text>
@@ -203,20 +225,20 @@ const DailyReflection = ({
             <View className="gap-1">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-white font-bold font-inter text-2xl"
+                className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
                 Take a moment and pray.
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
                 "And all things, whatsoever ye shall ask in prayer, believing,
                 ye shall receive."
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
               >
                 - Matthew 21:22
               </Text>
@@ -322,7 +344,7 @@ const DailyReflection = ({
                     ? "#a5c9ff"
                     : "#2f2d51"
                 : theme === "dark"
-                  ? "#212121"
+                  ? "#121212"
                   : "white",
             }}
           />
@@ -334,7 +356,7 @@ const DailyReflection = ({
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter text-[14px]"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-[14px]"
               >
                 Verse of the Day
               </Text>
@@ -353,19 +375,19 @@ const DailyReflection = ({
             <View className="gap-1">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-white font-inter font-bold text-2xl"
+                className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
                 Read the daily verse.
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
                 "Thy word is a lamp unto my feet, and a light unto my path."
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
               >
                 - Psalm 119:105
               </Text>
@@ -432,7 +454,7 @@ const DailyReflection = ({
                     ? "#a5c9ff"
                     : "#2f2d51"
                 : theme === "dark"
-                  ? "#212121"
+                  ? "#121212"
                   : "white",
             }}
           />
@@ -444,33 +466,39 @@ const DailyReflection = ({
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter text-[14px]"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-[14px]"
               >
                 Devotional
               </Text>
               <Feather
                 name="book"
                 size={20}
-                color={theme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : theme === "dark"
+                      ? "#d2d2d2"
+                      : "#2f2d51"
+                }
               />
             </View>
             <View className="gap-1">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-white font-inter font-bold text-2xl"
+                className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
                 Explore today's devotional.
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-regular font-inter text-sm"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
                 "Study to show thyself approved unto God, a workman that needeth
                 not to be ashamed, rightly dividing the word of truth."
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-medium font-inter text-sm"
+                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
               >
                 - 2 Timothy 2:15
               </Text>

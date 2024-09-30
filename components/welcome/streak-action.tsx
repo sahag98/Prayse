@@ -39,7 +39,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({
     if (appstreak !== 0 && appstreak % 10 === 0) {
       CheckReview();
     }
-  }, []);
+  }, [appstreak]);
 
   return (
     <View className="flex items-center flex-row">
@@ -74,7 +74,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({
 
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="text-light-primary dark:text-white font-inter font-bold"
+            className="text-light-primary dark:text-white font-inter-bold"
           >
             {streak?.toString() ?? "0"}
           </Text>

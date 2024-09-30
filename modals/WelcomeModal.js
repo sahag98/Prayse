@@ -262,7 +262,7 @@ const WelcomeModal = ({
           <HeaderView className="items-center justify-center">
             <HeaderTitle
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-wrap font-bold text-center text-light-primary dark:text-dark-accent"
+              className="font-inter-bold text-wrap text-center text-light-primary dark:text-dark-accent"
             >
               Welcome to Community
             </HeaderTitle>
@@ -274,7 +274,7 @@ const WelcomeModal = ({
               style={getSecondaryBackgroundColorStyle(actualTheme)}
             >
               {image.length === 0 ? (
-                <Text className="font-inter text-xs text-center font-medium text-light-primary dark:text-dark-primary">
+                <Text className="font-inter-medium text-xs text-center text-light-primary dark:text-dark-primary">
                   Upload Profile Image (Optional)
                 </Text>
               ) : (
@@ -292,12 +292,12 @@ const WelcomeModal = ({
             <View className="flex-row items-center justify-between">
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
               >
                 Username (Required)
               </Text>
               <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-                <Text className="font-inter text-sm text-red-500">
+                <Text className="font-inter-medium text-sm text-red-500">
                   Dismiss Keyboard
                 </Text>
               </TouchableOpacity>
@@ -308,7 +308,7 @@ const WelcomeModal = ({
                 getSecondaryTextColorStyle(actualTheme),
                 getSecondaryBackgroundColorStyle(actualTheme),
               ]}
-              className="font-inter w-full bg-light-secondary dark:bg-dark-secondary p-4 rounded-md"
+              className="font-inter-regular w-full bg-light-secondary dark:bg-dark-secondary p-4 rounded-md"
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -328,7 +328,7 @@ const WelcomeModal = ({
               onChangeText={(text) => setName(text)}
             />
             {!isUnique && (
-              <Text className="font-inter font-medium text-red-500">
+              <Text className="font-inter-medium text-red-500">
                 This name already exists. Try again.
               </Text>
             )}
@@ -340,7 +340,7 @@ const WelcomeModal = ({
             />
             <Text
               style={getMainBackgroundColorStyle(actualTheme)}
-              className="absolute tracking-wide font-inter font-semibold bg-light-background dark:bg-dark-background px-2"
+              className="absolute tracking-wide font-inter-semibold bg-light-background dark:bg-dark-background px-2"
             >
               Or
             </Text>
@@ -349,7 +349,7 @@ const WelcomeModal = ({
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium underline text-light-primary dark:text-dark-accent"
+                className="font-inter-medium underline text-light-primary dark:text-dark-accent"
               >
                 Be Anonymous
               </Text>
@@ -357,11 +357,11 @@ const WelcomeModal = ({
             <View className="bg-[#fbe2b2] border border-[#ffa500] w-full rounded-md p-3 gap-2">
               <View className="flex-row items-center gap-2">
                 <Feather name="alert-triangle" size={26} color="#eb9800" />
-                <Text className="font-inter font-bold text-[#c08314] text-lg">
+                <Text className="font-inter-bold text-[#c08314] text-lg">
                   Alert
                 </Text>
               </View>
-              <Text className="font-inter font-medium text-[#c4840e]">
+              <Text className="font-inter-medium text-[#c4840e]">
                 To ensure that setup is done correctly, make sure you are signed
                 in on one device per account.
               </Text>
@@ -373,7 +373,7 @@ const WelcomeModal = ({
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter  font-bold text-light-background dark:text-dark-primary"
+                className="font-inter-bold text-light-background dark:text-dark-primary"
               >
                 Get Right in!
               </Text>
@@ -382,7 +382,7 @@ const WelcomeModal = ({
             <Text
               style={getMainTextColorStyle(actualTheme)}
               onPress={handleBacktoSignIn}
-              className="font-inter underline text-sm font-semibold text-light-primary dark:text-dark-primary"
+              className="font-inter-semibold underline text-sm text-light-primary dark:text-dark-primary"
             >
               Back to Sign in
             </Text>

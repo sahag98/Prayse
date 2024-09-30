@@ -150,7 +150,7 @@ const CreateGroupModal = ({
             onPress={createGroup}
           >
             <Text
-              className="font-inter font-bold text-lg"
+              className="font-inter-bold text-lg"
               style={
                 actualTheme && actualTheme.PrimaryTxt
                   ? {
@@ -174,7 +174,7 @@ const CreateGroupModal = ({
         </HeaderView>
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter mt-5 font-bold text-2xl text-light-primary dark:text-dark-primary"
+          className="font-inter-bold mt-5 text-2xl text-light-primary dark:text-dark-primary"
         >
           Create Prayer Group
         </Text>
@@ -217,7 +217,7 @@ const CreateGroupModal = ({
               actualTheme &&
                 actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
             ]}
-            className="border border-light-primary font-inter text-light-primary dark:text-dark-primary font-medium dark:border-dark-primary w-full p-4 rounded-md"
+            className="border border-light-primary font-inter-medium text-light-primary dark:text-dark-primary dark:border-dark-primary w-full p-4 rounded-md"
             autoFocus={false}
             placeholder="Group description here (Optional)"
             placeholderTextColor={
@@ -241,14 +241,14 @@ const CreateGroupModal = ({
           <View className="mt-3 w-full">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-medium text-sm text-light-primary dark:text-[#efefef]"
+              className="font-inter-medium text-sm text-light-primary dark:text-[#efefef]"
             >
               "Iron sharpeneth iron; so a man sharpeneth the countenance of his
               friend."
             </Text>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter self-end font-semibold text-light-primary dark:text-dark-primary"
+              className="font-inter-semibold self-end text-light-primary dark:text-dark-primary"
             >
               - Proverbs 27:17
             </Text>

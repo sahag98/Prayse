@@ -48,14 +48,12 @@ export default function TestScreen() {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams();
   const isFocused = useIsFocused();
-  const theme = useSelector((state) => state.user.theme);
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
   const [newNote, setNewNote] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [repeatOption, setRepeatOption] = useState("");
-  const [visible, setVisible] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [reminderTime, setReminderTime] = useState("");
   const { colorScheme } = useColorScheme();
@@ -71,7 +69,7 @@ export default function TestScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (routeParams.reminder != undefined && routeParams.type == "Add") {
+    if (routeParams.reminder !== undefined && routeParams.type === "Add") {
       console.log("router reminder: ", routeParams);
       setReminderDate("");
       setRepeatOption("");
@@ -80,7 +78,7 @@ export default function TestScreen() {
       setNewReminder(routeParams?.reminder);
     }
 
-    if (routeParams.reminder == undefined && routeParams.type == "Add") {
+    if (routeParams.reminder === undefined && routeParams.type === "Add") {
       setNewReminder("");
       setNewNote("");
       setReminderDate("");
@@ -89,7 +87,7 @@ export default function TestScreen() {
       setReminderTime("");
     }
 
-    if (routeParams.reminderToEditTitle && routeParams.type != "Add") {
+    if (routeParams.reminderToEditTitle && routeParams.type !== "Add") {
       setNewReminder(routeParams.reminderToEditTitle);
       setNewNote(routeParams.reminderToEditNote);
       const originalTimestamp = routeParams.reminderToEditTime;
@@ -107,31 +105,21 @@ export default function TestScreen() {
 
       setReminderTime(time);
 
-      if (routeParams.ocurrence != "None") {
+      if (routeParams.ocurrence !== "None") {
         setIsRepeat(true);
         setRepeatOption(routeParams.ocurrence.toLowerCase());
       }
 
-      if (routeParams.ocurrence == "None") {
+      if (routeParams.ocurrence === "None") {
         setIsRepeat(false);
         setRepeatOption("");
       }
     }
-
-    // if (
-    //   params.reminderToEditTitle.length < 0 &&
-    //   params.type != "Add"
-    // ) {
-    //   setNewReminder("");
-    //   setNewNote("");
-    //   setReminderDate("");
-    //   setReminderTime("");
-    // }
   }, [isFocused]);
 
   const router = useRouter();
 
-  const showToast = (type, content) => {
+  const showToast = (type) => {
     Toast.show({
       type,
       text1: "Reminder has been created.",
@@ -142,7 +130,7 @@ export default function TestScreen() {
     });
   };
 
-  const showEditToast = (type, content) => {
+  const showEditToast = () => {
     Toast.show({
       type: "edit",
       text1: "Reminder has been edited.",
@@ -158,12 +146,12 @@ export default function TestScreen() {
       (combinedDate.getTime() - Date.now()) / 1000,
     );
 
-    if (repeatOption == "daily" && isRepeat) {
+    if (repeatOption === "daily" && isRepeat) {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
           body: reminder.message,
-          data: { url: REMINDER_SCREEN },
+          data: { screen: REMINDER_SCREEN },
         },
         trigger: {
           hour: combinedDate.getHours(),
@@ -171,7 +159,7 @@ export default function TestScreen() {
           repeats: true,
         },
       });
-      if (type == "edit") {
+      if (type === "edit") {
         dispatch(
           editReminder({
             reminder,
@@ -188,7 +176,7 @@ export default function TestScreen() {
           }),
         );
       }
-    } else if (repeatOption == "weekly" && Platform.OS == "ios") {
+    } else if (repeatOption === "weekly" && Platform.OS === "ios") {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Reminder",
@@ -203,7 +191,7 @@ export default function TestScreen() {
         },
       });
 
-      if (type == "edit") {
+      if (type === "edit") {
         dispatch(
           editReminder({
             reminder,
@@ -220,7 +208,7 @@ export default function TestScreen() {
           }),
         );
       }
-    } else if (repeatOption == "weekly" && Platform.OS == "android") {
+    } else if (repeatOption === "weekly" && Platform.OS === "android") {
       const newDate = new Date(
         combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000,
       );
@@ -237,7 +225,7 @@ export default function TestScreen() {
         },
       });
 
-      if (type == "edit") {
+      if (type === "edit") {
         dispatch(
           editReminder({
             reminder,
@@ -266,7 +254,7 @@ export default function TestScreen() {
         },
       });
 
-      if (type == "edit") {
+      if (type === "edit") {
         dispatch(
           editReminder({
             reminder,
@@ -328,7 +316,7 @@ export default function TestScreen() {
   };
 
   const addReminder = () => {
-    if (newReminder.length == 0) {
+    if (newReminder.length === 0) {
       setTitleError("Title is required.");
       return;
     }
@@ -385,7 +373,7 @@ export default function TestScreen() {
   const showTimePicker = () => {
     Keyboard.dismiss();
 
-    if (reminderDate.length == 0) {
+    if (reminderDate.length === 0) {
       const today = new Date();
       setReminderDate(today);
     }
@@ -422,7 +410,7 @@ export default function TestScreen() {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -430,30 +418,32 @@ export default function TestScreen() {
           </TouchableOpacity>
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-light-primary dark:text-dark-primary"
           >
             {routeParams.type} Reminder
           </HeaderTitle>
         </View>
         <TouchableOpacity
-          onPress={routeParams.type == "Add" ? addReminder : handleEditReminder}
-          disabled={newReminder.length == 0}
+          onPress={
+            routeParams.type === "Add" ? addReminder : handleEditReminder
+          }
+          disabled={newReminder.length === 0}
           className="flex-row gap-1 items-center"
         >
           <Text
-            className="text-xl font-inter font-bold"
+            className="text-xl font-inter-bold"
             style={
               newReminder.length === 0 ||
               reminderDate.toString().length === 0 ||
               reminderTime.toString().length === 0
                 ? {
-                    color: colorScheme == "dark" ? "#5c5c5c" : "grey",
+                    color: colorScheme === "dark" ? "#5c5c5c" : "grey",
                   }
                 : {
                     color:
                       actualTheme && actualTheme.Primary
                         ? actualTheme.Primary
-                        : colorScheme == "light"
+                        : colorScheme === "light"
                           ? "#2f2d51"
                           : "#A5C9FF",
                   }
@@ -461,7 +451,7 @@ export default function TestScreen() {
           >
             {routeParams.type}
           </Text>
-          {routeParams.type == "Edit" ? (
+          {routeParams.type === "Edit" ? (
             <Feather
               name="edit-2"
               size={23}
@@ -469,12 +459,12 @@ export default function TestScreen() {
                 newReminder.length === 0 ||
                 reminderDate.toString().length === 0 ||
                 reminderTime.toString().length === 0
-                  ? colorScheme == "dark"
+                  ? colorScheme === "dark"
                     ? "#5c5c5c"
                     : "grey"
                   : actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
-                    : colorScheme == "light"
+                    : colorScheme === "light"
                       ? "#2f2d51"
                       : "#A5C9FF"
               }
@@ -487,12 +477,12 @@ export default function TestScreen() {
                 newReminder.length === 0 ||
                 reminderDate.toString().length === 0 ||
                 reminderTime.toString().length === 0
-                  ? colorScheme == "dark"
+                  ? colorScheme === "dark"
                     ? "#5c5c5c"
                     : "grey"
                   : actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
-                    : colorScheme == "light"
+                    : colorScheme === "light"
                       ? "#2f2d51"
                       : "#A5C9FF"
               }
@@ -511,7 +501,7 @@ export default function TestScreen() {
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#a1a1a1"
                   : "#808080"
             }
@@ -519,7 +509,7 @@ export default function TestScreen() {
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "white"
                   : "#2f2d51"
             }
@@ -537,10 +527,11 @@ export default function TestScreen() {
             className="w-full dark:bg-gray-500 bg-light-primary h-[1px]"
           />
           <TextInput
+            style={getSecondaryTextColorStyle(actualTheme)}
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "#a1a1a1"
                   : "#808080"
             }
@@ -549,7 +540,7 @@ export default function TestScreen() {
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "white"
                   : "#2f2d51"
             }
@@ -573,7 +564,7 @@ export default function TestScreen() {
               <View className="flex-row items-center gap-3">
                 <Image
                   style={
-                    colorScheme == "dark"
+                    colorScheme === "dark"
                       ? [styles.img, { tintColor: "#f1d592" }]
                       : [styles.img, { tintColor: "#dda41c" }]
                   }
@@ -581,7 +572,7 @@ export default function TestScreen() {
                 />
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-medium dark:text-dark-primary text-light-primary"
+                  className="font-inter-medium dark:text-dark-primary text-light-primary"
                 >
                   Date
                 </Text>
@@ -589,7 +580,7 @@ export default function TestScreen() {
               {reminderDate.toString().length > 0 && (
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-normal dark:text-dark-primary text-light-primary"
+                  className="font-inter-regular dark:text-dark-primary text-light-primary"
                 >
                   {reminderDate.toDateString()}
                 </Text>
@@ -601,7 +592,7 @@ export default function TestScreen() {
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -624,7 +615,7 @@ export default function TestScreen() {
               <View className="flex-row items-center gap-3">
                 <Image
                   style={
-                    colorScheme == "dark"
+                    colorScheme === "dark"
                       ? [styles.img, { tintColor: "#A5C9FF" }]
                       : [styles.img, { tintColor: "#438eff" }]
                   }
@@ -632,7 +623,7 @@ export default function TestScreen() {
                 />
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-medium dark:text-dark-primary text-light-primary"
+                  className="font-inter-medium dark:text-dark-primary text-light-primary"
                 >
                   Time
                 </Text>
@@ -640,7 +631,7 @@ export default function TestScreen() {
               {reminderTime.toString().length > 0 && (
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-normal dark:text-dark-primary text-light-primary"
+                  className="font-inter-regular dark:text-dark-primary text-light-primary"
                 >
                   {new Date(reminderTime).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -655,7 +646,7 @@ export default function TestScreen() {
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -674,12 +665,15 @@ export default function TestScreen() {
               color={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
             />
-            <Text className="dark:text-dark-primary text-light-primary font-inter font-medium">
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="dark:text-dark-primary text-light-primary font-inter-medium"
+            >
               Repeat
             </Text>
           </View>
@@ -700,30 +694,28 @@ export default function TestScreen() {
               <View
                 className="w-5 dark:border-dark-primary border-light-primary border-2 h-5 rounded-full"
                 style={
-                  colorScheme == "dark"
+                  colorScheme === "dark"
                     ? {
-                        borderWidth: 1,
                         borderColor:
                           actualTheme && actualTheme.Secondary
                             ? actualTheme.Secondary
                             : "",
                         backgroundColor:
-                          repeatOption === "daily" ? "#00cc00" : "#3e3e3e",
+                          repeatOption === "daily" ? "#00cc00" : "#aaa8a8",
                       }
                     : {
-                        borderWidth: 2,
                         borderColor:
                           actualTheme &&
                           actualTheme.Secondary &&
                           actualTheme.Secondary,
                         backgroundColor:
-                          repeatOption === "daily" ? "#00cc00" : "white",
+                          repeatOption === "daily" ? "#00cc00" : "#aaa8a8",
                       }
                 }
               />
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary font-inter font-medium"
+                className="dark:text-dark-primary text-light-primary font-inter-medium"
               >
                 Daily
               </Text>
@@ -735,14 +727,14 @@ export default function TestScreen() {
               <View
                 className="w-5 dark:border-white border-[#2f2d51] border-2 h-5 rounded-full"
                 style={
-                  colorScheme == "dark"
+                  colorScheme === "dark"
                     ? {
                         borderColor:
                           actualTheme &&
                           actualTheme.Secondary &&
                           actualTheme.Secondary,
                         backgroundColor:
-                          repeatOption === "weekly" ? "#00cc00" : "#3e3e3e",
+                          repeatOption === "weekly" ? "#00cc00" : "#aaa8a8",
                       }
                     : {
                         borderColor:
@@ -750,32 +742,35 @@ export default function TestScreen() {
                           actualTheme.Secondary &&
                           actualTheme.Secondary,
                         backgroundColor:
-                          repeatOption === "weekly" ? "#00cc00" : "white",
+                          repeatOption === "weekly" ? "#00cc00" : "#aaa8a8",
                       }
                 }
               />
-              <Text className="dark:text-dark-primary text-light-primary font-inter font-medium">
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="dark:text-dark-primary text-light-primary font-inter-medium"
+              >
                 Weekly
               </Text>
             </TouchableOpacity>
           </View>
         )}
         <View className="mt-2 flex-1">
-          <Text className="text-[#ff3b3b] mb-2 font-inter font-medium">
+          <Text className="text-[#ff3b3b] mb-2 font-inter-medium">
             Required fields: Title, date and time.
           </Text>
 
           <Link href={`/${SETTINGS_SCREEN}`}>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="dark:text-[#d2d2d2] text-light-primary text-[13px] font-inter font-normal"
+              className="dark:text-[#d2d2d2] text-light-primary text-[13px] font-inter-regular"
             >
               To receive the reminders, make sure to enable notifications in
               both your phone and Prayse settings{" "}
               <Feather
                 name="external-link"
                 size={14}
-                color={colorScheme == "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={colorScheme === "dark" ? "#d2d2d2" : "#2f2d51"}
               />
               .
             </Text>
@@ -784,13 +779,13 @@ export default function TestScreen() {
           <View className="mt-auto mb-5 w-full">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="text-light-primary dark:text-[#d2d2d2] font-inter font-normal"
+              className="text-light-primary dark:text-[#d2d2d2] font-inter-regular"
             >
               "Continue in prayer, and watch in the same with thanksgiving."
             </Text>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="text-light-primary self-end dark:text-[#d2d2d2] font-inter font-medium"
+              className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium"
             >
               - Colossians 4:2
             </Text>

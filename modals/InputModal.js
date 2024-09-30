@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useFonts } from "expo-font";
 import {
   ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SelectList } from "react-native-dropdown-select-list";
-import { AnimatedFAB } from "react-native-paper";
 import uuid from "react-native-uuid";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
 
@@ -31,7 +27,6 @@ import {
 import {
   getMainBackgroundColorStyle,
   getPrimaryBackgroundColorStyle,
-  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
@@ -55,7 +50,6 @@ const InputModal = ({
   prayertoBeEdited,
   setPrayertoBeEdited,
 }) => {
-  const theme = useSelector((state) => state.user.theme);
   const [inputHeight, setInputHeight] = useState(60);
   const [isExtended, setIsExtended] = useState(true);
 
@@ -73,10 +67,6 @@ const InputModal = ({
     setPrayerValue("");
   };
   const dispatch = useDispatch();
-  const [fontsLoaded] = useFonts({
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-  });
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -133,10 +123,6 @@ const InputModal = ({
     setIsEditing(false);
   };
 
-  if (!fontsLoaded) {
-    return <BusyIndicator />;
-  }
-
   return (
     <View>
       <View className="flex-row items-center justify-center mb-3 mt-auto">
@@ -184,7 +170,7 @@ const InputModal = ({
                 <View className="flex-row items-center gap-2">
                   <HeaderTitle
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-primary dark:text-dark-primary"
+                    className="font-inter-bold text-light-primary dark:text-dark-primary"
                   >
                     {taskName} Prayer
                   </HeaderTitle>
@@ -202,7 +188,7 @@ const InputModal = ({
                 </View>
               </ModalIcon>
               <StyledInput
-                className="mt-3 items-center border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#d2d2d2] self-center font-inter"
+                className="mt-3 items-center font-inter-regular border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#d2d2d2] self-center font-inter"
                 style={
                   actualTheme && actualTheme.SecondaryTxt
                     ? {
@@ -289,116 +275,3 @@ const InputModal = ({
 };
 
 export default InputModal;
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-
-  inputText: {
-    color: "#2f2d51",
-  },
-  inputTextDark: {
-    color: "white",
-  },
-  fabStyleDark: {
-    position: "relative",
-    alignSelf: "center",
-    borderRadius: 20,
-    fontFamily: "Inter-Medium",
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-  },
-  fabStyle: {
-    position: "relative",
-    alignSelf: "center",
-    borderRadius: 20,
-    justifyContent: "center",
-    backgroundColor: "#2f2d51",
-  },
-  actionButtons: {
-    position: "absolute",
-    bottom: 10,
-    height: 70,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  fabStyle2: {
-    bottom: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    backgroundColor: "#2F2D51",
-  },
-  fabStyle3: {
-    bottom: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    backgroundColor: "#2F2D51",
-  },
-  dismiss: {
-    alignSelf: "flex-start",
-    marginVertical: 5,
-    padding: 2,
-  },
-  fabStyle3Dark: {
-    bottom: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-  },
-  select: {
-    fontSize: 13,
-    paddingVertical: 5,
-    color: "black",
-    fontFamily: "Inter-Regular",
-  },
-  selectDark: {
-    fontSize: 13,
-    paddingVertical: 5,
-    color: "white",
-    fontFamily: "Inter-Regular",
-  },
-
-  category: {
-    // backgroundColor: "#2F2D51",
-    borderWidth: 1,
-    borderColor: "#2f2d51",
-    marginTop: 10,
-    height: 50,
-    alignItems: "center",
-  },
-  categoryDark: {
-    backgroundColor: "#121212",
-    color: "white",
-    marginTop: 10,
-    height: 50,
-    alignItems: "center",
-  },
-
-  dropdown: {
-    borderColor: "#2f2d51",
-    // backgroundColor: "#2F2D51",
-    height: 800,
-  },
-  dropdownDark: {
-    backgroundColor: "#121212",
-    height: 800,
-  },
-  dropdownText: {
-    color: "#2f2d51",
-    padding: 10,
-  },
-  dropdownTextDark: {
-    color: "white",
-    padding: 10,
-  },
-
-  elevation: {
-    elevation: 6,
-    shadowColor: "#13588c",
-  },
-});

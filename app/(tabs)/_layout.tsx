@@ -32,9 +32,11 @@ export default function TabLayout() {
             actualTheme.Bg === "#1A1F2A" ||
             actualTheme.Bg === "#0C192F")
             ? "light"
-            : colorScheme === "dark" && !actualTheme
-              ? "light"
-              : "dark"
+            : actualTheme && actualTheme.Bg === "white"
+              ? "dark"
+              : colorScheme === "dark"
+                ? "light"
+                : "dark"
         }
       />
       <Tabs
@@ -149,7 +151,7 @@ export default function TabLayout() {
                     ? "#121212"
                     : "white",
             },
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <Ionicons
                 name={focused ? "time-outline" : "time-outline"}
                 color={color}

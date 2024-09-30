@@ -37,13 +37,11 @@ import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 const PrayerGroupScreen = () => {
   const params = useLocalSearchParams();
 
-  const theme = useSelector((state) => state.user.theme);
   const [groupMessages, setGroupMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const flatListRef = useRef(null);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
 
-  const [isGroupRemoved, setIsGroupRemoved] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   const [areMessagesLoading, setAreMessagesLoading] = useState(false);
@@ -61,15 +59,8 @@ const PrayerGroupScreen = () => {
 
   const [prayerToReact, setPrayerToReact] = useState();
 
-  const {
-    currentUser,
-
-    setRefreshGroup,
-
-    setRefreshMsgLikes,
-    refreshMsgLikes,
-    supabase,
-  } = useSupabase();
+  const { currentUser, setRefreshMsgLikes, refreshMsgLikes, supabase } =
+    useSupabase();
 
   const isFocused = useIsFocused();
 
@@ -100,21 +91,7 @@ const PrayerGroupScreen = () => {
     /** only create the channel if we have a roomCode and username */
     if (groupId && currentUser?.id) {
       // dispatch(clearMessages());
-      async function getGroupMessages() {
-        try {
-          setAreMessagesLoading(true);
-          const { data, error } = await supabase
-            .from("messages")
-            .select("*, profiles(full_name, avatar_url, expoToken)")
-            .eq("group_id", groupId)
-            .order("id", { ascending: false });
 
-          setGroupMessages(data);
-        } catch (error) {
-          console.log("fetching error: ", error);
-        }
-        setAreMessagesLoading(false);
-      }
       getGroupMessages();
 
       /**
@@ -189,6 +166,22 @@ const PrayerGroupScreen = () => {
     }
   }, [groupId, currentUser?.id, isFocused]);
 
+  async function getGroupMessages() {
+    try {
+      setAreMessagesLoading(true);
+      const { data } = await supabase
+        .from("messages")
+        .select("*, profiles(full_name, avatar_url, expoToken)")
+        .eq("group_id", groupId)
+        .order("id", { ascending: false });
+
+      setGroupMessages(data);
+    } catch (error) {
+      console.log("fetching error: ", error);
+    }
+    setAreMessagesLoading(false);
+  }
+
   const copyToClipboard = async (code) => {
     await Clipboard.setStringAsync(code);
     showToast("success", "Copied to Clipboard.");
@@ -219,7 +212,6 @@ const PrayerGroupScreen = () => {
     if (groups.length === 0) {
       setNewMessage("");
       Keyboard.dismiss();
-      setIsGroupRemoved(true);
       return;
     }
 
@@ -227,7 +219,7 @@ const PrayerGroupScreen = () => {
     const isoDateString = currentDate.toISOString();
     const isoStringWithOffset = isoDateString.replace("Z", "+00:00");
 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("messages")
       .insert({
         group_id: groupId,
@@ -235,10 +227,6 @@ const PrayerGroupScreen = () => {
         message: newMessage,
       })
       .select();
-
-    if (error) {
-      console.log(error);
-    }
 
     channel.send({
       type: "broadcast",
@@ -281,11 +269,7 @@ const PrayerGroupScreen = () => {
       }
     });
 
-    if (error) {
-      throw new Error(error);
-    } else {
-      setNewMessage("");
-    }
+    setNewMessage("");
   };
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -298,7 +282,6 @@ const PrayerGroupScreen = () => {
     const groups = await getSingleGroup();
     if (groups.length === 0) {
       console.log("this group has been removed");
-      setIsGroupRemoved(true);
       return;
     }
     copyToClipboard(currentUser.code.toString());
@@ -348,13 +331,13 @@ const PrayerGroupScreen = () => {
               <HeaderTitle
                 numberOfLines={1}
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
               >
                 {currentGroup?.name}
               </HeaderTitle>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="text-sm underline font-inter font-medium text-light-primary dark:text-dark-primary/50"
+                className="text-sm underline font-inter-medium text-light-primary dark:text-dark-primary/50"
               >
                 Tap for more info
               </Text>
@@ -391,7 +374,7 @@ const PrayerGroupScreen = () => {
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-sm text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-sm text-light-primary dark:text-dark-primary"
             >
               {currentGroup?.code}
             </Text>

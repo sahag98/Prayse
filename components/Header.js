@@ -65,9 +65,14 @@ const Header = ({
       prayers.push(p.prayer);
     });
 
+    let folderPrayersbyNewLine = prayers.join("\r\n\n");
+
     try {
       await Share.share({
-        message: "Pray for these prayers: " + "\n" + prayers.toLocaleString(),
+        message:
+          "Prayer requests: " +
+          "\n\n" +
+          folderPrayersbyNewLine.toLocaleString(),
       });
     } catch (error) {
       Alert.alert(error.message);
@@ -99,11 +104,11 @@ const Header = ({
       <HeaderView>
         <View
           className={cn(
-            "flex-row flex-1 items-center justify-between transition-all w-full",
+            "flex-row items-center justify-between gap-14 transition-all w-full",
             prayer && "opacity-25"
           )}
         >
-          <View className="flex-row items-center">
+          <View className="flex-row flex-1 items-center">
             <Link asChild href={`/${FOLDER_SCREEN}`}>
               <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
                 <Ionicons
@@ -119,11 +124,11 @@ const Header = ({
                 />
               </TouchableOpacity>
             </Link>
-            <View className="flex-row gap-3">
+            <View className="flex-row flex-1 gap-3">
               <HeaderTitle
                 style={getMainTextColorStyle(actualTheme)}
                 numberOfLines={1}
-                className="font-inter font-bold text-light-primary dark:text-dark-primary"
+                className="font-inter-bold text-light-primary dark:text-dark-primary"
               >
                 {folderName}
               </HeaderTitle>
@@ -213,7 +218,7 @@ const Header = ({
               <View className="flex-row items-center justify-between mb-1">
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-bold text-2xl dark:text-dark-primary text-light-primary"
+                  className="font-inter-bold text-2xl dark:text-dark-primary text-light-primary"
                 >
                   Folder Settings
                 </Text>
@@ -248,9 +253,9 @@ const Header = ({
               >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="dark:text-dark-primary text-light-primary text-center font-inter font-medium"
+                  className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
                 >
-                  Rename Folder
+                  Rename folder
                 </Text>
                 <Feather
                   name="edit"
@@ -272,8 +277,11 @@ const Header = ({
                 onPress={onShare}
                 className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary p-4 dark:bg-dark-secondary bg-light-secondary"
               >
-                <Text className="dark:text-white text-[#2f2d51] text-center font-inter font-medium">
-                  Share
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
+                >
+                  Share prayers
                 </Text>
 
                 <Feather
@@ -295,7 +303,7 @@ const Header = ({
                 }}
                 className="flex-row items-center justify-between p-4 rounded-lg border border-red-500"
               >
-                <Text className="text-center font-inter font-bold text-[#ff3b3b]">
+                <Text className="text-center font-inter-bold text-[#ff3b3b]">
                   Delete
                 </Text>
                 <EvilIcons name="trash" size={24} color="#ff3b3b" />

@@ -5,12 +5,13 @@ import * as Notifications from "expo-notifications";
 import { Redirect, useNavigation, useRootNavigationState } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Linking, Platform, View } from "react-native";
+import { Linking, Platform, Text, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
+import HowtoUsePrayse from "@components/HowtoUsePrayse";
 import { MerchComponent } from "@components/MerchComponent";
 import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
@@ -23,7 +24,10 @@ import WriteFeedbackModal from "@modals/WriteFeedbackModal";
 import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getMainBackgroundColorStyle } from "@lib/customStyles";
+import {
+  getMainBackgroundColorStyle,
+  getMainTextColorStyle,
+} from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import {
@@ -105,23 +109,14 @@ async function registerForPushNotificationsAsync() {
 }
 
 const WelcomeScreen = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const isFocused = useIsFocused();
-
-  const welcomeFadeIn = useSharedValue(0);
-
-  const [openings, setOpenings] = useState(0);
-  const [notification, setNotification] = useState(false);
+  const [_, setNotification] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
-  const [donationModal, setDonationModal] = useState(false);
 
   const [feedbackVisible, setFeedbackVisible] = useState(false);
 
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const theme = useSelector((state) => state.user.theme);
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
@@ -129,7 +124,7 @@ const WelcomeScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-  const { colorScheme, setColorScheme } = useColorScheme();
+  const { colorScheme } = useColorScheme();
   // const posthog = usePostHog();
   // useEffect(() => {
   //   console.log("hereee");
@@ -151,18 +146,6 @@ const WelcomeScreen = () => {
     }
   };
 
-  const loadAndAddOpenings = async () => {
-    try {
-      const storedOpenings = await AsyncStorage.getItem("appOpenings");
-      const parsedOpenings = parseInt(storedOpenings, 20) || 0;
-      const number = parsedOpenings + 1;
-      await AsyncStorage.setItem("appOpenings", number.toString());
-      setOpenings(number);
-    } catch (error) {
-      console.error("Error loading app openings ", error);
-    }
-  };
-
   useEffect(() => {
     loadIsFirstTime();
   }, []);
@@ -175,20 +158,9 @@ const WelcomeScreen = () => {
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        const date = Date();
-        const formattedDate = date.toLocaleString("en-US", {
-          weekday: "short",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        });
-
         if (!notification.request.content.data.group) {
           const content = notification.request.content;
-          let url = context.data.url || content.data.screen;
+          let url = content.data.url || content.data.screen;
 
           if (url === "VerseOfTheDay") {
             url = VERSE_OF_THE_DAY_SCREEN;
@@ -207,16 +179,6 @@ const WelcomeScreen = () => {
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log("response: ", response);
-        const body = response.notification.request.content.body;
-        const data = response.notification.request.content.data;
-
-        console.log("data: ", data);
-
-        // if (data && data.group_id) {
-        //   navigation.navigate(PRAYER_GROUP_SCREEN, {
-        //     group_id: data.group_id,
-        //   });
-        // }
       });
 
     return () => {
@@ -231,71 +193,6 @@ const WelcomeScreen = () => {
 
   // Handle notification response
 
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const rootNavigationState = useRootNavigationState();
-  const navigatorReady = rootNavigationState?.key != null;
-
-  useEffect(() => {
-    if (!navigatorReady) return; // Exit if navigation is not ready yet
-
-    const processNotification = async () => {
-      // Get the last notification response if it's not provided via hook
-      const notificationResponse =
-        lastNotificationResponse ||
-        (await Notifications.getLastNotificationResponseAsync());
-
-      if (!notificationResponse?.notification?.request?.content) return;
-
-      const { data, body } = notificationResponse.notification.request.content;
-
-      if (data?.updateLink) {
-        if (Platform.OS === "ios") {
-          Linking.openURL(
-            "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
-          );
-        } else if (Platform.OS === "android") {
-          Linking.openURL(
-            "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
-          );
-        }
-      }
-
-      if (data?.anyLink) {
-        Linking.openURL(data.anyLink);
-      }
-
-      const url = data?.url || data?.screen;
-
-      if (url) {
-        console.log("url exists!!");
-
-        if (
-          ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
-          data.group_id
-        ) {
-          navigation.navigate(PRAYER_GROUP_SCREEN, {
-            group_id: data.group_id,
-          });
-        } else if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
-          navigation.navigate(VERSE_OF_THE_DAY_SCREEN);
-        } else if (
-          ["Question", QUESTION_SCREEN].includes(url) &&
-          data.title &&
-          data.question_id
-        ) {
-          navigation.navigate(QUESTION_SCREEN, {
-            title: data.title,
-            question_id: data.question_id,
-          });
-        } else {
-          navigation.navigate(url);
-        }
-      }
-    };
-
-    processNotification();
-  }, [navigatorReady, lastNotificationResponse]);
-
   if (isFirst === true) {
     return <Redirect href="/onboarding" />;
   }
@@ -306,7 +203,7 @@ const WelcomeScreen = () => {
       style={getMainBackgroundColorStyle(actualTheme)}
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      <UpdateModal theme={colorScheme} />
+      <UpdateModal theme={colorScheme} actualTheme={actualTheme} />
       <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row gap-2 items-center">
@@ -343,9 +240,12 @@ const WelcomeScreen = () => {
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       <ProBanner actualTheme={actualTheme} theme={colorScheme} />
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
-      <QuestionOfTheWeek theme={colorScheme} actualTheme={actualTheme} />
-      <GospelOfJesus actualTheme={actualTheme} />
+
+      <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme} />
+      <GospelOfJesus actualTheme={actualTheme} theme={colorScheme} />
+      {/* <HowtoUsePrayse actualTheme={actualTheme} theme={colorScheme} /> */}
       <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
+
       {/* <QuickLinks actualTheme={actualTheme} theme={colorScheme} /> */}
     </WelcomeContainer>
   );

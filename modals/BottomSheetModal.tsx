@@ -24,7 +24,6 @@ const BottomModal = ({
   reactionChannel,
   currentUser,
   supabase,
-  handlePresentModalPress,
   setPrayerToReact,
   prayerToReact,
 }: any) => {
@@ -93,11 +92,11 @@ const BottomModal = ({
                     : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
                 }}
               />
-              <Text className="font-inter font-bold text-lg text-light-primary dark:text-dark-background">
+              <Text className="font-inter-bold text-lg text-light-primary dark:text-dark-background">
                 {prayerToReact?.profiles?.full_name}
               </Text>
             </View>
-            <Text className="font-inter text-light-primary dark:text-dark-background">
+            <Text className="font-inter-regular text-light-primary dark:text-dark-background">
               {prayerToReact?.message}
             </Text>
             {isLoadingReactions ? (
@@ -124,7 +123,7 @@ const BottomModal = ({
                     isLikedByMe && "bg-green-300",
                   )}
                 >
-                  <Text className="font-inter">🙏</Text>
+                  <Text className="font-inter-medium">🙏</Text>
                   <AntDesign
                     name={isLikedByMe ? "check" : "pluscircleo"}
                     size={18}
@@ -134,7 +133,7 @@ const BottomModal = ({
 
                 <TouchableOpacity
                   disabled={isPraisedByMe}
-                  onPress={() =>
+                  onPress={() => {
                     togglePraise(
                       prayerToReact.id,
                       prayerToReact.profiles.expoToken,
@@ -144,14 +143,15 @@ const BottomModal = ({
                       praises,
                       currentUser.id,
                       reactionChannel,
-                    )
-                  }
+                    );
+                    setIsPraising(true);
+                  }}
                   className={cn(
                     "bg-gray-100 items-center flex-row gap-2 px-3 py-2 rounded-xl",
                     isPraisedByMe && "bg-green-300",
                   )}
                 >
-                  <Text className=" font-inter">🙌</Text>
+                  <Text className=" font-inter-medium">🙌</Text>
                   <AntDesign
                     name={isPraisedByMe ? "check" : "pluscircleo"}
                     size={18}

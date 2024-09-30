@@ -26,9 +26,6 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   const welcomeFadeIn = useSharedValue(0);
 
   const { colorScheme, setColorScheme } = useColorScheme();
-  const animatedWelcomeFadeInStyle = useAnimatedStyle(() => ({
-    opacity: welcomeFadeIn.value * 1,
-  }));
 
   const greeting = React.useMemo(() => {
     const currentHour = new Date().getHours();
@@ -64,24 +61,13 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   }, []);
 
   return (
-    <Animated.View
-      className="flex flex-row items-center gap-2"
-      // style={[animatedWelcomeFadeInStyle]}
-    >
-      {/* <Text
-        onPress={() =>
-          setColorScheme(colorScheme === "light" ? "dark" : "light")
-        }
-      >
-        {`The color scheme is ${colorScheme}`}
-      </Text> */}
-      {/* <Text className="dark:text-green-400 text-red-400">Hey</Text> */}
+    <Animated.View className="flex flex-row items-center gap-2">
       <Animated.Text
         style={getMainTextColorStyle(actualTheme)}
         onPress={() => {
           setColorScheme(colorScheme === "light" ? "dark" : "light");
         }}
-        className="text-xl tracking-wide font-inter font-semibold text-light-primary dark:text-[#d2d2d2]"
+        className="text-xl tracking-wide font-inter-semibold  text-light-primary dark:text-[#d2d2d2]"
       >
         {greeting}
       </Animated.Text>

@@ -22,11 +22,7 @@ import { HeaderTitle } from "../styles/appStyles";
 import FolderItem from "./FolderItem";
 
 const Folder = ({ colorScheme, navigation }) => {
-  const theme = useSelector((state) => state.user.theme);
   const folders = useSelector((state) => state.folder.folders);
-  const answeredPrayers = useSelector(
-    (state) => state.answered.answeredPrayers,
-  );
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
@@ -62,10 +58,8 @@ const Folder = ({ colorScheme, navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <FolderItem
-        colorScheme={colorScheme}
         actualTheme={actualTheme}
         item={item}
-        theme={theme}
         navigation={navigation}
         open={open}
         setOpen={setOpen}
@@ -80,7 +74,7 @@ const Folder = ({ colorScheme, navigation }) => {
       <View className="my-4 flex-row justify-between items-center">
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
-          className="font-bold py-3 font-inter text-lg text-light-primary dark:text-dark-primary"
+          className=" py-3 font-inter-bold text-lg text-light-primary dark:text-dark-primary"
         >
           Prayer Folders
         </HeaderTitle>
@@ -92,9 +86,8 @@ const Folder = ({ colorScheme, navigation }) => {
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        initialNumToRender={4}
-        // style={{ flex: 1 }}
-        contentContainerStyle={{ flex: 1 }}
+        initialNumToRender={6}
+        contentContainerStyle={{ flex: folders?.length === 0 ? 1 : 0 }}
         windowSize={8}
         renderItem={renderItem}
         numColumns={2}
@@ -113,19 +106,19 @@ const Folder = ({ colorScheme, navigation }) => {
             />
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-bold font-inter text-light-primary dark:text-white text-2xl"
+              className="font-inter-bold text-light-primary dark:text-white text-xl"
             >
-              Create a prayer folder.
+              Start by creating a prayer folder.
             </Text>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter dark:text-[#d2d2d2] text-base text-[#2f2d51]"
+              className="font-inter-medium dark:text-[#d2d2d2] text-base text-[#2f2d51]"
             >
               (These folders are only visible to you)
             </Text>
           </View>
         )}
-        ListFooterComponent={() => <View className="h-20" />}
+        ListFooterComponent={() => <View className="h-32" />}
         columnWrapperStyle={{
           justifyContent: "space-between",
           columnGap: 8,
@@ -154,7 +147,7 @@ const Folder = ({ colorScheme, navigation }) => {
           />
           <Text
             style={getPrimaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+            className="font-inter-bold text-lg text-light-background dark:text-dark-background"
           >
             Create Folder
           </Text>
@@ -182,9 +175,9 @@ const Folder = ({ colorScheme, navigation }) => {
 
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-lg text-light-primary dark:text-dark-background"
+            className="font-inter-bold text-lg text-light-primary dark:text-dark-background"
           >
-            Prayer Room
+            Pray
           </Text>
         </TouchableOpacity>
       </View>

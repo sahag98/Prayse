@@ -203,7 +203,7 @@ const StreakSlider = ({
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-center font-inter font-bold text-[26px] text-[#2f2d51] dark:text-white"
+              className="text-center font-inter-bold text-3xl text-[#2f2d51] dark:text-white"
             >
               Streaks
             </Text>
@@ -224,16 +224,16 @@ const StreakSlider = ({
 
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-primary dark:text-white text-5xl"
+                    className="font-inter-bold text-light-primary dark:text-white text-5xl"
                   >
                     {appstreak}
                   </Text>
                 </View>
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter font-bold text-base text-light-primary dark:text-[#d2d2d2]"
+                  className="font-inter-bold text-base text-light-primary dark:text-[#d2d2d2]"
                 >
-                  App Streak
+                  App streak
                 </Text>
               </View>
               <View className="w-1/2 items-center">
@@ -251,7 +251,7 @@ const StreakSlider = ({
                   />
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-primary dark:text-white text-5xl"
+                    className="font-inter-bold text-light-primary dark:text-white text-5xl"
                   >
                     {streak}
                   </Text>
@@ -260,22 +260,22 @@ const StreakSlider = ({
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter font-bold text-base text-light-primary dark:text-[#d2d2d2]"
                 >
-                  Devotions Streak
+                  Devotions streak
                 </Text>
               </View>
             </View>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-normal dark:text-white text-light-primary text-center font-inter text-base mt-[5px]"
+              className=" dark:text-white text-light-primary text-center font-inter-medium text-base mt-[5px]"
             >
-              Thank you for praising God with us every day.
+              Thank you for using our app every day.
             </Text>
             <View className="w-full mt-[10px] gap-2">
               {streak > GOAL ? null : (
                 <>
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="text-center text-light-primary dark:text-white font-inter font-medium text-lg"
+                    className="text-center text-light-primary dark:text-white font-inter-bold text-lg"
                   >
                     Devotions Streak: {((streak / GOAL) * 100).toFixed(1)}%
                   </Text>
@@ -290,7 +290,7 @@ const StreakSlider = ({
                   />
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-medium text-[13px] text-center mb-[10px] text-light-primary dark:text-[#d2d2d2]"
+                    className="font-inter-medium text-[13px] text-center mb-[10px] text-light-primary dark:text-[#d2d2d2]"
                   >
                     Reach {GOAL} days to win a free merch item of your choice!
                   </Text>
@@ -304,7 +304,7 @@ const StreakSlider = ({
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-dark-accent text-lg font-inter font-bold"
+                className="text-light-primary dark:text-dark-accent text-lg font-inter-semibold"
               >
                 Share
               </Text>

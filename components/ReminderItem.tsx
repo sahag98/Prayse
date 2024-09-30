@@ -109,7 +109,7 @@ const ReminderItem = ({
         {reminder.ocurrence === "Daily" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm  text-light-primary dark:text-dark-primary"
+            className="font-inter-regular text-sm  text-light-primary dark:text-dark-primary"
           >
             {reminder.ocurrence} at {formattedDate}
           </Text>
@@ -117,7 +117,7 @@ const ReminderItem = ({
         {reminder.ocurrence === "Weekly" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm text-light-primary dark:text-dark-primary"
+            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
           >
             {reminder.ocurrence} on {dayOfWeekName}s at {formattedDate}
           </Text>
@@ -125,7 +125,7 @@ const ReminderItem = ({
         {reminder.ocurrence === "None" && (
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm text-light-primary dark:text-dark-primary"
+            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
           >
             {formattedDate}
           </Text>
@@ -133,14 +133,16 @@ const ReminderItem = ({
       </View>
       <Text
         numberOfLines={3}
-        className="font-inter font-medium text-light-primary dark:text-dark-primary text-lg"
+        style={getSecondaryTextColorStyle(actualTheme)}
+        className="font-inter-medium text-light-primary dark:text-dark-primary text-lg"
       >
         {content.message}
       </Text>
       {content.note && (
         <Text
+          style={getSecondaryTextColorStyle(actualTheme)}
           numberOfLines={5}
-          className="font-inter text-light-primary dark:text-dark-primary leading-6"
+          className="font-inter-regular text-light-primary dark:text-dark-primary leading-6"
         >
           {content.note}
         </Text>
@@ -161,7 +163,7 @@ const ReminderItem = ({
         >
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="dark:text-white text-[#2f2d51] font-inter font-medium"
+            className="dark:text-white text-[#2f2d51] font-inter-medium"
           >
             Edit
           </Text>
@@ -171,7 +173,7 @@ const ReminderItem = ({
           className="h-full dark:bg-white bg-[#2f2d51] w-[1.2px]"
         />
         <TouchableOpacity onPress={() => dismissNotification(reminder)}>
-          <Text className="font-inter font-medium text-red-500">Delete</Text>
+          <Text className="font-inter-medium text-red-500">Delete</Text>
         </TouchableOpacity>
       </View>
     </View>

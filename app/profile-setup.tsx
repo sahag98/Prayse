@@ -11,7 +11,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -30,24 +29,15 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useIsFocused } from "@react-navigation/native";
 
 import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
-const ProfileSetup = ({}) => {
+const ProfileSetup = () => {
   const { colorScheme } = useColorScheme();
 
-  const {
-    currentUser,
-    setCurrentUser,
-    session,
-    refreshMembers,
-    setRefreshMembers,
-    logout,
-    supabase,
-  } = useSupabase();
+  const { currentUser, setCurrentUser, logout, supabase } = useSupabase();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
@@ -56,12 +46,6 @@ const ProfileSetup = ({}) => {
   const router = useRouter();
   const [isUnique, setIsUnique] = useState(true);
   const [image, setImage] = useState("");
-  const isFocused = useIsFocused();
-
-  const handleCloseModal = () => {
-    setIsShowingWelcome(false);
-    setName("");
-  };
 
   const handleBacktoSignIn = async () => {
     logout();
@@ -114,7 +98,7 @@ const ProfileSetup = ({}) => {
         result.assets[0].uri.lastIndexOf(".") + 1,
       );
 
-      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
+      const fileName = result.assets[0].uri.replace(/^.*[\\/]/, "");
 
       const filePath = `${fileName}`;
       const formData = new FormData();
@@ -170,7 +154,7 @@ const ProfileSetup = ({}) => {
   };
 
   const handleNext = async () => {
-    if (name.length == 0) {
+    if (name.length === 0) {
       showToast("error", "Username field is required.");
       return;
     }
@@ -216,44 +200,6 @@ const ProfileSetup = ({}) => {
       .select();
   }
 
-  async function sendToken(expoPushToken) {
-    await supabase
-      .from("profiles")
-      .update({ expoToken: expoPushToken })
-      .eq("id", currentUser?.id)
-      .select();
-  }
-
-  async function getPermission() {
-    getUserGroups();
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-
-      let finalStatus = existingStatus;
-
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        console.log("not granted");
-        return;
-      }
-      console.log("permission granted");
-      token = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId: config.projectId,
-        })
-      ).data;
-    } else {
-      console.log("Must use physical device for Push Notifications");
-    }
-    sendToken(token);
-  }
-
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
@@ -272,7 +218,7 @@ const ProfileSetup = ({}) => {
           <HeaderView className="items-center justify-center">
             <HeaderTitle
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-wrap font-bold text-center text-light-primary dark:text-dark-accent"
+              className="font-inter-bold text-wrap text-center text-light-primary dark:text-dark-accent"
             >
               Welcome to Community
             </HeaderTitle>
@@ -284,7 +230,7 @@ const ProfileSetup = ({}) => {
               style={getSecondaryBackgroundColorStyle(actualTheme)}
             >
               {image.length === 0 ? (
-                <Text className="font-inter text-xs text-center font-medium text-light-primary dark:text-dark-primary">
+                <Text className="font-inter-medium text-xs text-center text-light-primary dark:text-dark-primary">
                   Upload Profile Image (Optional)
                 </Text>
               ) : (
@@ -302,12 +248,12 @@ const ProfileSetup = ({}) => {
             <View className="flex-row items-center justify-between">
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
               >
                 Username (Required)
               </Text>
               <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-                <Text className="font-inter text-sm text-red-500">
+                <Text className="font-inter-medium text-sm text-red-500">
                   Dismiss Keyboard
                 </Text>
               </TouchableOpacity>
@@ -318,7 +264,7 @@ const ProfileSetup = ({}) => {
                 getSecondaryTextColorStyle(actualTheme),
                 getSecondaryBackgroundColorStyle(actualTheme),
               ]}
-              className="font-inter w-full bg-light-secondary dark:bg-dark-secondary p-4 rounded-md"
+              className="font-inter-regular w-full bg-light-secondary dark:bg-dark-secondary p-4 rounded-md"
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -338,7 +284,7 @@ const ProfileSetup = ({}) => {
               onChangeText={(text) => setName(text)}
             />
             {!isUnique && (
-              <Text className="font-inter font-medium text-red-500">
+              <Text className="font-inter-medium text-red-500">
                 This name already exists. Try again.
               </Text>
             )}
@@ -350,7 +296,7 @@ const ProfileSetup = ({}) => {
             />
             <Text
               style={getMainBackgroundColorStyle(actualTheme)}
-              className="absolute tracking-wide font-inter font-semibold bg-light-background dark:bg-dark-background px-2"
+              className="absolute tracking-wide font-inter-semibold bg-light-background dark:bg-dark-background px-2"
             >
               Or
             </Text>
@@ -359,7 +305,7 @@ const ProfileSetup = ({}) => {
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium underline text-light-primary dark:text-dark-accent"
+                className="font-inter-medium underline text-light-primary dark:text-dark-accent"
               >
                 Be Anonymous
               </Text>
@@ -367,11 +313,11 @@ const ProfileSetup = ({}) => {
             <View className="bg-[#fbe2b2] border border-[#ffa500] w-full rounded-md p-3 gap-2">
               <View className="flex-row items-center gap-2">
                 <Feather name="alert-triangle" size={26} color="#eb9800" />
-                <Text className="font-inter font-bold text-[#c08314] text-lg">
+                <Text className="font-inter-bold text-[#c08314] text-lg">
                   Alert
                 </Text>
               </View>
-              <Text className="font-inter font-medium text-[#c4840e]">
+              <Text className="font-inter-medium text-[#c4840e]">
                 To ensure that setup is done correctly, make sure you are signed
                 in on one device per account.
               </Text>
@@ -383,7 +329,7 @@ const ProfileSetup = ({}) => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter  font-bold text-light-background dark:text-dark-primary"
+                className="font-inter-bold text-light-background dark:text-dark-primary"
               >
                 Get Right in!
               </Text>
@@ -392,7 +338,7 @@ const ProfileSetup = ({}) => {
             <Text
               style={getMainTextColorStyle(actualTheme)}
               onPress={handleBacktoSignIn}
-              className="font-inter underline text-sm font-semibold text-light-primary dark:text-dark-primary"
+              className="font-inter-semibold underline text-sm text-light-primary dark:text-dark-primary"
             >
               Back to Sign in
             </Text>
@@ -404,89 +350,3 @@ const ProfileSetup = ({}) => {
 };
 
 export default ProfileSetup;
-
-const styles = StyleSheet.create({
-  inputField: {
-    gap: 5,
-    width: "100%",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    backgroundColor: "#212121",
-    padding: 12,
-    borderRadius: 10,
-  },
-  dismiss: {
-    padding: 2,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    backgroundColor: "#caecfc",
-    padding: 12,
-    borderRadius: 10,
-  },
-  logoutDark: {
-    alignSelf: "flex-end",
-    backgroundColor: "#212121",
-    marginVertical: 10,
-    width: "100%",
-    padding: 10,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logout: {
-    alignSelf: "flex-end",
-    marginVertical: 15,
-    backgroundColor: "#2f2d51",
-    width: "100%",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  profileImg: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-  iconContainer: {
-    position: "relative",
-    alignSelf: "center",
-    width: "100%",
-    height: 120,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  featherIconDark: {
-    backgroundColor: "#212121",
-
-    position: "absolute",
-
-    borderRadius: 100,
-    padding: 10,
-    width: 120,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 120,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "#caecfc",
-    borderRadius: 100,
-    padding: 10,
-    width: 130,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 130,
-  },
-});

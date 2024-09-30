@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import {
-  FlatList,
   Image,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -18,19 +16,15 @@ import Toast from "react-native-toast-message";
 import uuid from "react-native-uuid";
 import { useSelector } from "react-redux";
 
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import ProfilePrayers from "../components/ProfilePrayers";
-import { PUBLIC_COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
-  getSecondaryBackgroundColorStyle,
-  getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useRouter } from "expo-router";
 
@@ -39,16 +33,13 @@ const ProfileModal = ({
   colorScheme,
   logout,
   setCurrentUser,
-  getPrayers,
-  setPrayerModal,
-  userPrayers,
+
   getUserPrayers,
   profileVisible,
   setProfileVisible,
   supabase,
   user,
 }) => {
-  const theme = useSelector((state) => state.user.theme);
   const insets = useSafeAreaInsets();
   const [name, setName] = useState(user?.full_name);
   const [isUnique, setIsUnique] = useState(true);
@@ -56,7 +47,6 @@ const ProfileModal = ({
   const [image, setImage] = useState(user?.avatar_url);
 
   const router = useRouter();
-  const navigation = useNavigation();
   useEffect(() => {
     getUserPrayers();
   }, []);
@@ -66,12 +56,6 @@ const ProfileModal = ({
     setIsUnique(true);
     setIsEmpty(false);
     setName(user?.full_name);
-  };
-
-  const addPrayer = () => {
-    setProfileVisible(false);
-    navigation.navigate(PUBLIC_COMMUNITY_SCREEN);
-    setPrayerModal(true);
   };
 
   async function getProfile() {
@@ -175,7 +159,6 @@ const ProfileModal = ({
         throw error;
       }
       getProfile();
-      getPrayers();
     }
   };
 
@@ -198,7 +181,6 @@ const ProfileModal = ({
       .select();
     showToast("success", "Anonymous mode is set. ✔️");
     getProfile();
-    getPrayers();
     setProfileVisible(false);
   }
 
@@ -240,7 +222,6 @@ const ProfileModal = ({
       setProfileVisible(false);
     }
     getProfile();
-    getPrayers();
     setIsEmpty(false);
   };
 
@@ -291,7 +272,7 @@ const ProfileModal = ({
             </TouchableOpacity>
             <HeaderTitle
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
               Profile Settings
             </HeaderTitle>
@@ -346,7 +327,7 @@ const ProfileModal = ({
               Change username
             </Text>
             <TextInput
-              className="font-inter w-full border-b text-light-primary dark:text-dark-primary border-b-light-primary dark:border-b-dark-primary p-2"
+              className="font-inter-regular w-full border-b text-light-primary dark:text-dark-primary border-b-light-primary dark:border-b-dark-primary p-2"
               style={getMainTextColorStyle(actualTheme)}
               selectionColor={
                 actualTheme && actualTheme.MainTxt
@@ -359,12 +340,12 @@ const ProfileModal = ({
               onChangeText={(text) => setName(text)}
             />
             {!isUnique && (
-              <Text className="font-inter text-sm mt-2 text-red-500">
+              <Text className="font-inter-medium text-sm mt-2 text-red-500">
                 This name already exists.
               </Text>
             )}
             {isEmpty && (
-              <Text className="font-inter mt-2 text-red-500 text-sm">
+              <Text className="font-inter-medium mt-2 text-red-500 text-sm">
                 Username field can't be empty.
               </Text>
             )}
@@ -373,13 +354,13 @@ const ProfileModal = ({
             <TouchableOpacity onPress={handleAnonymous}>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium underline text-light-primary dark:text-dark-primary"
+                className="font-inter-medium underline text-light-primary dark:text-dark-primary"
               >
                 Set Anonymous
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={dismissKeyboard}>
-              <Text className="font-inter font-medium text-sm text-red-500">
+              <Text className="font-inter-medium text-sm text-red-500">
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
@@ -392,7 +373,7 @@ const ProfileModal = ({
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-background dark:text-dark-primary"
+              className="font-inter-bold text-light-background dark:text-dark-primary"
             >
               Log Out
             </Text>
@@ -404,86 +385,3 @@ const ProfileModal = ({
 };
 
 export default ProfileModal;
-
-const styles = StyleSheet.create({
-  inputField: {
-    marginVertical: 10,
-    width: "100%",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "white",
-    borderBottomWidth: 1,
-    padding: 5,
-  },
-  dismiss: {
-    padding: 2,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "#2f2d51",
-    borderBottomWidth: 1,
-    padding: 5,
-  },
-  logoutDark: {
-    alignSelf: "flex-end",
-    backgroundColor: "#212121",
-    marginVertical: 10,
-    width: "100%",
-    padding: 10,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logout: {
-    alignSelf: "flex-end",
-    marginVertical: 15,
-    backgroundColor: "#2f2d51",
-    width: "100%",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  profileImg: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-  iconContainer: {
-    position: "relative",
-    alignSelf: "center",
-    padding: 8,
-  },
-  featherIconDark: {
-    position: "absolute",
-    backgroundColor: "#3e3e3e",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "#b7d3ff",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-});

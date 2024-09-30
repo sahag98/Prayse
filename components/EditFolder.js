@@ -3,7 +3,6 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
@@ -35,7 +34,6 @@ const EditFolder = ({
   theme,
   folderId,
 }) => {
-  console.log("folder name: ", folderName);
   const [newFolderName, setNewFolderName] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -86,7 +84,7 @@ const EditFolder = ({
             <ModalIcon>
               <HeaderTitle
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold mb-2 text-light-primary dark:text-dark-primary"
+                className="font-inter-bold mb-2 text-light-primary dark:text-dark-primary"
               >
                 Change folder name
               </HeaderTitle>
@@ -100,7 +98,7 @@ const EditFolder = ({
                   color: actualTheme.SecondaryTxt,
                 }
               }
-              className="items-center self-center font-inter text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary"
+              className="items-center self-center font-inter-regular text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary"
               placeholder="Enter new folder name"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
@@ -124,7 +122,7 @@ const EditFolder = ({
               }}
             />
             {error && (
-              <Text className="mt-1 text-sm font-inter text-red-500">
+              <Text className="mt-1 text-sm font-inter-medium text-red-500">
                 {error}
               </Text>
             )}
@@ -171,22 +169,3 @@ const EditFolder = ({
 };
 
 export default EditFolder;
-
-const styles = StyleSheet.create({
-  inputDark: {
-    alignItems: "center",
-    alignSelf: "center",
-    textAlignVertical: "center",
-    fontSize: 14,
-    fontFamily: "Inter-Regular",
-    backgroundColor: "#121212",
-  },
-  input: {
-    alignItems: "center",
-    alignSelf: "center",
-    textAlignVertical: "center",
-    fontSize: 14,
-    fontFamily: "Inter-Regular",
-    backgroundColor: "#2F2D51",
-  },
-});

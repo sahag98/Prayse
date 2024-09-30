@@ -67,9 +67,9 @@ const DeleteFolder = ({
           <ModalIcon>
             <HeaderTitle
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
-              Are you sure you want to delete this folder and all its prayers?
+              Are you sure you want to delete this folder?
             </HeaderTitle>
           </ModalIcon>
           <ModalActionGroup>

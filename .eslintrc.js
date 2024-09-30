@@ -7,9 +7,9 @@ module.exports = {
     "simple-import-sort/exports": "warn",
     "import/order": "off",
     "no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-imports": "off",
     "unused-imports/no-unused-vars": [
-      "warn",
+      "off",
       {
         vars: "all",
         varsIgnorePattern: "^_",

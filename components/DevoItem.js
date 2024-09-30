@@ -106,13 +106,13 @@ const DevoItem = ({
     >
       <HeaderTitle
         style={getMainTextColorStyle(actualTheme)}
-        className="font-inter font-bold tracking-wider mb-4 text-xl text-light-primary dark:text-dark-primary"
+        className="font-inter-bold tracking-wider mb-4 text-xl text-light-primary dark:text-dark-primary"
       >
         {devo.title}
       </HeaderTitle>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+        className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
       >
         {devo.description}
       </Text>
@@ -129,13 +129,13 @@ const DevoItem = ({
           <View className="gap-1">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-semibold text-light-primary dark:text-dark-primary"
+              className="font-inter-semibold text-light-primary dark:text-dark-primary"
             >
               TRIED BY FIRE
             </Text>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-sm text-light-primary dark:text-[#d6d6d6]"
+              className="font-inter-regular text-sm text-light-primary dark:text-[#d6d6d6]"
             >
               {switchDateFormat(devo.date)}
             </Text>
@@ -151,7 +151,7 @@ const DevoItem = ({
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="ml-1 leading-7 font-inter text-light-primary dark:text-[#efefef]"
+            className="ml-1 leading-7 font-inter-regular text-light-primary dark:text-[#efefef]"
           >
             {devo.verse}
           </Text>
@@ -160,13 +160,13 @@ const DevoItem = ({
 
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="font-inter my-2 font-bold text-light-primary dark:text-dark-primary text-2xl"
+        className="font-inter-bold my-2 text-light-primary dark:text-dark-primary text-2xl"
       >
         {devo.day}
       </Text>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="font-inter text-lg text-light-primary dark:text-dark-primary leading-8"
+        className="font-inter-regular text-lg text-light-primary dark:text-dark-primary leading-8"
       >
         {devo.content}
       </Text>

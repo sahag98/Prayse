@@ -2,10 +2,9 @@
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
+import { Switch, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useSupabase } from "@context/useSupabase";
 import {
   AntDesign,
   FontAwesome6,
@@ -14,19 +13,18 @@ import {
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { togglePrayerQuestions, togglePrayerVerses } from "@redux/proReducer";
-import { YOUR_THEMES_SCREEN } from "@routes";
+import { WALLPAPERS_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
 import { Container, HeaderView } from "@styles/appStyles";
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector((state) => state.theme.actualTheme);
   const versesEnabled = useSelector((state) => state.pro.prayer_verses);
   const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
-
-  const { supabase, currentUser } = useSupabase();
 
   const dispatch = useDispatch();
 
@@ -60,7 +58,7 @@ const ProScreen = () => {
             />
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
+              className=" font-inter-bold dark:text-white text-light-primary text-center text-3xl"
             >
               Pro Features
             </Text>
@@ -70,7 +68,7 @@ const ProScreen = () => {
       <View className="flex-row items-center gap-3">
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter text-primary dark:text-white font-semibold text-xl"
+          className="font-inter-semibold text-primary dark:text-white text-xl"
         >
           Theme Customization
         </Text>
@@ -78,12 +76,10 @@ const ProScreen = () => {
           name="brush"
           size={20}
           color={
-            colorScheme === "dark"
-              ? actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : "white"
-              : actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
                 : "#2f2d51"
           }
         />
@@ -98,27 +94,70 @@ const ProScreen = () => {
               name="brush-variant"
               size={24}
               color={
-                colorScheme === "dark"
-                  ? actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : "white"
-                  : actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
                     : "#2f2d51"
               }
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-medium text-lg text-light-primaryprimary dark:text-dark-primary"
+              className="font-inter-medium text-lg text-light-primaryprimary dark:text-dark-primary"
             >
               Themes Available
             </Text>
           </TouchableOpacity>
         </Link>
       </View>
+      <View className="flex-row mt-2 items-center gap-3">
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter-semibold text-primary dark:text-white text-xl"
+        >
+          Prayer Wallpapers
+        </Text>
+        <AntDesign
+          name="picture"
+          size={20}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      </View>
+      <View className="flex-row justify-between mt-2 w-full gap-3">
+        <Link asChild href={`/${WALLPAPERS_SCREEN}`}>
+          <TouchableOpacity
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="flex-1 p-5 gap-2 rounded-lg justify-center items-center bg-light-secondary dark:bg-dark-secondary"
+          >
+            <AntDesign
+              name="picture"
+              size={24}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-medium text-lg text-light-primaryprimary dark:text-dark-primary"
+            >
+              Wallpapers
+            </Text>
+          </TouchableOpacity>
+        </Link>
+      </View>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="mt-3 font-inter text-primary dark:text-white font-semibold text-xl"
+        className="mt-3 font-inter-semibold text-primary dark:text-white text-xl"
       >
         Additional Features
       </Text>
@@ -144,7 +183,7 @@ const ProScreen = () => {
       </View>
       <Text
         style={getSecondaryTextColorStyle(actualTheme)}
-        className=" mt-2 font-inter  text-light-primary dark:text-dark-primary"
+        className=" mt-2 font-inter-regular  text-light-primary dark:text-dark-primary"
       >
         Once enabled,click the bible icon on a prayer and get a related bible
         verse.
@@ -155,7 +194,7 @@ const ProScreen = () => {
       >
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-semibold font-inter text-lg text-light-primary dark:text-dark-primary"
+          className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
         >
           Post Questions
         </Text>
@@ -171,11 +210,12 @@ const ProScreen = () => {
       </TouchableOpacity>
       <Text
         style={getSecondaryTextColorStyle(actualTheme)}
-        className=" mt-2 font-inter  text-light-primary dark:text-dark-primary"
+        className=" mt-2 font-inter-regular  text-light-primary dark:text-dark-primary"
       >
         If enabled, you have the ability to post approved questions to the
         community.
       </Text>
+
       {/* <View className="flex-row items-center mt-3 gap-3">
         <Text
           style={getMainTextColorStyle(actualTheme)}
@@ -256,5 +296,3 @@ const ProScreen = () => {
 };
 
 export default ProScreen;
-
-const styles = StyleSheet.create({});

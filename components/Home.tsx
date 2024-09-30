@@ -199,34 +199,6 @@ const Home = ({
           />
         )}
       </Animated.View>
-      {/* {isBoxVisible && (
-        <View
-          style={{
-            flex: 1,
-            position: "absolute",
-            bottom: 0,
-            zIndex: 99,
-            width: "100%",
-            height: "40%",
-          }}
-        >
-          <BottomBox
-            slideUpValue={slideUpValue}
-            isBoxVisible={isBoxVisible}
-            opacity={opacity}
-            answeredAlready={answeredAlready}
-            handleTriggerEdit={handleTriggerEdit}
-            setAnsweredAlready={setAnsweredAlready}
-            setLoading={setLoading}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            theme={theme}
-            selectedEdit={selectedEdit}
-            setSelectedEdit={setSelectedEdit}
-            setIsBoxVisible={setIsBoxVisible}
-          />
-        </View>
-      )} */}
     </PrayerContainer>
   );
 };

@@ -5,6 +5,7 @@ import {
   Linking,
   Platform,
   ScrollView,
+  Share,
   Text,
   TouchableOpacity,
   View,
@@ -27,6 +28,7 @@ import {
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
 
+import DailysItems from "../../components/DailysItems";
 import SettingsItems from "../../components/SettingsItems";
 import config from "../../config";
 import {
@@ -37,22 +39,28 @@ import {
 import { Container, HeaderTitle } from "../../styles/appStyles";
 
 const MoreScreen = () => {
-  const theme = useSelector((state: any) => state.user.theme);
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
 
-  function giveFeedback(market: string) {
+  async function shareApp(market: string) {
     if (market === "android") {
-      Linking.openURL(`market://details?id=${config.androidPackageName}`);
+      await Share.share({
+        title: "Download Prayse",
+        message: `Get started on creating organized prayer lists, setup reminders to pray, and more! \n market://details?id=${config.androidPackageName}`,
+      });
+      // Linking.openURL(`market://details?id=${config.androidPackageName}`);
     }
     if (market === "ios") {
-      Linking.openURL(`itms-apps://itunes.apple.com/app/id${config.iosItemId}`);
+      // Linking.openURL(`itms-apps://itunes.apple.com/app/id${config.iosItemId}`);
+      await Share.share({
+        message: `Download Prayse Now and get started on creating organized prayer lists, setup reminders to pray, and more! \n itms-apps://itunes.apple.com/app/id${config.iosItemId}`,
+      });
     }
   }
 
-  const options = [
+  const dailys = [
     {
       id: 1,
       icon: (
@@ -91,9 +99,11 @@ const MoreScreen = () => {
       title: "Devotional",
       screen: DEVO_LIST_SCREEN,
     },
+  ];
 
+  const options = [
     {
-      id: 3,
+      id: 1,
       icon: (
         <AntDesign
           name="infocirlceo"
@@ -113,7 +123,7 @@ const MoreScreen = () => {
     },
 
     {
-      id: 4,
+      id: 2,
       icon: (
         <Feather
           name="shield"
@@ -132,7 +142,7 @@ const MoreScreen = () => {
       link: "https://www.prayse.app/privacy",
     },
     {
-      id: 5,
+      id: 3,
       icon: (
         <AntDesign
           name="setting"
@@ -160,7 +170,7 @@ const MoreScreen = () => {
       <View className="flex-row justify-between items-center mb-4">
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-light-primary dark:text-dark-primary"
+          className="font-inter-bold text-light-primary dark:text-dark-primary"
         >
           More
         </HeaderTitle>
@@ -172,17 +182,17 @@ const MoreScreen = () => {
       >
         <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className=" bg-light-secondary mb-5 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
+          className=" bg-light-secondary mb-2 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
           >
             Donate
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter leading-6 text-lg text-light-primary dark:text-dark-primary"
+            className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
           >
             Prayse is and will always be free. By donating, you support us to
             keep working on this app, and to further our mission in spreading
@@ -198,12 +208,17 @@ const MoreScreen = () => {
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+              className="font-inter-bold text-lg text-light-background dark:text-dark-background"
             >
               Donate
             </Text>
           </TouchableOpacity>
         </View>
+        <DailysItems
+          actualTheme={actualTheme}
+          options={dailys}
+          theme={colorScheme}
+        />
         <SettingsItems
           actualTheme={actualTheme}
           options={options}
@@ -252,9 +267,9 @@ const MoreScreen = () => {
           <TouchableOpacity
             onPress={() => {
               if (Platform.OS === "ios") {
-                giveFeedback("ios");
+                shareApp("ios");
               } else if (Platform.OS === "android") {
-                giveFeedback("android");
+                shareApp("android");
               }
             }}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
@@ -276,13 +291,13 @@ const MoreScreen = () => {
         <View className="justify-center  items-center my-4">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-medium text-lg mb-1 text-light-primary dark:text-dark-primary"
+            className="font-inter-medium text-lg mb-1 text-light-primary dark:text-dark-primary"
           >
             Made with 🙏 by Sahag
           </Text>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter text-sm text-light-primary dark:text-dark-primary"
+            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
           >
             "Be careful for nothing; but in every thing by prayer and
             supplication with thanksgiving let your requests be made known unto
@@ -291,7 +306,7 @@ const MoreScreen = () => {
           </Text>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter self-end font-medium text-sm text-light-primary dark:text-dark-primary"
+            className="font-inter-medium self-end text-sm text-light-primary dark:text-dark-primary"
           >
             - Philippians 4:6-7
           </Text>
