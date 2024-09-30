@@ -58,7 +58,7 @@
     "expo-web-browser": "~13.0.3",
     "lottie-react-native": "6.7.0",
     "moment": "^2.29.4",
-    "nativewind": "^4.0.1",
+    "nativewind": "^4.1.10",
     "posthog-react-native": "^3.1.1",
     "promise": "^8.3.0",
     "react": "18.2.0",
