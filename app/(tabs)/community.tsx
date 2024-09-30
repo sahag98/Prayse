@@ -12,7 +12,6 @@ import {
   FlatList,
   Image,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -61,8 +60,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
-const duration = 2000;
-const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
 
 const CommunityHomeScreen = () => {
   const navigation = useNavigation();
@@ -76,37 +73,25 @@ const CommunityHomeScreen = () => {
     supabase,
   } = useSupabase();
 
-  const theme = useSelector((state) => state.user.theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [joinVisible, setJoinVisible] = useState(false);
   const [extended, setExtended] = useState(true);
   const statusBarHeight = Constants.statusBarHeight;
-  const [prayerModal, setPrayerModal] = useState(false);
-  const [isShowingWelcome, setIsShowingWelcome] = useState(false);
   const isFocused = useIsFocused();
-  const [visible, setVisible] = useState(true);
-  const [prayers, setPrayers] = useState([]);
+
   const [userPrayers, setUserPrayers] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
   const [groups, setGroups] = useState([]);
   const isIOS = Platform.OS === "ios";
-  // const { current: velocity } = useRef(new Animated.Value(0));
-  const [searchName, setSearchName] = useState("");
-  const [isViewingGroups, setIsViewingGroups] = useState(false);
+
   const [hasConnection, setHasConnection] = useState(true);
-  const [isFetchingUserGroups, setIsFetchingUserGroups] = useState(false);
   const rotation = useSharedValue(0);
   const { colorScheme } = useColorScheme();
   const router = useRouter();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-
-  const reminders = useSelector((state) => state.reminder.reminders);
-  // const routeParams = useLocalSearchParams();
-
-  // console.log("current user: ", currentUser);
 
   useEffect(() => {
     if (!currentUser) {
@@ -120,7 +105,7 @@ const CommunityHomeScreen = () => {
     };
   });
 
-  const showToast = (type, content) => {
+  const showToast = (type) => {
     Toast.show({
       type,
       text1: "Copied to Clipboard.",
@@ -149,37 +134,17 @@ const CommunityHomeScreen = () => {
     getGroupUsers();
     getUserGroups();
     getPermission();
-    getPrayers();
   }, [isFocused]);
-
-  // useEffect(() => {
-  //   if (routeParams !== undefined) {
-  //     navigation.navigate(PRAYER_GROUP_SCREEN, {
-  //       group: routeParams.group,
-  //       allGroups: routeParams.allGroups,
-  //     });
-  //   }
-  // }, [route?.params]);
 
   useEffect(() => {
     getUserGroups();
     getGroupUsers();
   }, [refreshMembers]);
 
-  async function getPrayers() {
-    //prayers for production
-    //prayers_test for testing
-    const { data: prayers, error } = await supabase
-      .from("prayers")
-      .select("*, profiles(*)")
-      .order("id", { ascending: false });
-    setPrayers(prayers);
-  }
-
   async function getUserPrayers() {
     //prayers for production
     //prayers_test for testing
-    const { data: prayers, error } = await supabase
+    const { data: prayers } = await supabase
       .from("prayers")
       .select("*")
       .eq("user_id", currentUser?.id)
@@ -190,8 +155,7 @@ const CommunityHomeScreen = () => {
   async function getUserGroups() {
     console.log("fetching user groups...");
     try {
-      setIsFetchingUserGroups(true);
-      const { data: groups, error } = await supabase
+      const { data: groups } = await supabase
         .from("members")
         .select("*,groups(*), profiles(*)")
         .eq("user_id", currentUser?.id)
@@ -200,11 +164,10 @@ const CommunityHomeScreen = () => {
     } catch (error) {
       console.log(error);
     }
-    setIsFetchingUserGroups(false);
   }
 
   async function getGroupUsers() {
-    const { data: groups, error } = await supabase
+    const { data: groups } = await supabase
       .from("members")
       .select("*,groups(*), profiles(*)")
       .order("id", { ascending: true });
@@ -213,7 +176,7 @@ const CommunityHomeScreen = () => {
   }
 
   async function sendToken(expoPushToken) {
-    const { data, error } = await supabase
+    await supabase
       .from("profiles")
       .update({ expoToken: expoPushToken })
       .eq("id", currentUser?.id)
@@ -254,14 +217,6 @@ const CommunityHomeScreen = () => {
     sendToken(token);
   }
 
-  const ITEM_WIDTH = Dimensions.get("window").width / 2;
-
-  const list = userGroups?.filter((item) =>
-    searchName !== "" ? item.groups.name.includes(searchName) : true,
-  );
-
-  const width = Dimensions.get("window").width - 30;
-
   if (!currentUser) {
     console.log("not logged in!!!", currentUser);
     return <Redirect href="login" />;
@@ -291,7 +246,7 @@ const CommunityHomeScreen = () => {
         />
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+          className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
         >
           No network connection. Try again...
         </Text>
@@ -311,7 +266,7 @@ const CommunityHomeScreen = () => {
         <View className="flex-row items-center gap-2">
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             Hey {currentUser?.full_name}
           </HeaderTitle>
@@ -326,8 +281,6 @@ const CommunityHomeScreen = () => {
         <ProfileModal
           getUserPrayers={getUserPrayers}
           userPrayers={userPrayers}
-          setPrayerModal={setPrayerModal}
-          getPrayers={getPrayers}
           logout={logout}
           session={session}
           setCurrentUser={setCurrentUser}
@@ -376,7 +329,7 @@ const CommunityHomeScreen = () => {
             <View className="flex-row justify-between items-center">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-xl text-light-primary dark:text-dark-primary"
+                className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
               >
                 Questions
               </Text>
@@ -386,7 +339,7 @@ const CommunityHomeScreen = () => {
                 color={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
-                    : colorScheme == "dark"
+                    : colorScheme === "dark"
                       ? "white"
                       : "#2f2d51"
                 }
@@ -394,11 +347,10 @@ const CommunityHomeScreen = () => {
             </View>
             <View className="gap-3">
               <Text
-                className="font-inter leading-6 text-light-primary dark:text-dark-primary"
+                className="font-inter-regular leading-6 text-light-primary dark:text-dark-primary"
                 style={getSecondaryTextColorStyle(actualTheme)}
               >
-                Weekly biblical, and thought-provoking questions to answer and
-                reflect on.
+                Weekly biblical questions to answer and reflect on.
               </Text>
               <Link
                 asChild
@@ -411,7 +363,7 @@ const CommunityHomeScreen = () => {
                 >
                   <Text
                     style={getPrimaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+                    className="font-inter-bold text-lg text-light-background dark:text-dark-background"
                   >
                     View
                   </Text>
@@ -446,7 +398,7 @@ const CommunityHomeScreen = () => {
           <View className="flex-row items-center gap-2">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
             >
               Prayer Groups
             </Text>
@@ -462,7 +414,7 @@ const CommunityHomeScreen = () => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-background dark:text-dark-background"
+                className="font-inter-bold text-lg text-light-background dark:text-dark-background"
               >
                 Create
               </Text>
@@ -477,7 +429,7 @@ const CommunityHomeScreen = () => {
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+                className="font-inter-bold text-lg text-light-primary dark:text-dark-accent"
               >
                 Join
               </Text>
@@ -487,9 +439,9 @@ const CommunityHomeScreen = () => {
 
         <FlatList
           data={userGroups}
-          className="flex-1"
-          contentContainerStyle={{ flexGrow: 1 }} // Increased bottom padding and added flexGrow
-          keyExtractor={(e, i) => i.toString()}
+          className="flex-1 mt-5"
+          contentContainerStyle={{ flexGrow: 1, gap: 10 }} // Increased bottom padding and added flexGrow
+          keyExtractor={(i) => i.toString()}
           onEndReachedThreshold={0}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
@@ -501,14 +453,14 @@ const CommunityHomeScreen = () => {
                 color={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
-                    : colorScheme == "dark"
+                    : colorScheme === "dark"
                       ? "white"
                       : "#2f2d51"
                 }
               />
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-light-primary dark:text-dark-primary"
+                className="font-inter-semibold text-light-primary dark:text-dark-primary"
               >
                 No groups created or joined.
               </Text>
@@ -522,21 +474,22 @@ const CommunityHomeScreen = () => {
                 })
               }
               style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="w-full p-3 mt-3 flex-1 bg-light-secondary dark:bg-dark-secondary rounded-lg"
+              className="w-full p-3 h-auto bg-light-secondary dark:bg-dark-secondary rounded-lg"
             >
-              <View className="flex-1 justify-between gap-5">
+              <View className="justify-between gap-5">
                 <View className="gap-3">
                   <View className="flex-row justify-between">
                     <Text
                       numberOfLines={1}
                       style={getMainTextColorStyle(actualTheme)}
-                      className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
+                      className="flex-1 font-inter-semibold text-xl text-light-primary dark:text-dark-primary"
                     >
                       {item.groups.name}
                     </Text>
                     <TouchableOpacity
+                      onPress={() => copyToClipboard(item.groups.code)}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
-                      className="bg-light-primary flex-row gap-1 p-1.5 rounded-lg dark:bg-dark-secondary items-center justify-between"
+                      className="bg-light-primary flex-row gap-1 p-1.5 rounded-lg dark:bg-dark-background items-center justify-between"
                     >
                       <Feather
                         name="copy"
@@ -551,7 +504,7 @@ const CommunityHomeScreen = () => {
                       />
                       <Text
                         style={getPrimaryTextColorStyle(actualTheme)}
-                        className="text-light-background text-sm font-inter font-semibold dark:text-dark-primary"
+                        className="text-light-background text-sm font-inter-semibold dark:text-dark-primary"
                       >
                         {item.groups.code}
                       </Text>
@@ -561,7 +514,7 @@ const CommunityHomeScreen = () => {
                     <Text
                       numberOfLines={1}
                       style={getMainTextColorStyle(actualTheme)}
-                      className="font-inter  text-light-primary dark:text-dark-primary"
+                      className="font-inter-regular  text-light-primary dark:text-dark-primary"
                     >
                       {item.groups?.description}
                     </Text>
@@ -596,7 +549,7 @@ const CommunityHomeScreen = () => {
                         ?.length > 3 && (
                         <Text
                           style={getMainTextColorStyle(actualTheme)}
-                          className="ml-1 font-inter text-light-primary dark:text-dark-primary"
+                          className="ml-1 font-inter-medium text-light-primary dark:text-dark-primary"
                         >
                           +
                           {groups.filter((g) => g.group_id === item.group_id)
@@ -609,272 +562,9 @@ const CommunityHomeScreen = () => {
             </TouchableOpacity>
           )}
         />
-
-        {/* <FlatList
-          showsVerticalScrollIndicator={false}
-          windowSize={8}
-          className="flex-1 bg-red-300"
-          onEndReachedThreshold={0}
-          scrollEventThrottle={16}
-          style={{ flex: 1 }}
-          contentContainerStyle={{ gap: 15, flex: 1, flexGrow: 1 }}
-          data={userGroups}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={() => (
-            <View className="flex-1 gap-3 justify-center items-center">
-              <FontAwesome
-                name="group"
-                size={40}
-                color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
-                    : colorScheme == "dark"
-                      ? "white"
-                      : "#2f2d51"
-                }
-              />
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-semibold text-light-primary dark:text-dark-primary"
-              >
-                No groups created or joined.
-              </Text>
-            </View>
-          )}
-          renderItem={({ item }) => {
-            return (
-              <View
-                onPress={() =>
-                  navigation.navigate(PRAYER_GROUP_SCREEN, {
-                    group_id: item.group_id,
-                    // group: item,
-                    // allGroups: groups.filter(
-                    //   (g) => g.group_id === item.group_id
-                    // ),
-                  })
-                }
-                style={
-                  actualTheme &&
-                  actualTheme.MainTxt && {
-                    borderColor: actualTheme.MainTxt,
-                  }
-                }
-                className="w-full p-3 flex-1 bg-light-secondary rounded-lg"
-              >
-                <View className="flex-1 justify-between gap-5">
-                  <View className="gap-1 ">
-                    <View className="flex-row justify-between">
-                      <Text
-                        style={getMainTextColorStyle(actualTheme)}
-                        className="flex-1 font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
-                      >
-                        {item.groups.name}
-                      </Text>
-                      <TouchableOpacity
-                        style={getPrimaryBackgroundColorStyle(actualTheme)}
-                        className="bg-light-primary flex-row gap-1 p-1.5 rounded-lg dark:bg-dark-secondary items-center justify-between"
-                      >
-                        <Feather
-                          name="copy"
-                          size={16}
-                          color={
-                            actualTheme && actualTheme.PrimaryTxt
-                              ? actualTheme.PrimaryTxt
-                              : colorScheme === "dark"
-                                ? "white"
-                                : "white"
-                          }
-                        />
-                        <Text
-                          style={getPrimaryTextColorStyle(actualTheme)}
-                          className="text-light-background text-sm font-inter font-semibold dark:text-dark-primary"
-                        >
-                          {item.groups.code}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    {item.groups.description && (
-                      <Text
-                        style={getMainTextColorStyle(actualTheme)}
-                        className="font-inter  text-light-primary dark:text-dark-primary"
-                      >
-                        {item.groups?.description}
-                      </Text>
-                    )}
-                  </View>
-
-                  <View className="flex-row px-3 w-full items-center">
-                    {groups
-                      .filter((g) => g.group_id === item.group_id)
-                      .slice(0, 3)
-                      .map((g, index) => (
-                        <View
-                          key={index}
-                          style={{
-                            position: "relative",
-                            marginLeft: index > 0 ? -10 : 0,
-                          }}
-                        >
-                          <Image
-                            className="w-9 h-9 rounded-full"
-                            source={{
-                              uri: g.profiles?.avatar_url
-                                ? g.profiles?.avatar_url
-                                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-                            }}
-                          />
-                        </View>
-                      ))}
-                    <View>
-                      {groups?.length > 3 &&
-                        groups.filter((g) => g.group_id === item.group_id)
-                          ?.length > 3 && (
-                          <Text
-                            style={getMainTextColorStyle(actualTheme)}
-                            className="ml-1 font-inter text-light-primary dark:text-dark-primary"
-                          >
-                            +
-                            {groups.filter((g) => g.group_id === item.group_id)
-                              ?.length - 3}
-                          </Text>
-                        )}
-                    </View>
-                  </View>
-                </View>
-              </View>
-            );
-          }}
-        /> */}
       </View>
     </View>
   );
 };
 
 export default CommunityHomeScreen;
-
-const styles = StyleSheet.create({
-  joinedUserImg: {
-    width: 30,
-    height: 30,
-    borderRadius: 50,
-  },
-  textInputStyle: {
-    padding: 10,
-    width: "100%",
-    fontSize: 13,
-  },
-  textInputStyleDark: {
-    padding: 10,
-    width: "100%",
-    fontSize: 13,
-  },
-
-  img: {
-    width: 150,
-    height: 150,
-    alignSelf: "center",
-    marginVertical: 15,
-  },
-  box: {
-    height: 40,
-    width: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    // backgroundColor: "#b58df1",
-    borderRadius: 20,
-  },
-
-  imgContainer: {
-    marginBottom: 20,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  question: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "#93d8f8",
-    borderWidth: 0.8,
-    // backgroundColor: "#93d8f8",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-
-  profileImg: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-  },
-  iconContainer: {
-    position: "relative",
-    padding: 10,
-    alignSelf: "flex-end",
-    marginLeft: "auto",
-  },
-  questionDark: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "#f1d592",
-    borderWidth: 0.3,
-    // backgroundColor: "#f1d592",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  actionButtons: {
-    position: "absolute",
-    right: 15,
-    bottom: 15,
-    display: "flex",
-  },
-  fabStyleDark: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-  },
-  fabStyle: {
-    position: "relative",
-    alignSelf: "flex-end",
-    justifyContent: "flex-end",
-    backgroundColor: "#2f2d51",
-  },
-  // profileImg: {
-  //   width: 60,
-  //   height: 60,
-  //   borderRadius: 50,
-  // },
-  // iconContainer: {
-  //   position: "relative",
-  //   padding: 8,
-  // },
-  featherIconDark: {
-    position: "absolute",
-    backgroundColor: "#A5C9FF",
-    borderRadius: 50,
-    padding: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: 4,
-    right: 2,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "white",
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "#2f2d51",
-    borderRadius: 50,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    bottom: 4,
-    right: 2,
-  },
-});

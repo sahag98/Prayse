@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -10,18 +9,12 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
-  FadeIn,
-  FadeOut,
-  Layout,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -189,13 +182,13 @@ const JoinModal = ({
         <View className="flex-1 mb-14 gap-2 self-center items-center w-full justify-center">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="text-3xl mb-2 font-inter font-bold text-light-primary dark:text-dark-primary"
+            className="text-3xl mb-2 font-inter-bold text-light-primary dark:text-dark-primary"
           >
             Join Prayer Group
           </Text>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-medium text-light-primary mb-2 dark:text-dark-primary"
+            className="font-inter-medium text-light-primary mb-2 dark:text-dark-primary"
           >
             Join a group, and share prayer requests with others.
           </Text>
@@ -210,7 +203,7 @@ const JoinModal = ({
             >
               <TextInput
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                className="font-inter-regular text-light-primary dark:text-dark-primary"
                 autoFocus={modalVisible}
                 maxLength={6}
                 keyboardType="numeric"
@@ -251,7 +244,7 @@ const JoinModal = ({
             </TouchableOpacity>
           </View>
           {joinError && (
-            <Text className="font-inter self-start font-medium text-sm text-red-500">
+            <Text className="font-inter-medium self-start text-sm text-red-500">
               Group doesn't exist try again.
             </Text>
           )}
@@ -259,14 +252,14 @@ const JoinModal = ({
           <View className="mt-2 w-full">
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-sm font-medium text-light-primary dark:text-dark-primary"
+              className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
             >
               "For where two or three are gathered together in my name, there am
               I in the midst of them."
             </Text>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="self-end text-light-primary dark:text-dark-primary font-inter font-semibold"
+              className="self-end text-light-primary dark:text-dark-primary font-inter-semibold"
             >
               - Matthew 18:20
             </Text>
@@ -279,109 +272,3 @@ const JoinModal = ({
 };
 
 export default JoinModal;
-
-const styles = StyleSheet.create({
-  nameDark: {
-    width: "100%",
-    padding: 15,
-    borderRadius: 10,
-    color: "white",
-    fontFamily: "Inter-Regular",
-    fontSize: 15,
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  name: {
-    width: "100%",
-    padding: 15,
-
-    color: "#2f2d51",
-    borderRadius: 10,
-    fontFamily: "Inter-Regular",
-    fontSize: 15,
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  inputField: {
-    alignSelf: "center",
-    flex: 1,
-    marginBottom: 50,
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-
-    width: "100%",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "#adadad",
-    borderBottomWidth: 1,
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "#2f2d51",
-    borderBottomWidth: 1,
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-  },
-  logoutDark: {
-    alignSelf: "flex-end",
-    backgroundColor: "#212121",
-    width: "100%",
-    paddingVertical: 15,
-    borderRadius: 5,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logout: {
-    alignSelf: "flex-end",
-    backgroundColor: "#2f2d51",
-    width: "100%",
-    paddingVertical: 12,
-    borderRadius: 5,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  profileImg: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-  iconContainer: {
-    position: "relative",
-    alignSelf: "center",
-    padding: 8,
-  },
-  featherIconDark: {
-    position: "absolute",
-    backgroundColor: "#3e3e3e",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "#93d8f8",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-});

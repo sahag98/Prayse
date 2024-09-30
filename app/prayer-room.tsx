@@ -55,7 +55,6 @@ import { Container } from "../styles/appStyles";
 
 const PrayerRoom = () => {
   const navigation = useNavigation();
-  const theme = useSelector((state) => state.user.theme);
   const prayers = useSelector((state) => state.prayer.prayer);
 
   const UnarchivedPrayers = prayers.filter(
@@ -63,7 +62,7 @@ const PrayerRoom = () => {
   );
   const folders = useSelector((state) => state.folder.folders);
   const [screenIndex, setScreenIndex] = useState(0);
-  const [hasOnboardingEnded, sethasOnboardingEnded] = useState(false);
+
   const [isPraying, setIsPraying] = useState(false);
 
   const router = useRouter();
@@ -74,7 +73,7 @@ const PrayerRoom = () => {
   const routeParams = useLocalSearchParams();
   const data = UnarchivedPrayers[screenIndex];
   const { colorScheme } = useColorScheme();
-  const pulse = useSharedValue(0);
+  // const pulse = useSharedValue(0);
   const opacityValue = useSharedValue(0);
   const fadeIn = useSharedValue(0);
   const prayerFadeIn = useSharedValue(0);
@@ -82,12 +81,10 @@ const PrayerRoom = () => {
   const pressFadeIn = useSharedValue(0);
   const roomFadeIn = useSharedValue(0);
   const video = useRef(null);
-  const [status, setStatus] = useState({});
   const isFocused = useIsFocused();
-  const [isVideoStarting, setIsVideoStarting] = useState(false);
+
   const [sound, setSound] = useState();
   const [isPlayingSound, setIsPlayingSound] = useState(false);
-  const [permissionResponse, requestPermission] = Audio.usePermissions();
 
   const dispatch = useDispatch();
 
@@ -141,10 +138,6 @@ const PrayerRoom = () => {
       : undefined;
   }, [sound]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulse.value * 1.08 }],
-  }));
-
   const animatedOpacityStyle = useAnimatedStyle(() => ({
     opacity: opacityValue.value * 1,
   }));
@@ -178,13 +171,6 @@ const PrayerRoom = () => {
 
   const doPressFadeInAnimation = () => {
     pressFadeIn.value = withTiming(1, {
-      duration: 2000,
-      easing: Easing.ease,
-    });
-  };
-
-  const doPressFadeOutAnimation = () => {
-    pressFadeIn.value = withTiming(0, {
       duration: 2000,
       easing: Easing.ease,
     });
@@ -228,8 +214,6 @@ const PrayerRoom = () => {
   async function loadVideo() {
     // await video.current.loadAsync(gradient);
     await video.current.playAsync();
-
-    setIsVideoStarting(true);
   }
 
   useEffect(() => {
@@ -303,7 +287,7 @@ const PrayerRoom = () => {
     Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
   );
 
-  if (UnarchivedPrayers?.length == 0) {
+  if (UnarchivedPrayers?.length === 0) {
     return (
       <Container
         style={getMainBackgroundColorStyle(actualTheme)}
@@ -333,7 +317,7 @@ const PrayerRoom = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "light"
+                  : colorScheme === "light"
                     ? "#2f2d51"
                     : "white"
               }
@@ -341,7 +325,7 @@ const PrayerRoom = () => {
           </TouchableOpacity>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             Prayer Room
           </Text>
@@ -353,7 +337,7 @@ const PrayerRoom = () => {
             color={
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
-                : colorScheme == "dark"
+                : colorScheme === "dark"
                   ? "white"
                   : "#2f2d51"
             }
@@ -362,7 +346,7 @@ const PrayerRoom = () => {
             <>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter text-center font-medium text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-medium text-center text-lg text-light-primary dark:text-dark-primary"
               >
                 No prayers added yet! Create a prayer folder and add prayers to
                 it.
@@ -374,7 +358,7 @@ const PrayerRoom = () => {
               >
                 <Text
                   style={getPrimaryTextColorStyle(actualTheme)}
-                  className="text-light-background dark:text-dark-background font-inter font-bold"
+                  className="text-light-background dark:text-dark-background font-inter-bold"
                 >
                   Create Folder
                 </Text>
@@ -383,7 +367,7 @@ const PrayerRoom = () => {
           ) : (
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-center font-medium text-lg text-light-primary dark:text-dark-primary"
+              className="font-inter-medium text-center text-lg text-light-primary dark:text-dark-primary"
             >
               No prayers added yet! Add prayers to your folders.
             </Text>
@@ -444,13 +428,13 @@ const PrayerRoom = () => {
                       color={
                         actualTheme && actualTheme.MainTxt
                           ? actualTheme.MainTxt
-                          : colorScheme == "light"
+                          : colorScheme === "light"
                             ? "#2f2d51"
                             : "white"
                       }
                     />
                   </TouchableOpacity>
-                  <Text className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary">
+                  <Text className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary">
                     Prayer Room
                   </Text>
                 </View>
@@ -484,7 +468,7 @@ const PrayerRoom = () => {
                     color={
                       actualTheme && actualTheme.PrimaryTxt
                         ? actualTheme.PrimaryTxt
-                        : colorScheme == "dark"
+                        : colorScheme === "dark"
                           ? "#121212"
                           : "white"
                     }
@@ -496,7 +480,7 @@ const PrayerRoom = () => {
                     key={screenIndex}
                   >
                     <Animated.Text
-                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide my-2"
+                      className="font-inter-semibold text-light-primary dark:text-dark-primary text-3xl z-20 tracking-wide my-2"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedMomentFadeInStyle,
@@ -508,7 +492,7 @@ const PrayerRoom = () => {
                       <Animated.Text
                         entering={SlideInRight}
                         exiting={SlideOutLeft}
-                        className="font-inter font-semibold text-2xl text-light-primary dark:text-dark-primary"
+                        className="font-inter-semibold text-2xl text-light-primary dark:text-dark-primary"
                         style={[
                           getMainTextColorStyle(actualTheme),
                           animatedPrayerFadeInStyle,
@@ -520,7 +504,7 @@ const PrayerRoom = () => {
                         <Animated.Text
                           entering={SlideInRight}
                           exiting={SlideOutLeft}
-                          className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+                          className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
                           style={[
                             getMainTextColorStyle(actualTheme),
                             animatedPrayerFadeInStyle,
@@ -531,7 +515,7 @@ const PrayerRoom = () => {
                       )}
                     </View>
                     <Animated.Text
-                      className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                      className="font-inter-medium text-light-primary dark:text-dark-primary"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedOpacityStyle,
@@ -619,7 +603,7 @@ const PrayerRoom = () => {
                       color={
                         actualTheme && actualTheme.MainTxt
                           ? actualTheme.MainTxt
-                          : colorScheme == "light"
+                          : colorScheme === "light"
                             ? "#2f2d51"
                             : "white"
                       }
@@ -627,7 +611,7 @@ const PrayerRoom = () => {
                   </TouchableOpacity>
                   <Text
                     style={getMainTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+                    className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
                   >
                     Prayer Room
                   </Text>
@@ -661,7 +645,7 @@ const PrayerRoom = () => {
                     color={
                       actualTheme && actualTheme.PrimaryTxt
                         ? actualTheme.PrimaryTxt
-                        : colorScheme == "dark"
+                        : colorScheme === "dark"
                           ? "#121212"
                           : "white"
                     }
@@ -673,7 +657,7 @@ const PrayerRoom = () => {
                     key={screenIndex}
                   >
                     <Animated.Text
-                      className="font-inter text-light-primary dark:text-dark-primary font-semibold text-3xl z-20 tracking-wide"
+                      className="font-inter-semibold text-light-primary dark:text-dark-primary text-3xl z-20 tracking-wide"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedMomentFadeInStyle,
@@ -685,7 +669,7 @@ const PrayerRoom = () => {
                       <Animated.Text
                         entering={SlideInRight}
                         exiting={SlideOutLeft}
-                        className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
+                        className="font-inter-medium text-2xl text-light-primary dark:text-dark-primary"
                         style={[
                           getMainTextColorStyle(actualTheme),
                           animatedPrayerFadeInStyle,
@@ -695,7 +679,7 @@ const PrayerRoom = () => {
                       </Animated.Text>
                     </View>
                     <Animated.Text
-                      className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                      className="font-inter-medium text-light-primary dark:text-dark-primary"
                       style={[
                         getMainTextColorStyle(actualTheme),
                         animatedOpacityStyle,
@@ -777,7 +761,7 @@ const PrayerRoom = () => {
                 color={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
-                    : colorScheme == "light"
+                    : colorScheme === "light"
                       ? "#2f2d51"
                       : "white"
                 }
@@ -785,7 +769,7 @@ const PrayerRoom = () => {
             </TouchableOpacity>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
             >
               Prayer Room
             </Text>
@@ -819,7 +803,7 @@ const PrayerRoom = () => {
                   entering={SlideInRight}
                   exiting={SlideOutLeft}
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter font-medium text-2xl text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium text-2xl text-light-primary dark:text-dark-primary"
                 >
                   {data.prayer}
                 </Animated.Text>
@@ -831,7 +815,7 @@ const PrayerRoom = () => {
             {!isPraying ? (
               <View className="items-center gap-4">
                 <Animated.Text
-                  className="font-inter font-medium text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium text-light-primary dark:text-dark-primary"
                   style={[
                     getMainTextColorStyle(actualTheme),
                     animatedPressFadeInStyle,
@@ -842,7 +826,7 @@ const PrayerRoom = () => {
                 <AnimatedTouchable
                   onPress={() => {
                     setIsPraying(true);
-                    // doPressFadeOutAnimation();
+
                     loadAndPlayRandomAudio();
                   }}
                   className="p-4 rounded-full bg-light-primary dark:bg-dark-secondary border border-light-secondary dark:border-dark-accent"
@@ -858,7 +842,7 @@ const PrayerRoom = () => {
                     color={
                       actualTheme && actualTheme.PrimaryTxt
                         ? actualTheme.PrimaryTxt
-                        : colorScheme == "dark"
+                        : colorScheme === "dark"
                           ? "#a5c9ff"
                           : "#b7d3ff"
                     }

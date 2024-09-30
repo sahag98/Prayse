@@ -24,7 +24,7 @@ const AnswerItem = ({ item, actualTheme, theme }) => {
           />
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-lg text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
           >
             {item.profiles.full_name}
           </Text>
@@ -32,14 +32,14 @@ const AnswerItem = ({ item, actualTheme, theme }) => {
 
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter font-normal text-light-primary dark:text-gray-400 text-sm"
+          className="font-inter-regular text-light-primary dark:text-gray-400 text-sm"
         >
           {Moment(item.created_at).fromNow()}
         </Text>
       </View>
       <Text
         style={getSecondaryTextColorStyle(actualTheme)}
-        className="ml-1 font-inter text-light-primary dark:text-dark-primary font-normal leading-5"
+        className="ml-1 font-inter-regular text-light-primary dark:text-dark-primary leading-5"
       >
         {item.answer}
       </Text>

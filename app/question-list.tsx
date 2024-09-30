@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import AddQuestionModal from "@modals/AddQuestionModal";
@@ -23,7 +23,6 @@ import { COMMUNITY_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionListScreen = () => {
-  const theme = useSelector((state) => state.user.theme);
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const questionBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
@@ -81,7 +80,7 @@ const QuestionListScreen = () => {
           </Link>
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-light-primary dark:text-dark-primary"
           >
             Questions
           </HeaderTitle>
@@ -137,7 +136,7 @@ const QuestionListScreen = () => {
         // onRefresh={() => console.log("refresh list")}
         showsVerticalScrollIndicator={false}
         contentContainerClassName="gap-4"
-        keyExtractor={(e, i) => i.toString()}
+        keyExtractor={(i) => i.toString()}
         renderItem={({ item }) => (
           <QuestionInfo
             key={item.id}
@@ -161,5 +160,3 @@ const QuestionListScreen = () => {
 };
 
 export default QuestionListScreen;
-
-const styles = StyleSheet.create({});

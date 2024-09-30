@@ -9,7 +9,6 @@ import {
   Linking,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -42,25 +41,17 @@ import {
 } from "../styles/appStyles";
 
 const LoginScreen = () => {
-  const theme = useSelector((state) => state.user.theme);
   const [forgotModal, setForgotModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {
-    register,
-    login,
-    currentUser,
-    forgotPassword,
-    getGoogleOAuthUrl,
-    setOAuthSession,
-  } = useSupabase();
+  const { register, login, getGoogleOAuthUrl, setOAuthSession } = useSupabase();
   const [passVisible, setPassVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   const router = useRouter();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-  const { colorScheme, setColorScheme } = useColorScheme();
+  const { colorScheme } = useColorScheme();
   useEffect(() => {
     WebBrowser.warmUpAsync();
 
@@ -78,7 +69,7 @@ const LoginScreen = () => {
   };
 
   const SignUp = () => {
-    if (email.length == 0 || password.length == 0) {
+    if (email.length === 0 || password.length === 0) {
       showToast("error", "Email and password fields can't be empty.");
     } else {
       register(email, password);
@@ -166,13 +157,13 @@ const LoginScreen = () => {
         <View className="items-center gap-2 mb-4">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-light-primary dark:text-dark-primary text-3xl"
+            className="font-inter-bold text-light-primary dark:text-dark-primary text-3xl"
           >
             {isLoggingIn ? "Sign In" : "Sign Up"}
           </Text>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter text-lg text-light-primary dark:text-dark-primary"
+            className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
           >
             Connect and pray for one another.
           </Text>
@@ -203,7 +194,7 @@ const LoginScreen = () => {
                 }
                 value={email}
                 blurOnSubmit
-                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter-regular"
                 placeholder="Enter email"
               />
             </View>
@@ -213,7 +204,7 @@ const LoginScreen = () => {
             >
               <TextInput
                 style={getSecondaryTextColorStyle(actualTheme)}
-                cursorColor={theme == "dark" ? "white" : "#2f2d51"}
+                cursorColor={colorScheme === "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
@@ -233,7 +224,7 @@ const LoginScreen = () => {
                       ? "#d6d6d6"
                       : "#423f72"
                 }
-                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter-regular"
                 placeholder="Enter password"
               />
               <TouchableOpacity
@@ -271,7 +262,7 @@ const LoginScreen = () => {
               onPress={() => setForgotModal(true)}
               className="self-end mb-3"
             >
-              <Text className="font-inter font-medium text-red-500 text-sm">
+              <Text className="font-inter-medium text-red-500 text-sm">
                 Forgot password?
               </Text>
             </TouchableOpacity>
@@ -295,7 +286,7 @@ const LoginScreen = () => {
                   className="bg-light-secondary dark:bg-dark-secondary w-5/6"
                 >
                   <Text
-                    className="font-inter font-bold text-center text-2xl text-light-primary dark:text-dark-primary"
+                    className="font-inter-bold text-center text-2xl text-light-primary dark:text-dark-primary"
                     style={getSecondaryTextColorStyle(actualTheme)}
                   >
                     Forgot Password
@@ -321,7 +312,7 @@ const LoginScreen = () => {
                       />
                       <Text
                         style={getPrimaryTextColorStyle(actualTheme)}
-                        className="font-inter font-semibold  text-light-background dark:text-dark-background"
+                        className="font-inter-semibold  text-light-background dark:text-dark-background"
                       >
                         Contact Developer
                       </Text>
@@ -354,7 +345,7 @@ const LoginScreen = () => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
+                className="font-inter-bold text-light-background text-lg dark:text-dark-background"
               >
                 Login
               </Text>
@@ -365,8 +356,11 @@ const LoginScreen = () => {
                 className="w-full h-[2px] absolute self-center bg-light-secondary dark:bg-dark-secondary"
               />
               <Text
-                style={getMainBackgroundColorStyle(actualTheme)}
-                className="my-2 p-3 font-inter font-semibold bg-light-background dark:bg-dark-background"
+                style={[
+                  getMainBackgroundColorStyle(actualTheme),
+                  getMainTextColorStyle(actualTheme),
+                ]}
+                className="my-2 p-3 font-inter-medium text-light-primary dark:text-dark-primary bg-light-background dark:bg-dark-background"
               >
                 Or
               </Text>
@@ -381,7 +375,7 @@ const LoginScreen = () => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
+                className="font-inter-bold text-light-background text-lg dark:text-dark-background"
               >
                 Login with Google
               </Text>
@@ -403,7 +397,7 @@ const LoginScreen = () => {
             >
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="underline underline-offset-2 text-sm font-inter font-medium text-light-primary dark:text-dark-accent"
+                className="underline underline-offset-2 text-sm font-inter-medium text-light-primary dark:text-dark-accent"
               >
                 Don't have an account yet? Sign up.
               </Text>
@@ -436,7 +430,7 @@ const LoginScreen = () => {
                 }
                 value={email}
                 blurOnSubmit
-                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter-regular"
                 placeholder="Enter email"
               />
             </View>
@@ -446,7 +440,7 @@ const LoginScreen = () => {
             >
               <TextInput
                 style={getSecondaryTextColorStyle(actualTheme)}
-                cursorColor={theme == "dark" ? "white" : "#2f2d51"}
+                cursorColor={colorScheme === "dark" ? "white" : "#2f2d51"}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
                 autoCapitalize="none"
@@ -466,7 +460,7 @@ const LoginScreen = () => {
                       ? "#d6d6d6"
                       : "#423f72"
                 }
-                className="w-3/4 text-light-primary dark:text-dark-primary font-inter"
+                className="w-3/4 text-light-primary dark:text-dark-primary font-inter-regular"
                 placeholder="Enter password"
               />
               <TouchableOpacity
@@ -507,7 +501,7 @@ const LoginScreen = () => {
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter font-bold text-light-background text-lg dark:text-dark-background"
+                className="font-inter-bold text-light-background text-lg dark:text-dark-background"
               >
                 Sign Up
               </Text>
@@ -518,15 +512,15 @@ const LoginScreen = () => {
             >
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="underline underline-offset-2 text-sm font-inter font-medium text-light-primary dark:text-dark-accent"
+                className="underline underline-offset-2 text-sm font-inter-medium text-light-primary dark:text-dark-accent"
               >
                 Already have an account yet? Sign in.
               </Text>
             </TouchableOpacity>
           </>
         )}
-        <View>
-          <Text className="dark:text-dark-primary text-light-primary font-inter  mt-5 text-sm">
+        <View className="mt-10">
+          <Text className="dark:text-dark-primary text-light-primary font-inter-regular  mt-5 text-sm">
             Confess your faults one to another, and pray one for another, that
             ye may be healed. The effectual fervent prayer of a righteous man
             availeth much. - James 5:16
@@ -539,92 +533,3 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({
-  anonDark: {
-    marginTop: 15,
-    fontSize: 12,
-    lineHeight: 22,
-    fontFamily: "Inter-Regular",
-    color: "#cccccc",
-  },
-  anon: {
-    marginTop: 15,
-    fontSize: 12,
-    fontFamily: "Inter-Regular",
-    color: "#5b579d",
-  },
-  signInButtonDark: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    width: "100%",
-    justifyContent: "center",
-    backgroundColor: "#A5C9FF",
-    paddingVertical: 17,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-  },
-  signUpButtonDark: {
-    marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  signUpButton: {
-    marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  signInButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    backgroundColor: "#2f2d51",
-    paddingVertical: 17,
-    width: "100%",
-    paddingHorizontal: 15,
-    borderRadius: 10,
-  },
-  welcome: {
-    fontSize: 20,
-    marginTop: 15,
-    fontFamily: "Inter-Bold",
-    letterSpacing: 2,
-    alignSelf: "center",
-    color: "#2F2D51",
-  },
-  introDark: {
-    marginTop: 2,
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-    alignSelf: "center",
-    color: "#cccccc",
-  },
-  intro: {
-    marginTop: 2,
-    fontSize: 15,
-    fontFamily: "Inter-Regular",
-    alignSelf: "center",
-    color: "#2f2d51",
-  },
-  welcomeDark: {
-    marginTop: 15,
-    fontSize: 20,
-    fontFamily: "Inter-Bold",
-    alignSelf: "center",
-    letterSpacing: 2,
-    color: "white",
-  },
-  img: {
-    width: 30,
-    height: 30,
-  },
-
-  imgContainer: {
-    marginBottom: 20,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

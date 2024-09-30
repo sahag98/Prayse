@@ -176,7 +176,7 @@ const GroupPrayerItem = ({
         />
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+          className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
         >
           {item.profiles.full_name}
         </Text>
@@ -184,7 +184,7 @@ const GroupPrayerItem = ({
 
       <Text
         style={getSecondaryTextColorStyle(actualTheme)}
-        className="font-inter text-light-primary text-lg dark:text-dark-primary py-2 leading-6 mb-3"
+        className="font-inter-regular text-light-primary text-lg dark:text-dark-primary py-2 leading-6 mb-3"
       >
         {item.message}
       </Text>
@@ -212,7 +212,7 @@ const GroupPrayerItem = ({
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-sm text-light-primary dark:text-[#d2d2d2] font-inter"
+              className="text-sm text-light-primary dark:text-[#d2d2d2] font-inter-medium"
             >
               Tap and hold to react
             </Text>
@@ -226,8 +226,8 @@ const GroupPrayerItem = ({
               isPrayerLiked ? "flex" : "hidden"
             )}
           >
-            <Text className="text-sm font-inter">{likes.length}</Text>
-            <Text className="text-sm font-inter">🙏</Text>
+            <Text className="text-sm font-inter-medium">{likes.length}</Text>
+            <Text className="text-sm font-inter-medium">🙏</Text>
           </TouchableOpacity>
         )}
         {praises && praises.length > 0 && (
@@ -237,13 +237,13 @@ const GroupPrayerItem = ({
               isPrayerPraised ? "flex" : "hidden"
             )}
           >
-            <Text className="text-sm font-inter">{praises.length}</Text>
-            <Text className="text-sm font-inter">🙌</Text>
+            <Text className="text-sm font-inter-medium">{praises.length}</Text>
+            <Text className="text-sm font-inter-medium">🙌</Text>
           </TouchableOpacity>
         )}
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="ml-auto font-inter text-xs text-light-primary/60 dark:text-[#d2d2d2]"
+          className="ml-auto font-inter-regular text-xs text-light-primary/60 dark:text-[#d2d2d2]"
         >
           {Moment(item.created_at).fromNow()}
         </Text>

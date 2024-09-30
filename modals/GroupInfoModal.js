@@ -36,139 +36,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-
-const GroupInfoMenu = ({
-  theme,
-  group,
-  currentUser,
-  handleRemoveConfirmation,
-  userToEdit,
-  setShowMenu,
-  onAnimationComplete,
-}) => {
-  return (
-    <View style={[styles.menuContainer]}>
-      <View
-        style={
-          theme === "dark"
-            ? { ...styles.menuContent, backgroundColor: "#212121" }
-            : { ...styles.menuContent, backgroundColor: "#b7d3ff" }
-        }
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 15,
-            }}
-          >
-            <Image
-              style={{ width: 50, height: 50, borderRadius: 50 }}
-              source={{
-                uri:
-                  userToEdit.avatar_url ||
-                  "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-              }}
-            />
-            <Text
-              style={
-                theme === "dark"
-                  ? {
-                      color: "white",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                    }
-                  : {
-                      color: "#2f2d51",
-                      fontFamily: "Inter-Medium",
-                      fontSize: 15,
-                    }
-              }
-            >
-              {userToEdit.full_name}
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              borderRadius: 200,
-              backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
-              padding: 10,
-            }}
-            onPress={() => setShowMenu(false)}
-          >
-            <AntDesign
-              name="close"
-              size={24}
-              color={theme === "dark" ? "white" : "white"}
-            />
-          </TouchableOpacity>
-        </View>
-        {group.user_id === currentUser.id &&
-          group.is_admin === true &&
-          currentUser.id !== userToEdit.id && (
-            <View
-              style={{
-                backgroundColor: "#121212",
-                width: "100%",
-                marginTop: 20,
-                marginBottom: 20,
-                borderRadius: 10,
-                flex: 1,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  paddingHorizontal: 15,
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  paddingHorizontal: 15,
-                  paddingVertical: 18,
-                  backgroundColor: theme === "dark" ? "#121212" : "#2f2d51",
-                  borderRadius: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-                onPress={() => handleRemoveConfirmation(userToEdit)}
-              >
-                <Text
-                  style={
-                    theme === "dark"
-                      ? { ...styles.menuItem, color: "#ff2727" }
-                      : { ...styles.menuItem, color: "white" }
-                  }
-                >
-                  Remove User
-                </Text>
-                <MaterialIcons
-                  name="remove-circle-outline"
-                  size={24}
-                  color="#ff2727"
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-      </View>
-    </View>
-  );
-};
+import Animated from "react-native-reanimated";
 
 const GroupInfoModal = ({
   groupInfoVisible,
@@ -332,14 +200,14 @@ const GroupInfoModal = ({
             </TouchableOpacity>
             <HeaderTitle
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
               Group Settings
             </HeaderTitle>
           </HeaderView>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="text-center self-center my-5 font-semibold text-2xl text-light-primary dark:text-dark-primary"
+            className="text-center self-center my-5 font-inter-semibold text-2xl text-light-primary dark:text-dark-primary"
           >
             {group.name}
           </Text>
@@ -358,7 +226,7 @@ const GroupInfoModal = ({
                 >
                   <Text
                     style={getMainTextColorStyle(actualTheme)}
-                    className="font-inter font-semibold text-xl text-light-primary dark:text-dark-primary"
+                    className="font-inter-semibold text-xl text-light-primary dark:text-dark-primary"
                   >
                     Members
                   </Text>
@@ -393,7 +261,7 @@ const GroupInfoModal = ({
                         />
                         <Text
                           style={getMainTextColorStyle(actualTheme)}
-                          className="font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+                          className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
                         >
                           {currentUser.full_name === item.profiles.full_name
                             ? "You"
@@ -432,7 +300,7 @@ const GroupInfoModal = ({
                 className="bg-light-secondary dark:bg-dark-secondary flex-row gap-3 justify-center items-center p-3 rounded-lg mb-3"
               >
                 <Ionicons name="exit-outline" size={33} color="#ff2727" />
-                <Text className="font-inter font-bold text-lg text-red-500">
+                <Text className="font-inter-bold text-lg text-red-500">
                   Leave group
                 </Text>
               </TouchableOpacity>
@@ -447,7 +315,7 @@ const GroupInfoModal = ({
                   size={33}
                   color="#ff2727"
                 />
-                <Text className="font-inter font-bold text-lg text-red-500">
+                <Text className="font-inter-bold text-lg text-red-500">
                   Delete group
                 </Text>
               </TouchableOpacity>
@@ -475,22 +343,24 @@ const GroupInfoModal = ({
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
               >
                 Are you sure you want to remove{" "}
-                <Text className="font-semibold">{userToEdit.full_name}</Text>{" "}
+                <Text className="font-inter-semibold">
+                  {userToEdit.full_name}
+                </Text>{" "}
                 from this group ?
               </Text>
               <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity onPress={handleCloseRemove}>
-                  <Text className="font-inter font-bold text-lg text-red-500">
+                  <Text className="font-inter-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => removeUser(userToEdit)}>
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+                    className="font-inter-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
@@ -507,7 +377,7 @@ const GroupInfoModal = ({
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
               >
                 Are you sure you want to leave this group?
               </Text>
@@ -515,14 +385,14 @@ const GroupInfoModal = ({
                 <TouchableOpacity
                   onPress={() => setShowLeaveConfirmation(false)}
                 >
-                  <Text className="font-inter font-bold text-lg text-red-500">
+                  <Text className="font-inter-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={leaveGroup}>
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+                    className="font-inter-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
@@ -542,21 +412,21 @@ const GroupInfoModal = ({
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter text-lg text-light-primary dark:text-dark-primary"
+                className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
               >
                 Are you sure you want to delete this group? This action will
                 also remove all members.
               </Text>
               <View className="flex-row justify-between w-full mt-5">
                 <TouchableOpacity onPress={() => setShowConfirmation(false)}>
-                  <Text className="font-inter font-bold text-lg text-red-500">
+                  <Text className="font-inter-bold text-lg text-red-500">
                     Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={deleteGroup}>
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-lg text-light-primary dark:text-dark-accent"
+                    className="font-inter-bold text-lg text-light-primary dark:text-dark-accent"
                   >
                     Confirm
                   </Text>
@@ -571,112 +441,3 @@ const GroupInfoModal = ({
 };
 
 export default GroupInfoModal;
-
-const styles = StyleSheet.create({
-  inputField: {
-    marginVertical: 10,
-    width: "100%",
-  },
-  inputDark: {
-    color: "white",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "white",
-    borderBottomWidth: 1,
-    padding: 5,
-  },
-  dismiss: {
-    padding: 2,
-  },
-  input: {
-    color: "#2f2d51",
-    fontFamily: "Inter-Regular",
-    width: "100%",
-    borderBottomColor: "#2f2d51",
-    borderBottomWidth: 1,
-    padding: 5,
-  },
-  logoutDark: {
-    alignSelf: "flex-end",
-    backgroundColor: "#212121",
-    marginVertical: 10,
-    width: "100%",
-    padding: 10,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  menuContainer: {
-    position: "absolute",
-
-    height: "auto",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  menuContent: {
-    width: "100%",
-    height: "100%",
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-  },
-  menuItem: {
-    fontSize: 16,
-
-    fontFamily: "Inter-Regular",
-  },
-  logout: {
-    alignSelf: "flex-end",
-    marginVertical: 15,
-    backgroundColor: "#2f2d51",
-    width: "100%",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  profileImg: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-  iconContainer: {
-    position: "relative",
-    alignItems: "center",
-    gap: 10,
-    alignSelf: "center",
-    padding: 8,
-  },
-  featherIconDark: {
-    position: "absolute",
-    backgroundColor: "#3e3e3e",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-  featherIcon: {
-    position: "absolute",
-    backgroundColor: "#93d8f8",
-    borderRadius: 50,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 30,
-    bottom: 6,
-    right: 12,
-  },
-});

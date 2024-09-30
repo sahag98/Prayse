@@ -19,6 +19,7 @@ import {
   ModalView,
   StyledInput,
 } from "../styles/appStyles";
+import config from "@config";
 
 const QuestionModal = ({
   itemTitle,
@@ -56,7 +57,7 @@ const QuestionModal = ({
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
     } else {
-      const { error } = await supabase.from("answers_test").insert({
+      const { error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
@@ -83,15 +84,15 @@ const QuestionModal = ({
         },
       };
 
-      // fetch(config.prayseMessage, {
-      //   method: "POST",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Accept-encoding": "gzip, deflate",
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(message),
-      // });
+      fetch(config.prayseMessage, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
       if (error) {
         console.log("ERROR insert answer: ", error);
         showToast("error", "Something went wrong. Try again.");
@@ -135,11 +136,12 @@ const QuestionModal = ({
             }
           >
             <StyledInput
-              className="font-inter font-normal text-light-primary dark:text-dark-primary mb-2 bg-light-background dark:bg-dark-background"
+              className="font-inter-regular text-light-primary dark:text-dark-primary mb-2 bg-light-background dark:bg-dark-background"
               style={
                 actualTheme && actualTheme.Bg
                   ? {
                       backgroundColor: actualTheme.Bg,
+                      color: actualTheme.MainTxt,
                       height: inputHeight < 100 ? 100 : inputHeight,
                       verticalAlign: "top",
                     }
@@ -153,7 +155,7 @@ const QuestionModal = ({
                         verticalAlign: "top",
                       }
               }
-              placeholder="Add answer"
+              placeholder="Write your answer"
               placeholderTextColor={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
@@ -177,7 +179,7 @@ const QuestionModal = ({
               className="self-end"
               onPress={() => Keyboard.dismiss()}
             >
-              <Text className="text-red-500 font-inter font-medium text-sm">
+              <Text className="text-red-500 font-inter-medium text-sm">
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>

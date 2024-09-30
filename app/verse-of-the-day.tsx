@@ -28,11 +28,9 @@ import { FAVORITES_SCREEN, MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const VerseOfTheDayScreen = () => {
-  const theme = useSelector((state) => state.user.theme);
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
   const [verse, setVerse] = useState([]);
-  const [verseTitle, setVerseTitle] = useState("");
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const routeParams = useLocalSearchParams();
@@ -92,31 +90,29 @@ const VerseOfTheDayScreen = () => {
     return (
       <View
         style={
-          theme == "dark"
+          colorScheme === "dark"
             ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
             : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
         }
       >
         <ActivityIndicator
           size="large"
-          color={theme == "dark" ? "white" : "#2f2d51"}
+          color={colorScheme === "dark" ? "white" : "#2f2d51"}
         />
       </View>
     );
   };
 
-  if (verse.length == 0) {
+  if (verse.length === 0) {
     return <BusyIndicator />;
   }
-
-  console.log(new Date(verse[0]._updatedAt).toDateString());
 
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
-      <View className="mb-10 flex-row items-center">
+      <View className="mb-10 pt-4 flex-row items-center">
         <TouchableOpacity
           className="mr-2"
           onPress={() => {
@@ -169,7 +165,7 @@ const VerseOfTheDayScreen = () => {
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
             >
-              Saved Verses
+              Saved verses
             </Text>
           </View>
           <AntDesign
@@ -197,11 +193,7 @@ const VerseOfTheDayScreen = () => {
           {new Date(verse[0]?._updatedAt).toDateString()}
         </Text>
         <View
-          style={[
-            getMainBackgroundColorStyle(actualTheme),
-            actualTheme &&
-              actualTheme.MainTxt && { borderColor: actualTheme.MainTxt },
-          ]}
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
           className="justify-center w-11/12 bg-light-secondary dark:bg-dark-secondary self-center rounded-lg p-3"
         >
           <Text
@@ -211,7 +203,7 @@ const VerseOfTheDayScreen = () => {
             {verse[0].verse}
           </Text>
           <View>
-            {verse[0] !=
+            {verse[0] !==
               "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
               <Text
                 style={getMainTextColorStyle(actualTheme)}
@@ -253,7 +245,9 @@ const VerseOfTheDayScreen = () => {
                   }
                 />
               </TouchableOpacity>
-              {favorites?.some((item) => item.verse.verse == verse[0].verse) ? (
+              {favorites?.some(
+                (item) => item.verse.verse === verse[0].verse,
+              ) ? (
                 <TouchableOpacity
                   disabled
                   className="flex-row w-[33.33%] h-full items-center justify-center"

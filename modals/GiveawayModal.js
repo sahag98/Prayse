@@ -115,10 +115,10 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
             >
               Great Job!
             </HeaderTitle>
-            <Text className="font-inter font-medium text-lg dark:text-[#d2d2d2] text-light-primary">
+            <Text className="font-inter-medium text-lg dark:text-[#d2d2d2] text-light-primary">
               You have done the daily devotions for 60 days straight.
             </Text>
-            <Text className="font-inter font-medium dark:text-[#d2d2d2] text-light-primary">
+            <Text className="font-inter-medium dark:text-[#d2d2d2] text-light-primary">
               Enter your email for a chance to win a prayse merch item of your
               choice.
             </Text>
@@ -132,12 +132,12 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
               placeholder="Enter email"
             />
             {success && (
-              <Text className="text-[#008900] font-inter font-medium text-sm">
+              <Text className="text-[#008900] font-inter-medium text-sm">
                 {success}
               </Text>
             )}
             {error && (
-              <Text className="text-red-600 font-inter font-normal text-sm">
+              <Text className="text-red-600 font-inter-regular text-sm">
                 {error}
               </Text>
             )}
@@ -146,7 +146,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
                 onPress={closeModal}
                 className="w-full dark:bg-dark-accent bg-light-primary p-3 rounded-lg justify-center  items-center"
               >
-                <Text className="font-inter font-bold dark:text-dark-background text-white">
+                <Text className="font-inter-bold dark:text-dark-background text-white">
                   Okay
                 </Text>
               </TouchableOpacity>
@@ -155,7 +155,7 @@ const GiveawayModal = ({ isShowingGiveaway, theme, streak }) => {
                 onPress={handleSubmit}
                 className="w-full dark:bg-dark-accent bg-light-primary p-3 rounded-lg justify-center  items-center"
               >
-                <Text className="font-inter font-bold dark:text-dark-background text-white">
+                <Text className="font-inter-bold dark:text-dark-background text-white">
                   Submit
                 </Text>
               </TouchableOpacity>

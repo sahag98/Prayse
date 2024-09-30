@@ -2,7 +2,6 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
 
 import {
   BottomSheetModal,
@@ -35,7 +34,6 @@ const AddQuestionModal = ({
 
   // variables
   const snapPoints = useMemo(() => ["50%", "75%"], []);
-  const dispatch = useDispatch();
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -110,13 +108,13 @@ const AddQuestionModal = ({
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="text-2xl text-light-primary dark:text-dark-primary font-bold font-inter"
+            className="text-2xl text-light-primary dark:text-dark-primary font-inter-bold"
           >
             Write a Question
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className=" text-light-primary dark:text-dark-primary font-inter"
+            className=" text-light-primary dark:text-dark-primary font-inter-medium"
           >
             Please be sure to keep your question biblical and to the point.
           </Text>
@@ -128,7 +126,7 @@ const AddQuestionModal = ({
             onSubmitEditing={(e) => {
               e.key === "Enter" && e.preventDefault();
             }}
-            className="w-full font-inter min-h-32 max-h-40 rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary dark:bg-dark-secondary p-4"
+            className="w-full font-inter-regular min-h-32 max-h-40 rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary dark:bg-dark-secondary p-4"
             placeholder="What is your question?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
@@ -153,12 +151,12 @@ const AddQuestionModal = ({
             disabled={isApproving}
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             className={cn(
-              "w-full font-inter justify-center items-center rounded-lg bg-light-primary dark:bg-dark-primary transition-opacity p-4",
+              "w-full justify-center items-center rounded-lg bg-light-primary dark:bg-dark-primary transition-opacity p-4",
               isApproving && "opacity-50",
               !isApproving && newQuestion.length === 0 && "opacity-50",
             )}
           >
-            <Text className="text-lg font-bold font-inter text-light-background dark:text-dark-background">
+            <Text className="text-lg font-inter-bold text-light-background dark:text-dark-background">
               Submit for Approval
             </Text>
           </TouchableOpacity>
@@ -169,13 +167,13 @@ const AddQuestionModal = ({
             >
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary font-inter text-lg font-bold dark:text-dark-primary"
+                className="text-light-primary font-inter-bold text-lg dark:text-dark-primary"
               >
                 Question submitted
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary font-inter dark:text-dark-primary"
+                className="text-light-primary font-inter-regular dark:text-dark-primary"
               >
                 We will review your question and get back to you soon!
               </Text>

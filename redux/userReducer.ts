@@ -50,7 +50,7 @@ const initialState: UserState = {
   isShowingCongratsModal: false,
   hasIncreasedDevoStreak: false,
   prayers: [],
-  fontSize: 15,
+  fontSize: 16,
   selectedId: null,
 
   hasSubmittedReview: false,
@@ -60,7 +60,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    isSubmittingReview: (state, action) => {
+    isSubmittingReview: (state) => {
       state.hasSubmittedReview = true;
     },
     setNeededValues: (state) => {
@@ -169,13 +169,6 @@ export const userSlice = createSlice({
           );
         }
       }
-
-      // Parse the dates
-
-      // state.appstreak = {
-      //   appStreakNum: state.appstreak.appStreakNum + 1,
-      //   date: new Date().toISOString().split("T")[0],
-      // };
     },
     addtoCompletedItems: (state, action) => {
       const { date, item } = action.payload;

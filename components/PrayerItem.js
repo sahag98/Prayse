@@ -155,13 +155,13 @@ const PrayerItem = ({ prayers, actualTheme, colorScheme, session, item }) => {
             />
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+              className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
             >
               {item.profiles?.full_name}
             </Text>
             {item.profiles?.admin == true && (
               <View className="rounded-xl bg-red-500 px-2 py-1">
-                <Text className="font-inter font-medium text-xs text-white">
+                <Text className="font-inter-medium text-xs text-white">
                   admin
                 </Text>
               </View>
@@ -169,7 +169,7 @@ const PrayerItem = ({ prayers, actualTheme, colorScheme, session, item }) => {
           </View>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm text-light-primary dark:text-[#d6d6d6]"
+            className="font-inter-regular text-sm text-light-primary dark:text-[#d6d6d6]"
           >
             {Moment(item.created_at).fromNow()}
           </Text>
@@ -177,7 +177,7 @@ const PrayerItem = ({ prayers, actualTheme, colorScheme, session, item }) => {
 
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="mt-2 leading-6 w-full text-light-primary dark:text-dark-primary font-inter"
+          className="mt-2 leading-6 w-full text-light-primary dark:text-dark-primary font-inter-regular"
         >
           {item.prayer}
         </Text>

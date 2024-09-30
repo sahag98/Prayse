@@ -29,11 +29,7 @@ import { MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
 
 const SettingsScreen = () => {
-  const [active, setActive] = useState(false);
-  const theme = useSelector((state) => state.user.theme);
   const [isEnabled, setIsEnabled] = useState(false);
-  const [updatedTime, setUpdatedTime] = useState("");
-  const [deleteAllModal, setDeleteAllModal] = useState(false);
   const size = useSelector((state) => state.user.fontSize);
   const dispatch = useDispatch();
 
@@ -98,49 +94,21 @@ const SettingsScreen = () => {
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
-    if (isEnabled == false) {
+    if (isEnabled === false) {
       getPermission();
     }
   };
 
-  const SwitchTheme = (theme) => {
-    dispatch(darkMode(theme));
-    if (theme == "light") {
-      setActive(!active);
-    }
-    if (theme == "dark") {
-      setActive(!active);
-    }
-  };
-
-  const SystemTheme = () => {
-    dispatch(systemTheme());
-  };
-
-  function clearAll() {
-    dispatch(clearPrayerData());
-    dispatch(deleteAllFolders());
-    dispatch(deleteAnsweredPrayers());
-  }
-
-  const handleCloseModal = () => {
-    setOpenClearModal(false);
-  };
-
   const changeFont = (font) => {
-    if (font == "large") {
+    if (font === "large") {
       dispatch(large());
     }
-    if (font == "regular") {
+    if (font === "regular") {
       dispatch(regular());
     }
-    if (font == "small") {
+    if (font === "small") {
       dispatch(small());
     }
-  };
-  const getlastUpdate = async () => {
-    const dateObject = new Date(await Application.getLastUpdateTimeAsync());
-    setUpdatedTime(dateObject?.toDateString());
   };
 
   return (
@@ -172,7 +140,7 @@ const SettingsScreen = () => {
             </Link>
             <HeaderTitle
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
               Settings
             </HeaderTitle>
@@ -181,14 +149,14 @@ const SettingsScreen = () => {
         <View>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-semibold text-lg text-light-primary dark:text-dark-primary"
+            className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
           >
             APPEARANCE
           </Text>
           {actualTheme && actualTheme.MainTxt ? (
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-inter text-light-primary dark:text-dark-primary"
+              className="font-inter-regular text-light-primary dark:text-dark-primary"
             >
               You are using a custom theme.
             </Text>
@@ -204,12 +172,12 @@ const SettingsScreen = () => {
                   }
                 >
                   <View className="absolute bottom-0 right-0 rounded-tl-lg bg-white aspect-square w-full">
-                    <Text className="font-inter font-medium pl-2">Aa</Text>
+                    <Text className="font-inter-medium pl-2">Aa</Text>
                   </View>
                 </TouchableOpacity>
                 <Text
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter font-medium mt-2 text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium mt-2 text-light-primary dark:text-dark-primary"
                 >
                   Light theme
                 </Text>
@@ -224,14 +192,14 @@ const SettingsScreen = () => {
                   }
                 >
                   <View className="absolute bottom-0 right-0 rounded-tl-lg bg-dark-background aspect-square w-full">
-                    <Text className="font-inter font-medium text-white  pl-2">
+                    <Text className="font-inter-medium text-white  pl-2">
                       Aa
                     </Text>
                   </View>
                 </TouchableOpacity>
                 <Text
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter font-medium mt-2 text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium mt-2 text-light-primary dark:text-dark-primary"
                 >
                   Dark theme
                 </Text>
@@ -242,19 +210,19 @@ const SettingsScreen = () => {
                   className="relative overflow-hidden bg-dark-background aspect-square w-full rounded-lg"
                 >
                   <View className="absolute right-0 bg-dark-secondary h-full w-1/2">
-                    <Text className="font-inter font-medium pl-2 text-white">
+                    <Text className="font-inter-medium pl-2 text-white">
                       Aa
                     </Text>
                   </View>
                   <View className="absolute left-0 bg-white h-full w-1/2">
-                    <Text className="font-inter font-medium pl-2 text-dark-background">
+                    <Text className="font-inter-medium pl-2 text-dark-background">
                       Aa
                     </Text>
                   </View>
                 </TouchableOpacity>
                 <Text
                   style={getMainTextColorStyle(actualTheme)}
-                  className="font-inter mt-2 text-light-primary dark:text-dark-primary font-medium"
+                  className="font-inter-medium mt-2 text-light-primary dark:text-dark-primary"
                 >
                   System theme
                 </Text>
@@ -265,7 +233,7 @@ const SettingsScreen = () => {
         <View className="mt-2">
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-semibold mb-1 text-lg text-light-primary dark:text-dark-primary"
+            className="font-inter-semibold mb-1 text-lg text-light-primary dark:text-dark-primary"
           >
             FONT SIZE (PRAYERS ONLY)
           </Text>
@@ -274,15 +242,15 @@ const SettingsScreen = () => {
             <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("large")}
-                style={size == 20 ? styles.FontActive : styles.FontInActive}
+                style={size === 20 ? styles.FontActive : styles.FontInActive}
               >
-                <Text className="font-inter text-xl text-black font-medium">
+                <Text className="font-inter-medium text-xl text-black">
                   Large
                 </Text>
               </TouchableOpacity>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter pl-3 text-xl text-light-primary dark:text-dark-primary"
+                className="font-inter-regular pl-3 text-xl text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
@@ -290,13 +258,13 @@ const SettingsScreen = () => {
             <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("regular")}
-                style={size == 16 ? styles.FontActive : styles.FontInActive}
+                style={size === 16 ? styles.FontActive : styles.FontInActive}
               >
                 <Text className="text-base text-black">Regular Font</Text>
               </TouchableOpacity>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter pl-3 text-base text-light-primary dark:text-dark-primary"
+                className="font-inter-regular pl-3 text-base text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
@@ -304,15 +272,15 @@ const SettingsScreen = () => {
             <View className="mb-2 flex-row items-center">
               <TouchableOpacity
                 onPress={() => changeFont("small")}
-                style={size == 12 ? styles.FontActive : styles.FontInActive}
+                style={size === 12 ? styles.FontActive : styles.FontInActive}
               >
-                <Text className="text-sm font-inter text-black">
+                <Text className="text-sm font-inter-regular text-black">
                   Small Font
                 </Text>
               </TouchableOpacity>
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="font-inter pl-3 text-sm text-light-primary dark:text-dark-primary"
+                className="font-inter-regular pl-3 text-sm text-light-primary dark:text-dark-primary"
               >
                 Text example
               </Text>
@@ -320,7 +288,7 @@ const SettingsScreen = () => {
           </View>
           <View className="w-full flex-row items-center mt-1 justify-between">
             <Text
-              className="font-inter font-medium text-light-primary dark:text-dark-primary"
+              className="font-inter-medium text-light-primary dark:text-dark-primary"
               style={getMainTextColorStyle(actualTheme)}
             >
               Notifications
@@ -338,7 +306,7 @@ const SettingsScreen = () => {
       <View className="mb-1 gap-2 items-center justify-center">
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-medium text-light-primary dark:text-dark-primary"
+          className="font-inter-medium text-light-primary dark:text-dark-primary"
         >
           {Application.applicationName} v {Application.nativeApplicationVersion}
         </Text>

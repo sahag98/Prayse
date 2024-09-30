@@ -23,19 +23,19 @@ const FavoriteVerses = ({ item, theme, actualTheme }) => {
       <View className="w-full">
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-light-primary dark:text-dark-primary text-lg"
+          className="font-inter-bold text-light-primary dark:text-dark-primary text-lg"
         >
           {dateObject?.toDateString()}
         </Text>
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter text-light-primary dark:text-dark-primary leading-6 mt-1"
+          className="font-inter-regular text-light-primary dark:text-dark-primary leading-6 mt-1"
         >
           {item.verse}
         </Text>
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="self-end mt-2 text-light-primary dark:text-dark-primary font-inter font-medium"
+          className="self-end mt-2 text-light-primary dark:text-dark-primary font-inter-medium"
         >
           - {item.chapter}
         </Text>

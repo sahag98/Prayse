@@ -50,8 +50,8 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme && actualTheme.MainTxt
-          ? actualTheme.MainTxt
+        actualTheme && actualTheme.Primary
+          ? actualTheme.Primary
           : colorScheme === "dark"
             ? "#a5c9ff"
             : "#2f2d51",
@@ -65,8 +65,8 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme && actualTheme.MainTxt
-          ? actualTheme.MainTxt
+        actualTheme && actualTheme.Primary
+          ? actualTheme.Primary
           : colorScheme === "dark"
             ? "#a5c9ff"
             : "#2f2d51",
@@ -80,8 +80,8 @@ const PrayerTabs = ({
       [0, 1],
       [
         "rgb(156, 163, 175)",
-        actualTheme && actualTheme.MainTxt
-          ? actualTheme.MainTxt
+        actualTheme && actualTheme.Primary
+          ? actualTheme.Primary
           : colorScheme === "dark"
             ? "#a5c9ff"
             : "#2f2d51",
@@ -94,8 +94,8 @@ const PrayerTabs = ({
     width: "33.33%",
     height: 3,
     backgroundColor:
-      actualTheme && actualTheme.MainTxt
-        ? actualTheme.MainTxt
+      actualTheme && actualTheme.Primary
+        ? actualTheme.Primary
         : colorScheme === "dark"
           ? "#a5c9ff"
           : "#2f2d51",
@@ -112,7 +112,7 @@ const PrayerTabs = ({
       >
         <Animated.Text
           style={animatedStyle1}
-          className={cn("font-inter font-semibold text-xl text-center")}
+          className={cn("font-inter-semibold text-xl text-center")}
         >
           {titles[0]}
         </Animated.Text>
@@ -123,7 +123,7 @@ const PrayerTabs = ({
       >
         <Animated.Text
           style={animatedStyle2}
-          className={cn("font-inter font-semibold text-xl text-center")}
+          className={cn("font-inter-semibold text-xl text-center")}
         >
           {titles[1]}
         </Animated.Text>
@@ -134,7 +134,7 @@ const PrayerTabs = ({
       >
         <Animated.Text
           style={animatedStyle3}
-          className={cn("font-inter font-semibold text-xl text-center")}
+          className={cn("font-inter-semibold text-xl text-center")}
         >
           {titles[2]}
         </Animated.Text>

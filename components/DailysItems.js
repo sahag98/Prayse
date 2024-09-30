@@ -11,29 +11,26 @@ import {
 import { Link } from "expo-router";
 import { cn } from "@lib/utils";
 
-const SettingsItems = ({ options, actualTheme, theme }) => {
+const DailysItems = ({ options, actualTheme, theme }) => {
   return (
     <View className="gap-2">
       <Text
         style={getMainTextColorStyle(actualTheme)}
         className="font-inter-semibold text-light-primary dark:text-white text-xl"
       >
-        General
+        Dailys
       </Text>
-      <View className="bg-light-secondary dark:border-[#5a5a5a] border-light-primary border-[0.5px] dark:bg-dark-secondary rounded-lg overflow-hidden">
+      <View
+        style={getSecondaryBackgroundColorStyle(actualTheme)}
+        className="bg-light-secondary dark:border-[#5a5a5a] border-light-primary border-[0.5px] dark:bg-dark-secondary rounded-lg overflow-hidden"
+      >
         {options.map((option) =>
           option.link ? (
             <TouchableOpacity
               key={option.id}
               onPress={() => Linking.openURL(option.link)}
               style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className={cn(
-                "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
-
-                option.id === 1 || option.id === 2
-                  ? "border-b-[0.5px] border-b-light-primary dark:border-b-[#d2d2d2]"
-                  : ""
-              )}
+              className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between "
             >
               <View className="flex-row items-center">
                 {option.icon}
@@ -63,7 +60,9 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
               <TouchableOpacity
                 style={getSecondaryBackgroundColorStyle(actualTheme)}
                 className={cn(
-                  "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between"
+                  "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
+                  option.id === 1 &&
+                    "border-b-[0.5px] border-b-light-primary dark:border-b-[#d2d2d2]"
                 )}
               >
                 <View className="flex-row items-center">
@@ -96,4 +95,4 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
   );
 };
 
-export default SettingsItems;
+export default DailysItems;

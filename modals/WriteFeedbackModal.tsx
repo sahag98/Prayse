@@ -94,13 +94,13 @@ const WriteFeedbackModal = ({
 
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-2xl text-light-primary dark:text-dark-primary font-inter text-center font-bold mb-3"
+              className="text-2xl text-light-primary dark:text-dark-primary font-inter-bold text-center mb-3"
             >
               Feedback
             </Text>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="text-left text-light-primary dark:text-dark-primary font-inter mb-3"
+              className="text-center text-light-primary dark:text-dark-primary font-inter-regular mb-3"
             >
               We value your feedback. How can we improve our app?
             </Text>
@@ -108,7 +108,7 @@ const WriteFeedbackModal = ({
               <View className="gap-2">
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium text-light-primary dark:text-dark-primary"
                 >
                   Your name (Optional)
                 </Text>
@@ -118,7 +118,7 @@ const WriteFeedbackModal = ({
                     getMainBackgroundColorStyle(actualTheme),
                   ]}
                   numberOfLines={1}
-                  className="dark:bg-dark-background bg-light-background p-3 text-light-primary dark:text-dark-primary rounded-lg"
+                  className="dark:bg-dark-background font-inter-regular bg-light-background p-3 text-light-primary dark:text-dark-primary rounded-lg"
                   value={name}
                   selectionColor={
                     actualTheme && actualTheme.MainTxt
@@ -133,7 +133,7 @@ const WriteFeedbackModal = ({
               <View className="gap-2">
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter text-light-primary dark:text-dark-primary"
+                  className="font-inter-medium text-light-primary dark:text-dark-primary"
                 >
                   Your feedback
                 </Text>
@@ -149,7 +149,7 @@ const WriteFeedbackModal = ({
                         ? "white"
                         : "#2f2d51"
                   }
-                  className="dark:bg-dark-background bg-light-background text-start text-light-primary dark:text-dark-primary p-3 rounded-lg"
+                  className="dark:bg-dark-background bg-light-background text-start font-inter-regular text-light-primary dark:text-dark-primary p-3 rounded-lg"
                   value={feedback}
                   onChangeText={setFeedback}
                   onSubmitEditing={(e: any) => {
@@ -158,7 +158,7 @@ const WriteFeedbackModal = ({
                   multiline
                 />
                 {feedbackError.length > 0 && (
-                  <Text className="text-red-500 font-inter">
+                  <Text className="text-red-500 font-inter-medium">
                     {feedbackError}
                   </Text>
                 )}
@@ -170,7 +170,7 @@ const WriteFeedbackModal = ({
               >
                 <Text
                   style={getPrimaryTextColorStyle(actualTheme)}
-                  className="font-inter font-bold text-light-background dark:text-dark-background"
+                  className="font-inter-bold text-light-background dark:text-dark-background"
                 >
                   Send Feedback
                 </Text>

@@ -3,13 +3,7 @@ import React from "react";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Ionicons } from "@expo/vector-icons";
@@ -27,7 +21,6 @@ import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const ReminderScreen = () => {
   const navigation = useNavigation();
-  const theme = useSelector((state) => state.user.theme);
   const { colorScheme } = useColorScheme();
   const reminders = useSelector((state) => state.reminder.reminders);
   const actualTheme = useSelector(
@@ -54,7 +47,7 @@ const ReminderScreen = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -62,22 +55,22 @@ const ReminderScreen = () => {
           </TouchableOpacity>
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-light-primary dark:text-dark-primary"
           >
             Reminders
           </HeaderTitle>
         </View>
       </HeaderView>
-      {reminders.length == 0 ? (
+      {reminders?.length === 0 ? (
         <View className="flex-1 justify-center items-center">
-          <Text className="self-center font-inter font-medium dark:text-[#d2d2d2] text-[#2f2d51] text-lg">
+          <Text className="self-center font-inter-medium dark:text-[#d2d2d2] text-[#2f2d51] text-lg">
             No reminders yet!
           </Text>
         </View>
       ) : (
         <FlatList
           data={reminders}
-          keyExtractor={(e, i) => i.toString()}
+          keyExtractor={(i) => i.toString()}
           renderItem={({ item }) => {
             const daysOfWeek = [
               "Sunday",
@@ -139,7 +132,7 @@ const ReminderScreen = () => {
                     color={
                       actualTheme && actualTheme.SecondaryTxt
                         ? actualTheme.SecondaryTxt
-                        : colorScheme == "dark"
+                        : colorScheme === "dark"
                           ? "#f1d592"
                           : "#dda41c"
                     }
@@ -229,5 +222,3 @@ const ReminderScreen = () => {
 };
 
 export default ReminderScreen;
-
-const styles = StyleSheet.create({});

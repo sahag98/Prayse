@@ -9,12 +9,9 @@ import { useSelector } from "react-redux";
 
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import {
-  CHECKLIST_SCREEN,
-  CREATE_THEME_SCREEN,
   DEVO_LIST_SCREEN,
   FAVORITES_SCREEN,
   GOSPEL_SCREEN,
-  NOTIFICATIONS_SCREEN,
   OLD_PRAYER_SCREEN,
   ONBOARDING_SCREEN,
   OUR_PRESENTATION_SCREEN,
@@ -32,11 +29,11 @@ import {
   SETTINGS_SCREEN,
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
+  WALLPAPERS_SCREEN,
   YOUR_THEMES_SCREEN,
 } from "@routes";
 
 const StackContainer = () => {
-  const theme = useSelector((state: any) => state?.user?.theme);
   const { colorScheme } = useColorScheme();
 
   const actualTheme = useSelector((state) => state.theme.actualTheme);
@@ -81,6 +78,10 @@ const StackContainer = () => {
           name={QUESTION_LIST_SCREEN}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name={WALLPAPERS_SCREEN}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name={QUESTION_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen name={SETTINGS_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
@@ -114,14 +115,7 @@ const StackContainer = () => {
       options={{ headerShown: false }}
     /> */}
         <Stack.Screen name={TEST_SCREEN} options={{ headerShown: false }} />
-        <Stack.Screen
-          name={CHECKLIST_SCREEN}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name={NOTIFICATIONS_SCREEN}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name={PRAYER_ROOM_SCREEN}
           options={{ headerShown: false }}

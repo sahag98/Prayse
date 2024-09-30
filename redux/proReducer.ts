@@ -7,7 +7,7 @@ interface AnsweredState {
 
 const initialState: AnsweredState = {
   prayer_verses: false,
-  prayer_questions: true,
+  prayer_questions: false,
 };
 
 export const proSlice = createSlice({

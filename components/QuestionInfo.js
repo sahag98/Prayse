@@ -35,7 +35,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
     >
       <Text
         style={getSecondaryTextColorStyle(actualTheme)}
-        className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+        className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
       >
         {item.title}
       </Text>
@@ -47,7 +47,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter text-xs font-semibold text-light-background dark:text-dark-background"
+              className="text-xs font-inter-semibold text-light-background dark:text-dark-background"
             >
               Posted by: Prayse
             </Text>
@@ -55,7 +55,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
 
           {item.isNew ? (
             <View className="bg-red-500 rounded-xl px-2 py-1">
-              <Text className="font-inter text-sm font-medium text-light-background dark:text-dark-primary">
+              <Text className="font-inter-medium text-sm text-light-background dark:text-dark-primary">
                 new
               </Text>
             </View>
@@ -77,7 +77,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
           />
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter text-sm text-light-primary dark:text-dark-primary"
+            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
           >
             {existingAnswers.length}
           </Text>

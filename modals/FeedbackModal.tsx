@@ -12,19 +12,18 @@ import { ModalContainer } from "@styles/appStyles";
 // import * as StoreReview from "expo-store-review";
 const FeedbackModal = ({ actualTheme, theme }: any) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     checkAppOpenCount();
   }, []);
 
   const checkAppOpenCount = async () => {
+    // await AsyncStorage.removeItem("appOpenCount");
     try {
       const count = await AsyncStorage.getItem("appOpenCount");
       console.log("Checking app open count", count);
       const newCount = count ? parseInt(count) + 1 : 1;
       await AsyncStorage.setItem("appOpenCount", newCount.toString());
-
       if (newCount % 10 === 0) {
         CheckReview();
       }
@@ -35,11 +34,8 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
 
   const handleSubmit = async () => {
     // TODO: Implement feedback submission logic
-    console.log("Feedback submitted:", feedback);
+    console.log("Feedback submitted");
     setIsVisible(false);
-
-    if (Platform.OS === "android") {
-    }
   };
 
   return (

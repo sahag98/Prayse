@@ -6,7 +6,6 @@ import { useColorScheme } from "nativewind";
 import {
   Dimensions,
   FlatList,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -90,7 +89,7 @@ const YourThemesScreen = () => {
       Bg: "#0C192F",
       MainTxt: "white",
       Primary: "#0156F2",
-      Secondary: "#0E223F",
+      Secondary: "#112a4f",
       PrimaryTxt: "white",
       SecondaryTxt: "white",
       Accent: "#b4b4b4",
@@ -101,9 +100,7 @@ const YourThemesScreen = () => {
   console.log(availableThemes[0].Bg);
 
   const dispatch = useDispatch();
-  const width = Dimensions.get("window").width - 40;
 
-  const customThemeArray = useSelector((state) => state.theme.customThemeArray);
   const actualTheme = useSelector((state) => state.theme.actualTheme);
 
   console.log("actual theme: ", actualTheme);
@@ -130,7 +127,7 @@ const YourThemesScreen = () => {
             />
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
+              className=" font-inter-bold dark:text-white text-light-primary text-center text-3xl"
             >
               Themes
             </Text>
@@ -140,12 +137,12 @@ const YourThemesScreen = () => {
 
       {availableThemes.length === 0 ? (
         <View className="flex-1 items-center gap-3 justify-center">
-          <Text className="font-inter font-medium text-lg text-light-primary dark:text-white">
+          <Text className="font-inter-medium text-lg text-light-primary dark:text-white">
             No themes yet.
           </Text>
           <Link asChild href={`/${CREATE_THEME_SCREEN}`}>
             <TouchableOpacity className="w-fit p-4 items-center rounded-md bg-light-primary dark:bg-dark-accent">
-              <Text className="font-inter font-bold text-white dark:text-dark-background">
+              <Text className="font-inter-bold text-white dark:text-dark-background">
                 Create Theme
               </Text>
             </TouchableOpacity>
@@ -160,7 +157,7 @@ const YourThemesScreen = () => {
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-light-background dark:text-dark-background"
+              className="font-inter-bold text-light-background dark:text-dark-background"
             >
               Go back to main theme
             </Text>
@@ -181,7 +178,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary  font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Background
                   </Text>
@@ -193,7 +190,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Primary
                   </Text>
@@ -205,7 +202,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Secondary
                   </Text>
@@ -217,7 +214,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Main Text
                   </Text>
@@ -229,7 +226,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Primary Text
                   </Text>
@@ -241,7 +238,7 @@ const YourThemesScreen = () => {
                 <View className="flex-row items-center justify-between gap-3">
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-sm text-light-primary dark:text-dark-primary font-semibold"
+                    className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary"
                   >
                     Secondary Text
                   </Text>
@@ -258,7 +255,7 @@ const YourThemesScreen = () => {
                 >
                   <Text
                     style={getPrimaryTextColorStyle(actualTheme)}
-                    className="font-inter font-bold text-light-background dark:text-dark-background"
+                    className="font-inter-bold text-light-background dark:text-dark-background"
                   >
                     Select
                   </Text>
@@ -273,5 +270,3 @@ const YourThemesScreen = () => {
 };
 
 export default YourThemesScreen;
-
-const styles = StyleSheet.create({});
