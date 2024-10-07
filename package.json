@@ -21,7 +21,7 @@
     "@reduxjs/toolkit": "^1.9.3",
     "@sanity/client": "^5.4.2",
     "@sanity/image-url": "^1.0.2",
-    "@sentry/react-native": "~5.24.3",
+    "@sentry/react-native": "~5.33.2",
     "@shopify/flash-list": "1.6.4",
     "@supabase/supabase-js": "^2.32.0",
     "axios": "^1.4.0",
