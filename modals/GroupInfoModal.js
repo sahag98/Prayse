@@ -232,7 +232,7 @@ const GroupInfoModal = ({
                   </Text>
                 </View>
               }
-              keyExtractor={(e, i) => i.toString()}
+              keyExtractor={(item) => item.id.toString()}
               initialNumToRender={30}
               // ItemSeparatorComponent={
               //   <View style={{ width: "100%", height: 3 }} />

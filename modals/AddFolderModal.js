@@ -31,7 +31,6 @@ const AddFolderModal = ({
   handleCloseModal,
   setAddVisible,
   addNewFolder,
-  theme,
 }) => {
   return (
     <Modal

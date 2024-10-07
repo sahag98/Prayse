@@ -38,7 +38,7 @@ const QuestionScreen = () => {
 
     if (itemId) {
       setAnswersArray(
-        answers.filter((answer) => answer.question_id === parseInt(itemId)),
+        answers.filter((answer) => answer.question_id === parseInt(itemId, 10)),
       );
     }
   }, [isFocused]);
@@ -92,7 +92,7 @@ const QuestionScreen = () => {
       <View className="flex-1 w-full">
         <FlatList
           data={answersArray}
-          keyExtractor={(i) => i.toString()}
+          keyExtractor={(item) => item.id.toString()}
           onEndReachedThreshold={0}
           scrollEventThrottle={16}
           contentContainerStyle={{ gap: 5, flex: 1 }}

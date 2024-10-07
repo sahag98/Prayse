@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { isRunningInExpoGo } from "expo";
 import * as Notifications from "expo-notifications";
 import {
-  router,
   SplashScreen,
   useNavigation,
   useNavigationContainerRef,
@@ -72,7 +71,7 @@ function useNotificationObserver() {
       const url = data?.url || data?.screen;
 
       if (url) {
-        console.log("url exists!!");
+        console.log("url exists!!", url);
 
         if (
           ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
@@ -208,12 +207,6 @@ function App() {
     Inter_800ExtraBold,
   });
 
-  React.useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
   const ref = useNavigationContainerRef();
 
   useEffect(() => {
@@ -221,6 +214,21 @@ function App() {
       routingInstrumentation.registerNavigationContainer(ref);
     }
   }, [ref]);
+
+  useEffect(() => {
+    console.log("fonts loaded: ", fontsLoaded);
+    if (fontsLoaded) {
+      // console.log("fonts are loaded");
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
+  // const rootNavigationState = useRootNavigationState();
+
+  // if (!rootNavigationState?.key) return null;
 
   return (
     <>

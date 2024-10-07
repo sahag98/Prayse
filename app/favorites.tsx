@@ -68,7 +68,7 @@ const FavoritesScreen = () => {
 
       <FlatList
         data={favorites}
-        keyExtractor={(i) => i.toString()}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ gap: 5, flex: 1 }}
         scrollEventThrottle={16}
         ListEmptyComponent={() => (

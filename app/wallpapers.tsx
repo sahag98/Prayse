@@ -10,31 +10,36 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
+  ViewToken,
 } from "react-native";
-import Swiper from "react-native-swiper";
+
 import { useSelector } from "react-redux";
 
-import S3Image from "@components/S3Image";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import { AntDesign } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
+
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
 } from "@lib/customStyles";
-import { Container, HeaderView } from "@styles/appStyles";
+import { HeaderView, WallpaperContainer } from "@styles/appStyles";
+import WallpaperItem from "@components/WallpaperItem";
+import WallpaperPagination from "@components/WallpaperPagination";
 
 const bucket = "prayse-wallpapers";
 const URL = "https://doqbtuup6btvd.cloudfront.net/";
 
 const Wallpapers = () => {
   const { colorScheme } = useColorScheme();
+
   const actualTheme = useSelector((state: any) => state.theme.actualTheme);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [isSwiperEnabled, setIsSwiperEnabled] = useState(true);
+  // const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadHasStarted, setDownloadHasStarted] = useState(false);
 
   const wallpapersArray = [
     { id: 1, image: "1.png" },
@@ -50,14 +55,17 @@ const Wallpapers = () => {
   ];
 
   const handleDownloadPress = useCallback((imageKey: string) => {
-    setIsSwiperEnabled(false); // Disable swiper when download starts
+    console.log("download");
+    // setIsSwiperEnabled(false); // Disable swiper when download starts
     downloadImage(imageKey);
   }, []);
 
   const downloadImage = async (imageKey: string) => {
-    setIsDownloading(true);
-    setIsSwiperEnabled(false); // Disable swiper when download starts
+    // setIsSwiperEnabled(false); // Disable swiper when download starts
+
     try {
+      setDownloadHasStarted(true);
+      // setDownloadHasStarted((prev) => !prev);
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
@@ -78,13 +86,10 @@ const Wallpapers = () => {
           },
         },
       });
-
       const encoded = Buffer.from(imageRequest).toString("base64");
       const s3Url = URL + encoded;
-
       const fileUri = FileSystem.documentDirectory + imageKey;
       const downloadResult = await FileSystem.downloadAsync(s3Url, fileUri);
-
       if (downloadResult.status === 200) {
         const asset = await MediaLibrary.createAssetAsync(downloadResult.uri);
         await MediaLibrary.createAlbumAsync("Prayse wallpapers", asset, false);
@@ -96,7 +101,6 @@ const Wallpapers = () => {
           [{ resize: { width: 1080 } }],
           { format: SaveFormat.PNG },
         );
-
         const asset = await MediaLibrary.createAssetAsync(resizedImage.uri);
         await MediaLibrary.createAlbumAsync("Prayse wallpapers", asset, false);
         Alert.alert("Success", "Wallpaper resized and saved to your gallery!");
@@ -114,20 +118,48 @@ const Wallpapers = () => {
         `An error occurred while downloading the wallpaper: ${error.message}`,
       );
     } finally {
-      setIsDownloading(false);
-      setIsSwiperEnabled(true); // Re-enable swiper when download finishes
+      setDownloadHasStarted(false);
+    }
+  };
+  const [paginationIndex, setPaginationIndex] = useState(0);
+  const scrollX = useSharedValue(0);
+
+  const onScrollHandler = useAnimatedScrollHandler({
+    onScroll: (e) => {
+      scrollX.value = e.contentOffset.x;
+    },
+  });
+
+  const onViewableItemsChanged = ({
+    viewableItems,
+  }: {
+    viewableItems: ViewToken[];
+  }) => {
+    if (
+      viewableItems[0].index !== undefined &&
+      viewableItems[0].index !== null
+    ) {
+      setPaginationIndex(viewableItems[0].index);
     }
   };
 
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const viewabilityConfigCallbackPairs = useRef([
+    { viewabilityConfig, onViewableItemsChanged },
+  ]);
+
   return (
-    <Container
+    <WallpaperContainer
       style={getMainBackgroundColorStyle(actualTheme)}
       //@ts-ignore
       className="bg-light-background dark:bg-dark-background"
     >
       <HeaderView>
         <Link href="/pro">
-          <View className="flex-row items-center justify-between gap-2">
+          <View className="flex-row px-4 items-center justify-between gap-2">
             <AntDesign
               name="left"
               size={24}
@@ -143,7 +175,7 @@ const Wallpapers = () => {
             />
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="font-bold font-inter dark:text-white text-light-primary text-center text-3xl"
+              className="font-bold  font-inter dark:text-white text-light-primary text-center text-3xl"
             >
               Wallpapers
             </Text>
@@ -152,51 +184,36 @@ const Wallpapers = () => {
       </HeaderView>
       <Text
         style={getMainTextColorStyle(actualTheme)}
-        className="font-inter-medium mb-3 text-light-primary dark:text-dark-primary"
+        className="font-inter-medium px-4 mb-3 text-light-primary dark:text-dark-primary"
       >
         Wallpapers will be changed with every update.
       </Text>
-      <Swiper
-        dotColor="grey"
-        showsButtons
-        scrollEnabled={isSwiperEnabled}
-        loop={false}
-      >
-        {wallpapersArray.map((item) => (
-          <View
-            key={item.id}
-            className="flex-1 rounded-2xl overflow-hidden justify-center items-center"
-            testID="Hello"
-          >
-            <S3Image
-              imgKey={item.image}
-              theme={colorScheme}
-              actualTheme={actualTheme}
-              style={{ width: "100%", height: "100%" }}
-              className="w-full h-full"
-            />
-            <TouchableOpacity
-              onPress={() => handleDownloadPress(item.image)}
-              style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="absolute bg-light-primary dark:bg-dark-accent border border-gray-100 bottom-4 left-4 p-4 rounded-full"
-              disabled={isDownloading}
-            >
-              <Feather
-                name="download"
-                size={40}
-                color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
-                    : colorScheme === "dark"
-                      ? "#121212"
-                      : "f2f7ff"
-                }
-              />
-            </TouchableOpacity>
-          </View>
-        ))}
-      </Swiper>
-      {isDownloading && (
+      <Animated.FlatList
+        onScroll={onScrollHandler}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={wallpapersArray}
+        pagingEnabled
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+        renderItem={({ item, index }) => (
+          <WallpaperItem
+            item={item}
+            index={index}
+            scrollX={scrollX}
+            actualTheme={actualTheme}
+            colorScheme={colorScheme}
+            handleDownloadPress={handleDownloadPress}
+          />
+        )}
+      />
+      <WallpaperPagination
+        items={wallpapersArray}
+        scrollX={scrollX}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        paginationIndex={paginationIndex}
+      />
+      {downloadHasStarted && (
         <View style={styles.downloadingOverlay}>
           <View style={styles.downloadingBox}>
             <ActivityIndicator size="large" color="#ffffff" />
@@ -206,7 +223,7 @@ const Wallpapers = () => {
           </View>
         </View>
       )}
-    </Container>
+    </WallpaperContainer>
   );
 };
 
@@ -219,6 +236,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
+    zIndex: 99,
     alignItems: "center",
   },
   downloadingBox: {
@@ -231,6 +249,15 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     marginTop: 10,
     fontSize: 16,
+  },
+  downloadButton: {
+    position: "absolute",
+    bottom: 16,
+    left: 16,
+    padding: 16,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
 });
 

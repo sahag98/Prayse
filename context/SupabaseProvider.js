@@ -10,6 +10,7 @@ import { SupabaseContext } from "./SupabaseContext";
 
 import "react-native-url-polyfill/auto";
 import { useRouter } from "expo-router";
+import { COMMUNITY_SCREEN } from "@routes";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -84,6 +85,13 @@ export const SupabaseProvider = (props) => {
 
     setCurrentUser(profiles[0]);
     setLoggedIn(true);
+
+    // Add navigation logic here
+    if (profiles[0] && profiles[0].full_name !== null) {
+      router.replace(COMMUNITY_SCREEN);
+    } else if (profiles[0] && profiles[0].full_name === null) {
+      router.replace("profile-setup");
+    }
   };
 
   const showToast = (type, content) => {

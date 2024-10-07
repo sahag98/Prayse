@@ -86,12 +86,14 @@ const LoginScreen = () => {
   const onSignInWithGoogle = async () => {
     try {
       const url = await getGoogleOAuthUrl();
-      if (!url) return;
+      if (!url) {
+        showToast("error", "Failed to get Google sign-in URL");
+        return;
+      }
+
       const result = await WebBrowser.openAuthSessionAsync(
         url,
         "prayseapp://google-auth",
-        //exp://192.168.1.110:19000
-        //prayseapp://google-auth
         {
           showInRecents: true,
         },
@@ -100,21 +102,21 @@ const LoginScreen = () => {
       if (result.type === "success") {
         const data = extractParamsFromUrl(result.url);
 
-        if (!data.access_token || !data.refresh_token) return;
-        setOAuthSession({
+        if (!data.access_token || !data.refresh_token) {
+          showToast("error", "Failed to get authentication tokens");
+          return;
+        }
+
+        await setOAuthSession({
           access_token: data.access_token,
           refresh_token: data.refresh_token,
         });
-
-        // // You can optionally store Google's access token if you need it later
-        // SecureStore.setItemAsync(
-        //   "google-access-token",
-        //   JSON.stringify(data.provider_token)
-        // );
+      } else if (result.type === "cancel") {
+        showToast("info", "Google sign-in was cancelled");
       }
     } catch (error) {
-      // Handle error here
-      console.log(error);
+      console.error("Google sign-in error:", error);
+      showToast("error", "An error occurred during Google sign-in");
     }
   };
 
@@ -122,7 +124,8 @@ const LoginScreen = () => {
     const params = new URLSearchParams(url.split("#")[1]);
     const data = {
       access_token: params.get("access_token"),
-      expires_in: parseInt(params.get("expires_in") || "0"),
+      //@ts-nocheck
+      expires_in: parseInt(params.get("expires_in") || "0", 10),
       refresh_token: params.get("refresh_token"),
       token_type: params.get("token_type"),
       provider_token: params.get("provider_token"),

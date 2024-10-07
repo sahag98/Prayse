@@ -20,19 +20,21 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
       >
         General
       </Text>
-      <View className="bg-light-secondary dark:border-[#5a5a5a] border-light-primary border-[0.5px] dark:bg-dark-secondary rounded-lg overflow-hidden">
+      <View className="bg-light-secondary border-light-primary/50 rounded-lg overflow-hidden">
         {options.map((option) =>
           option.link ? (
             <TouchableOpacity
               key={option.id}
               onPress={() => Linking.openURL(option.link)}
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              style={[
+                getSecondaryBackgroundColorStyle(actualTheme),
+                actualTheme &&
+                  actualTheme.MainTxt && {
+                    borderBottomColor: "lightgray",
+                  },
+              ]}
               className={cn(
-                "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
-
-                option.id === 1 || option.id === 2
-                  ? "border-b-[0.5px] border-b-light-primary dark:border-b-[#d2d2d2]"
-                  : ""
+                `w-full flex-row items-center ${option.id !== 4 && "border-b"}  border-b-light-primary/50 dark:border-b-[#585858] bg-light-secondary dark:bg-dark-secondary p-5 justify-between`
               )}
             >
               <View className="flex-row items-center">
@@ -61,9 +63,15 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
           ) : (
             <Link asChild href={`/${option.screen}`} key={option.id}>
               <TouchableOpacity
-                style={getSecondaryBackgroundColorStyle(actualTheme)}
+                style={[
+                  getSecondaryBackgroundColorStyle(actualTheme),
+                  actualTheme &&
+                    actualTheme.MainTxt && {
+                      borderBottomColor: "lightgray",
+                    },
+                ]}
                 className={cn(
-                  "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between"
+                  "w-full flex-row items-center border-b border-b-light-primary/50 dark:border-b-[#585858] bg-light-secondary dark:bg-dark-secondary p-5 justify-between"
                 )}
               >
                 <View className="flex-row items-center">
@@ -76,7 +84,6 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
                   </Text>
                 </View>
                 <AntDesign
-                  style={{ marginLeft: 10 }}
                   name="right"
                   size={14}
                   color={

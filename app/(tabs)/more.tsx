@@ -106,6 +106,25 @@ const MoreScreen = () => {
       id: 1,
       icon: (
         <AntDesign
+          name="setting"
+          className="mr-3"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Settings",
+      screen: SETTINGS_SCREEN,
+    },
+    {
+      id: 2,
+      icon: (
+        <AntDesign
           name="infocirlceo"
           className="mr-3"
           size={24}
@@ -123,7 +142,26 @@ const MoreScreen = () => {
     },
 
     {
-      id: 2,
+      id: 3,
+      icon: (
+        <Ionicons
+          name="chatbubble-ellipses-outline"
+          className="mr-3"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Feedback Board",
+      link: "https://prayse.canny.io/feature-requests",
+    },
+    {
+      id: 4,
       icon: (
         <Feather
           name="shield"
@@ -140,25 +178,6 @@ const MoreScreen = () => {
       ),
       title: "Privacy Policy",
       link: "https://www.prayse.app/privacy",
-    },
-    {
-      id: 3,
-      icon: (
-        <AntDesign
-          name="setting"
-          className="mr-3"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "Settings",
-      screen: SETTINGS_SCREEN,
     },
   ];
 

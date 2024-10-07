@@ -97,10 +97,7 @@ const StackContainer = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name={PRO_SCREEN} options={{ headerShown: false }} />
-        <Stack.Screen
-          name={CREATE_THEME_SCREEN}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name={YOUR_THEMES_SCREEN}
           options={{ headerShown: false }}

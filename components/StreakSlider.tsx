@@ -277,20 +277,21 @@ const StreakSlider = ({
                     style={getSecondaryTextColorStyle(actualTheme)}
                     className="text-center text-light-primary dark:text-white font-inter-bold text-lg"
                   >
-                    Devotions Streak: {((streak / GOAL) * 100).toFixed(1)}%
+                    Devotions Streak: {((streak / GOAL) * 100).toFixed(0)}%
                   </Text>
                   <ProgressBar
                     style={{
                       height: 6,
                       borderRadius: 10,
-                      backgroundColor: "#d2d2d2",
+                      backgroundColor:
+                        colorScheme === "dark" ? "#d2d2d2" : "gainsboro",
                     }}
                     progress={streak / GOAL}
                     color="green"
                   />
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter-medium text-[13px] text-center mb-[10px] text-light-primary dark:text-[#d2d2d2]"
+                    className="font-inter-medium text-center text-light-primary dark:text-[#d2d2d2]"
                   >
                     Reach {GOAL} days to win a free merch item of your choice!
                   </Text>

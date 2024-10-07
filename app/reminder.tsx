@@ -70,7 +70,7 @@ const ReminderScreen = () => {
       ) : (
         <FlatList
           data={reminders}
-          keyExtractor={(i) => i.toString()}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => {
             const daysOfWeek = [
               "Sunday",

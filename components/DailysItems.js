@@ -18,23 +18,28 @@ const DailysItems = ({ options, actualTheme, theme }) => {
         style={getMainTextColorStyle(actualTheme)}
         className="font-inter-semibold text-light-primary dark:text-white text-xl"
       >
-        Dailys
+        More
       </Text>
-      <View
-        style={getSecondaryBackgroundColorStyle(actualTheme)}
-        className="bg-light-secondary dark:border-[#5a5a5a] border-light-primary border-[0.5px] dark:bg-dark-secondary rounded-lg overflow-hidden"
-      >
-        {options.map((option) =>
-          option.link ? (
+      <View className="bg-light-secondary rounded-lg overflow-hidden">
+        {options.map((option) => (
+          <Link
+            asChild
+            href={`/${option.screen}`}
+            style={[
+              getSecondaryBackgroundColorStyle(actualTheme),
+              actualTheme && { borderBottomColor: "lightgray" },
+            ]}
+            key={option.id}
+          >
             <TouchableOpacity
-              key={option.id}
-              onPress={() => Linking.openURL(option.link)}
-              style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between "
+              className={cn(
+                "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
+                option.id === 1 &&
+                  "border-b border-b-light-primary/50 dark:border-b-[#585858]"
+              )}
             >
               <View className="flex-row items-center">
                 {option.icon}
-
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
@@ -43,7 +48,6 @@ const DailysItems = ({ options, actualTheme, theme }) => {
                 </Text>
               </View>
               <AntDesign
-                style={{ marginLeft: 10 }}
                 name="right"
                 size={14}
                 color={
@@ -55,41 +59,8 @@ const DailysItems = ({ options, actualTheme, theme }) => {
                 }
               />
             </TouchableOpacity>
-          ) : (
-            <Link asChild href={`/${option.screen}`} key={option.id}>
-              <TouchableOpacity
-                style={getSecondaryBackgroundColorStyle(actualTheme)}
-                className={cn(
-                  "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
-                  option.id === 1 &&
-                    "border-b-[0.5px] border-b-light-primary dark:border-b-[#d2d2d2]"
-                )}
-              >
-                <View className="flex-row items-center">
-                  {option.icon}
-                  <Text
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
-                  >
-                    {option.title}
-                  </Text>
-                </View>
-                <AntDesign
-                  style={{ marginLeft: 10 }}
-                  name="right"
-                  size={14}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : theme === "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              </TouchableOpacity>
-            </Link>
-          )
-        )}
+          </Link>
+        ))}
       </View>
     </View>
   );
