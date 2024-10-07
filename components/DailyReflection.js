@@ -143,7 +143,7 @@ const DailyReflection = ({
               actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
-                      completedItems.some((completedItem) =>
+                      completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === PRAYER_ROOM_SCREEN
                         )
@@ -155,7 +155,7 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === PRAYER_ROOM_SCREEN
                         )
@@ -164,7 +164,7 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === PRAYER_ROOM_SCREEN
                         )
@@ -184,7 +184,7 @@ const DailyReflection = ({
                   : theme === "dark"
                     ? "#212121"
                     : "#b7d3ff",
-              backgroundColor: completedItems.some((completedItem) =>
+              backgroundColor: completedItems?.some((completedItem) =>
                 completedItem.items.find((item) => item === PRAYER_ROOM_SCREEN)
               )
                 ? actualTheme && actualTheme.Primary
@@ -255,7 +255,7 @@ const DailyReflection = ({
               actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
-                      completedItems.some((completedItem) =>
+                      completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -267,7 +267,7 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -276,7 +276,7 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -292,7 +292,7 @@ const DailyReflection = ({
               actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
-                      completedItems.some((completedItem) =>
+                      completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -304,7 +304,7 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -313,7 +313,7 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === VERSE_OF_THE_DAY_SCREEN
                         )
@@ -333,7 +333,7 @@ const DailyReflection = ({
                   : theme === "dark"
                     ? "#212121"
                     : "#b7d3ff",
-              backgroundColor: completedItems.some((completedItem) =>
+              backgroundColor: completedItems?.some((completedItem) =>
                 completedItem.items.find(
                   (item) => item === VERSE_OF_THE_DAY_SCREEN
                 )
@@ -404,7 +404,7 @@ const DailyReflection = ({
               actualTheme && actualTheme.Primary
                 ? {
                     backgroundColor:
-                      completedItems.some((completedItem) =>
+                      completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === DEVO_LIST_SCREEN
                         )
@@ -416,7 +416,7 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === DEVO_LIST_SCREEN
                         )
@@ -425,7 +425,7 @@ const DailyReflection = ({
                         : "#212121",
                     }
                   : {
-                      backgroundColor: completedItems.some((completedItem) =>
+                      backgroundColor: completedItems?.some((completedItem) =>
                         completedItem.items.find(
                           (item) => item === DEVO_LIST_SCREEN
                         )
@@ -445,7 +445,7 @@ const DailyReflection = ({
                   : theme === "dark"
                     ? "#212121"
                     : "#b7d3ff",
-              backgroundColor: completedItems.some((completedItem) =>
+              backgroundColor: completedItems?.some((completedItem) =>
                 completedItem.items.find((item) => item === DEVO_LIST_SCREEN)
               )
                 ? actualTheme && actualTheme.Primary

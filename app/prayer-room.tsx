@@ -868,73 +868,12 @@ const PrayerRoom = () => {
 export default PrayerRoom;
 
 const styles = StyleSheet.create({
-  swipeText: {
-    fontSize: 13,
-    fontFamily: "Inter-Regular",
-    color: "#2f2d51",
-  },
   animation: {
     width: 130,
     height: 130,
     alignSelf: "center",
     textAlign: "center",
     justifyContent: "center",
-  },
-  title: {
-    color: "#2f2d51",
-    fontSize: 24,
-    zIndex: 80,
-    fontFamily: "Inter-Medium",
-    letterSpacing: 1.3,
-    marginVertical: 5,
-  },
-  description: {
-    color: "#2f2d51",
-  },
-  footer: {
-    // marginTop: "auto",
-    width: "100%",
-    flex: 1,
-  },
-
-  buttonsRow: {
-    marginTop: "auto",
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    gap: 40,
-  },
-  button: {
-    backgroundColor: "#2f2d51",
-    borderRadius: 50,
-    alignItems: "center",
-    flex: 1,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontFamily: "Inter-Bold",
-    padding: 15,
-    paddingHorizontal: 25,
-  },
-  pageContent: {
-    padding: 20,
-    marginBottom: 70,
-    gap: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  stepIndicatorContainer: {
-    flexDirection: "row",
-    gap: 8,
-    marginHorizontal: 15,
-    marginTop: 5,
-  },
-  stepIndicator: {
-    flex: 1,
-    height: 3,
-    backgroundColor: "gray",
-    borderRadius: 10,
   },
   video: {
     alignSelf: "center",
