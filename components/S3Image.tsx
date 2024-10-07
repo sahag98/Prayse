@@ -1,9 +1,10 @@
 import React, { ComponentProps, useMemo, useState } from "react";
 import { Buffer } from "buffer";
 import { Image } from "expo-image";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ActualTheme } from "../types/reduxTypes";
+import { getMainTextColorStyle } from "@lib/customStyles";
 
 const bucket = "prayse-wallpapers";
 const URL = "https://doqbtuup6btvd.cloudfront.net/";
@@ -43,17 +44,25 @@ export default function S3Image({
   return (
     <View style={[styles.container, style]}>
       {isLoading && (
-        <ActivityIndicator
-          style={styles.loader}
-          size="large"
-          color={
-            actualTheme && actualTheme.MainTxt
-              ? actualTheme.MainTxt
-              : theme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
+        <View className="flex-1 justify-center gap-2 items-center">
+          <ActivityIndicator
+            // style={styles.loader}
+            size="large"
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : theme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+            }
+          />
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter-medium text-light-primary dark:text-dark-primary"
+          >
+            Please wait...
+          </Text>
+        </View>
       )}
       <Image
         source={{ uri }}

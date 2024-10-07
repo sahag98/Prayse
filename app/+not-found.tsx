@@ -5,8 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function HomeScreen() {
   return (
     <SafeAreaView>
-      <View className="flex flex-row items-center gap-2">
-        <Text>Not found</Text>
+      <View className="flex items-center gap-2">
+        <Text>Something went wrong.</Text>
+        <Text>Try relaunching the app.</Text>
       </View>
     </SafeAreaView>
   );

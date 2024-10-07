@@ -31,6 +31,13 @@ export const Container = styled.View`
   padding-top: ${statusBarHeight}px;
 `;
 
+export const WallpaperContainer = styled.View`
+  /* background-color: "${colors.primary}"; */
+  padding-bottom: 0px;
+  flex: 1;
+  padding-top: ${statusBarHeight}px;
+`;
+
 export const PrayerContainer = styled.View`
   /* background-color: "${colors.primary}"; */
   padding: 0px;

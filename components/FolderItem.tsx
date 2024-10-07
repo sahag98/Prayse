@@ -1,10 +1,8 @@
 //@ts-nocheck
 
-import { useState } from "react";
 import {
   Dimensions,
   FlatList,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -17,7 +15,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 
-import { editFolderName } from "../redux/folderReducer";
 import { PRAYER_SCREEN } from "../routes";
 
 const FolderItem = ({ actualTheme, item, navigation }) => {
@@ -32,7 +29,9 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
 
   const id = item.id;
 
-  const prayers = prayerList?.filter((item) => item.folderId === id);
+  const prayers = prayerList
+    ?.filter((item) => item.folderId === id)
+    .filter((item) => item.status !== "Archived");
 
   return (
     <TouchableOpacity
@@ -74,7 +73,7 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
           </View>
         ) : (
           <FlatList
-            data={prayers?.slice(0, 2)}
+            data={prayers?.slice(0, 3)}
             keyExtractor={(item) => item.id}
             className="gap-1"
             renderItem={({ item }) => (

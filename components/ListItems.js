@@ -291,7 +291,7 @@ const ListItems = ({
       <FlatList
         data={filteredList}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }} // Increased bottom padding and added flexGrow
-        keyExtractor={(e, i) => i.toString()}
+        keyExtractor={(item) => item.id.toString()}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}

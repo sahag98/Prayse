@@ -8,7 +8,6 @@ import * as Notifications from "expo-notifications";
 import { Link, Redirect, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
-  Dimensions,
   FlatList,
   Image,
   Platform,
@@ -17,7 +16,6 @@ import {
   View,
 } from "react-native";
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -94,9 +92,28 @@ const CommunityHomeScreen = () => {
   );
 
   useEffect(() => {
-    if (!currentUser) {
-      router.push("login");
-    }
+    const checkAndRedirect = async () => {
+      if (!currentUser) {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", data.session.user.id)
+            .single();
+
+          if (profile) {
+            setCurrentUser(profile);
+          } else {
+            router.replace("/profile-setup");
+          }
+        } else {
+          router.replace("/login");
+        }
+      }
+    };
+
+    checkAndRedirect();
   }, [currentUser]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -153,7 +170,6 @@ const CommunityHomeScreen = () => {
   }
 
   async function getUserGroups() {
-    console.log("fetching user groups...");
     try {
       const { data: groups } = await supabase
         .from("members")
@@ -218,8 +234,8 @@ const CommunityHomeScreen = () => {
   }
 
   if (!currentUser) {
-    console.log("not logged in!!!", currentUser);
-    return <Redirect href="login" />;
+    console.log("no user still");
+    return null;
   }
 
   if (currentUser && currentUser?.full_name === null) {
@@ -441,7 +457,7 @@ const CommunityHomeScreen = () => {
           data={userGroups}
           className="flex-1 mt-5"
           contentContainerStyle={{ flexGrow: 1, gap: 10 }} // Increased bottom padding and added flexGrow
-          keyExtractor={(i) => i.toString()}
+          keyExtractor={(item) => item.id.toString()}
           onEndReachedThreshold={0}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
@@ -514,7 +530,7 @@ const CommunityHomeScreen = () => {
                     <Text
                       numberOfLines={1}
                       style={getMainTextColorStyle(actualTheme)}
-                      className="font-inter-regular  text-light-primary dark:text-dark-primary"
+                      className="font-inter-regular  text-light-primary dark:text-dark-accent"
                     >
                       {item.groups?.description}
                     </Text>

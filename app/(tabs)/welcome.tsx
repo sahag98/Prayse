@@ -1,17 +1,16 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Redirect, useNavigation, useRootNavigationState } from "expo-router";
+import { Redirect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Linking, Platform, Text, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
-import { useDispatch, useSelector } from "react-redux";
+import { Platform, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
-import HowtoUsePrayse from "@components/HowtoUsePrayse";
+// import HowtoUsePrayse from "@components/HowtoUsePrayse";
 import { MerchComponent } from "@components/MerchComponent";
 import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
@@ -24,18 +23,9 @@ import WriteFeedbackModal from "@modals/WriteFeedbackModal";
 import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  getMainBackgroundColorStyle,
-  getMainTextColorStyle,
-} from "@lib/customStyles";
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused } from "@react-navigation/native";
-import {
-  PRAYER_GROUP_SCREEN,
-  QUESTION_SCREEN,
-  REFLECTION_SCREEN,
-  VERSE_OF_THE_DAY_SCREEN,
-} from "@routes";
+
 import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "@types/reduxTypes";
 
@@ -109,13 +99,13 @@ async function registerForPushNotificationsAsync() {
 }
 
 const WelcomeScreen = () => {
-  const [_, setNotification] = useState(false);
+  // const [_, setNotification] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
 
   const [feedbackVisible, setFeedbackVisible] = useState(false);
 
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
@@ -150,45 +140,44 @@ const WelcomeScreen = () => {
     loadIsFirstTime();
   }, []);
 
-  // Register for push notifications
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => sendToken(token))
       .catch((err) => console.log("push notification", err));
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        if (!notification.request.content.data.group) {
-          const content = notification.request.content;
-          let url = content.data.url || content.data.screen;
+    // notificationListener.current =
+    //   Notifications.addNotificationReceivedListener((notification) => {
+    //     if (!notification.request.content.data.group) {
+    //       const content = notification.request.content;
+    //       let url = content.data.url || content.data.screen;
 
-          if (url === "VerseOfTheDay") {
-            url = VERSE_OF_THE_DAY_SCREEN;
-          } else if (url === "PrayerGroup") {
-            url = PRAYER_GROUP_SCREEN;
-          } else if (url === "Reflection") {
-            url = REFLECTION_SCREEN;
-          } else if (url === "Question") {
-            url = QUESTION_SCREEN;
-          }
-        }
+    //       if (url === "VerseOfTheDay") {
+    //         url = VERSE_OF_THE_DAY_SCREEN;
+    //       } else if (url === "PrayerGroup") {
+    //         url = PRAYER_GROUP_SCREEN;
+    //       } else if (url === "Reflection") {
+    //         url = REFLECTION_SCREEN;
+    //       } else if (url === "Question") {
+    //         url = QUESTION_SCREEN;
+    //       }
+    //     }
 
-        setNotification(notification);
-      });
+    //     setNotification(notification);
+    //   });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("response: ", response);
-      });
+    // responseListener.current =
+    //   Notifications.addNotificationResponseReceivedListener((response) => {
+    //     console.log("response: ", response);
+    //   });
 
-    return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current,
-        );
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
-    };
+    // return () => {
+    //   notificationListener.current &&
+    //     Notifications.removeNotificationSubscription(
+    //       notificationListener.current,
+    //     );
+    //   responseListener.current &&
+    //     Notifications.removeNotificationSubscription(responseListener.current);
+    // };
   }, []);
 
   // Handle notification response

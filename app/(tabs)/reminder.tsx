@@ -1,9 +1,8 @@
 // @ts-nocheck
 import React from "react";
-import * as Notifications from "expo-notifications";
 import { useColorScheme } from "nativewind";
 import { FlatList, Text, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import ReminderItem from "@components/ReminderItem";
 
@@ -24,7 +23,6 @@ const ReminderScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-  const dispatch = useDispatch();
 
   return (
     <Container
@@ -58,7 +56,7 @@ const ReminderScreen = () => {
         data={reminders}
         className="flex-1"
         contentContainerStyle={{ gap: 10, flexGrow: 1 }} // Increased bottom padding and added flexGrow
-        keyExtractor={(e, i) => i.toString()}
+        keyExtractor={(item) => item.identifier}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}

@@ -121,7 +121,6 @@ export const userSlice = createSlice({
       // state.isShowingGiveawayModal = false;
     },
     increaseAppStreakCounter: (state, action) => {
-      console.log("increasing app streak counter");
       // state.isAppReady = false;
       // state.alreadyEnteredGiveaway = false;
       // state.isShowingGiveawayModal = false;
@@ -248,6 +247,7 @@ export const userSlice = createSlice({
       }
 
       function parseLocaleDateString(dateString, locale = "en-US") {
+        //eslint-disable-next-line
         const [month, day, year] = dateString.split(/[\/\-]/).map(Number);
         // Note: Adjust parsing logic based on known locale format if needed
         return new Date(year, month - 1, day);

@@ -187,7 +187,6 @@ const Folder = ({ colorScheme, navigation }) => {
         addVisible={addVisible}
         addNewFolder={addNewFolder}
         colorScheme={colorScheme}
-        theme={theme}
         folderName={folderName}
         setAddVisible={setAddVisible}
         handleCloseModal={handleCloseModal}

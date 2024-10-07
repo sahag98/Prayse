@@ -1,11 +1,10 @@
 // @ts-nocheck
-import React from "react";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
-import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
@@ -41,6 +40,8 @@ const ReminderItem = ({
   const content = reminder.reminder;
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  // const [justPrayed, setJustPrayed] = useState(false);
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -89,64 +90,77 @@ const ReminderItem = ({
 
   //@ts-ignore
   const formattedDate = timestamp.toLocaleString("en-US", timeOptions);
+
+  // const currentDate = new Date().toLocaleString("en-US", timeOptions);
+  // const isFocused = useIsFocused();
+
+  // const isPrayTime = formattedDate === currentDate;
+
   return (
     <View
       style={getSecondaryBackgroundColorStyle(actualTheme)}
-      className="gap-3 p-3 rounded-lg bg-light-secondary dark:bg-dark-secondary justify-between w-full"
+      className="gap-3 p-3 items-center rounded-lg bg-light-secondary dark:bg-dark-secondary justify-between w-full"
     >
-      <View className="flex-row items-center gap-2">
-        <Ionicons
-          name="time-outline"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "#d2d2d2"
-                : "#2f2d51"
-          }
-        />
-        {reminder.ocurrence === "Daily" && (
+      <View className="flex-row w-full justify-between">
+        <View className="gap-2">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-2">
+              <Ionicons
+                name="time-outline"
+                size={24}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "#d2d2d2"
+                      : "#2f2d51"
+                }
+              />
+              {reminder.ocurrence === "Daily" && (
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-regular text-sm  text-light-primary dark:text-dark-primary"
+                >
+                  {reminder.ocurrence} at {formattedDate}
+                </Text>
+              )}
+              {reminder.ocurrence === "Weekly" && (
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
+                >
+                  {reminder.ocurrence} on {dayOfWeekName}s at {formattedDate}
+                </Text>
+              )}
+              {reminder.ocurrence === "None" && (
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
+                >
+                  {formattedDate}
+                </Text>
+              )}
+            </View>
+          </View>
           <Text
+            numberOfLines={3}
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-regular text-sm  text-light-primary dark:text-dark-primary"
+            className="font-inter-medium text-light-primary dark:text-dark-primary text-lg"
           >
-            {reminder.ocurrence} at {formattedDate}
+            {content.message}
           </Text>
-        )}
-        {reminder.ocurrence === "Weekly" && (
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
-          >
-            {reminder.ocurrence} on {dayOfWeekName}s at {formattedDate}
-          </Text>
-        )}
-        {reminder.ocurrence === "None" && (
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
-          >
-            {formattedDate}
-          </Text>
-        )}
+          {content.note && (
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              numberOfLines={5}
+              className="font-inter-regular text-light-primary dark:text-dark-primary leading-6"
+            >
+              {content.note}
+            </Text>
+          )}
+        </View>
       </View>
-      <Text
-        numberOfLines={3}
-        style={getSecondaryTextColorStyle(actualTheme)}
-        className="font-inter-medium text-light-primary dark:text-dark-primary text-lg"
-      >
-        {content.message}
-      </Text>
-      {content.note && (
-        <Text
-          style={getSecondaryTextColorStyle(actualTheme)}
-          numberOfLines={5}
-          className="font-inter-regular text-light-primary dark:text-dark-primary leading-6"
-        >
-          {content.note}
-        </Text>
-      )}
+
       <View className="flex-row gap-3 self-end items-center mt-auto">
         <TouchableOpacity
           onPress={() =>

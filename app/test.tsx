@@ -497,7 +497,7 @@ export default function TestScreen() {
         >
           <TextInput
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="dark:text-white text-[#2f2d51] min-h-10 max-h-12"
+            className="dark:text-white text-[#2f2d51 font-inter-regular min-h-10 max-h-12"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
@@ -535,8 +535,8 @@ export default function TestScreen() {
                   ? "#a1a1a1"
                   : "#808080"
             }
-            className="min-h-20 max-h-40 dark:text-white text-[#2f2d51]"
-            placeholder="Notes"
+            className="min-h-20 max-h-40 dark:text-white font-inter-regular text-[#2f2d51]"
+            placeholder="Write notes about the prayer here..."
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt

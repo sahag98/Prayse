@@ -3,8 +3,8 @@ module.exports = {
   extends: ["universe/native"],
   plugins: ["simple-import-sort", "unused-imports"],
   rules: {
-    "simple-import-sort/imports": "warn",
-    "simple-import-sort/exports": "warn",
+    "simple-import-sort/imports": "off",
+    "simple-import-sort/exports": "off",
     "import/order": "off",
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "off",
@@ -23,7 +23,7 @@ module.exports = {
       files: ["**/*.js", "**/*.ts", "**/*.tsx"],
       rules: {
         "simple-import-sort/imports": [
-          "warn",
+          "off",
           {
             groups: [
               // `react` first, then packages starting with a character
