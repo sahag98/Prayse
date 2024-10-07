@@ -78,7 +78,7 @@ const StreakSlider = ({
     // dispatch(setNeededValues());
     // dispatch(resetCongrats());
     if (
-      completedItems.length === 1 &&
+      completedItems?.length === 1 &&
       completedItems[0].items.length === 3 &&
       isShowingCongratsModal === false &&
       isOnHomeScreen

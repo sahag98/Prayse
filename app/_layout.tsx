@@ -198,7 +198,7 @@ function App() {
   //   inter: require("../assets/fonts/inter.ttf"),
   // });
 
-  const [fontsLoaded] = useFonts({
+  const [loaded, error] = useFonts({
     Inter_300Light,
     Inter_400Regular,
     Inter_500Medium,
@@ -216,42 +216,39 @@ function App() {
   }, [ref]);
 
   useEffect(() => {
-    console.log("fonts loaded: ", fontsLoaded);
-    if (fontsLoaded) {
+    console.log("fonts loaded: ", loaded);
+    if (loaded || error) {
       // console.log("fonts are loaded");
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [loaded, error]);
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-  // const rootNavigationState = useRootNavigationState();
-
-  // if (!rootNavigationState?.key) return null;
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
     <>
-      <AnimatedSplash
+      {/* <AnimatedSplash
         translucent
-        isLoaded={fontsLoaded}
+        isLoaded={loaded}
         logoImage={splashScreenIcon}
         backgroundColor="white"
         logoHeight={150}
         logoWidth={150}
-      >
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-              <SafeAreaProvider>
-                <SupabaseProvider>
-                  <StackContainer />
-                </SupabaseProvider>
-              </SafeAreaProvider>
-            </PersistGate>
-          </Provider>
-        </GestureHandlerRootView>
-      </AnimatedSplash>
+      > */}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <SafeAreaProvider>
+              <SupabaseProvider>
+                <StackContainer />
+              </SupabaseProvider>
+            </SafeAreaProvider>
+          </PersistGate>
+        </Provider>
+      </GestureHandlerRootView>
+      {/* </AnimatedSplash> */}
       <Toast config={toastConfig} />
     </>
   );
