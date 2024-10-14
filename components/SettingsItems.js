@@ -20,7 +20,7 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
       >
         General
       </Text>
-      <View className="bg-light-secondary border-light-primary/50 rounded-lg overflow-hidden">
+      <View className="bg-light-secondary rounded-lg overflow-hidden">
         {options.map((option) =>
           option.link ? (
             <TouchableOpacity
@@ -61,19 +61,22 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
               />
             </TouchableOpacity>
           ) : (
-            <Link asChild href={`/${option.screen}`} key={option.id}>
-              <TouchableOpacity
-                style={[
-                  getSecondaryBackgroundColorStyle(actualTheme),
-                  actualTheme &&
-                    actualTheme.MainTxt && {
-                      borderBottomColor: "lightgray",
-                    },
-                ]}
-                className={cn(
-                  "w-full flex-row items-center border-b border-b-light-primary/50 dark:border-b-[#585858] bg-light-secondary dark:bg-dark-secondary p-5 justify-between"
-                )}
-              >
+            <Link
+              asChild
+              href={`/${option.screen}`}
+              className={cn(
+                "w-full flex-row items-center border-b border-b-light-primary/50 dark:border-b-[#585858] bg-light-secondary dark:bg-dark-secondary p-5 justify-between"
+              )}
+              style={[
+                getSecondaryBackgroundColorStyle(actualTheme),
+                actualTheme &&
+                  actualTheme.MainTxt && {
+                    borderBottomColor: "lightgray",
+                  },
+              ]}
+              key={option.id}
+            >
+              <TouchableOpacity>
                 <View className="flex-row items-center">
                   {option.icon}
                   <Text

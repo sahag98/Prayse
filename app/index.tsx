@@ -1,11 +1,15 @@
-import React from "react";
-import { Redirect } from "expo-router";
+import React, { useEffect } from "react";
+
+import { Redirect, useNavigation } from "expo-router";
 
 import { WELCOME_SCREEN } from "@routes";
 
 export default function HomeScreen() {
-  // const rootNavigationState = useRootNavigationState();
+  const navigation = useNavigation();
 
-  // if (!rootNavigationState?.key) return null;
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
   return <Redirect href={WELCOME_SCREEN} />;
 }

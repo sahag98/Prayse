@@ -33,6 +33,7 @@ const FavoritesScreen = () => {
       />
     );
   };
+
   return (
     <Container
       className="bg-light-background dark:bg-dark-background"
@@ -62,13 +63,13 @@ const FavoritesScreen = () => {
           className="font-inter-bold text-light-primary dark:text-dark-primary"
           style={getMainTextColorStyle(actualTheme)}
         >
-          Favorite Verses
+          Saved Verses
         </HeaderTitle>
       </View>
 
       <FlatList
         data={favorites}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.verse._id.toString()}
         contentContainerStyle={{ gap: 5, flex: 1 }}
         scrollEventThrottle={16}
         ListEmptyComponent={() => (
@@ -77,8 +78,8 @@ const FavoritesScreen = () => {
               style={getMainTextColorStyle(actualTheme)}
               className="font-inter-medium text-center w-11/12 text-lg text-light-primary dark:text-dark-primary"
             >
-              Your favorites list is empty. Add a daily verse to this list by
-              clicking the bookmark on the verse.
+              Your saved list is empty. Add a verse to this list by clicking the
+              bookmark on the verse.
             </Text>
           </View>
         )}

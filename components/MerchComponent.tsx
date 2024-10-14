@@ -77,13 +77,13 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
           >
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-bold text-xl dark:text-white text-light-primary"
+              className="font-inter-bold text-xl dark:text-white text-light-primary"
             >
               Prayse Definition
             </Text>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-normal mb-[10px] text-light-primary dark:text-[#bebebe]"
+              className="font-inter-regular mb-[10px] text-light-primary dark:text-[#bebebe]"
             >
               Reminding us of the power of prayer and praise in our walk with
               God.
@@ -104,7 +104,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
-                className="text-white dark:text-dark-background font-inter font-bold text-[15px]"
+                className="text-white dark:text-dark-background font-inter-bold text-[15px]"
               >
                 Check it Out
               </Text>

@@ -54,8 +54,6 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
         requiredEntitlementIdentifier: "pro",
       });
 
-    console.log("result: ", paywallResult);
-
     switch (paywallResult) {
       case PAYWALL_RESULT.NOT_PRESENTED:
         return true;

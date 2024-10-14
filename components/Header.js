@@ -109,7 +109,7 @@ const Header = ({
           )}
         >
           <View className="flex-row flex-1 items-center">
-            <Link asChild href={`/${FOLDER_SCREEN}`}>
+            <Link className="items-center" asChild href={`/${FOLDER_SCREEN}`}>
               <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
                 <Ionicons
                   name="chevron-back"
@@ -124,7 +124,7 @@ const Header = ({
                 />
               </TouchableOpacity>
             </Link>
-            <View className="flex-row flex-1 gap-3">
+            <View className="flex-row flex-1 items-center ml-2 gap-2">
               <HeaderTitle
                 style={getMainTextColorStyle(actualTheme)}
                 numberOfLines={1}

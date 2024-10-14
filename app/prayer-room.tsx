@@ -486,7 +486,7 @@ const PrayerRoom = () => {
                         animatedMomentFadeInStyle,
                       ]}
                     >
-                      Take a moment and Pray
+                      Take a moment and pray
                     </Animated.Text>
                     <View>
                       <Animated.Text
@@ -663,7 +663,7 @@ const PrayerRoom = () => {
                         animatedMomentFadeInStyle,
                       ]}
                     >
-                      Take a moment and Pray
+                      Take a moment and pray
                     </Animated.Text>
                     <View>
                       <Animated.Text

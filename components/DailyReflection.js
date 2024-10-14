@@ -227,7 +227,7 @@ const DailyReflection = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
-                Take a moment and pray.
+                Take a moment and pray
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
@@ -377,7 +377,7 @@ const DailyReflection = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
-                Read the daily verse.
+                Read the daily verse
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
@@ -487,7 +487,7 @@ const DailyReflection = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
-                Explore today's devotional.
+                Explore today's devotional
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}

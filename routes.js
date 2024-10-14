@@ -1,4 +1,4 @@
-export const HOME_SCREEN = "home";
+export const HOME_SCREEN = "welcome";
 export const FOLDER_SCREEN = "folder";
 export const PRO_SCREEN = "pro";
 export const CREATE_THEME_SCREEN = "create-theme";

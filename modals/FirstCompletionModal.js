@@ -18,7 +18,17 @@ import {
   ModalView2,
 } from "../styles/appStyles";
 import LottieView from "lottie-react-native";
-const FirstCompletionModal = ({ theme, congratsModal, setCongratsModal }) => {
+import {
+  getPrimaryBackgroundColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+const FirstCompletionModal = ({
+  actualTheme,
+  theme,
+  congratsModal,
+  setCongratsModal,
+}) => {
   const handleCloseModal = () => {
     setCongratsModal(false);
   };
@@ -45,32 +55,13 @@ const FirstCompletionModal = ({ theme, congratsModal, setCongratsModal }) => {
           resizeMode="none"
         />
         <ModalView2
-          style={
-            theme === "dark"
-              ? { backgroundColor: "#212121", width: "90%" }
-              : { backgroundColor: "#b7d3ff", width: "90%" }
-          }
+          className="bg-light-secondary dark:bg-dark-secondary w-4/5"
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
         >
           <ModalIcon>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-            >
-              <HeaderTitle
-                style={
-                  theme === "dark"
-                    ? {
-                        fontFamily: "Inter-Bold",
-                        letterSpacing: 1,
-                        color: "white",
-                      }
-                    : {
-                        fontFamily: "Inter-Bold",
-                        color: "#2f2d51",
-                        letterSpacing: 1,
-                      }
-                }
-              >
-                Congratulations!
+            <View className="flex-row items-center gap-3">
+              <HeaderTitle className="font-inter-bold text-light-primary dark:text-dark-primary">
+                Great Job!
               </HeaderTitle>
               <MaterialIcons
                 name="celebration"
@@ -80,23 +71,8 @@ const FirstCompletionModal = ({ theme, congratsModal, setCongratsModal }) => {
             </View>
           </ModalIcon>
           <Text
-            style={
-              theme === "dark"
-                ? {
-                    color: "white",
-                    fontFamily: "Inter-Medium",
-                    fontSize: 15,
-                    marginBottom: 10,
-                    lineHeight: 21,
-                  }
-                : {
-                    color: "#2f2d51",
-                    lineHeight: 21,
-                    fontSize: 15,
-                    marginBottom: 10,
-                    fontFamily: "Inter-Medium",
-                  }
-            }
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter-medium mb-3 text-light-primary dark:text-dark-primary"
           >
             You have completed your first day of daily devotions. Come back
             tomorrow to start you streak!
@@ -104,38 +80,10 @@ const FirstCompletionModal = ({ theme, congratsModal, setCongratsModal }) => {
 
           <TouchableOpacity
             onPress={handleCloseModal}
-            style={
-              theme === "dark"
-                ? {
-                    width: "100%",
-                    flexDirection: "row",
-                    backgroundColor: "#a5c9ff",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: 15,
-                    borderRadius: 10,
-                  }
-                : {
-                    width: "100%",
-
-                    flexDirection: "row",
-                    backgroundColor: "#2f2d51",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: 15,
-                    borderRadius: 10,
-                  }
-            }
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="w-full items-center justify-center bg-light-primary dark:bg-dark-accent p-4 rounded-lg"
           >
-            <Text
-              style={
-                theme === "dark"
-                  ? { color: "#121212", fontFamily: "Inter-Bold" }
-                  : { color: "white", fontFamily: "Inter-Bold" }
-              }
-            >
+            <Text className="font-inter-bold text-light-background dark:bg-dark-background">
               Okay
             </Text>
           </TouchableOpacity>
