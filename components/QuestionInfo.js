@@ -47,15 +47,15 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
           >
             <Text
               style={getPrimaryTextColorStyle(actualTheme)}
-              className="text-xs font-inter-semibold text-light-background dark:text-dark-background"
+              className="text-xs font-inter-medium text-light-background dark:text-dark-background"
             >
-              Posted by: Prayse
+              Posted by: {item.posted_by}
             </Text>
           </View>
 
           {item.isNew ? (
-            <View className="bg-red-500 rounded-xl px-2 py-1">
-              <Text className="font-inter-medium text-sm text-light-background dark:text-dark-primary">
+            <View className="bg-red-500 rounded-lg px-2 py-1">
+              <Text className="font-inter-semibold text-xs text-light-background dark:text-dark-primary">
                 new
               </Text>
             </View>

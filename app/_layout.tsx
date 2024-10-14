@@ -1,14 +1,8 @@
-//@ts-nocheck
-
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { isRunningInExpoGo } from "expo";
-import * as Notifications from "expo-notifications";
-import {
-  SplashScreen,
-  useNavigation,
-  useNavigationContainerRef,
-} from "expo-router";
-import AnimatedSplash from "react-native-animated-splash-screen";
+
+import { SplashScreen } from "expo-router";
+// import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
@@ -27,14 +21,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { store } from "@redux/store";
-import {
-  PRAYER_GROUP_SCREEN,
-  QUESTION_SCREEN,
-  VERSE_OF_THE_DAY_SCREEN,
-} from "@routes";
-import * as Sentry from "@sentry/react-native";
 
-import splashScreenIcon from "../assets/prayse-transparent.png";
+import * as Sentry from "@sentry/react-native";
 
 import StackContainer from "./Stack";
 
@@ -60,65 +48,7 @@ Sentry.init({
   ],
 });
 
-function useNotificationObserver() {
-  const navigation = useNavigation();
-  useEffect(() => {
-    let isMounted = true;
-
-    function redirect(notification: Notifications.Notification) {
-      const data = notification.request.content.data;
-
-      const url = data?.url || data?.screen;
-
-      if (url) {
-        console.log("url exists!!", url);
-
-        if (
-          ["PrayerGroup", PRAYER_GROUP_SCREEN].includes(url) &&
-          data.group_id
-        ) {
-          navigation.navigate(PRAYER_GROUP_SCREEN, {
-            group_id: data.group_id,
-          });
-        } else if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
-          navigation.navigate(VERSE_OF_THE_DAY_SCREEN);
-        } else if (
-          ["Question", QUESTION_SCREEN].includes(url) &&
-          data.title &&
-          data.question_id
-        ) {
-          navigation.navigate(QUESTION_SCREEN, {
-            title: data.title,
-            question_id: data.question_id,
-          });
-        } else {
-          navigation.navigate(url);
-        }
-      }
-    }
-
-    Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (!isMounted || !response?.notification) {
-        return;
-      }
-      redirect(response?.notification);
-    });
-
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        redirect(response.notification);
-      },
-    );
-
-    return () => {
-      isMounted = false;
-      subscription.remove();
-    };
-  }, []);
-}
-
 function App() {
-  useNotificationObserver();
   const toastConfig = {
     /*
       Overwrite 'success' type,
@@ -189,15 +119,6 @@ function App() {
     ),
   };
 
-  // const [loaded] = useFonts({
-  //   "Inter-Black": require("../assets/fonts/Inter-Black.ttf"),
-  //   "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
-  //   "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-  //   "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
-  //   "Inter-Light": require("../assets/fonts/Inter-Light.ttf"),
-  //   inter: require("../assets/fonts/inter.ttf"),
-  // });
-
   const [loaded, error] = useFonts({
     Inter_300Light,
     Inter_400Regular,
@@ -207,13 +128,13 @@ function App() {
     Inter_800ExtraBold,
   });
 
-  const ref = useNavigationContainerRef();
+  // const ref = useNavigationContainerRef();
 
-  useEffect(() => {
-    if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref);
-    }
-  }, [ref]);
+  // useEffect(() => {
+  //   if (ref) {
+  //     routingInstrumentation.registerNavigationContainer(ref);
+  //   }
+  // }, [ref]);
 
   useEffect(() => {
     console.log("fonts loaded: ", loaded);
@@ -229,14 +150,6 @@ function App() {
 
   return (
     <>
-      {/* <AnimatedSplash
-        translucent
-        isLoaded={loaded}
-        logoImage={splashScreenIcon}
-        backgroundColor="white"
-        logoHeight={150}
-        logoWidth={150}
-      > */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
@@ -248,7 +161,6 @@ function App() {
           </PersistGate>
         </Provider>
       </GestureHandlerRootView>
-      {/* </AnimatedSplash> */}
       <Toast config={toastConfig} />
     </>
   );

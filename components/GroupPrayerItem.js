@@ -167,7 +167,7 @@ const GroupPrayerItem = ({
             actualTheme &&
             actualTheme.Secondary && { borderColor: actualTheme.Secondary }
           }
-          className="size-12 rounded-full border border-light-primary dark:border-dark-accent"
+          className="size-14 rounded-full border border-light-primary dark:border-dark-accent"
           source={{
             uri: item.profiles?.avatar_url
               ? item.profiles?.avatar_url

@@ -159,8 +159,14 @@ const Folder = ({ colorScheme, navigation }) => {
             posthog.capture("Prayer room");
             navigation.navigate(PRAYER_ROOM_SCREEN);
           }}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+          className="dark:bg-dark-secondary flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
         >
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
+          >
+            Pray
+          </Text>
           <MaterialCommunityIcons
             name="hands-pray"
             size={24}
@@ -168,17 +174,10 @@ const Folder = ({ colorScheme, navigation }) => {
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "#121212"
+                  ? "white"
                   : "#2f2d51"
             }
           />
-
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-bold text-lg text-light-primary dark:text-dark-background"
-          >
-            Pray
-          </Text>
         </TouchableOpacity>
       </View>
 

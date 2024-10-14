@@ -2,12 +2,20 @@
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { Switch, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
   AntDesign,
   FontAwesome6,
+  Feather,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import {
@@ -19,7 +27,8 @@ import {
 } from "@lib/customStyles";
 import { togglePrayerQuestions, togglePrayerVerses } from "@redux/proReducer";
 import { WALLPAPERS_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
-import { Container, HeaderView } from "@styles/appStyles";
+import { Container, HeaderView, WelcomeContainer } from "@styles/appStyles";
+import { Image } from "expo-image";
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector((state) => state.theme.actualTheme);
@@ -35,8 +44,18 @@ const ProScreen = () => {
   async function handleQuestionsEnabled() {
     await dispatch(togglePrayerQuestions());
   }
+
+  function cancelSubscription() {
+    if (Platform.OS === "ios") {
+      Linking.openURL("https://apps.apple.com/account/subscriptions");
+    } else {
+      Linking.openURL("https://play.google.com/store/account/subscriptions");
+    }
+  }
+
   return (
-    <Container
+    <WelcomeContainer
+      showsVerticalScrollIndicator={false}
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
@@ -212,10 +231,51 @@ const ProScreen = () => {
         style={getSecondaryTextColorStyle(actualTheme)}
         className=" mt-2 font-inter-regular  text-light-primary dark:text-dark-primary"
       >
-        If enabled, you have the ability to post approved questions to the
-        community.
+        If enabled, you have the ability to post approved questions in the
+        community questions section.
       </Text>
-
+      <TouchableOpacity
+        style={getSecondaryBackgroundColorStyle(actualTheme)}
+        onPress={() =>
+          Linking.openURL(
+            "https://www.canva.com/design/DAGRcSB6DCs/QN5T89e5Jops_-PQ_B1f4g/view?utm_content=DAGRcSB6DCs&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview",
+          )
+        }
+        className="rounded-lg flex-row w-full justify-between  items-center p-3 mt-3 bg-light-secondary gap-1 dark:bg-dark-secondary"
+      >
+        <Text
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
+        >
+          Prayer Journaling Resource
+        </Text>
+        <Feather
+          name="external-link"
+          size={20}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "dark"
+                ? "#d2d2d2"
+                : "#2f2d51"
+          }
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={cancelSubscription}
+        style={
+          actualTheme &&
+          actualTheme.MainTxt && { borderColor: actualTheme.MainTxt }
+        }
+        className="border p-3 mt-6 border-light-primary dark:border-[#d2d2d2] rounded-lg"
+      >
+        <Text
+          style={getMainTextColorStyle(actualTheme)}
+          className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
+        >
+          Click here to cancel your Subscription.
+        </Text>
+      </TouchableOpacity>
       {/* <View className="flex-row items-center mt-3 gap-3">
         <Text
           style={getMainTextColorStyle(actualTheme)}
@@ -291,7 +351,7 @@ const ProScreen = () => {
           </TouchableOpacity>
         </Link>
       </View> */}
-    </Container>
+    </WelcomeContainer>
   );
 };
 

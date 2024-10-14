@@ -363,7 +363,7 @@ const CommunityHomeScreen = () => {
             </View>
             <View className="gap-3">
               <Text
-                className="font-inter-regular leading-6 text-light-primary dark:text-dark-primary"
+                className="font-inter-medium leading-6 text-light-primary dark:text-dark-primary"
                 style={getSecondaryTextColorStyle(actualTheme)}
               >
                 Weekly biblical questions to answer and reflect on.
@@ -455,7 +455,7 @@ const CommunityHomeScreen = () => {
 
         <FlatList
           data={userGroups}
-          className="flex-1 mt-5"
+          className="flex-1 mt-4"
           contentContainerStyle={{ flexGrow: 1, gap: 10 }} // Increased bottom padding and added flexGrow
           keyExtractor={(item) => item.id.toString()}
           onEndReachedThreshold={0}

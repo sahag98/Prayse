@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       }
 
       if (update[0].isUpdateAvailable !== nativeApplicationVersion.toString()) {
-        // setHasUpdate(true);
+        setHasUpdate(true);
       } else {
         setHasUpdate(false);
       }
@@ -89,14 +89,14 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
             >
-              An Update is Available!
+              New Update Available!
             </HeaderTitle>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
               className="dark:text-white text-light-primary mt-1 text-center font-inter-regular"
             >
               Update your app to the latest version and check out the newly
-              added features!
+              added features.
             </Text>
           </ModalIcon>
           <View className="mt-2 items-center justify-between">
@@ -124,7 +124,10 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity className="mt-2" onPress={handleCloseModal}>
-              <Text className="underline underline-offset-4 p-2 font-inter-medium dark:text-white text-light-primary">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="underline underline-offset-4 p-2 font-inter-medium dark:text-white text-light-primary"
+              >
                 Later
               </Text>
             </TouchableOpacity>

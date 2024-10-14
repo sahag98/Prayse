@@ -135,7 +135,7 @@ const QuestionListScreen = () => {
         refreshing={refreshing}
         // onRefresh={() => console.log("refresh list")}
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="gap-4"
+        contentContainerClassName="gap-3"
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <QuestionInfo

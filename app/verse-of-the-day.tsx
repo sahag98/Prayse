@@ -138,7 +138,7 @@ const VerseOfTheDayScreen = () => {
         </TouchableOpacity>
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-light-primary dark:text-dark-primary"
+          className="font-inter-bold text-light-primary dark:text-dark-primary"
         >
           Verse of the Day
         </HeaderTitle>
@@ -163,7 +163,7 @@ const VerseOfTheDayScreen = () => {
 
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter font-medium text-lg text-light-primary dark:text-dark-primary"
+              className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
             >
               Saved verses
             </Text>
@@ -198,7 +198,7 @@ const VerseOfTheDayScreen = () => {
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter leading-7 text-lg mb-2 text-light-primary dark:text-dark-primary"
+            className="font-inter-regular leading-7 text-lg mb-2 text-light-primary dark:text-dark-primary"
           >
             {verse[0].verse}
           </Text>
@@ -207,7 +207,7 @@ const VerseOfTheDayScreen = () => {
               "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="self-end font-inter text-lg font-medium text-light-primary dark:text-dark-primary"
+                className="self-end font-inter-medium text-lg text-light-primary dark:text-dark-primary"
               >
                 - {verse[0].chapter}
               </Text>
@@ -254,7 +254,7 @@ const VerseOfTheDayScreen = () => {
                 >
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter text-light-primary dark:text-dark-primary font-bold text-lg"
+                    className="font-inter-semibold text-light-primary dark:text-dark-primary  text-lg"
                   >
                     Saved
                   </Text>

@@ -312,7 +312,7 @@ export default function TestScreen() {
     setRepeatOption("");
     setIsRepeat(false);
     Keyboard.dismiss();
-    navigation.goBack();
+    navigation.navigate(REMINDER_SCREEN);
   };
 
   const addReminder = () => {
@@ -763,33 +763,24 @@ export default function TestScreen() {
           <Link href={`/${SETTINGS_SCREEN}`}>
             <Text
               style={getMainTextColorStyle(actualTheme)}
-              className="dark:text-[#d2d2d2] text-light-primary text-[13px] font-inter-regular"
+              className="dark:text-[#d2d2d2] text-light-primary text-sm font-inter-regular"
             >
-              To receive the reminders, make sure to enable notifications in
-              both your phone and Prayse settings{" "}
+              To receive reminders, make sure to enable notifications in both
+              your phone and app settings.
               <Feather
                 name="external-link"
                 size={14}
-                color={colorScheme === "dark" ? "#d2d2d2" : "#2f2d51"}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "#d2d2d2"
+                      : "#2f2d51"
+                }
               />
               .
             </Text>
           </Link>
-
-          <View className="mt-auto mb-5 w-full">
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="text-light-primary dark:text-[#d2d2d2] font-inter-regular"
-            >
-              "Continue in prayer, and watch in the same with thanksgiving."
-            </Text>
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium"
-            >
-              - Colossians 4:2
-            </Text>
-          </View>
         </View>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}

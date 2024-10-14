@@ -27,7 +27,8 @@ const DailysItems = ({ options, actualTheme, theme }) => {
             href={`/${option.screen}`}
             style={[
               getSecondaryBackgroundColorStyle(actualTheme),
-              actualTheme && { borderBottomColor: "lightgray" },
+              actualTheme &&
+                actualTheme.MainTxt && { borderBottomColor: "lightgray" },
             ]}
             key={option.id}
           >

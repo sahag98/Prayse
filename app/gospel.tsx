@@ -96,7 +96,7 @@ const Gospel = () => {
           borderBottomColor: actualTheme.MainTxt,
         }
       }
-      className="gap-1 border-b border-b-light-primary dark:border-b-[#7b7b7b]"
+      className={`gap-1 ${title !== "RECEIVE JESUS AS YOUR SAVIOR" && "border-b"} border-b-light-primary dark:border-b-[#7b7b7b]`}
     >
       <Text
         style={getMainTextColorStyle(actualTheme)}
@@ -190,7 +190,7 @@ const Gospel = () => {
           </TouchableOpacity>
           <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter font-bold text-center text-3xl dark:text-dark-primary text-light-primary"
+            className="font-inter-bold text-center text-3xl dark:text-dark-primary text-light-primary"
           >
             Gospel
           </Text>
@@ -202,7 +202,7 @@ const Gospel = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListFooterComponent={() => (
-          <View className=" justify-center mb-[10px]">
+          <View className=" justify-center my-[10px]">
             <TouchableOpacity
               style={getPrimaryBackgroundColorStyle(actualTheme)}
               className="w-full items-center justify-center dark:bg-dark-accent bg-light-primary p-4 rounded-lg"
@@ -249,7 +249,7 @@ const Gospel = () => {
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary mb-2 font-inter-regular text-lg"
+                className="dark:text-dark-primary text-light-primary mb-2 text-center font-inter-regular text-lg"
               >
                 Dear God, I recognize that I am a sinner and have been seperated
                 from you. From this point on, I accept you Jesus as my Lord and

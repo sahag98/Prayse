@@ -73,7 +73,15 @@ const VerseModal = ({
               >
                 Please wait...
               </Text>
-              <ActivityIndicator />
+              <ActivityIndicator
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                      ? "white"
+                      : "#2f2d51"
+                }
+              />
             </View>
           ) : (
             <Text

@@ -56,7 +56,7 @@ const StreakSlider = ({
 
   const navigationState = useNavigationState((state) => state);
   const isOnHomeScreen =
-    navigationState.routes[navigationState.index].name === "Home";
+    navigationState.routes[navigationState.index].name === "welcome";
 
   const isShowingCongratsModal = useSelector(
     (state) => state.user.isShowingCongratsModal,
@@ -119,12 +119,12 @@ const StreakSlider = ({
   useEffect(() => {
     // dispatch(didShowDonationModal());
     // dispatch(resetDonationModal());
-    if (appstreak % 10 !== 0) {
+    if (appstreak % 8 !== 0) {
       dispatch(resetDonationModal());
     }
     if (
       appstreak !== 0 &&
-      appstreak % 10 === 0 &&
+      appstreak % 8 === 0 &&
       isShowingDonationModal === false
     ) {
       console.log("should show support modal now: ", `${appstreak}/10`);
@@ -157,19 +157,22 @@ const StreakSlider = ({
         percentModal={percentModal}
         setPercentModal={setPercentModal}
         percent={percentage}
-        theme={theme}
+        theme={colorScheme}
+        actualTheme={actualTheme}
       />
 
       <FirstCompletionModal
+        actualTheme={actualTheme}
         congratsModal={congratsModal}
         setCongratsModal={setCongratsModal}
-        theme={theme}
+        theme={colorScheme}
       />
-      <DonationModal
-        donationModal={donationModal}
+      {/* <DonationModal
+        donationModal={true}
         setDonationModal={setDonationModal}
-        theme={theme}
-      />
+        theme={colorScheme}
+        actualTheme={actualTheme}
+      /> */}
       <Modal
         animationType="fade"
         transparent

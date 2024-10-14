@@ -115,11 +115,6 @@ const WelcomeScreen = () => {
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
   const { colorScheme } = useColorScheme();
-  // const posthog = usePostHog();
-  // useEffect(() => {
-  //   console.log("hereee");
-  //   posthog.capture("Welcome Screen");
-  // }, [posthog]);
 
   const loadIsFirstTime = async () => {
     try {
