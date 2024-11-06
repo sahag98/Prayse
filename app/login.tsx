@@ -390,7 +390,7 @@ const LoginScreen = () => {
                     ? actualTheme.PrimaryTxt
                     : colorScheme === "dark"
                       ? "#121212"
-                      : "#2f2d51"
+                      : "white"
                 }
               />
             </TouchableOpacity>
