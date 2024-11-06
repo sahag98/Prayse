@@ -19,12 +19,19 @@ import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
+import {
+  HeaderTitle,
+  HeaderView,
+  ModalContainer,
+  ModalView,
+} from "../styles/appStyles";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useRouter } from "expo-router";
 
@@ -46,6 +53,7 @@ const ProfileModal = ({
   const [isEmpty, setIsEmpty] = useState(false);
   const [image, setImage] = useState(user?.avatar_url);
 
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const router = useRouter();
   useEffect(() => {
     getUserPrayers();
@@ -225,6 +233,17 @@ const ProfileModal = ({
     setIsEmpty(false);
   };
 
+  async function DeleteAccount() {
+    await handleLogOut();
+    const { data } = await supabase.functions.invoke("delete-user", {
+      body: JSON.stringify({
+        userId: user.id,
+      }),
+    });
+    setShowDeleteConfirmation(true);
+    setProfileVisible(false);
+  }
+
   return (
     <Modal
       animationType="fade"
@@ -365,21 +384,80 @@ const ProfileModal = ({
               </Text>
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            onPress={handleLogOut}
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="self-end mt-auto mb-4 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
-          >
-            <Text
-              style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-light-background dark:text-dark-primary"
+          <View className="self-end mt-auto mb-4  w-full gap-2">
+            <TouchableOpacity
+              onPress={handleLogOut}
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-light-primary dark:bg-dark-secondary"
             >
-              Log Out
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-light-background dark:text-dark-primary"
+              >
+                Log Out
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowDeleteConfirmation(true)}
+              className="self-end mt-auto mb-4 w-full p-4 rounded-lg flex-row justify-center items-center gap-2 bg-red-400"
+            >
+              <Text
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-light-background dark:text-dark-primary"
+              >
+                Delete Account
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ModalContainer>
       </KeyboardAvoidingView>
+      <Modal visible={showDeleteConfirmation} animationType="fade" transparent>
+        <ModalContainer
+          style={
+            colorScheme === "dark"
+              ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+              : { backgroundColor: "rgba(0, 0, 0, 0.4)" }
+          }
+        >
+          <ModalView
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary w-3/4 items-center gap-2 dark:bg-dark-secondary"
+          >
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
+            >
+              Are you sure?
+            </Text>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-regular text-light-primary dark:text-dark-primary"
+            >
+              This action cannot be undone.
+            </Text>
+            <View className="flex-row items-center mt-2 gap-3 justify-between">
+              <TouchableOpacity
+                onPress={() => setShowDeleteConfirmation(false)}
+                style={getMainBackgroundColorStyle(actualTheme)}
+                className="rounded-lg p-4 items-center justify-center flex-1 bg-light-background dark:bg-dark-background"
+              >
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter-semibold text-light-primary dark:text-dark-primary"
+                >
+                  No
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={DeleteAccount}
+                className="rounded-lg p-4 items-center justify-center flex-1 bg-red-400"
+              >
+                <Text className="font-inter-semibold text-black">Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </ModalView>
+        </ModalContainer>
+      </Modal>
     </Modal>
   );
 };

@@ -213,9 +213,9 @@ const MoreScreen = () => {
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
           >
-            Prayse is and will always be free. By donating, you support us to
-            keep working on this app, and to further our mission in spreading
-            the importance of prayer in today's world.
+            By donating, you help us further our mission in spreading the
+            importance of prayer and praise in today's world through all our
+            platforms.
           </Text>
           <TouchableOpacity
             onPress={() => {

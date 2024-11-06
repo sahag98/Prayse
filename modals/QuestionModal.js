@@ -159,12 +159,16 @@ const QuestionModal = ({
               placeholderTextColor={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : "#e0e0e0"
+                  : colorScheme === "dark"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : "white"
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
               }
               autoFocus
               onChangeText={(text) => setAnswer(text)}
