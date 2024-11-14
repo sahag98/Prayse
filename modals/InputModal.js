@@ -10,8 +10,8 @@ import {
   View,
 } from "react-native";
 import uuid from "react-native-uuid";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import * as Notifications from "expo-notifications";
 import { AntDesign } from "@expo/vector-icons";
 
 import { addPrayer, editPrayer } from "../redux/prayerReducer";
@@ -30,6 +30,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { PRAYER_SCREEN } from "@routes";
 
 const InputModal = ({
   actualTheme,
@@ -50,6 +51,7 @@ const InputModal = ({
   prayertoBeEdited,
   setPrayertoBeEdited,
 }) => {
+  const prayerList = useSelector((state) => state.prayer.prayer);
   const [inputHeight, setInputHeight] = useState(60);
   const [isExtended, setIsExtended] = useState(true);
 
@@ -88,13 +90,17 @@ const InputModal = ({
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (prayerValue.length === 0) {
       alert("Type in a prayer and try again.");
       return;
     }
+
+    const checkin_date = new Date(
+      new Date().setDate(new Date().getDate() + 7)
+    ).toDateString();
     if (!prayertoBeEdited) {
-      dispatch(
+      await dispatch(
         addPrayer({
           prayer: prayerValue,
           folder: folderName,
@@ -102,8 +108,30 @@ const InputModal = ({
           folderId,
           date: new Date().toLocaleString(),
           id: uuid.v4(),
+          checkin_date: checkin_date,
         })
       );
+      //  navigation.navigate(PRAYER_SCREEN, {
+      //    title: item.name,
+      //    prayers: item.prayers,
+      //    id: item.id,
+      //  });
+
+      // const identifier = await Notifications.scheduleNotificationAsync({
+      //   content: {
+      //     title: "Check In",
+      //     body: `Any updates on: ${prayerValue}`,
+      //     data: {
+      //       screen: PRAYER_SCREEN,
+      //       name: folderName,
+      //       // prayers: prayers,
+      //       id: folderId,
+      //     },
+      //   },
+      //   trigger: {
+      //     date: checkin_date,
+      //   },
+      // });
     } else {
       dispatch(
         editPrayer({

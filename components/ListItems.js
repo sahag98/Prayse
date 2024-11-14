@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Feather, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { TEST_SCREEN } from "../routes";
@@ -27,6 +27,7 @@ import { addVerseToPrayer } from "@redux/prayerReducer";
 import VerseModal from "@modals/VerseModal";
 
 import { posthog } from "@lib/posthog";
+import CheckInModal from "@modals/CheckInModal";
 
 const ListItems = ({
   prayer,
@@ -55,7 +56,29 @@ const ListItems = ({
   const [search, setSearch] = useState("");
   const size = useSelector((state) => state.user.fontSize);
 
+  console.log("prayer check in: ", prayers[0]?.checkin_date);
+
+  const checkInDate = new Date(
+    new Date().setDate(new Date().getDate() + 7)
+  ).toDateString();
+
+  console.log("check in date as date string:", checkInDate);
+
+  if (checkInDate === prayers[0]?.checkin_date) {
+    console.log("same DATEEE");
+  }
+
+  // Convert the ISO string back to a Date object
+  const checkInDateObject = new Date(checkInDate);
+  console.log("check in date as Date object:", checkInDateObject);
+
+  // console.log(
+  //   new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleString()
+  // );
   const [verseModal, setVerseModal] = useState(false);
+  const [checkInModal, setCheckInModal] = useState(false);
+
+  const [prayerToCheckin, setPrayerToCheckin] = useState(null);
 
   const { supabase } = useSupabase();
 
@@ -89,6 +112,11 @@ const ListItems = ({
         return activeList;
     }
   };
+
+  function handlePrayerCheckIn(prayer) {
+    setCheckInModal(true);
+    setPrayerToCheckin(prayer);
+  }
 
   async function getBibleVerse(item) {
     setVerseModal(true);
@@ -262,6 +290,23 @@ const ListItems = ({
                 </View>
               )}
             </View>
+            {item.checkin_date === checkInDate && (
+              <TouchableOpacity
+                onPress={() => handlePrayerCheckIn(item)}
+                className="bg-yellow-400 mt-2 flex-row items-center gap-2 p-1 flex-1 rounded-lg w-fit"
+              >
+                <Feather name="alert-circle" size={24} color="black" />
+                <Text className="text-sm font-inter-medium">
+                  Do you have any updates for this prayer?
+                </Text>
+                <AntDesign
+                  className="ml-auto"
+                  name="right"
+                  size={20}
+                  color="black"
+                />
+              </TouchableOpacity>
+            )}
           </>
         </ListView>
       </>
@@ -277,6 +322,13 @@ const ListItems = ({
         verse={verse}
         actualTheme={actualTheme}
         colorScheme={colorScheme}
+      />
+      <CheckInModal
+        checkInModal={checkInModal}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        prayerToCheckin={prayerToCheckin}
+        setCheckInModal={setCheckInModal}
       />
       <View className="flex-row items-center my-5 gap-5">
         <PrayerTabs

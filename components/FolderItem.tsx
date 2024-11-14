@@ -22,7 +22,7 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
   const handleOpen = (item) => {
     navigation.navigate(PRAYER_SCREEN, {
       title: item.name,
-      prayers: item.prayers,
+      // prayers: item.prayers,
       id: item.id,
     });
   };
