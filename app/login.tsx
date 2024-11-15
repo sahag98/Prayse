@@ -373,24 +373,24 @@ const LoginScreen = () => {
                 onSignInWithGoogle();
                 Keyboard.dismiss();
               }}
-              style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-primary dark:bg-dark-accent p-4 rounded-lg justify-center items-center w-full flex-row gap-3"
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary dark:bg-dark-secondary p-4 rounded-lg justify-center items-center w-full flex-row gap-3"
             >
               <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter-bold text-light-background text-lg dark:text-dark-background"
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-light-primary text-lg dark:text-dark-primary"
               >
-                Login with Google
+                Sign in with Google
               </Text>
               <AntDesign
                 name="google"
                 size={24}
                 color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                      ? "#121212"
-                      : "white"
+                      ? "white"
+                      : "#2f2d51"
                 }
               />
             </TouchableOpacity>
@@ -400,7 +400,7 @@ const LoginScreen = () => {
             >
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="underline underline-offset-2 text-sm font-inter-medium text-light-primary dark:text-dark-accent"
+                className="underline underline-offset-4 font-inter-medium text-light-primary dark:text-dark-accent"
               >
                 Don't have an account yet? Sign up.
               </Text>

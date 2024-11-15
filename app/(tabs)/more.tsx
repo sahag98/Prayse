@@ -199,40 +199,42 @@ const MoreScreen = () => {
         contentContainerStyle={{ gap: 10 }}
         showsVerticalScrollIndicator={false}
       >
-        <View
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className=" bg-light-secondary mb-2 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
-        >
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
-          >
-            Donate
-          </Text>
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
-          >
-            By donating, you help us further our mission in spreading the
-            importance of prayer and praise in today's world through all our
-            platforms.
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              posthog.capture("Donate");
-              Linking.openURL("https://buymeacoffee.com/prayse");
-            }}
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
+        {Platform.OS !== "ios" && (
+          <View
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className=" bg-light-secondary mb-2 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
           >
             <Text
-              style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-lg text-light-background dark:text-dark-background"
+              style={getMainTextColorStyle(actualTheme)}
+              className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
             >
               Donate
             </Text>
-          </TouchableOpacity>
-        </View>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
+            >
+              By donating, you help us further our mission in spreading the
+              importance of prayer and praise in today's world through all our
+              platforms.
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                posthog.capture("Donate");
+                Linking.openURL("https://buymeacoffee.com/prayse");
+              }}
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
+            >
+              <Text
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-lg text-light-background dark:text-dark-background"
+              >
+                Donate
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <DailysItems
           actualTheme={actualTheme}
           options={dailys}
