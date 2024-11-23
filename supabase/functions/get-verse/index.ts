@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
     model: "gpt-3.5-turbo",
   });
   const response = completion.choices[0].message.content ?? "";
-  console.log("completion: ", completion.choices[0]);
+
   console.log("response: ", response);
 
   return new Response(JSON.stringify(response), {
