@@ -13,14 +13,7 @@ import {
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
 
-import pfeBlackBack from "../assets/merch/pfe-black-back.png";
-import pfeBlackFront from "../assets/merch/pfe-black-front.png";
-import pfeBlueBack from "../assets/merch/pfe-blue-back.png";
-import pfeBlueFront from "../assets/merch/pfe-blue-front.png";
-import prayseDefinition from "../assets/merch/prayse-definition.png";
-// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
-// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
-// import pfeBlackFront from "../assets/merch/pfe-black-front.PNG";
+import rejoicePrayPraise from "../assets/merch/rejoice-pray-praise.png";
 
 interface MerchComponentProps {
   theme: string;
@@ -79,7 +72,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-xl dark:text-white text-light-primary"
             >
-              Prayse Definition
+              Rejoice Pray Praise
             </Text>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
@@ -122,7 +115,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
             </TouchableOpacity>
           </View>
           <Image
-            source={prayseDefinition}
+            source={rejoicePrayPraise}
             placeholder={{ blurhash }}
             contentFit="cover"
             transition={500}

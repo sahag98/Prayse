@@ -396,7 +396,6 @@ const PrayerRoom = () => {
                 useNativeControls={false}
                 resizeMode={ResizeMode.COVER}
                 isLooping
-                onPlaybackStatusUpdate={(status) => setStatus(() => status)}
               />
               <StatusBar hidden />
               <View
@@ -572,8 +571,7 @@ const PrayerRoom = () => {
               source={colorScheme === "dark" ? darkGradient : gradient}
               useNativeControls={false}
               resizeMode={ResizeMode.COVER}
-              isLooping
-              onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              isLoopin
             >
               <StatusBar hidden />
               <View

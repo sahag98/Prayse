@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as AppleAuthentication from "expo-apple-authentication";
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
@@ -39,12 +40,14 @@ import {
   ModalContainer,
   ModalView,
 } from "../styles/appStyles";
+import { COMMUNITY_SCREEN } from "@routes";
 
 const LoginScreen = () => {
   const [forgotModal, setForgotModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { register, login, getGoogleOAuthUrl, setOAuthSession } = useSupabase();
+  const { register, login, supabase, getGoogleOAuthUrl, setOAuthSession } =
+    useSupabase();
   const [passVisible, setPassVisible] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   const router = useRouter();
@@ -374,17 +377,11 @@ const LoginScreen = () => {
                 Keyboard.dismiss();
               }}
               style={getSecondaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-secondary dark:bg-dark-secondary p-4 rounded-lg justify-center items-center w-full flex-row gap-3"
+              className="bg-light-secondary dark:bg-dark-secondary p-4 rounded-lg justify-center items-center w-full flex-row gap-1.5"
             >
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter-bold text-light-primary text-lg dark:text-dark-primary"
-              >
-                Sign in with Google
-              </Text>
               <AntDesign
                 name="google"
-                size={24}
+                size={20}
                 color={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
@@ -393,7 +390,75 @@ const LoginScreen = () => {
                       : "#2f2d51"
                 }
               />
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-light-primary text-lg dark:text-dark-primary"
+              >
+                Sign in with Google
+              </Text>
             </TouchableOpacity>
+            {Platform.OS === "ios" && (
+              <>
+                <TouchableOpacity
+                  onPress={async () => {
+                    try {
+                      const credential = await AppleAuthentication.signInAsync({
+                        requestedScopes: [
+                          AppleAuthentication.AppleAuthenticationScope
+                            .FULL_NAME,
+                          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                        ],
+                      });
+
+                      // Sign in via Supabase Auth.
+                      if (credential.identityToken) {
+                        const {
+                          error,
+                          data: { user },
+                        } = await supabase.auth.signInWithIdToken({
+                          provider: "apple",
+                          token: credential.identityToken,
+                        });
+
+                        console.log(JSON.stringify({ error, user }, null, 2));
+                        if (!error) {
+                          console.log("Signed in!");
+                          router.push(COMMUNITY_SCREEN);
+                        }
+                      } else {
+                        throw new Error("No identityToken.");
+                      }
+                    } catch (e) {
+                      if (e.code === "ERR_REQUEST_CANCELED") {
+                        // handle that the user canceled the sign-in flow
+                      } else {
+                        // handle other errors
+                      }
+                    }
+                  }}
+                  style={getSecondaryBackgroundColorStyle(actualTheme)}
+                  className="bg-light-secondary dark:bg-dark-secondary p-4 mt-3 rounded-lg justify-center items-center w-full flex-row gap-1.5"
+                >
+                  <AntDesign
+                    name="apple1"
+                    size={20}
+                    color={
+                      actualTheme && actualTheme.SecondaryTxt
+                        ? actualTheme.SecondaryTxt
+                        : colorScheme === "dark"
+                          ? "white"
+                          : "#2f2d51"
+                    }
+                  />
+                  <Text
+                    style={getSecondaryTextColorStyle(actualTheme)}
+                    className="font-inter-bold text-light-primary text-lg dark:text-dark-primary"
+                  >
+                    Sign in with Apple
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
             <TouchableOpacity
               onPress={() => setIsLoggingIn(false)}
               className="mt-5"
