@@ -4,6 +4,7 @@ export type Prayer = {
   folder: string;
   folderId: string;
   id: string;
+  status: string;
   prayer: string;
 };
 
