@@ -222,7 +222,7 @@ const WelcomeScreen = () => {
         theme={colorScheme}
       />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      <ProBanner actualTheme={actualTheme} theme={colorScheme} />
+      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
 
       <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme} />
