@@ -246,7 +246,7 @@ const ListItems = ({
                     </TouchableOpacity>
                   )}
 
-                  {!versesEnabled && (
+                  {versesEnabled && (
                     <TouchableOpacity
                       onPress={() => getBibleVerse(item)}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}

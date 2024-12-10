@@ -6,6 +6,7 @@ export type Prayer = {
   id: string;
   status: string;
   prayer: string;
+  verse: string;
 };
 
 export type AnsweredPrayer = {

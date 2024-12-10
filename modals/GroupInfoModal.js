@@ -16,23 +16,15 @@ import Toast from "react-native-toast-message";
 
 import {
   AntDesign,
-  Entypo,
-  Feather,
   Ionicons,
   MaterialCommunityIcons,
-  MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
-import groupBg from "../assets/group-bg.png";
 import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
-import EditGroupModal from "./EditGroupModal";
-import GroupTemplateModal from "./GroupTemplateModal";
 import {
   getMainTextColorStyle,
-  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";

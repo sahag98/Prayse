@@ -34,6 +34,7 @@ import {
 } from "@lib/customStyles";
 import { useRouter } from "expo-router";
 import { posthog } from "@lib/posthog";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DailyReflection = ({
   completedItems,
@@ -52,13 +53,33 @@ const DailyReflection = ({
 
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
+  const [showNewBadge, setShowNewBadge] = useState(false);
+
+  useEffect(() => {
+    const checkBadgeStatus = async () => {
+      const lastShownDate = await AsyncStorage.getItem("lastBadgeShownDate");
+      const currentDate = new Date().toLocaleDateString().split("T")[0];
+
+      if (lastShownDate !== currentDate) {
+        setShowNewBadge(true);
+        await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
+      } else {
+        setShowNewBadge(false);
+      }
+    };
+    checkBadgeStatus();
+  }, [isFocused]);
 
   // console.log("today:", today);
   useEffect(() => {
     clearPreviousDayCompletion();
   }, [isFocused, today]);
 
-  function handleComplete(selected) {
+  async function handleComplete(selected) {
+    if (showNewBadge) {
+      setShowNewBadge(false);
+      await AsyncStorage.removeItem("showNewFeatureBadge");
+    }
     if (
       completedItems.find((completedItem) =>
         completedItem.items.find((item) => item === selected)
@@ -210,6 +231,7 @@ const DailyReflection = ({
               >
                 Pray
               </Text>
+
               <MaterialCommunityIcons
                 name="hands-pray"
                 size={20}
@@ -221,6 +243,13 @@ const DailyReflection = ({
                       : "#2f2d51"
                 }
               />
+              {showNewBadge && (
+                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
+                  <Text className="text-white font-inter-medium text-xs">
+                    New
+                  </Text>
+                </View>
+              )}
             </View>
             <View className="gap-1">
               <Text

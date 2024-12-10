@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React, { useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
 import Constants from "expo-constants";
@@ -14,6 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import { useColorScheme } from "nativewind";
 import {
+  Alert,
   Platform,
   Pressable,
   SafeAreaView,
@@ -61,9 +60,11 @@ import { addFolder } from "@redux/folderReducer";
 // import Ebpad from "../assets/audio/Epbad.mp3";
 // import OrganicG from "../assets/audio/OrganicG.mp3";
 
-import { CHECKLIST_SCREEN, FOLDER_SCREEN } from "../routes";
+import { CHECKLIST_SCREEN, FOLDER_SCREEN, HOME_SCREEN } from "../routes";
 import { Container, HeaderView } from "../styles/appStyles";
 import { ActualTheme, Prayer } from "../types/reduxTypes";
+import { cn } from "@lib/utils";
+import { incrementReviewCounter } from "@redux/remindersReducer";
 
 const PrayerRoom = () => {
   const navigation = useNavigation();
@@ -71,11 +72,13 @@ const PrayerRoom = () => {
     (state: { prayer: { prayer: Prayer[] } }) => state.prayer.prayer,
   );
 
-  const UnarchivedPrayers = prayers.filter(
+  const unarchivedPrayers = prayers.filter(
     (prayer) => prayer.status !== "Archived",
   );
-  const folders = useSelector((state: any) => state.folder.folders);
-  const [screenIndex, setScreenIndex] = useState(0);
+
+  const reviewCounter = useSelector(
+    (state: any) => state.reminder.reviewCounter,
+  );
 
   const [isPraying, setIsPraying] = useState(false);
 
@@ -85,21 +88,107 @@ const PrayerRoom = () => {
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
 
+  const FIXED_QUESTION = {
+    title: "Who is on your heart to pray for today?",
+  };
+
+  const allQuestions = [
+    {
+      title: "What are you thankful for today?",
+      verses: [
+        'Psalm 118:24 "This is the day which the Lord hath made; we will rejoice and be glad in it."',
+        'Psalm 107:1 "O give thanks unto the Lord, for he is good: for his mercy endureth for ever."',
+        'Ephesians 5:20 "Giving thanks always for all things unto God and the Father in the name of our Lord Jesus Christ."',
+      ],
+    },
+    {
+      title: "Who is on your heart to pray for today?",
+      verses: [
+        'James 5:16 "Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much."',
+        'Philippians 1:3-4 "I thank my God upon every remembrance of you, Always in every prayer of mine for you all making request with joy."',
+        'Ephesians 6:18 "Praying always with all prayer and supplication in the Spirit, and watching thereunto with all perseverance and supplication for all saints."',
+      ],
+    },
+    {
+      title: "How can you grow closer to God today?",
+      verses: [
+        'Psalm 119:11 "Thy word have I hid in mine heart, that I might not sin against thee."',
+        'James 4:8 "Draw nigh to God, and he will draw nigh to you. Cleanse your hands, ye sinners; and purify your hearts, ye double minded."',
+        'Jeremiah 29:13 "And ye shall seek me, and find me, when ye shall search for me with all your heart."',
+      ],
+    },
+    {
+      title: "What promise of God brings you peace today?",
+      verses: [
+        'Isaiah 26:3 "Thou wilt keep him in perfect peace, whose mind is stayed on thee: because he trusteth in thee."',
+        'John 14:27 "Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid."',
+        'Philippians 4:6-7 "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God. And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus."',
+      ],
+    },
+    {
+      title: "What is a way you can show love to others today?",
+      verses: [
+        'John 13:34-35 "A new commandment I give unto you, That ye love one another; as I have loved you, that ye also love one another. By this shall all men know that ye are my disciples, if ye have love one to another."',
+        'Galatians 5:13 "For, brethren, ye have been called unto liberty; only use not liberty for an occasion to the flesh, but by love serve one another."',
+        '1 John 4:19-20 "We love him, because he first loved us. If a man say, I love God, and hateth his brother, he is a liar: for he that loveth not his brother whom he hath seen, how can he love God whom he hath not seen?"',
+      ],
+    },
+    {
+      title: "What challenges or worries would you like to surrender to God?",
+      verses: [
+        '1 Peter 5:7 "Casting all your care upon him; for he careth for you."',
+        'Psalm 34:4 "I sought the Lord, and he heard me, and delivered me from all my fears."',
+        'Matthew 11:28-30 "Come unto me, all ye that labour and are heavy laden, and I will give you rest. Take my yoke upon you, and learn of me; for I am meek and lowly in heart: and ye shall find rest unto your souls. For my yoke is easy, and my burden is light."',
+      ],
+    },
+    {
+      title: "What is a blessing in your life that reminds you of God's love?",
+      verses: [
+        'John 3:16 "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."',
+        'Romans 5:8 "But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us."',
+        'Psalm 103:11 "For as the heaven is high above the earth, so great is his mercy toward them that fear him."',
+      ],
+    },
+    {
+      title: "What step can you take today to live out your faith?",
+      verses: [
+        'Micah 6:8 "He hath shewed thee, O man, what is good; and what doth the Lord require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?"',
+        'Matthew 5:16 "Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven."',
+        'Colossians 3:23 "And whatsoever ye do, do it heartily, as to the Lord, and not unto men."',
+      ],
+    },
+    {
+      title: "How has God been faithful to you recently?",
+      verses: [
+        "Lamentations 3:22-23 \"It is of the Lord's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.",
+        'Deuteronomy 7:9 "Know therefore that the Lord thy God, he is God, the faithful God, which keepeth covenant and mercy with them that love him and keep his commandments to a thousand generations."',
+        'Psalm 36:5 "Thy mercy, O Lord, is in the heavens; and thy faithfulness reacheth unto the clouds."',
+      ],
+    },
+    {
+      title: "What is something you hope for or seek guidance on?",
+      verses: [
+        'James 1:5 "If any of you lack wisdom, let him ask of God, that giveth to all men liberally, and upbraideth not; and it shall be given him."',
+        'Proverbs 3:5-6 "Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths."',
+        'Romans 8:24-25 "For we are saved by hope: but hope that is seen is not hope: for what a man seeth, why doth he yet hope for? But if we hope for that we see not, then do we with patience wait for it."',
+      ],
+    },
+    {
+      title:
+        "Thank you for using our app to spend time with God. We pray this time strengthens your faith and guides your day with His grace.",
+    },
+  ];
+
   const routeParams = useLocalSearchParams();
-  const data = UnarchivedPrayers[screenIndex];
+
   const { colorScheme } = useColorScheme();
   // const pulse = useSharedValue(0);
-  const opacityValue = useSharedValue(0);
-  const fadeIn = useSharedValue(0);
-  const prayerFadeIn = useSharedValue(0);
-  const momentFadeIn = useSharedValue(0);
   const pressFadeIn = useSharedValue(0);
-  const roomFadeIn = useSharedValue(0);
-  const video = useRef(null);
-  const isFocused = useIsFocused();
-  const beginScale = useSharedValue(1);
-  const [sound, setSound] = useState();
+
+  const [step, setStep] = useState(0);
+  const [sound, setSound] = useState<Audio.Sound>();
   const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const [isEndingPrayer, setIsEndingPrayer] = useState(false);
   const [saying, setSaying] = useState("");
   const dispatch = useDispatch();
 
@@ -110,6 +199,10 @@ const PrayerRoom = () => {
     "Lean into God, and He will embrace you with His presence.",
     "Take a step toward God, and He’ll take a step toward you.",
     "Open your heart to God, and He will open His blessings to you.",
+    "Focus your mind on God, and He will fill it with His truth.",
+    "Quiet your soul before God, and He will speak to your heart.",
+    "Rest in God’s presence, and you will find His peace.",
+    "Seek God with all your heart, and you will find His love.",
   ];
 
   const getTodayDate = () => {
@@ -120,7 +213,7 @@ const PrayerRoom = () => {
 
   useEffect(() => {
     pressFadeIn.value = withDelay(
-      14000,
+      12000,
       withTiming(1, { duration: 3000, easing: Easing.ease }),
     );
     const fetchSaying = async () => {
@@ -153,161 +246,71 @@ const PrayerRoom = () => {
   }, []);
 
   const statusBarHeight = Constants.statusBarHeight;
-  async function playSound(soundFile) {
-    const { sound } = await Audio.Sound.createAsync(soundFile);
+
+  async function beginPrayer() {
+    await playSound();
+  }
+
+  function nextStep() {
+    if (step === 3) {
+      return;
+    }
+    setStep((prev) => prev + 1);
+  }
+
+  async function endPrayer() {
+    dispatch(incrementReviewCounter());
+    console.log("prayer ended!");
+    // setStep(0);
+    setIsEndingPrayer(true);
+    pauseSound();
+    router.back();
+  }
+  async function playSound() {
+    const AbPad =
+      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/Ab.mp3?v=1732569256519";
+    const DPad =
+      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/D.mp3?v=1732648293920";
+    const GPad =
+      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/G.mp3?v=1732648318412";
+
+    const pads = [AbPad, DPad, GPad];
+
+    const randomIndex = Math.floor(Math.random() * pads.length);
+
+    // Pick a random pad from the pads array
+    const randomPad = pads[randomIndex];
+    setIsPlayingSound(true);
+    const { sound } = await Audio.Sound.createAsync(
+      {
+        uri: randomPad,
+      },
+      { shouldPlay: true, volume: 0.5 },
+    );
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
     });
     setSound(sound);
-    setIsPlayingSound(true);
-    // await sound.loadAsync(soundFile);
-    await sound.playAsync();
+
+    // // await sound.loadAsync(soundFile);
+    // await sound.playAsync();
   }
 
   async function pauseSound() {
     setIsPlayingSound(false);
-    await sound.pauseAsync();
-    await sound.unloadAsync();
+    await sound?.pauseAsync();
+    await sound?.unloadAsync();
   }
 
   async function checkSound() {
     if (isPlayingSound) {
       setIsPlayingSound(false);
-      await sound.pauseAsync();
+      await sound?.pauseAsync();
     } else {
       setIsPlayingSound(true);
-      await sound.playAsync();
+      await sound?.playAsync();
     }
   }
-
-  const loadAndPlayRandomAudio = () => {
-    console.log("loading...");
-
-    const audioFiles = [Ebpad, OrganicG];
-    const randomIndex = Math.floor(Math.random() * audioFiles.length);
-    const randomAudioFile = audioFiles[randomIndex];
-    playSound(randomAudioFile);
-  };
-
-  useEffect(() => {
-    doFadeInAnimation();
-    // doPressFadeInAnimation();
-  }, []);
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  const animatedOpacityStyle = useAnimatedStyle(() => ({
-    opacity: opacityValue.value * 1,
-  }));
-
-  const animatedFadeInStyle = useAnimatedStyle(() => ({
-    opacity: fadeIn.value * 1,
-  }));
-
-  const animatedBeginScaleInStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: beginScale.value * 1 }],
-  }));
-
-  const animatedPrayerFadeInStyle = useAnimatedStyle(() => ({
-    opacity: prayerFadeIn.value * 1,
-  }));
-
-  const animatedPressFadeInStyle = useAnimatedStyle(() => ({
-    opacity: pressFadeIn.value * 1,
-  }));
-
-  const animatedMomentFadeInStyle = useAnimatedStyle(() => ({
-    opacity: momentFadeIn.value * 1,
-  }));
-
-  const animatedRoomFadeInStyle = useAnimatedStyle(() => ({
-    opacity: roomFadeIn.value * 1,
-  }));
-
-  const doFadeInAnimation = () => {
-    fadeIn.value = withTiming(1, {
-      duration: 2000,
-      easing: Easing.ease,
-    });
-  };
-
-  const doPressFadeInAnimation = () => {
-    pressFadeIn.value = withTiming(1, {
-      duration: 2000,
-      easing: Easing.ease,
-    });
-  };
-
-  const doPrayerFadeIn = () => {
-    prayerFadeIn.value = withDelay(
-      3000,
-      withTiming(1, {
-        duration: 4000,
-        easing: Easing.ease,
-      }),
-    );
-  };
-
-  const doRoomFadeIn = () => {
-    roomFadeIn.value = withTiming(1, {
-      duration: 3000,
-      easing: Easing.ease,
-    });
-  };
-
-  const doMomentFadeIn = () => {
-    momentFadeIn.value = withSequence(
-      withTiming(1, {
-        duration: 4000,
-        easing: Easing.ease,
-      }),
-      withDelay(
-        2000,
-        withTiming(0, {
-          duration: 3000,
-          easing: Easing.ease,
-        }),
-      ),
-    );
-  };
-
-  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-  async function loadVideo() {
-    // await video.current.loadAsync(gradient);
-    await video.current.playAsync();
-  }
-
-  // useEffect(() => {
-  //   if (isPraying) {
-  //     opacityValue.value = withSequence(
-  //       withDelay(
-  //         9000,
-  //         withTiming(1, {
-  //           duration: 2000,
-  //           easing: Easing.ease,
-  //         })
-  //       ),
-  //       withDelay(
-  //         5000,
-  //         withTiming(0.5, {
-  //           duration: 2000,
-  //           easing: Easing.ease,
-  //         })
-  //       )
-  //     );
-  //     loadVideo();
-  //     doRoomFadeIn();
-  //     doMomentFadeIn();
-  //     doPrayerFadeIn();
-  //   }
-  // }, [isPraying, isFocused]);
 
   function handleCreateFolder() {
     dispatch(
@@ -317,54 +320,41 @@ const PrayerRoom = () => {
         prayers: [],
       }),
     );
+    setIsEndingPrayer(true);
+    pauseSound();
     router.push("folder");
   }
 
-  const onContinue = () => {
-    const isLastScreen = screenIndex === UnarchivedPrayers.length - 1;
-    if (isLastScreen) {
-      endChecklist();
-    } else {
-      setScreenIndex(screenIndex + 1);
-    }
-  };
-
-  const onBack = () => {
-    const isFirstScreen = screenIndex === 0;
-    if (isFirstScreen) {
-      endChecklist();
-    } else {
-      setScreenIndex(screenIndex - 1);
-    }
-  };
-
-  const endChecklist = () => {
-    setScreenIndex(0);
-    navigation.navigate(CHECKLIST_SCREEN);
-    setIsPraying(false);
-
-    if (sound) {
-      pauseSound();
-    }
-
-    // router.push("/");
-  };
-
-  const swipes = Gesture.Simultaneous(
-    Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
-  );
+  const animatedPressFadeInStyle = useAnimatedStyle(() => ({
+    opacity: pressFadeIn.value * 1,
+  }));
 
   return (
     <SafeAreaView
       // style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background p-0 relative flex-1"
     >
-      <Pressable onPress={() => setIsPraying(true)} className="flex-1 px-4">
+      <Pressable
+        onPress={
+          isPlayingSound && step !== 3
+            ? nextStep
+            : isPlayingSound && step === 3
+              ? endPrayer
+              : beginPrayer
+        }
+        className="flex-1 px-4"
+      >
         <AnimatedBackground />
         <HeaderView>
-          <Link asChild href={`/${FOLDER_SCREEN}`}>
-            <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
+          <Link
+            asChild
+            href={
+              routeParams?.previousScreen
+                ? `/${HOME_SCREEN}`
+                : `/${FOLDER_SCREEN}`
+            }
+          >
+            <TouchableOpacity onPress={pauseSound}>
               <Ionicons
                 name="chevron-back"
                 size={30}
@@ -394,12 +384,27 @@ const PrayerRoom = () => {
             </TouchableOpacity>
           )}
         </HeaderView>
-        <PrayerPreparation saying={saying} />
+        <PrayerPreparation
+          handleCreateFolder={handleCreateFolder}
+          unarchivedPrayers={unarchivedPrayers}
+          allQuestions={allQuestions}
+          step={step}
+          isPlayingSound={isPlayingSound}
+          isEndingPrayer={isEndingPrayer}
+          saying={saying}
+        />
         <Animated.Text
+          // onPress={playSound}
           style={animatedPressFadeInStyle}
-          className="text-center font-inter-medium text-light-primary dark:text-dark-primary text-lg mb-10"
+          className="text-center font-inter-medium text-light-primary dark:text-dark-primary text-base mb-10"
         >
-          Tap the screen to begin.
+          Tap the screen to{" "}
+          {isPlayingSound && step !== 3
+            ? "continue"
+            : isPlayingSound && step === 3
+              ? "end"
+              : "begin"}
+          .
         </Animated.Text>
       </Pressable>
     </SafeAreaView>
@@ -408,13 +413,123 @@ const PrayerRoom = () => {
 
 export default PrayerRoom;
 
-function PrayerPreparation({ saying }: { saying: string }) {
+function PrayerPreparation({
+  handleCreateFolder,
+  unarchivedPrayers,
+  allQuestions,
+  step,
+  isPlayingSound,
+  isEndingPrayer,
+  saying,
+}: {
+  handleCreateFolder: () => void;
+  unarchivedPrayers: Prayer[];
+  allQuestions: { title: string; verses?: string[] }[];
+  step: number;
+  isPlayingSound: boolean;
+  isEndingPrayer: boolean;
+  saying: string;
+}) {
   const welcomeFadeIn = useSharedValue(0);
   const sayingFadeIn = useSharedValue(0);
   const promptFadeIn = useSharedValue(0);
   const momentFadeIn = useSharedValue(0);
+  const titleFadeIn = useSharedValue(0);
+  const thanksFadeIn = useSharedValue(0);
+  const hoverTranslateY = useSharedValue(0);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+  function getRandomPrayers(prayersArray: Prayer[], count: number) {
+    // Shuffle the array
+    const shuffled = [...prayersArray].sort(() => 0.5 - Math.random());
+    // Get the first 'count' elements
+    return shuffled.slice(0, count);
+  }
+
+  function getRandomQuestions(
+    arr: { title: string; verses?: string[] }[],
+    num: number,
+  ) {
+    const fixedQuestion = {
+      title: "Who is on your heart to pray for today?",
+      verses: [],
+    };
+
+    const fixedLastQuestion = {
+      title:
+        "Thank you for using our app to spend time with God. We pray this time strengthens your faith and guides your day with His grace.",
+      verses: [],
+    };
+
+    const arrayCopy = arr.filter(
+      (q) =>
+        q.title !== fixedQuestion.title && q.title !== fixedLastQuestion.title,
+    );
+
+    // Shuffle the array
+    for (let i = arrayCopy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+    }
+
+    // Ensure unique random questions
+    const randomQuestions = [
+      arrayCopy[0], // First random question
+      fixedQuestion, // Fixed second question
+      arrayCopy[1], // Second random question, different from the first
+      fixedLastQuestion, // Fixed last question
+    ];
+
+    return randomQuestions;
+  }
+
+  const randomQuestions = getRandomQuestions(allQuestions, 4);
 
   useEffect(() => {
+    if (isPlayingSound) {
+      // Fade out previous texts
+      welcomeFadeIn.value = withTiming(0, {
+        duration: 2000,
+        easing: Easing.ease,
+      });
+
+      sayingFadeIn.value = withTiming(0, {
+        duration: 2000,
+        easing: Easing.ease,
+      });
+
+      promptFadeIn.value = withTiming(0, {
+        duration: 2000,
+        easing: Easing.ease,
+      });
+      momentFadeIn.value = withTiming(0, {
+        duration: 2000,
+        easing: Easing.ease,
+      });
+
+      // Fade in thankful text after previous texts have faded out
+      titleFadeIn.value = withDelay(
+        2000, // Delay to ensure previous texts have faded out
+        withTiming(1, {
+          duration: 3000,
+          easing: Easing.ease,
+        }),
+      );
+      thanksFadeIn.value = withDelay(
+        6000, // Delay to ensure previous texts have faded out
+        withTiming(1, {
+          duration: 3000,
+          easing: Easing.ease,
+        }),
+      );
+    }
+  }, [isPlayingSound]);
+
+  const randomPrayers = getRandomPrayers(unarchivedPrayers, 4);
+
+  useEffect(() => {
+    // Initial fade-in sequence for the previous texts
     welcomeFadeIn.value = withTiming(1, {
       duration: 3000,
       easing: Easing.ease,
@@ -436,11 +551,18 @@ function PrayerPreparation({ saying }: { saying: string }) {
       }),
     );
     momentFadeIn.value = withDelay(
-      9000,
+      8000,
       withTiming(1, {
         duration: 3000,
         easing: Easing.ease,
       }),
+    );
+
+    // Start the hover animation
+    hoverTranslateY.value = withRepeat(
+      withTiming(10, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true,
     );
   }, []);
 
@@ -456,39 +578,171 @@ function PrayerPreparation({ saying }: { saying: string }) {
   const animatedWelcomeFadeInStyle = useAnimatedStyle(() => ({
     opacity: welcomeFadeIn.value * 1,
   }));
+
+  const titleFadeInStyle = useAnimatedStyle(() => ({
+    opacity: titleFadeIn.value * 1,
+  }));
+  const thanksFadeInStyle = useAnimatedStyle(() => ({
+    opacity: thanksFadeIn.value * 1,
+  }));
+
+  const hoverStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: hoverTranslateY.value }],
+  }));
+
   return (
-    <View className="gap-5 flex-1 justify-center mt-10">
-      <Animated.Text
-        style={animatedWelcomeFadeInStyle}
-        className="font-inter-medium opacity-0 text-light-primary dark:text-dark-primary"
-      >
-        Welcome
-      </Animated.Text>
-      <Animated.Text
-        style={animatedSayingFadeInStyle}
-        className="font-inter-medium text-light-primary dark:text-dark-primary text-2xl"
-      >
-        {saying}
-      </Animated.Text>
-      <Animated.Text
-        style={animatedPromptFadeInStyle}
-        className="font-inter-medium text-light-primary dark:text-dark-primary mt-10 text-2xl"
-      >
-        As you go through the following prompts, simply come as you are.
-      </Animated.Text>
-      <Animated.Text
-        style={animatedMomentFadeInStyle}
-        className="font-inter-medium text-light-primary dark:text-dark-primary text-2xl"
-      >
-        Take a moment to quiet your mind and prepare to connect with God.
-      </Animated.Text>
+    <View className="flex-1 justify-start items-start mt-10">
+      <View className="absolute w-full top-0 left-0 self-start h-full flex-1 justify-start gap-3 right-0 items-start">
+        <Animated.Text
+          style={titleFadeInStyle}
+          className="font-inter-semibold mb-5 text-3xl text-light-primary dark:text-dark-primary"
+        >
+          {randomQuestions[step].title}
+        </Animated.Text>
+        {step === 1 && (
+          <>
+            {randomPrayers.length === 0 ? (
+              <AnimatedTouchable
+                onPress={handleCreateFolder}
+                style={[thanksFadeInStyle, hoverStyle]}
+                className={cn(
+                  " bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg",
+                )}
+              >
+                <Animated.Text
+                  style={thanksFadeInStyle}
+                  className="font-inter-medium text-base text-light-primary dark:text-dark-primary"
+                >
+                  You haven't added any prayers.
+                </Animated.Text>
+                <Animated.Text
+                  style={thanksFadeInStyle}
+                  className="font-inter-regular text-sm mt-2 text-light-primary dark:text-dark-primary"
+                >
+                  Click here to create a folder so that you can add prayers to
+                  it.
+                </Animated.Text>
+              </AnimatedTouchable>
+            ) : (
+              <>
+                {randomPrayers?.map((prayer, idx) => (
+                  <Animated.View
+                    key={prayer.id}
+                    style={[thanksFadeInStyle, hoverStyle]}
+                    className={cn(
+                      " bg-light-secondary/50 dark:bg-[#292929] w-fit p-2 rounded-lg",
+                      idx % 2 && "ml-auto",
+                    )}
+                  >
+                    <Animated.Text
+                      style={thanksFadeInStyle}
+                      className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+                    >
+                      {prayer.prayer}
+                    </Animated.Text>
+                    <Animated.Text
+                      style={thanksFadeInStyle}
+                      className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+                    >
+                      {prayer?.verse}
+                    </Animated.Text>
+                  </Animated.View>
+                ))}
+              </>
+            )}
+            {/* <Animated.View
+              style={[thanksFadeInStyle, hoverStyle]}
+              className="ml-auto bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+            >
+              <Animated.Text
+                style={thanksFadeInStyle}
+                className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+              >
+                {questions[step].verses[1]}
+              </Animated.Text>
+            </Animated.View> */}
+            {/* 
+            <Animated.View
+              style={[thanksFadeInStyle, hoverStyle]}
+              className=" bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+            >
+              <Animated.Text
+                style={thanksFadeInStyle}
+                className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+              >
+                {questions[step].verses[2]}
+              </Animated.Text>
+            </Animated.View> */}
+          </>
+        )}
+        {randomQuestions[step].verses &&
+          randomQuestions[step]?.verses?.length > 0 && (
+            <>
+              <Animated.View
+                style={[thanksFadeInStyle, hoverStyle]}
+                className=" bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+              >
+                <Animated.Text
+                  style={thanksFadeInStyle}
+                  className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+                >
+                  {randomQuestions[step].verses[0]}
+                </Animated.Text>
+              </Animated.View>
+              <Animated.View
+                style={[thanksFadeInStyle, hoverStyle]}
+                className="ml-auto bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+              >
+                <Animated.Text
+                  style={thanksFadeInStyle}
+                  className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+                >
+                  {randomQuestions[step].verses[1]}
+                </Animated.Text>
+              </Animated.View>
+
+              <Animated.View
+                style={[thanksFadeInStyle, hoverStyle]}
+                className=" bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+              >
+                <Animated.Text
+                  style={thanksFadeInStyle}
+                  className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
+                >
+                  {randomQuestions[step].verses[2]}
+                </Animated.Text>
+              </Animated.View>
+            </>
+          )}
+      </View>
+      <View className="items-start w-4/5 gap-3">
+        <Animated.Text
+          style={animatedWelcomeFadeInStyle}
+          className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
+        >
+          Welcome
+        </Animated.Text>
+        <Animated.Text
+          style={animatedSayingFadeInStyle}
+          className="italic text-light-primary dark:text-dark-primary text-xl"
+        >
+          {saying}
+        </Animated.Text>
+
+        <Animated.Text
+          style={animatedMomentFadeInStyle}
+          className="font-inter-medium mt-5 text-light-primary dark:text-dark-primary text-2xl"
+        >
+          Have a moment to quiet your mind and prepare to connect with God.
+        </Animated.Text>
+      </View>
     </View>
   );
 }
 
 function AnimatedBackground() {
   const { height } = useWindowDimensions();
-
+  const isFocused = useIsFocused();
   const top1 = useSharedValue(0.3 * height);
   const top2 = useSharedValue(0.5 * height);
   const top3 = useSharedValue(0.7 * height);
@@ -507,7 +761,7 @@ function AnimatedBackground() {
       2000,
       withRepeat(withTiming(0.6 * height, options), -1, true),
     );
-  }, []);
+  }, [isFocused]);
 
   return (
     <View className="absolute top-0 overflow-hidden bottom-0 left-0 right-0 items-center">

@@ -5,9 +5,9 @@ import * as Notifications from "expo-notifications";
 import { Redirect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Platform, View } from "react-native";
-import { useSelector } from "react-redux";
-
+import { Alert, Platform, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import * as StoreReview from "expo-store-review";
 import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 // import HowtoUsePrayse from "@components/HowtoUsePrayse";
@@ -28,6 +28,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "@types/reduxTypes";
+import { FeatureModal } from "@modals/feature-modal";
+import { CheckReview } from "@hooks/useShowReview";
+import { handleReviewShowing } from "@redux/remindersReducer";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -101,9 +104,15 @@ async function registerForPushNotificationsAsync() {
 const WelcomeScreen = () => {
   // const [_, setNotification] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
-
+  const dispatch = useDispatch();
+  const [featureVisible, setFeatureVisible] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
-
+  const reviewCounter = useSelector(
+    (state: any) => state.reminder.reviewCounter,
+  );
+  const hasShownReview = useSelector(
+    (state: any) => state.reminder.hasShownReview,
+  );
   // const notificationListener = useRef();
   // const responseListener = useRef();
 
@@ -130,6 +139,40 @@ const WelcomeScreen = () => {
       console.log("isTime", error);
     }
   };
+  // const currentDate = new Date().toLocaleDateString();
+  // console.log("curr date: ", currentDate);
+
+  useEffect(() => {
+    if (!hasShownReview) {
+      if (
+        reviewCounter === 1 ||
+        (reviewCounter % 14 === 0 && reviewCounter > 0)
+      ) {
+        Alert.alert(
+          "Thank You for Praying!",
+          "Would you take a moment to leave a review and share your experience?",
+          [
+            {
+              text: "Not Now",
+              onPress: () => dispatch(handleReviewShowing()),
+              style: "cancel",
+            },
+            {
+              text: "Leave a Review 🙌",
+              onPress: () => {
+                dispatch(handleReviewShowing());
+                CheckReview();
+              },
+            },
+          ],
+        );
+      }
+    }
+    // if (reviewCounter > 0 && reviewCounter % 3 === 0 && !hasShownReview) {
+    //   dispatch(handleReviewShowing());
+    //   CheckReview();
+    // }
+  }, [reviewCounter]);
 
   useEffect(() => {
     loadIsFirstTime();
@@ -139,43 +182,7 @@ const WelcomeScreen = () => {
     registerForPushNotificationsAsync()
       .then((token) => sendToken(token))
       .catch((err) => console.log("push notification", err));
-
-    // notificationListener.current =
-    //   Notifications.addNotificationReceivedListener((notification) => {
-    //     if (!notification.request.content.data.group) {
-    //       const content = notification.request.content;
-    //       let url = content.data.url || content.data.screen;
-
-    //       if (url === "VerseOfTheDay") {
-    //         url = VERSE_OF_THE_DAY_SCREEN;
-    //       } else if (url === "PrayerGroup") {
-    //         url = PRAYER_GROUP_SCREEN;
-    //       } else if (url === "Reflection") {
-    //         url = REFLECTION_SCREEN;
-    //       } else if (url === "Question") {
-    //         url = QUESTION_SCREEN;
-    //       }
-    //     }
-
-    //     setNotification(notification);
-    //   });
-
-    // responseListener.current =
-    //   Notifications.addNotificationResponseReceivedListener((response) => {
-    //     console.log("response: ", response);
-    //   });
-
-    // return () => {
-    //   notificationListener.current &&
-    //     Notifications.removeNotificationSubscription(
-    //       notificationListener.current,
-    //     );
-    //   responseListener.current &&
-    //     Notifications.removeNotificationSubscription(responseListener.current);
-    // };
   }, []);
-
-  // Handle notification response
 
   if (isFirst === true) {
     return <Redirect href="/onboarding" />;
@@ -188,6 +195,12 @@ const WelcomeScreen = () => {
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
       <UpdateModal theme={colorScheme} actualTheme={actualTheme} />
+      <FeatureModal
+        featureVisible={featureVisible}
+        setFeatureVisible={setFeatureVisible}
+        theme={colorScheme}
+        actualTheme={actualTheme}
+      />
       <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme} />
         <View className="relative flex-row gap-2 items-center">

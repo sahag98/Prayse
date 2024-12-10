@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Stack, useNavigation } from "expo-router";
+import { Stack, useNavigation, usePathname } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Notifications from "expo-notifications";
@@ -102,6 +102,8 @@ const StackContainer = () => {
   useNotificationObserver();
   const { colorScheme } = useColorScheme();
 
+  const pathname = usePathname();
+
   const actualTheme = useSelector((state: any) => state.theme.actualTheme);
   return (
     <SafeAreaView
@@ -109,7 +111,14 @@ const StackContainer = () => {
       style={[
         {
           flex: 1,
-          backgroundColor: colorScheme === "dark" ? "#121212" : "white",
+          backgroundColor:
+            colorScheme === "dark"
+              ? "#121212"
+              : pathname === "/prayer-room"
+                ? "#b7d3ff"
+                : pathname === "/prayer"
+                  ? "#f2f7ff"
+                  : "white",
         },
         getMainBackgroundColorStyle(actualTheme),
       ]}

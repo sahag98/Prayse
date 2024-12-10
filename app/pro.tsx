@@ -38,9 +38,9 @@ const ProScreen = () => {
   const dispatch = useDispatch();
 
   async function handleVersesEnabled() {
-    console.log("verses switch");
     dispatch(togglePrayerVerses());
   }
+
   async function handleQuestionsEnabled() {
     await dispatch(togglePrayerQuestions());
   }

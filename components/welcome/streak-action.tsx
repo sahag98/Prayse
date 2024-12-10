@@ -37,7 +37,7 @@ export const StreakAction: React.FC<StreakActionProps> = ({
     appStreak();
 
     if (appstreak !== 0 && appstreak % 10 === 0) {
-      CheckReview();
+      // CheckReview();
     }
   }, [appstreak]);
 

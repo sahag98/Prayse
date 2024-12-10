@@ -1,8 +1,9 @@
 //@ts-nocheck
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -31,6 +32,7 @@ const Folder = ({ colorScheme, navigation }) => {
   const [addVisible, setAddVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [idToDelete, setIdToDelete] = useState(null);
+  const [showNewBadge, setShowNewBadge] = useState(false);
 
   const dispatch = useDispatch();
   const handleCloseModal = () => {
@@ -38,6 +40,17 @@ const Folder = ({ colorScheme, navigation }) => {
     setOpen(false);
     setFolderName("");
   };
+
+  useEffect(() => {
+    const checkBadgeStatus = async () => {
+      const badgeStatus = await AsyncStorage.getItem("showNewFeatureBadge");
+      if (badgeStatus === null) {
+        setShowNewBadge(true);
+        await AsyncStorage.setItem("showNewFeatureBadge", "true");
+      }
+    };
+    checkBadgeStatus();
+  }, []);
 
   function addNewFolder() {
     dispatch(
@@ -54,6 +67,15 @@ const Folder = ({ colorScheme, navigation }) => {
     // setAddVisible(false);
     // setFolderName("");
   }
+
+  const handleGuidedPrayerPress = async () => {
+    if (showNewBadge) {
+      setShowNewBadge(false);
+      await AsyncStorage.removeItem("showNewFeatureBadge");
+    }
+    posthog.capture("Prayer room");
+    navigation.navigate(PRAYER_ROOM_SCREEN);
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -149,24 +171,22 @@ const Folder = ({ colorScheme, navigation }) => {
             style={getPrimaryTextColorStyle(actualTheme)}
             className="font-inter-bold text-lg text-light-background dark:text-dark-background"
           >
-            Create Folder
+            Folder
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          onPress={() => {
-            posthog.capture("Prayer room");
-            navigation.navigate(PRAYER_ROOM_SCREEN);
-          }}
-          className="dark:bg-dark-secondary flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+          onPress={handleGuidedPrayerPress}
+          className="dark:bg-dark-secondary relative flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
         >
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
           >
-            Pray
+            Prayer
           </Text>
+
           <MaterialCommunityIcons
             name="hands-pray"
             size={24}
@@ -178,6 +198,11 @@ const Folder = ({ colorScheme, navigation }) => {
                   : "#2f2d51"
             }
           />
+          {/* {showNewBadge && (
+            <View className="bg-red-500 absolute -top-2 -left-2 rounded-full px-2 py-1">
+              <Text className="text-white font-inter-medium text-xs">New</Text>
+            </View>
+          )} */}
         </TouchableOpacity>
       </View>
 
