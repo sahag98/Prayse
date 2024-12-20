@@ -9,6 +9,7 @@ import {
   Platform,
   Share,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -24,6 +25,8 @@ import { AntDesign } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import NetInfo from "@react-native-community/netinfo";
 import { useIsFocused } from "@react-navigation/native";
@@ -273,133 +276,21 @@ const DevoListScreen = () => {
             Devotional
           </HeaderTitle>
         </HeaderView>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
-        >
-          {devotionals?.map((d, index) => (
-            <View className="flex-1 mt-10" key={d._id}>
-              <DevoItem
-                theme={colorScheme}
-                actualTheme={actualTheme}
-                tbf={tbf}
-                supabase={supabase}
-                currentUser={currentUser}
-                channel={channel}
-                setChannel={setChannel}
-                fetchLikes={fetchLikes}
-                refreshReflections={refreshReflections}
-                fetchReflections={fetchReflections}
-                isFocused={isFocused}
-                refresh={refresh}
-                loadDevotionals={loadDevotionals}
-                convertDigitIn={convertDigitIn}
-                devo={d}
-              />
-              {/* <View
-                style={getSecondaryBackgroundColorStyle(actualTheme)}
-                className="absolute bottom-3 w-3/4 flex-row items-center justify-around self-center p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary"
-              >
-                <TouchableOpacity onPress={() => insertLike(d.title)}>
-                  <Animated.View
-                    className="flex-row items-center gap-2"
-                    style={animatedStyle}
-                  >
-                    <AntDesign
-                      name="hearto"
-                      size={24}
-                      color={
-                        isLikedByMe
-                          ? "red"
-                          : actualTheme && actualTheme.SecondaryTxt
-                            ? actualTheme.SecondaryTxt
-                            : colorScheme === "dark"
-                              ? "white"
-                              : "#2f2d51"
-                      }
-                    />
-                    <Text
-                      className="font-inter font-semibold text-lg"
-                      style={{
-                        color: isLikedByMe
-                          ? "red"
-                          : actualTheme && actualTheme.SecondaryTxt
-                            ? actualTheme.SecondaryTxt
-                            : theme === "dark"
-                              ? "white"
-                              : "#2f2d51",
-                      }}
-                    >
-                      {likesArray?.length}
-                    </Text>
-                  </Animated.View>
-                </TouchableOpacity>
-                <View
-                  style={
-                    actualTheme &&
-                    actualTheme.SecondaryTxt && {
-                      backgroundColor: actualTheme.SecondaryTxt,
-                    }
-                  }
-                  className="h-full bg-light-primary dark:bg-dark-primary w-[2px]"
-                />
-                <Link
-                  asChild
-                  href={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}
-                >
-                  <TouchableOpacity
-                    href={`/${REFLECTION_SCREEN}?devoTitle=${d.title}`}
-                    className="flex-row items-center gap-2"
-                  >
-                    <FontAwesome
-                      style={{ marginBottom: 4 }}
-                      name="comment-o"
-                      size={24}
-                      color={
-                        actualTheme && actualTheme.SecondaryTxt
-                          ? actualTheme.SecondaryTxt
-                          : colorScheme === "dark"
-                            ? "white"
-                            : "#2f2d51"
-                      }
-                    />
-                    <Text className="font-inter font-semibold text-light-primary dark:text-dark-primary text-lg">
-                      {reflectionsArray?.length}
-                    </Text>
-                  </TouchableOpacity>
-                </Link>
-                <View
-                  className="h-full w-[2px] bg-light-primary dark:bg-dark-primary"
-                  style={
-                    actualTheme &&
-                    actualTheme.SecondaryTxt && {
-                      backgroundColor: actualTheme.SecondaryTxt,
-                    }
-                  }
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    onShare(d.title, d.description, d.day, d.content)
-                  }
-                  className="flex-row items-center gap-2"
-                >
-                  <FontAwesome5
-                    name="share"
-                    size={24}
-                    color={
-                      actualTheme && actualTheme.SecondaryTxt
-                        ? actualTheme.SecondaryTxt
-                        : colorScheme === "dark"
-                          ? "white"
-                          : "#2f2d51"
-                    }
-                  />
-                </TouchableOpacity>
-              </View> */}
-            </View>
-          ))}
-        </KeyboardAvoidingView>
+        <View className=" flex-1 justify-center items-center">
+          <View
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-secondary rounded-lg w-3/4 dark:bg-dark-secondary p-3"
+          >
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-medium leading-6 text-light-primary dark:text-dark-primary"
+            >
+              This page is being removed from the app, but you can find
+              devotionals and more on our Instagram{" "}
+              <Text className="font-inter-semibold">@prayse.app</Text>.
+            </Text>
+          </View>
+        </View>
       </Container>
     </>
   );

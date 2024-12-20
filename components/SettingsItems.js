@@ -10,6 +10,7 @@ import {
 
 import { Link } from "expo-router";
 import { cn } from "@lib/utils";
+import { CheckReview } from "@hooks/useShowReview";
 
 const SettingsItems = ({ options, actualTheme, theme }) => {
   return (
@@ -25,7 +26,13 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
           option.link ? (
             <TouchableOpacity
               key={option.id}
-              onPress={() => Linking.openURL(option.link)}
+              onPress={() => {
+                if (option.link === "review") {
+                  CheckReview();
+                  return;
+                }
+                Linking.openURL(option.link);
+              }}
               style={[
                 getSecondaryBackgroundColorStyle(actualTheme),
                 actualTheme &&

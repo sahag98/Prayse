@@ -123,10 +123,11 @@ const StackContainer = () => {
         getMainBackgroundColorStyle(actualTheme),
       ]}
     >
-      <Stack initialRouteName="(tabs)">
+      <Stack screenOptions={{ headerShown: false }} initialRouteName="(tabs)">
         <Stack.Screen
           name="(tabs)"
           options={{
+            animation: "fade",
             headerShown: false,
           }}
         />

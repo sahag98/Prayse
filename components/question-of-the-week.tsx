@@ -21,10 +21,12 @@ export const QuestionOfTheWeek: React.FC = ({ actualTheme, theme }) => {
 
   return (
     <View
-      style={actualTheme && { borderTopColor: "gainsboro" }}
-      className="border-t pt-3 border-t-gray-300 dark:border-t-gray-500"
+      style={
+        actualTheme && actualTheme.PrimaryTxt && { borderTopColor: "gainsboro" }
+      }
+      className="border-t pt-3 border-t-gray-300 dark:border-t-[#707070]"
     >
-      <View className="flex-row items-center mb-3 gap-3">
+      <View className="flex-row items-center mb-4 gap-3">
         <Feather
           name="compass"
           size={20}

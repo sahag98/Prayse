@@ -31,6 +31,9 @@ import { ActualTheme } from "@types/reduxTypes";
 import { FeatureModal } from "@modals/feature-modal";
 import { CheckReview } from "@hooks/useShowReview";
 import { handleReviewShowing } from "@redux/remindersReducer";
+import ProModal from "@modals/ProModal";
+import { showProModal } from "@redux/userReducer";
+// import { setProModalVisible } from "@redux/userReducer";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -106,6 +109,7 @@ const WelcomeScreen = () => {
   const [isFirst, setIsFirst] = useState(false);
   const dispatch = useDispatch();
   const [featureVisible, setFeatureVisible] = useState(false);
+  const [proModalVisible, setProModalVisible] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const reviewCounter = useSelector(
     (state: any) => state.reminder.reviewCounter,
@@ -119,6 +123,7 @@ const WelcomeScreen = () => {
   const streak = useSelector((state) => state.user.devostreak);
   const completedItems = useSelector((state) => state.user.completedItems);
   const appstreak = useSelector((state) => state.user.appstreakNum);
+  const hasShownProModal = useSelector((state) => state.user.hasShownProModal);
 
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
@@ -139,10 +144,14 @@ const WelcomeScreen = () => {
       console.log("isTime", error);
     }
   };
-  // const currentDate = new Date().toLocaleDateString();
-  // console.log("curr date: ", currentDate);
 
   useEffect(() => {
+    if (reviewCounter === 5 && !hasShownProModal) {
+      console.log("here");
+      setProModalVisible(true);
+      // dispatch(setProModalVisible());
+      // setProModalVisible(true);
+    }
     if (!hasShownReview) {
       if (
         reviewCounter === 1 ||
@@ -234,8 +243,15 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={colorScheme}
       />
+      {/* <ProModal
+        visible={proModalVisible}
+        setVisible={setProModalVisible}
+        actualTheme={actualTheme}
+        theme={colorScheme}
+      />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
+      <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
+
       {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
 
       <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme} />

@@ -102,6 +102,22 @@ const PrayerRoom = () => {
       ],
     },
     {
+      title: "What is one area of your life where you need God’s strength?",
+      verses: [
+        'Philippians 4:13 "I can do all things through Christ which strengtheneth me."',
+        'Isaiah 40:31 "But they that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint."',
+        '2 Corinthians 12:9 "And he said unto me, My grace is sufficient for thee: for my strength is made perfect in weakness."',
+      ],
+    },
+    {
+      title: "What is a lesson God is teaching you right now?",
+      verses: [
+        'Proverbs 3:11-12 "My son, despise not the chastening of the Lord; neither be weary of his correction: For whom the Lord loveth he correcteth; even as a father the son in whom he delighteth."',
+        'Hebrews 12:11 "Now no chastening for the present seemeth to be joyous, but grievous: nevertheless afterward it yieldeth the peaceable fruit of righteousness unto them which are exercised thereby."',
+        'Romans 5:3-4 "And not only so, but we glory in tribulations also: knowing that tribulation worketh patience; And patience, experience; and experience, hope."',
+      ],
+    },
+    {
       title: "Who is on your heart to pray for today?",
       verses: [
         'James 5:16 "Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much."',
@@ -115,6 +131,14 @@ const PrayerRoom = () => {
         'Psalm 119:11 "Thy word have I hid in mine heart, that I might not sin against thee."',
         'James 4:8 "Draw nigh to God, and he will draw nigh to you. Cleanse your hands, ye sinners; and purify your hearts, ye double minded."',
         'Jeremiah 29:13 "And ye shall seek me, and find me, when ye shall search for me with all your heart."',
+      ],
+    },
+    {
+      title: "What is something you can surrender to God completely today?",
+      verses: [
+        'Proverbs 16:3 "Commit thy works unto the Lord, and thy thoughts shall be established."',
+        'Matthew 6:33 "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."',
+        'Romans 12:1 "I beseech you therefore, brethren, by the mercies of God, that ye present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service."',
       ],
     },
     {
@@ -142,6 +166,14 @@ const PrayerRoom = () => {
       ],
     },
     {
+      title: "How can you reflect God’s character in your actions today?",
+      verses: [
+        'Ephesians 5:1-2 "Be ye therefore followers of God, as dear children; And walk in love, as Christ also hath loved us, and hath given himself for us an offering and a sacrifice to God for a sweetsmelling savour."',
+        'Colossians 3:12 "Put on therefore, as the elect of God, holy and beloved, bowels of mercies, kindness, humbleness of mind, meekness, longsuffering."',
+        'Matthew 5:48 "Be ye therefore perfect, even as your Father which is in heaven is perfect."',
+      ],
+    },
+    {
       title: "What is a blessing in your life that reminds you of God's love?",
       verses: [
         'John 3:16 "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."',
@@ -158,11 +190,27 @@ const PrayerRoom = () => {
       ],
     },
     {
+      title: "What is a way you can reflect Jesus’ humility today?",
+      verses: [
+        'Philippians 2:3-4 "Let nothing be done through strife or vainglory; but in lowliness of mind let each esteem other better than themselves. Look not every man on his own things, but every man also on the things of others."',
+        'Philippians 2:5-7 "Let this mind be in you, which was also in Christ Jesus: Who, being in the form of God, thought it not robbery to be equal with God: But made himself of no reputation, and took upon him the form of a servant, and was made in the likeness of men."',
+        'Matthew 23:12 "And whosoever shall exalt himself shall be abased; and he that shall humble himself shall be exalted."',
+      ],
+    },
+    {
       title: "How has God been faithful to you recently?",
       verses: [
         "Lamentations 3:22-23 \"It is of the Lord's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.",
         'Deuteronomy 7:9 "Know therefore that the Lord thy God, he is God, the faithful God, which keepeth covenant and mercy with them that love him and keep his commandments to a thousand generations."',
         'Psalm 36:5 "Thy mercy, O Lord, is in the heavens; and thy faithfulness reacheth unto the clouds."',
+      ],
+    },
+    {
+      title: "What is one way you can serve someone in need today?",
+      verses: [
+        'Matthew 25:40 "And the King shall answer and say unto them, Verily I say unto you, Inasmuch as ye have done it unto one of the least of these my brethren, ye have done it unto me."',
+        'Galatians 6:10 "As we have therefore opportunity, let us do good unto all men, especially unto them who are of the household of faith."',
+        'Hebrews 13:16 "But to do good and to communicate forget not: for with such sacrifices God is well pleased."',
       ],
     },
     {
@@ -173,10 +221,10 @@ const PrayerRoom = () => {
         'Romans 8:24-25 "For we are saved by hope: but hope that is seen is not hope: for what a man seeth, why doth he yet hope for? But if we hope for that we see not, then do we with patience wait for it."',
       ],
     },
-    {
-      title:
-        "Thank you for using our app to spend time with God. We pray this time strengthens your faith and guides your day with His grace.",
-    },
+    // {
+    //   title:
+    //     "Thank you for using our app to spend time with God. We pray this time strengthens your faith and guides your day with His grace.",
+    // },
   ];
 
   const routeParams = useLocalSearchParams();
@@ -458,7 +506,7 @@ function PrayerPreparation({
 
     const fixedLastQuestion = {
       title:
-        "Thank you for using our app to spend time with God. We pray this time strengthens your faith and guides your day with His grace.",
+        "Thank you for using our app to pray. We hope this time strengthens your faith and guides your day with His grace.",
       verses: [],
     };
 
@@ -733,7 +781,8 @@ function PrayerPreparation({
           style={animatedMomentFadeInStyle}
           className="font-inter-medium mt-5 text-light-primary dark:text-dark-primary text-2xl"
         >
-          Have a moment to quiet your mind and prepare to connect with God.
+          Have a moment to quiet your mind and think on these questions as you
+          pray.
         </Animated.Text>
       </View>
     </View>

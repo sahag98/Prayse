@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import {
   DEVO_LIST_SCREEN,
@@ -133,7 +133,7 @@ const DailyReflection = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <View className="flex-row items-center gap-3">
+      <View className="flex-row items-center mb-1 gap-3">
         <Feather
           name="check-circle"
           size={20}
@@ -153,13 +153,13 @@ const DailyReflection = ({
         </Text>
       </View>
 
-      <View className="gap-3 relative w-full">
+      <View className="gap-5 relative w-full">
         <TouchableOpacity
           onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
+            className="absolute w-[5px] h-full top-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
                 ? {
@@ -176,22 +176,10 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems?.some((completedItem) =>
-                        completedItem.items.find(
-                          (item) => item === PRAYER_ROOM_SCREEN
-                        )
-                      )
-                        ? "#a5c9ff"
-                        : "#212121",
+                      backgroundColor: "#212121",
                     }
                   : {
-                      backgroundColor: completedItems?.some((completedItem) =>
-                        completedItem.items.find(
-                          (item) => item === PRAYER_ROOM_SCREEN
-                        )
-                      )
-                        ? "#2f2d51"
-                        : "white",
+                      backgroundColor: "white",
                     }
             }
           />
@@ -222,7 +210,7 @@ const DailyReflection = ({
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-white dark:bg-dark-secondary p-3 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-4 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
               <Text
@@ -271,6 +259,22 @@ const DailyReflection = ({
               >
                 - Matthew 21:22
               </Text>
+              <View className="flex-row items-center gap-2">
+                <Ionicons
+                  name={"time-outline"}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : theme === "dark"
+                        ? "#d2d2d2"
+                        : "#2f2d51"
+                  }
+                  size={20}
+                />
+                <Text className="font-inter-medium text-sm text-light-primary dark:text-[#d2d2d2]">
+                  5 mins
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -279,7 +283,7 @@ const DailyReflection = ({
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
+            className="absolute w-[5px] h-[56%] bottom-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
                 ? {
@@ -296,26 +300,14 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: completedItems?.some((completedItem) =>
-                        completedItem.items.find(
-                          (item) => item === VERSE_OF_THE_DAY_SCREEN
-                        )
-                      )
-                        ? "#a5c9ff"
-                        : "#212121",
+                      backgroundColor: "#212121",
                     }
                   : {
-                      backgroundColor: completedItems?.some((completedItem) =>
-                        completedItem.items.find(
-                          (item) => item === VERSE_OF_THE_DAY_SCREEN
-                        )
-                      )
-                        ? "#2f2d51"
-                        : "white",
+                      backgroundColor: "white",
                     }
             }
           />
-          <View
+          {/* <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
@@ -351,7 +343,7 @@ const DailyReflection = ({
                         : "white",
                     }
             }
-          />
+          /> */}
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
@@ -380,7 +372,7 @@ const DailyReflection = ({
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
-            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-4 ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
               <Text
@@ -420,10 +412,27 @@ const DailyReflection = ({
               >
                 - Psalm 119:105
               </Text>
+              <View className="flex-row items-center gap-2">
+                <Feather
+                  name="calendar"
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : theme === "dark"
+                        ? "#d2d2d2"
+                        : "#2f2d51"
+                  }
+                  size={20}
+                />
+
+                <Text className="font-inter-medium text-sm text-light-primary dark:text-[#d2d2d2]">
+                  Today's Reading
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => handleComplete(DEVO_LIST_SCREEN)}
           className="flex-row items-center justify-between"
         >
@@ -533,7 +542,7 @@ const DailyReflection = ({
               </Text>
             </View>
           </TouchableOpacity>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

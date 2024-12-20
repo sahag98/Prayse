@@ -24,8 +24,8 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
       console.log("Checking app open count", count);
       const newCount = count ? parseInt(count) + 1 : 1;
       await AsyncStorage.setItem("appOpenCount", newCount.toString());
-      if (newCount % 10 === 0) {
-        // CheckReview();
+      if (newCount % 20 === 0) {
+        CheckReview();
       }
     } catch (error) {
       console.error("Error checking app open count:", error);

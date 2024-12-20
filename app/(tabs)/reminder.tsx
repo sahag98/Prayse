@@ -40,15 +40,15 @@ const ReminderScreen = () => {
       <View className="mb-5">
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter-regular text-light-primary text-base dark:text-dark-primary"
+          className="font-inter-medium self-start text-light-primary text-base dark:text-dark-primary"
         >
-          Continue in prayer, and watch in the same with thanksgiving.
+          Colossians 4:2
         </Text>
         <Text
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter-medium self-end text-light-primary text-base dark:text-dark-primary"
+          className="font-inter-regular text-light-primary text-base dark:text-dark-primary"
         >
-          Colossians 4:2
+          Continue in prayer, and watch in the same with thanksgiving.
         </Text>
       </View>
 
@@ -61,8 +61,8 @@ const ReminderScreen = () => {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
-          <View className="flex-1 items-center w-5/6 self-center justify-center">
-            <View className="gap-1 mb-10 items-center">
+          <View className="flex-1 items-center w-3/4 self-center justify-center">
+            <View className="gap-1 mb-10  items-center">
               <Ionicons
                 name="time-outline"
                 size={70}
@@ -82,7 +82,7 @@ const ReminderScreen = () => {
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className=" text-center font-inter-medium leading-5 text-light-primary dark:text-dark-primary"
+                className="text-sm text-center font-inter-medium leading-5 text-light-primary dark:text-dark-primary"
               >
                 Navigate to the prayer tab to add prayers to your folders, and
                 setup reminders for each.

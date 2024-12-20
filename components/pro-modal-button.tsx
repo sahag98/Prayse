@@ -9,7 +9,6 @@ import { AntDesign } from "@expo/vector-icons";
 import {
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
-  getSecondaryBackgroundColorStyle,
 } from "@lib/customStyles";
 import { PRO_SCREEN } from "@routes";
 import { useDispatch } from "react-redux";
@@ -19,6 +18,7 @@ import { showProModal } from "@redux/userReducer";
 
 interface ProBannerProps {
   theme: string;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   actualTheme: {
     Accent: string;
     AccentTxt: string;
@@ -31,7 +31,11 @@ interface ProBannerProps {
     id: string;
   };
 }
-export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
+export const ProModalButton: React.FC<ProBannerProps> = ({
+  theme,
+  setVisible,
+  actualTheme,
+}) => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (Platform.OS === "ios") {
@@ -74,6 +78,7 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
 
   async function subscribeToPro() {
     dispatch(showProModal());
+    setVisible(false);
     if (await isSubscribed()) {
       router.push(`/${PRO_SCREEN}`);
     }
@@ -81,40 +86,16 @@ export const ProBanner: React.FC<ProBannerProps> = ({ theme, actualTheme }) => {
 
   return (
     <TouchableOpacity
-      style={getSecondaryBackgroundColorStyle(actualTheme)}
+      style={getPrimaryBackgroundColorStyle(actualTheme)}
       onPress={subscribeToPro}
-      className="w-full mb-5 mt-1 flex-row items-center justify-between p-5 rounded-lg bg-light-secondary dark:bg-dark-accent"
+      className="w-full flex-row justify-center items-center p-4 rounded-lg bg-light-primary dark:bg-dark-accent"
     >
-      <View className="flex-row items-center gap-3">
-        <MaterialCommunityIcons
-          name="crown-outline"
-          size={24}
-          color={
-            actualTheme && actualTheme.PrimaryTxt
-              ? actualTheme.PrimaryTxt
-              : theme === "dark"
-                ? "#121212"
-                : "#2f2d51"
-          }
-        />
-        <Text
-          style={getPrimaryTextColorStyle(actualTheme)}
-          className="font-inter-bold text-lg dark:text-dark-background text-light-primary"
-        >
-          Upgrade to Pro
-        </Text>
-      </View>
-      <AntDesign
-        name="right"
-        size={24}
-        color={
-          actualTheme && actualTheme.PrimaryTxt
-            ? actualTheme.PrimaryTxt
-            : theme === "dark"
-              ? "#121212"
-              : "#2f2d51"
-        }
-      />
+      <Text
+        style={getPrimaryTextColorStyle(actualTheme)}
+        className="font-inter-bold text-lg dark:text-dark-background text-light-background"
+      >
+        Check it out!
+      </Text>
     </TouchableOpacity>
   );
 };

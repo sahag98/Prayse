@@ -144,8 +144,8 @@ const MoreScreen = () => {
     {
       id: 3,
       icon: (
-        <Ionicons
-          name="chatbubble-ellipses-outline"
+        <Feather
+          name="edit-2"
           className="mr-3"
           size={24}
           color={
@@ -157,8 +157,8 @@ const MoreScreen = () => {
           }
         />
       ),
-      title: "Feedback Board",
-      link: "https://prayse.canny.io/feature-requests",
+      title: "Write a Review",
+      link: "review",
     },
     {
       id: 4,
@@ -249,7 +249,7 @@ const MoreScreen = () => {
         <View className="flex-row justify-around mt-5 items-center">
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL("mailto:prayse.app@gmail.com");
+              Linking.openURL("https://prayse.canny.io/feature-requests");
             }}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"

@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       }
 
       if (update[0].isUpdateAvailable !== nativeApplicationVersion.toString()) {
-        // setHasUpdate(true);
+        setHasUpdate(true);
       } else {
         setHasUpdate(false);
       }

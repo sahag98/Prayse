@@ -28,10 +28,12 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
   //const merchImages = [pfeBlueBack, pfeBlueFront, pfeBlackBack, pfeBlackFront];
   return (
     <View
-      style={actualTheme && { borderTopColor: "gainsboro" }}
-      className="border-t pt-3 mb-24 border-t-gray-300 dark:border-t-gray-500"
+      style={
+        actualTheme && actualTheme.PrimaryTxt && { borderTopColor: "gainsboro" }
+      }
+      className="border-t pt-3 mb-24 border-t-gray-300 dark:border-t-[#707070]"
     >
-      <View className="flex-row items-center mb-3 gap-3">
+      <View className="flex-row items-center mb-4 gap-3">
         <Feather
           name="shopping-cart"
           size={20}
@@ -99,7 +101,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
                 style={getPrimaryTextColorStyle(actualTheme)}
                 className="text-white dark:text-dark-background font-inter-bold text-[15px]"
               >
-                Check it Out
+                Shop Now
               </Text>
               <AntDesign
                 name="shoppingcart"

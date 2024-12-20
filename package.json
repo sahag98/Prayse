@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "expo": "~51.0.36",
+    "expo-apple-authentication": "~6.4.2",
     "expo-application": "~5.9.1",
     "expo-asset": "~10.0.10",
     "expo-auth-session": "~5.5.2",
@@ -94,7 +95,7 @@
     "styled-components": "^5.3.9",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.3",
-    "expo-apple-authentication": "~6.4.2"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

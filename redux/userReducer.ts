@@ -15,6 +15,7 @@ interface UserState {
     items: string[];
   }[];
   devostreak: number;
+  hasShownProModal: boolean;
   isAppReady: boolean;
   appstreak: any[];
   appstreakNum: number;
@@ -39,6 +40,7 @@ const initialState: UserState = {
   theme: Appearance.getColorScheme(),
   completedItems: [],
   devostreak: 0,
+  hasShownProModal: false,
   isAppReady: false,
   appstreak: [],
   customBg: "",
@@ -60,6 +62,9 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    showProModal: (state) => {
+      state.hasShownProModal = true;
+    },
     isSubmittingReview: (state) => {
       state.hasSubmittedReview = true;
     },
@@ -180,7 +185,7 @@ export const userSlice = createSlice({
       if (dateIndex >= 0) {
         // If date exists, add the item to the items array of that date
         // if (state.completedItems[0].items.length )
-        if (state.completedItems[dateIndex].items.length === 3) {
+        if (state.completedItems[dateIndex].items.length === 2) {
           return;
         }
         state.completedItems[dateIndex].items.push(item);
@@ -201,8 +206,6 @@ export const userSlice = createSlice({
       const currentDateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === currentDate,
       );
-      console.log("dateIndex: ", dateIndex);
-      console.log("currentDateIndex: ", currentDateIndex);
       // const currentDateIndex = state.completedItems.findIndex(
       //   (entry) => entry?.date === currentDate,
       // );
@@ -272,7 +275,7 @@ export const userSlice = createSlice({
         if (differenceInDays === 1) {
           if (
             currentDate === lastItem &&
-            lastItemData.items.length === 3 &&
+            lastItemData.items.length === 2 &&
             state.hasIncreasedDevoStreak === false
           ) {
             console.log("should increase devo");
@@ -299,7 +302,7 @@ export const userSlice = createSlice({
     },
     increaseStreakCounter: (state) => {
       if (
-        state.completedItems.length === 3 &&
+        state.completedItems.length === 2 &&
         state.alreadyIncreasedStreak === false
       ) {
         console.log("will increase devo streak");
@@ -360,6 +363,7 @@ export const {
   didEnterGiveaway,
   addtoCompletedItems,
   increaseStreakCounter,
+  showProModal,
   increaseAppStreakCounter,
   deleteAppStreakCounter,
   deleteCompletedItems,
