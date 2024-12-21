@@ -21,7 +21,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { store } from "@redux/store";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Sentry from "@sentry/react-native";
 
 import StackContainer from "./Stack";
@@ -47,6 +47,8 @@ Sentry.init({
     }),
   ],
 });
+
+const queryClient = new QueryClient();
 
 function App() {
   const toastConfig = {
@@ -151,15 +153,17 @@ function App() {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <SafeAreaProvider>
-              <SupabaseProvider>
-                <StackContainer />
-              </SupabaseProvider>
-            </SafeAreaProvider>
-          </PersistGate>
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <SafeAreaProvider>
+                <SupabaseProvider>
+                  <StackContainer />
+                </SupabaseProvider>
+              </SafeAreaProvider>
+            </PersistGate>
+          </Provider>
+        </QueryClientProvider>
       </GestureHandlerRootView>
       <Toast config={toastConfig} />
     </>

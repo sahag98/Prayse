@@ -1,23 +1,28 @@
-// @ts-nocheck
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Alert,
+  FlatList,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
+  SafeAreaView,
   Share,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import {
+import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
+  withRepeat,
+  Easing,
+  withTiming,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
@@ -25,12 +30,13 @@ import { AntDesign } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import NetInfo from "@react-native-community/netinfo";
 import { useIsFocused } from "@react-navigation/native";
-import { ActualTheme } from "@types/reduxTypes";
+import { ActualTheme } from "../types/reduxTypes";
 
 import tbf from "../assets/tbf-logo.jpg";
 import DevoItem from "../components/DevoItem";
@@ -38,222 +44,289 @@ import config from "../config";
 import { useSupabase } from "../context/useSupabase";
 import useIsReady from "../hooks/useIsReady";
 import { client } from "../lib/client";
-import { COMMUNITY_SCREEN, MORE_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, LOGIN_SCREEN, MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 import "react-native-url-polyfill/auto";
+import { cn } from "@lib/utils";
+import AddPraiseModal from "@modals/add-praise-modal";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const DevoListScreen = () => {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams();
-  const isFocused = useIsFocused();
-  const theme = useSelector((state) => state.user.theme);
+  const queryClient = useQueryClient();
+  const { currentUser, supabase } = useSupabase();
   const isReady = useIsReady();
-  const [devotionals, setDevotionals] = useState([]);
-  const [refresh, setRefresh] = useState(true);
-  const [connected, setConnected] = useState(false);
-  const [thought, setThought] = useState("");
-  const {
-    isLoggedIn,
-    currentUser,
-    refreshReflections,
-    setRefreshReflections,
-    supabase,
-  } = useSupabase();
-  const [likesArray, setLikesArray] = useState([]);
-  const [reflectionsArray, setReflectionsArray] = useState([]);
-  const [channel, setChannel] = useState([]);
+  const praiseBottomSheetRef = useRef<BottomSheetModal>(null);
+  const [praises, setPraises] = useState([]);
+  const [praiseCount, setPraiseCount] = useState(0);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["praises"],
+    queryFn: getPraises,
+  });
+
+  useEffect(() => {
+    const checkPraiseCount = async () => {
+      console.log("here");
+      const count = await AsyncStorage.getItem("praiseCount");
+      const lastResetDate = await AsyncStorage.getItem("lastResetDate");
+
+      const today = new Date().toISOString().split("T")[0];
+
+      if (lastResetDate !== today) {
+        await AsyncStorage.setItem("praiseCount", "0");
+        await AsyncStorage.setItem("lastResetDate", today);
+        setPraiseCount(0);
+      } else {
+        setPraiseCount(count ? parseInt(count) : 0);
+      }
+    };
+
+    checkPraiseCount();
+  }, [data]);
+
+  console.log("praise count: ", praiseCount);
+
+  async function getPraises() {
+    const { data, error } = await supabase
+      .from("praises")
+      .select("*, profiles(*)")
+      .order("id", { ascending: false });
+
+    return data;
+  }
+
+  console.log("praises: ", praises);
+
+  const praisesList = [
+    { id: 1, name: "John", content: "Praise for waking up today." },
+    { id: 2, name: "Bob", content: "Praise for waking up today." },
+    { id: 3, name: "Larry", content: "Praise for waking up today." },
+    { id: 4, name: "Laura", content: "Praise for waking up today." },
+    { id: 5, name: "Jane", content: "Praise for waking up today." },
+    { id: 6, name: "Mandy", content: "Praise for waking up today." },
+    { id: 7, name: "Nancy", content: "Praise for waking up today." },
+    { id: 8, name: "James", content: "Praise for the blessings in my life." },
+    { id: 9, name: "Sarah", content: "Praise for my family's health." },
+    { id: 10, name: "David", content: "Praise for a new opportunity at work." },
+    {
+      id: 11,
+      name: "Emily",
+      content: "Praise for the beautiful weather today.",
+    },
+    { id: 12, name: "Chris", content: "Praise for God's guidance in my life." },
+    {
+      id: 13,
+      name: "Rachel",
+      content: "Praise for strength through challenges.",
+    },
+    { id: 14, name: "Michael", content: "Praise for peace in my heart." },
+    {
+      id: 15,
+      name: "Olivia",
+      content: "Praise for my loving friends and family.",
+    },
+    {
+      id: 16,
+      name: "Ethan",
+      content: "Praise for all the good things in life.",
+    },
+    {
+      id: 17,
+      name: "Sophia",
+      content: "Praise for being able to help others.",
+    },
+    {
+      id: 18,
+      name: "William",
+      content: "Praise for finding joy in the small moments.",
+    },
+    { id: 19, name: "Ava", content: "Praise for a fulfilling day of work." },
+    {
+      id: 20,
+      name: "Lucas",
+      content: "Praise for God's endless love and grace.",
+    },
+    { id: 21, name: "Grace", content: "Praise for the peace of mind I have." },
+    { id: 22, name: "Zoe", content: "Praise for the strength to keep going." },
+    {
+      id: 23,
+      name: "Ben",
+      content: "Praise for a new day and new beginnings.",
+    },
+    {
+      id: 24,
+      name: "Charlotte",
+      content: "Praise for laughter and joy with loved ones.",
+    },
+  ];
 
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
   const { colorScheme } = useColorScheme();
-  useEffect(() => {
-    loadDevotionals();
-  }, [isFocused]);
 
-  const createTwoButtonAlert = () =>
-    Alert.alert("Not Signed In", "You need to be signed in order to like.", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      {
-        text: "Sign in",
-        onPress: () => navigation.navigate(COMMUNITY_SCREEN),
-      },
-    ]);
-
-  const fetchReflections = async (title) => {
-    const { data, error } = await supabase
-      .from("reflections")
-      .select("*, profiles(full_name,avatar_url)")
-      .eq("devo_title", title);
-    setReflectionsArray(data);
-    setRefreshReflections(false);
+  // Random position for each item, ensuring they stay within the screen bounds
+  const getRandomPosition = () => {
+    const randomX = Math.floor(Math.random() * 250) - 125; // Random x between -125 and 125 (limits within screen width)
+    const randomY = Math.floor(Math.random() * 500) - 250; // Random y between -250 and 250 (adjustable for vertical movement)
+    return { x: randomX, y: randomY };
   };
 
-  const loadDevotionals = () => {
-    const query = '*[_type=="devotional"]';
-    client
-      .fetch(query)
-      .then((data) => {
-        setRefresh(false);
-        setDevotionals(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const BusyIndicator = () => {
+  //   return (
+  //     <View
+  //       style={getMainBackgroundColorStyle(actualTheme)}
+  //       className="bg-light-background dark:bg-dark-background flex-1 justify-center"
+  //     >
+  //       <ActivityIndicator
+  //         size="large"
+  //         color={
+  //           actualTheme && actualTheme.MainTxt
+  //             ? actualTheme.MainTxt
+  //             : colorScheme == "dark"
+  //               ? "white"
+  //               : "#2f2d51"
+  //         }
+  //       />
+  //     </View>
+  //   );
+  // };
 
-  NetInfo.fetch().then((state) => {
-    setConnected(state.isConnected);
-  });
+  // Animated style for each item in the FlatList
+  const AnimatedPraiseItem = ({ item }: { item: any }) => {
+    const position = useSharedValue(getRandomPosition()); // Randomize initial position
+    const hoverTranslateY = useSharedValue(0);
 
-  async function insertLike(title) {
-    if (!isLoggedIn) {
-      createTwoButtonAlert();
-      return;
-    }
-
-    if (isLikedByMe) {
-      scale.value = withSequence(
-        withSpring(1.2, { damping: 2, stiffness: 80 }),
-        withSpring(1, { damping: 2, stiffness: 80 }),
-      );
-      const { data, error } = await supabase
-        .from("devo_likes")
-        .delete()
-        .eq("devo_title", title)
-        .eq("user_id", currentUser?.id);
-
-      channel.send({
-        type: "broadcast",
-        event: "message",
-        payload: {
-          user_id: currentUser?.id,
-          devo_title: title,
-        },
-      });
-      return;
-    }
-    scale.value = withSequence(
-      withSpring(1.2, { damping: 2, stiffness: 80 }),
-      withSpring(1, { damping: 2, stiffness: 80 }),
+    hoverTranslateY.value = withRepeat(
+      withTiming(10, {
+        duration: 3000,
+        easing: Easing.inOut(Easing.ease),
+      }),
+      -1,
+      true,
     );
-
-    const { data, error } = await supabase.from("devo_likes").insert({
-      user_id: currentUser?.id,
-      devo_title: title,
+    // Animate vertical movement
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          { translateX: withSpring(position.value.x, { damping: 3 }) },
+        ],
+      };
     });
 
-    const message = {
-      title,
-      message: `${currentUser?.full_name} has liked the devotional!`,
-      data: { screen: "DevoList", verseTitle: "" },
-    };
+    const hoverStyle = useAnimatedStyle(() => ({
+      transform: [{ translateY: hoverTranslateY.value }],
+    }));
 
-    fetch(config.prayseMessage, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Accept-encoding": "gzip, deflate",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
-    });
-
-    channel.send({
-      type: "broadcast",
-      event: "message",
-      payload: {
-        user_id: currentUser?.id,
-        devo_title: title,
-      },
-    });
-  }
-
-  async function fetchLikes(devoTitle) {
-    //prayer_id for production
-    //prayertest_id for testing
-    const { data: likes, error: likesError } = await supabase
-      .from("devo_likes")
-      .select()
-      .eq("devo_title", devoTitle);
-    setLikesArray(likes);
-
-    if (likesError) {
-      console.log(likesError);
-    }
-  }
-
-  const scale = useSharedValue(1);
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    };
-  });
-
-  const onShare = async (title, description, day, content) => {
-    if (title) {
-      try {
-        await Share.share({
-          message:
-            title + "\n" + description + "\n" + "\n" + day + "\n" + content,
-        });
-      } catch (error) {
-        Alert.alert(error.message);
-      }
-    }
-  };
-
-  function convertDigitIn(str) {
-    const newStr = str.replace(/-/g, "/");
-    return newStr.split("/").reverse().join("/");
-  }
-
-  const isLikedByMe = !!likesArray?.find(
-    (like) => like.user_id == currentUser?.id,
-  );
-
-  const BusyIndicator = () => {
     return (
-      <View
-        style={getMainBackgroundColorStyle(actualTheme)}
-        className="bg-light-background dark:bg-dark-background flex-1 justify-center"
+      <Animated.View
+        className={cn(
+          "bg-light-secondary w-fit gap-2 self-start p-3 rounded-lg",
+          item.id % 2 === 0 && "self-end",
+        )}
+        style={hoverStyle}
       >
-        <ActivityIndicator
-          size="large"
-          color={
-            actualTheme && actualTheme.MainTxt
-              ? actualTheme.MainTxt
-              : colorScheme == "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      </View>
+        {item.user_id ? (
+          <View>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-semibold ext-light-primary dark:text-dark-primary text-sm"
+            >
+              {item.profiles.full_name}
+            </Text>
+          </View>
+        ) : (
+          <View>
+            <Text
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-semibold ext-light-primary dark:text-dark-primary text-sm"
+            >
+              Anonymous
+            </Text>
+          </View>
+        )}
+
+        <Text
+          style={getSecondaryTextColorStyle(actualTheme)}
+          className="font-inter-regular text-light-primary dark:text-dark-primary"
+        >
+          {item.content}
+        </Text>
+      </Animated.View>
     );
   };
 
-  if (!isReady || !connected) {
-    return <BusyIndicator />;
-  }
+  // if (!currentUser) {
+  //   return (
+  //     <SafeAreaView
+  //       style={getMainBackgroundColorStyle(actualTheme)}
+  //       className="flex-1 bg-light-background dark:bg-dark-background"
+  //     >
+  //       <View className="flex-row mb-4 px-4 items-center">
+  //         <TouchableOpacity
+  //           onPress={() => {
+  //             if (routeParams?.previousScreen) {
+  //               navigation.goBack();
+  //             }
+  //           }}
+  //         >
+  //           <AntDesign
+  //             name="left"
+  //             size={30}
+  //             color={
+  //               actualTheme && actualTheme.MainTxt
+  //                 ? actualTheme.MainTxt
+  //                 : colorScheme == "dark"
+  //                   ? "white"
+  //                   : "#2f2d51"
+  //             }
+  //           />
+  //         </TouchableOpacity>
+  //         <Text
+  //           style={getMainTextColorStyle(actualTheme)}
+  //           className="font-inter ml-2 text-2xl font-bold text-light-primary dark:text-dark-primary"
+  //         >
+  //           Praise
+  //         </Text>
+  //       </View>
+  //       <View className="flex-1 gap-3 items-center justify-center">
+  //         <Text
+  //           style={getMainTextColorStyle(actualTheme)}
+  //           className="font-inter-semibold text-lg text-light-primary dark:text-dark-primary"
+  //         >
+  //           Sign in to share a praise with us!
+  //         </Text>
+  //         <Pressable
+  //           onPress={() => router.push(LOGIN_SCREEN)}
+  //           style={getPrimaryBackgroundColorStyle(actualTheme)}
+  //           className="bg-light-primary items-center justify-center w-1/2 dark:bg-dark-accent p-4 rounded-lg"
+  //         >
+  //           <Text className="font-inter-bold text-base text-light-background dark:text-dark-background">
+  //             Sign in
+  //           </Text>
+  //         </Pressable>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
 
+  if (isLoading) return null;
   return (
     <>
-      {refresh ? <ActivityIndicator /> : null}
-      <Container
+      <SafeAreaView
         style={getMainBackgroundColorStyle(actualTheme)}
-        className="bg-light-background dark:bg-dark-background"
+        className="bg-light-background flex-1 dark:bg-dark-background"
       >
-        <HeaderView className="flex-row self-start">
+        <View className="flex-row mb-4 px-4 items-center">
           <TouchableOpacity
             onPress={() => {
               if (routeParams?.previousScreen) {
                 navigation.goBack();
-              } else {
-                navigation.navigate(MORE_SCREEN);
               }
             }}
           >
@@ -269,29 +342,81 @@ const DevoListScreen = () => {
               }
             />
           </TouchableOpacity>
-          <HeaderTitle
+          <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter ml-2 font-bold text-light-primary dark:text-dark-primary"
+            className="font-inter ml-2 text-2xl font-bold text-light-primary dark:text-dark-primary"
           >
-            Devotional
-          </HeaderTitle>
-        </HeaderView>
-        <View className=" flex-1 justify-center items-center">
-          <View
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-secondary rounded-lg w-3/4 dark:bg-dark-secondary p-3"
-          >
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-medium leading-6 text-light-primary dark:text-dark-primary"
-            >
-              This page is being removed from the app, but you can find
-              devotionals and more on our Instagram{" "}
-              <Text className="font-inter-semibold">@prayse.app</Text>.
-            </Text>
-          </View>
+            Praise
+          </Text>
         </View>
-      </Container>
+        <View className="flex-1 px-4 justify-center items-center">
+          <FlatList
+            style={{ width: "100%", flexGrow: 1, flex: 1 }}
+            data={data}
+            inverted
+            className=""
+            ListHeaderComponent={() => <View className="h-10" />}
+            contentContainerClassName="gap-5 flex-grow"
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={() => (
+              <View className="flex-1 gap-3 items-center justify-center">
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter-semibold text-xl text-light-primary dark:text-dark-primary"
+                >
+                  No praises just yet!
+                </Text>
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter-regular text-light-primary dark:text-dark-primary"
+                >
+                  Be the first one to start it off today.
+                </Text>
+              </View>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <AnimatedPraiseItem item={item} />}
+          />
+          {praiseCount < 10 && (
+            <View className="py-4 w-full items-center">
+              <Pressable
+                onPress={() => praiseBottomSheetRef.current?.present()}
+                className="bg-light-primary size-20 items-center justify-center rounded-full"
+              >
+                <AntDesign
+                  name="plus"
+                  size={24}
+                  color={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : colorScheme == "dark"
+                        ? "white"
+                        : "white"
+                  }
+                />
+              </Pressable>
+            </View>
+          )}
+          {praiseCount >= 10 && (
+            <View className="p-3">
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="text-lg text-light-primary dark:text-dark-primary font-inter-medium"
+              >
+                Thank you for praising God with us today. Come back tomorrow to
+                start it off.
+              </Text>
+            </View>
+          )}
+        </View>
+        <AddPraiseModal
+          praiseBottomSheetRef={praiseBottomSheetRef}
+          actualTheme={actualTheme}
+          currentUser={currentUser}
+          supabase={supabase}
+          theme={colorScheme}
+        />
+      </SafeAreaView>
     </>
   );
 };

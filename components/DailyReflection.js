@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import {
   DEVO_LIST_SCREEN,
@@ -34,7 +34,6 @@ import {
 } from "@lib/customStyles";
 import { useRouter } from "expo-router";
 import { posthog } from "@lib/posthog";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DailyReflection = ({
   completedItems,
@@ -53,33 +52,13 @@ const DailyReflection = ({
 
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
-  const [showNewBadge, setShowNewBadge] = useState(false);
-
-  useEffect(() => {
-    const checkBadgeStatus = async () => {
-      const lastShownDate = await AsyncStorage.getItem("lastBadgeShownDate");
-      const currentDate = new Date().toLocaleDateString().split("T")[0];
-
-      if (lastShownDate !== currentDate) {
-        setShowNewBadge(true);
-        await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
-      } else {
-        setShowNewBadge(false);
-      }
-    };
-    checkBadgeStatus();
-  }, [isFocused]);
 
   // console.log("today:", today);
   useEffect(() => {
     clearPreviousDayCompletion();
   }, [isFocused, today]);
 
-  async function handleComplete(selected) {
-    if (showNewBadge) {
-      setShowNewBadge(false);
-      await AsyncStorage.removeItem("showNewFeatureBadge");
-    }
+  function handleComplete(selected) {
     if (
       completedItems.find((completedItem) =>
         completedItem.items.find((item) => item === selected)
@@ -133,7 +112,7 @@ const DailyReflection = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <View className="flex-row items-center mb-1 gap-3">
+      <View className="flex-row items-center gap-3">
         <Feather
           name="check-circle"
           size={20}
@@ -153,13 +132,13 @@ const DailyReflection = ({
         </Text>
       </View>
 
-      <View className="gap-5 relative w-full">
+      <View className="gap-3 relative w-full">
         <TouchableOpacity
           onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-full top-1/2 left-[10px]"
+            className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
                 ? {
@@ -176,10 +155,22 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: "#212121",
+                      backgroundColor: completedItems?.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === PRAYER_ROOM_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
                     }
                   : {
-                      backgroundColor: "white",
+                      backgroundColor: completedItems?.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === PRAYER_ROOM_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
@@ -210,16 +201,15 @@ const DailyReflection = ({
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-white dark:bg-dark-secondary p-4 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-3 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] text-lg font-inter-regular"
+                className="text-light-primary dark:text-[#d2d2d2] text-sm font-inter-regular"
               >
                 Pray
               </Text>
-
               <MaterialCommunityIcons
                 name="hands-pray"
                 size={20}
@@ -231,13 +221,6 @@ const DailyReflection = ({
                       : "#2f2d51"
                 }
               />
-              {showNewBadge && (
-                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
-                  <Text className="text-white font-inter-medium text-xs">
-                    New
-                  </Text>
-                </View>
-              )}
             </View>
             <View className="gap-1">
               <Text
@@ -248,17 +231,12 @@ const DailyReflection = ({
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
+                className="text-light-primary mb-2 dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
                 "And all things, whatsoever ye shall ask in prayer, believing,
-                ye shall receive."
+                ye shall receive." - Matthew 21:22
               </Text>
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
-              >
-                - Matthew 21:22
-              </Text>
+
               <View className="flex-row items-center gap-2">
                 <Ionicons
                   name={"time-outline"}
@@ -283,7 +261,7 @@ const DailyReflection = ({
           className="flex-row items-center justify-between"
         >
           <View
-            className="absolute w-[5px] h-[56%] bottom-1/2 left-[10px]"
+            className="absolute w-[5px] h-1/2 bottom-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
                 ? {
@@ -300,14 +278,26 @@ const DailyReflection = ({
                   }
                 : theme === "dark"
                   ? {
-                      backgroundColor: "#212121",
+                      backgroundColor: completedItems?.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#a5c9ff"
+                        : "#212121",
                     }
                   : {
-                      backgroundColor: "white",
+                      backgroundColor: completedItems?.some((completedItem) =>
+                        completedItem.items.find(
+                          (item) => item === VERSE_OF_THE_DAY_SCREEN
+                        )
+                      )
+                        ? "#2f2d51"
+                        : "white",
                     }
             }
           />
-          {/* <View
+          <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
               actualTheme && actualTheme.Primary
@@ -343,7 +333,7 @@ const DailyReflection = ({
                         : "white",
                     }
             }
-          /> */}
+          />
           <View
             className="w-[25px] border-4 border-light-secondary dark:border-[#474747] h-[25px] rounded-full"
             style={{
@@ -372,12 +362,12 @@ const DailyReflection = ({
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
-            className="bg-white dark:bg-dark-secondary p-4 ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
             <View className="flex-row items-center gap-2">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-[14px]"
+                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
                 Verse of the Day
               </Text>
@@ -402,16 +392,12 @@ const DailyReflection = ({
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
+                className="text-light-primary mb-2 dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
-                "Thy word is a lamp unto my feet, and a light unto my path."
+                "Thy word is a lamp unto my feet, and a light unto my path." -
+                Psalm 119:105
               </Text>
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
-              >
-                - Psalm 119:105
-              </Text>
+
               <View className="flex-row items-center gap-2">
                 <Feather
                   name="calendar"
@@ -432,7 +418,7 @@ const DailyReflection = ({
             </View>
           </TouchableOpacity>
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           onPress={() => handleComplete(DEVO_LIST_SCREEN)}
           className="flex-row items-center justify-between"
         >
@@ -501,48 +487,65 @@ const DailyReflection = ({
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
           >
-            <View className="flex-row items-center gap-2">
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-[14px]"
-              >
-                Devotional
-              </Text>
-              <Feather
-                name="book"
-                size={20}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : theme === "dark"
-                      ? "#d2d2d2"
-                      : "#2f2d51"
-                }
-              />
+            <View className="flex-row items-center gap-2 justify-between">
+              <View className="flex-row items-center gap-2">
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
+                >
+                  Praise
+                </Text>
+                <Feather
+                  name="book"
+                  size={20}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : theme === "dark"
+                        ? "#d2d2d2"
+                        : "#2f2d51"
+                  }
+                />
+              </View>
+              <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
+                <Text className="text-white font-inter-medium text-xs">
+                  NEW
+                </Text>
+              </View>
             </View>
             <View className="gap-1">
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-light-primary dark:text-white font-inter-bold text-2xl"
               >
-                Explore today's devotional
+                Share a praise
               </Text>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary dark:text-[#d2d2d2] font-inter-regular text-sm"
+                className="text-light-primary mb-2 dark:text-[#d2d2d2] font-inter-regular text-sm"
               >
-                "Study to show thyself approved unto God, a workman that needeth
-                not to be ashamed, rightly dividing the word of truth."
+                Celebrate God's daily blessings with us today.
               </Text>
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="text-light-primary self-end dark:text-[#d2d2d2] font-inter-medium text-sm"
-              >
-                - 2 Timothy 2:15
-              </Text>
+
+              <View className="flex-row items-center gap-2">
+                <Ionicons
+                  name={"time-outline"}
+                  color={
+                    actualTheme && actualTheme.SecondaryTxt
+                      ? actualTheme.SecondaryTxt
+                      : theme === "dark"
+                        ? "#d2d2d2"
+                        : "#2f2d51"
+                  }
+                  size={20}
+                />
+                <Text className="font-inter-medium text-sm text-light-primary dark:text-[#d2d2d2]">
+                  5 mins
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );

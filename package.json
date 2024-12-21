@@ -24,6 +24,7 @@
     "@sentry/react-native": "~5.24.3",
     "@shopify/flash-list": "1.6.4",
     "@supabase/supabase-js": "^2.32.0",
+    "@tanstack/react-query": "^5.62.8",
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
