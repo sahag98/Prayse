@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
-import { Link, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import {
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
 } from "@lib/customStyles";
-import { useIsFocused } from "@react-navigation/native";
 
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
@@ -32,16 +31,26 @@ const QuestionScreen = () => {
   const itemTitle = routeParams?.title;
   const itemId = routeParams?.question_id;
 
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    fetchAnswers();
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
 
-    if (itemId) {
-      setAnswersArray(
-        answers.filter((answer) => answer.question_id === parseInt(itemId, 10)),
-      );
-    }
-  }, [isFocused]);
+      fetchAnswers();
+
+      if (itemId) {
+        setAnswersArray(
+          answers.filter(
+            (answer) => answer.question_id === parseInt(itemId, 10),
+          ),
+        );
+      }
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
 
   return (
     <Container

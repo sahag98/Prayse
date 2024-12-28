@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Moment from "moment";
 import {
@@ -8,18 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ChatBubble from "react-native-chat-bubble";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  useSharedValue,
-  withSequence,
-  withSpring,
-} from "react-native-reanimated";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useIsFocused } from "@react-navigation/native";
 
-import ReactionModal from "../modals/ReactionModal";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 import { PRAYER_GROUP_SCREEN } from "@routes";
 import {
   getSecondaryBackgroundColorStyle,
@@ -27,6 +18,7 @@ import {
 } from "@lib/customStyles";
 import { fetchLikes, fetchPraises } from "@functions/reactions/FetchReactions";
 import { cn } from "@lib/utils";
+import { useFocusEffect } from "expo-router";
 
 const GroupPrayerItem = ({
   prayerToReact,
@@ -44,9 +36,6 @@ const GroupPrayerItem = ({
   const [praises, setPraises] = useState([]);
   const [channel, setChannel] = useState();
   const [isLoadingLikes, setIsLoadingLikes] = useState(false);
-  const isFocused = useIsFocused();
-
-  const loadingSharedValue = useSharedValue();
 
   useEffect(() => {
     async function Load() {
@@ -69,60 +58,69 @@ const GroupPrayerItem = ({
     Load();
   }, [item.id]);
 
-  useEffect(() => {
-    if (currGroup?.id && currentUser.id) {
-      const channel = supabase.channel(`room:${item.id}`, {
-        config: {
-          broadcast: {
-            self: true,
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+
+      if (currGroup?.id && currentUser.id) {
+        const channel = supabase.channel(`room:${item.id}`, {
+          config: {
+            broadcast: {
+              self: true,
+            },
+            presence: {
+              key: currentUser.id,
+            },
           },
-          presence: {
-            key: currentUser.id,
-          },
-        },
-      });
+        });
 
-      channel.on("broadcast", { event: "message" }, async ({ payload }) => {
-        if (payload.type === "like") {
-          console.log("in like payload");
+        channel.on("broadcast", { event: "message" }, async ({ payload }) => {
+          if (payload.type === "like") {
+            console.log("in like payload");
 
-          setLikes((likes) => [payload, ...likes]);
-        } else if (payload.type === "praise") {
-          console.log("in praise prayload");
-          setPraises((praises) => [payload, ...praises]);
-        }
-      });
+            setLikes((likes) => [payload, ...likes]);
+          } else if (payload.type === "praise") {
+            console.log("in praise prayload");
+            setPraises((praises) => [payload, ...praises]);
+          }
+        });
 
-      /**
-       * Step 3:
-       *
-       * Subscribe to the channel
-       */
-      channel.subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          channel.track({ currentUser });
-        }
-      });
+        /**
+         * Step 3:
+         *
+         * Subscribe to the channel
+         */
+        channel.subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            channel.track({ currentUser });
+          }
+        });
 
-      /**
-       * Step 4:
-       *
-       * Set the channel in the state
-       */
-      setReactionChannel(channel);
+        /**
+         * Step 4:
+         *
+         * Set the channel in the state
+         */
+        setReactionChannel(channel);
 
-      /**
-       * * Step 5:
-       *
-       * Return a clean-up function that unsubscribes from the channel
-       * and clears the channel state
-       */
+        /**
+         * * Step 5:
+         *
+         * Return a clean-up function that unsubscribes from the channel
+         * and clears the channel state
+         */
+        return () => {
+          channel.unsubscribe();
+          setReactionChannel(undefined);
+        };
+      }
+      // Return function is invoked whenever the route gets out of focus.
       return () => {
-        channel.unsubscribe();
-        setReactionChannel(undefined);
+        console.log("This route is now unfocused.");
       };
-    }
-  }, [item?.id, currentUser.id, isFocused]);
+    }, [item.id, currentUser.id])
+  );
 
   const notifyPraise = async (expoToken, item) => {
     const message = {

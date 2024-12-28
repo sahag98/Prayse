@@ -3,7 +3,7 @@ import { Modal } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 
 import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
 import { deletePrayerByFolderId } from "../redux/prayerReducer";

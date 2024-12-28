@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Platform,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { Feather, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
 import {
   DEVO_LIST_SCREEN,
   HOME_SCREEN,
@@ -32,7 +31,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation, useFocusEffect } from "expo-router";
 import { posthog } from "@lib/posthog";
 
 const DailyReflection = ({
@@ -43,7 +42,6 @@ const DailyReflection = ({
   appStreak,
 }) => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
   const router = useRouter();
   const hasEnteredGiveaway = useSelector(
@@ -54,9 +52,24 @@ const DailyReflection = ({
   const today = new Date().toLocaleDateString().split("T")[0];
 
   // console.log("today:", today);
-  useEffect(() => {
-    clearPreviousDayCompletion();
-  }, [isFocused, today]);
+
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      console.log("here to clear");
+      clearPreviousDayCompletion();
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   console.log("here");
+
+  // }, [today]);
 
   function handleComplete(selected) {
     if (
@@ -201,7 +214,7 @@ const DailyReflection = ({
           <TouchableOpacity
             onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-white dark:bg-dark-secondary p-3 ml-[15px] w-full flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-5 ml-[15px] w-full flex-1 rounded-lg gap-2"
           >
             <View className="flex-row items-center gap-2">
               <Text
@@ -210,17 +223,6 @@ const DailyReflection = ({
               >
                 Pray
               </Text>
-              <MaterialCommunityIcons
-                name="hands-pray"
-                size={20}
-                color={
-                  actualTheme && actualTheme.SecondaryTxt
-                    ? actualTheme.SecondaryTxt
-                    : theme === "dark"
-                      ? "#d2d2d2"
-                      : "#2f2d51"
-                }
-              />
             </View>
             <View className="gap-1">
               <Text
@@ -362,7 +364,7 @@ const DailyReflection = ({
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             onPress={() => handleComplete(VERSE_OF_THE_DAY_SCREEN)}
-            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-5 ml-[15px] flex-1 rounded-lg gap-2"
           >
             <View className="flex-row items-center gap-2">
               <Text
@@ -371,7 +373,7 @@ const DailyReflection = ({
               >
                 Verse of the Day
               </Text>
-              <Feather
+              {/* <Feather
                 name="book-open"
                 size={20}
                 color={
@@ -381,7 +383,7 @@ const DailyReflection = ({
                       ? "#d2d2d2"
                       : "#2f2d51"
                 }
-              />
+              /> */}
             </View>
             <View className="gap-1">
               <Text
@@ -485,7 +487,7 @@ const DailyReflection = ({
           <TouchableOpacity
             onPress={() => handleComplete(DEVO_LIST_SCREEN)}
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-white dark:bg-dark-secondary p-[15px] ml-[15px] flex-1 rounded-lg gap-[10px]"
+            className="bg-white dark:bg-dark-secondary p-5 ml-[15px] flex-1 rounded-lg gap-2"
           >
             <View className="flex-row items-center gap-2 justify-between">
               <View className="flex-row items-center gap-2">
@@ -495,17 +497,6 @@ const DailyReflection = ({
                 >
                   Praise
                 </Text>
-                <Feather
-                  name="book"
-                  size={20}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : theme === "dark"
-                        ? "#d2d2d2"
-                        : "#2f2d51"
-                  }
-                />
               </View>
               <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
                 <Text className="text-white font-inter-medium text-xs">

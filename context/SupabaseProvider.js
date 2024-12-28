@@ -11,6 +11,7 @@ import { SupabaseContext } from "./SupabaseContext";
 import "react-native-url-polyfill/auto";
 import { useRouter } from "expo-router";
 import { COMMUNITY_SCREEN } from "@routes";
+import { useQueryClient } from "@tanstack/react-query";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -47,6 +48,9 @@ export const SupabaseProvider = (props) => {
   const [refreshAnswers, setRefreshAnswers] = useState(false);
   const [refreshReflections, setRefreshReflections] = useState(false);
   const [latestQuestion, setLatestQuestion] = useState(null);
+
+  const queryClient = useQueryClient();
+
   const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
     auth: {
       storage: ExpoSecureStoreAdapter,
@@ -383,13 +387,11 @@ export const SupabaseProvider = (props) => {
             {
               event: "*",
               schema: "public",
-              table: "reflections",
+              table: "praises",
             },
             (payload) => {
-              if (payload.eventType === "INSERT") {
-                console.log(payload);
-                setRefreshReflections(true);
-              }
+              console.log("DELETEE ALL>>>");
+              queryClient.invalidateQueries({ queryKey: ["praises"] });
             }
           )
           .subscribe();

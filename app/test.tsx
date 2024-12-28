@@ -1,11 +1,13 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import {
   Link,
+  useFocusEffect,
   useLocalSearchParams,
   useNavigation,
   useRouter,
+  useIsFocused,
 } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
@@ -31,7 +33,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useIsFocused } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
 import calendar from "../assets/calendar.png";
@@ -47,7 +48,7 @@ import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 export default function TestScreen() {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams();
-  const isFocused = useIsFocused();
+
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
   const [newNote, setNewNote] = useState("");
@@ -68,54 +69,60 @@ export default function TestScreen() {
   };
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (routeParams.reminder !== undefined && routeParams.type === "Add") {
-      console.log("router reminder: ", routeParams);
-      setReminderDate("");
-      setRepeatOption("");
-      setIsRepeat(false);
-      setReminderTime("");
-      setNewReminder(routeParams?.reminder);
-    }
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
 
-    if (routeParams.reminder === undefined && routeParams.type === "Add") {
-      setNewReminder("");
-      setNewNote("");
-      setReminderDate("");
-      setRepeatOption("");
-      setIsRepeat(false);
-      setReminderTime("");
-    }
-
-    if (routeParams.reminderToEditTitle && routeParams.type !== "Add") {
-      setNewReminder(routeParams.reminderToEditTitle);
-      setNewNote(routeParams.reminderToEditNote);
-      const originalTimestamp = routeParams.reminderToEditTime;
-
-      const dateObject = new Date(originalTimestamp);
-      const date = new Date(
-        dateObject.getFullYear(),
-        dateObject.getMonth(),
-        dateObject.getDate(),
-      );
-      setReminderDate(date);
-      const time = new Date(0); // Initialize with the epoch
-      time.setHours(dateObject.getHours());
-      time.setMinutes(dateObject.getMinutes());
-
-      setReminderTime(time);
-
-      if (routeParams.ocurrence !== "None") {
-        setIsRepeat(true);
-        setRepeatOption(routeParams.ocurrence.toLowerCase());
-      }
-
-      if (routeParams.ocurrence === "None") {
-        setIsRepeat(false);
+      if (routeParams.reminder !== undefined && routeParams.type === "Add") {
+        console.log("router reminder: ", routeParams);
+        setReminderDate("");
         setRepeatOption("");
+        setIsRepeat(false);
+        setReminderTime("");
+        setNewReminder(routeParams?.reminder);
       }
-    }
-  }, [isFocused]);
+
+      if (routeParams.reminder === undefined && routeParams.type === "Add") {
+        setNewReminder("");
+        setNewNote("");
+        setReminderDate("");
+        setRepeatOption("");
+        setIsRepeat(false);
+        setReminderTime("");
+      }
+
+      if (routeParams.reminderToEditTitle && routeParams.type !== "Add") {
+        setNewReminder(routeParams.reminderToEditTitle);
+        setNewNote(routeParams.reminderToEditNote);
+        const originalTimestamp = routeParams.reminderToEditTime;
+
+        const dateObject = new Date(originalTimestamp);
+        const date = new Date(
+          dateObject.getFullYear(),
+          dateObject.getMonth(),
+          dateObject.getDate(),
+        );
+        setReminderDate(date);
+        const time = new Date(0); // Initialize with the epoch
+        time.setHours(dateObject.getHours());
+        time.setMinutes(dateObject.getMinutes());
+
+        setReminderTime(time);
+
+        if (routeParams.ocurrence !== "None") {
+          setIsRepeat(true);
+          setRepeatOption(routeParams.ocurrence.toLowerCase());
+        }
+
+        if (routeParams.ocurrence === "None") {
+          setIsRepeat(false);
+          setRepeatOption("");
+        }
+      }
+      // Return function is invoked whenever the route gets out of focus.
+    }, []),
+  );
 
   const router = useRouter();
 

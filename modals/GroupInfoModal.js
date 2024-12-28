@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -19,7 +17,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+
 import { COMMUNITY_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
@@ -29,6 +27,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import Animated from "react-native-reanimated";
+import { useNavigation } from "expo-router";
 
 const GroupInfoModal = ({
   groupInfoVisible,

@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 
 import { useSupabase } from "../context/useSupabase";
 import { QUESTION_SCREEN } from "../routes";
@@ -12,6 +11,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { useNavigation } from "expo-router";
 
 const QuestionInfo = ({ item, actualTheme, theme }) => {
   const navigation = useNavigation();

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -15,7 +15,6 @@ import {
   getPrimaryBackgroundColorStyle,
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
-import { useIsFocused } from "@react-navigation/native";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
@@ -26,7 +25,7 @@ const QuestionListScreen = () => {
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const questionBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
-  const isFocused = useIsFocused();
+
   const [refreshing, setRefreshing] = useState(false);
   const {
     questions,
@@ -40,10 +39,17 @@ const QuestionListScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
-  useEffect(() => {
-    fetchQuestions();
-    fetchAnswers();
-  }, [isFocused]);
+
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+
+      fetchQuestions();
+      fetchAnswers();
+      // Return function is invoked whenever the route gets out of focus.
+    }, []),
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

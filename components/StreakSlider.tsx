@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useColorScheme } from "nativewind";
 import { Modal, Share, Text, TouchableOpacity, View } from "react-native";
 import { ProgressBar } from "react-native-paper";
@@ -16,7 +16,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useIsFocused, useNavigationState } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
 import DonationModal from "../modals/DonationModal";
@@ -32,6 +31,7 @@ import {
   resetDonationModal,
 } from "../redux/userReducer";
 import { ModalContainer, ModalView2 } from "../styles/appStyles";
+import { useFocusEffect, useRootNavigationState } from "expo-router";
 
 interface StreakSliderProps {
   isShowingStreak: boolean;
@@ -54,9 +54,11 @@ const StreakSlider = ({
     (state) => state.user.isShowingGiveawayModal,
   );
 
-  const navigationState = useNavigationState((state) => state);
+  const navigationState = useRootNavigationState((state) => state);
   const isOnHomeScreen =
     navigationState.routes[navigationState.index].name === "welcome";
+
+  console.log("is on home: ", isOnHomeScreen);
 
   const isShowingCongratsModal = useSelector(
     (state) => state.user.isShowingCongratsModal,
@@ -67,54 +69,76 @@ const StreakSlider = ({
   const isShowingDonationModal = useSelector(
     (state) => state.user.isShowingDonationModal,
   );
-  const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const [donationModal, setDonationModal] = useState(false);
   const [congratsModal, setCongratsModal] = useState(false);
   const [percentModal, setPercentModal] = useState(false);
   const [percentage, setPercentage] = useState();
 
-  useEffect(() => {
-    // dispatch(setNeededValues());
-    // dispatch(resetCongrats());
-    if (
-      completedItems?.length === 1 &&
-      completedItems[0].items.length === 3 &&
-      isShowingCongratsModal === false &&
-      isOnHomeScreen
-    ) {
-      console.log("first completed devotions!!!!");
-      dispatch(didEnterCongrats());
-      setCongratsModal(true);
-    }
-  }, [isFocused]);
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      if (
+        completedItems?.length === 1 &&
+        completedItems[0].items.length === 3 &&
+        isShowingCongratsModal === false &&
+        isOnHomeScreen
+      ) {
+        console.log("first completed devotions!!!!");
+        dispatch(didEnterCongrats());
+        setCongratsModal(true);
+      }
 
-  useEffect(() => {
-    // dispatch(changeto25());
-    if (GOAL * 0.25 === streak && PercentValue === 25 && isOnHomeScreen) {
-      console.log("show 25% modal");
-      dispatch(changeto50());
-      setPercentage(25);
-      setPercentModal(true);
-    } else if (GOAL * 0.5 === streak && PercentValue === 50 && isOnHomeScreen) {
-      console.log("show 50% modal");
-      dispatch(changeto75());
-      setPercentage(50);
-      setPercentModal(true);
-    } else if (
-      GOAL * 0.75 === streak &&
-      PercentValue === 75 &&
-      isOnHomeScreen
-    ) {
-      console.log("show 75% modal");
-      dispatch(changetoNull());
-      setPercentage(75);
-      setPercentModal(true);
-    }
-    if (streak === GOAL && isShowingGiveawayModal === false && isOnHomeScreen) {
-      dispatch(didEnterGiveaway());
-    }
-  }, [streak, isFocused]);
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
+
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      if (GOAL * 0.25 === streak && PercentValue === 25 && isOnHomeScreen) {
+        console.log("show 25% modal");
+        dispatch(changeto50());
+        setPercentage(25);
+        setPercentModal(true);
+      } else if (
+        GOAL * 0.5 === streak &&
+        PercentValue === 50 &&
+        isOnHomeScreen
+      ) {
+        console.log("show 50% modal");
+        dispatch(changeto75());
+        setPercentage(50);
+        setPercentModal(true);
+      } else if (
+        GOAL * 0.75 === streak &&
+        PercentValue === 75 &&
+        isOnHomeScreen
+      ) {
+        console.log("show 75% modal");
+        dispatch(changetoNull());
+        setPercentage(75);
+        setPercentModal(true);
+      }
+      if (
+        streak === GOAL &&
+        isShowingGiveawayModal === false &&
+        isOnHomeScreen
+      ) {
+        dispatch(didEnterGiveaway());
+      }
+
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
 
   useEffect(() => {
     // dispatch(didShowDonationModal());

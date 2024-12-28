@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,7 +15,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { cn } from "@lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { LOGIN_SCREEN } from "@routes";
@@ -31,7 +31,7 @@ const AddPraiseModal = ({
   const [praiseCount, setPraiseCount] = useState(0);
 
   const queryClient = useQueryClient();
-  const snapPoints = useMemo(() => ["50%", "75%"], []);
+  const snapPoints = useMemo(() => ["40%"], []);
 
   useEffect(() => {
     const fetchPraiseCount = async () => {
@@ -106,6 +106,11 @@ const AddPraiseModal = ({
           style={getMainBackgroundColorStyle(actualTheme)}
           className="flex-1 gap-4 items-center bg-light-background dark:bg-dark-background p-4 "
         >
+          {/* <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={{ flex: 1, width: "100%" }}
+            keyboardVerticalOffset={100}
+          > */}
           <Text
             style={getMainTextColorStyle(actualTheme)}
             className="text-2xl text-light-primary dark:text-dark-primary font-inter-bold"
@@ -113,7 +118,7 @@ const AddPraiseModal = ({
             Add Praise
           </Text>
 
-          <TextInput
+          <BottomSheetTextInput
             style={[
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
@@ -151,7 +156,10 @@ const AddPraiseModal = ({
                         onPress: () => setIsAnonymous(true),
                         style: "cancel",
                       },
-                      { text: "OK", onPress: () => router.push(LOGIN_SCREEN) },
+                      {
+                        text: "OK",
+                        onPress: () => router.push(LOGIN_SCREEN),
+                      },
                     ],
                   );
                 } else {
@@ -182,7 +190,7 @@ const AddPraiseModal = ({
             </Text>
           </View>
 
-          {praiseCount < 10 ? (
+          {praiseCount < 50 ? (
             <Pressable
               onPress={handleSubmit}
               style={getPrimaryBackgroundColorStyle(actualTheme)}
