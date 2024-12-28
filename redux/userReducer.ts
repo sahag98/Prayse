@@ -185,7 +185,7 @@ export const userSlice = createSlice({
       if (dateIndex >= 0) {
         // If date exists, add the item to the items array of that date
         // if (state.completedItems[0].items.length )
-        if (state.completedItems[dateIndex].items.length === 2) {
+        if (state.completedItems[dateIndex].items.length === 3) {
           return;
         }
         state.completedItems[dateIndex].items.push(item);
@@ -275,7 +275,7 @@ export const userSlice = createSlice({
         if (differenceInDays === 1) {
           if (
             currentDate === lastItem &&
-            lastItemData.items.length === 2 &&
+            lastItemData.items.length === 3 &&
             state.hasIncreasedDevoStreak === false
           ) {
             console.log("should increase devo");

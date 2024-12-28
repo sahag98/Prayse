@@ -1,6 +1,12 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Link,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import * as Speech from "expo-speech";
 import { useColorScheme } from "nativewind";
 import {
@@ -20,7 +26,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
@@ -31,8 +36,7 @@ const VerseOfTheDayScreen = () => {
   const favorites = useSelector((state) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
   const [verse, setVerse] = useState([]);
-  const navigation = useNavigation();
-  const isFocused = useIsFocused();
+
   const routeParams = useLocalSearchParams();
 
   const router = useRouter();
@@ -48,9 +52,19 @@ const VerseOfTheDayScreen = () => {
       Speech.speak(speakVerse);
     }
   };
-  useEffect(() => {
-    loadDailyVerse();
-  }, [isFocused]);
+
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      loadDailyVerse();
+
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
 
   const loadDailyVerse = () => {
     const query = '*[_type=="verse"]';

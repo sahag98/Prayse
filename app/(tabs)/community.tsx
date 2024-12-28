@@ -1,11 +1,17 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Network from "expo-network";
 import * as Notifications from "expo-notifications";
-import { Link, Redirect, useRouter } from "expo-router";
+import {
+  Link,
+  Redirect,
+  useFocusEffect,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   FlatList,
@@ -40,7 +46,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { ActualTheme } from "@types/reduxTypes";
 
 import config from "../../config";
@@ -76,7 +82,6 @@ const CommunityHomeScreen = () => {
   const [joinVisible, setJoinVisible] = useState(false);
   const [extended, setExtended] = useState(true);
   const statusBarHeight = Constants.statusBarHeight;
-  const isFocused = useIsFocused();
 
   const [userPrayers, setUserPrayers] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
@@ -136,22 +141,30 @@ const CommunityHomeScreen = () => {
     } else setExtended(extended);
   }, [extended, isIOS]);
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      const connected = await Network.getNetworkStateAsync();
-      if (!connected.isConnected) {
-        setHasConnection(false);
-      }
-    };
-    checkConnection();
-    const wavingAnimation = withSpring(15, { damping: 2, stiffness: 80 });
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      const checkConnection = async () => {
+        const connected = await Network.getNetworkStateAsync();
+        if (!connected.isConnected) {
+          setHasConnection(false);
+        }
+      };
+      checkConnection();
+      const wavingAnimation = withSpring(15, { damping: 2, stiffness: 80 });
 
-    rotation.value = withSequence(wavingAnimation);
-    getUserPrayers();
-    getGroupUsers();
-    getUserGroups();
-    getPermission();
-  }, [isFocused]);
+      rotation.value = withSequence(wavingAnimation);
+      getUserPrayers();
+      getGroupUsers();
+      getUserGroups();
+      getPermission();
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
 
   useEffect(() => {
     getUserGroups();

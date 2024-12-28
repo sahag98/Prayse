@@ -9,7 +9,7 @@ import {
 import { useDispatch } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 
 import { editFolderName } from "../redux/folderReducer";
 import {

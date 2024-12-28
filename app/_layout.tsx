@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { isRunningInExpoGo } from "expo";
 
-import { SplashScreen } from "expo-router";
+import { SplashScreen, useNavigationContainerRef } from "expo-router";
 // import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -21,7 +21,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { store } from "@redux/store";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Sentry from "@sentry/react-native";
 
 import StackContainer from "./Stack";
@@ -33,20 +33,21 @@ import "expo-dev-client";
 
 const persistor = persistStore(store);
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+});
 
 Sentry.init({
   dsn: "https://62cc83d0927020ddab15c63295a4f908@o4506981596594176.ingest.us.sentry.io/4508010266427392",
-  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  tracesSampleRate: 1.0, // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing. Adjusting this value in production.
   integrations: [
-    new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
-      routingInstrumentation,
-      enableNativeFramesTracking: !isRunningInExpoGo(),
-      // ...
-    }),
+    // Pass integration
+    navigationIntegration,
   ],
+  enableNativeFramesTracking: !isRunningInExpoGo(), // Tracks slow and frozen frames in the application
 });
+const queryClient = new QueryClient();
 
 function App() {
   const toastConfig = {
@@ -128,13 +129,13 @@ function App() {
     Inter_800ExtraBold,
   });
 
-  // const ref = useNavigationContainerRef();
+  const ref = useNavigationContainerRef();
 
-  // useEffect(() => {
-  //   if (ref) {
-  //     routingInstrumentation.registerNavigationContainer(ref);
-  //   }
-  // }, [ref]);
+  useEffect(() => {
+    if (ref?.current) {
+      navigationIntegration.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   useEffect(() => {
     console.log("fonts loaded: ", loaded);
@@ -151,15 +152,17 @@ function App() {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <SafeAreaProvider>
-              <SupabaseProvider>
-                <StackContainer />
-              </SupabaseProvider>
-            </SafeAreaProvider>
-          </PersistGate>
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <SafeAreaProvider>
+                <SupabaseProvider>
+                  <StackContainer />
+                </SupabaseProvider>
+              </SafeAreaProvider>
+            </PersistGate>
+          </Provider>
+        </QueryClientProvider>
       </GestureHandlerRootView>
       <Toast config={toastConfig} />
     </>

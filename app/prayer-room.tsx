@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
 import Constants from "expo-constants";
 import {
   Link,
+  useFocusEffect,
   useLocalSearchParams,
   useNavigation,
   useRouter,
@@ -15,7 +16,6 @@ import {
   Alert,
   Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -54,7 +54,6 @@ import {
   getPrimaryTextColorStyle,
 } from "@lib/customStyles";
 
-import { useIsFocused } from "@react-navigation/native";
 import { addFolder } from "@redux/folderReducer";
 
 // import Ebpad from "../assets/audio/Epbad.mp3";
@@ -65,6 +64,7 @@ import { Container, HeaderView } from "../styles/appStyles";
 import { ActualTheme, Prayer } from "../types/reduxTypes";
 import { cn } from "@lib/utils";
 import { incrementReviewCounter } from "@redux/remindersReducer";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PrayerRoom = () => {
   const navigation = useNavigation();
@@ -333,7 +333,7 @@ const PrayerRoom = () => {
       {
         uri: randomPad,
       },
-      { shouldPlay: true, volume: 0.5 },
+      { shouldPlay: true, volume: 0.4 },
     );
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
@@ -379,6 +379,11 @@ const PrayerRoom = () => {
 
   return (
     <SafeAreaView
+      edges={["top"]}
+      style={{
+        flex: 1,
+        backgroundColor: colorScheme === "dark" ? "#121212" : "#f2f7ff",
+      }}
       // style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background p-0 relative flex-1"
     >
@@ -791,27 +796,35 @@ function PrayerPreparation({
 
 function AnimatedBackground() {
   const { height } = useWindowDimensions();
-  const isFocused = useIsFocused();
+
   const top1 = useSharedValue(0.3 * height);
   const top2 = useSharedValue(0.5 * height);
   const top3 = useSharedValue(0.7 * height);
 
-  useEffect(() => {
-    const options = {
-      duration: 6000,
-      easing: Easing.bezier(0.5, 0, 0.5, 1),
-    };
-    top1.value = withRepeat(withTiming(0.2 * height, options), -1, true);
-    top2.value = withDelay(
-      1000,
-      withRepeat(withTiming(0.4 * height, options), -1, true),
-    );
-    top3.value = withDelay(
-      2000,
-      withRepeat(withTiming(0.6 * height, options), -1, true),
-    );
-  }, [isFocused]);
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
 
+      const options = {
+        duration: 6000,
+        easing: Easing.bezier(0.5, 0, 0.5, 1),
+      };
+      top1.value = withRepeat(withTiming(0.2 * height, options), -1, true);
+      top2.value = withDelay(
+        1000,
+        withRepeat(withTiming(0.4 * height, options), -1, true),
+      );
+      top3.value = withDelay(
+        2000,
+        withRepeat(withTiming(0.6 * height, options), -1, true),
+      );
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, []),
+  );
   return (
     <View className="absolute top-0 overflow-hidden bottom-0 left-0 right-0 items-center">
       {/* circles */}

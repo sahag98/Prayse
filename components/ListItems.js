@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 
 import { TEST_SCREEN } from "../routes";
 import { ListView, TodoText } from "../styles/appStyles";

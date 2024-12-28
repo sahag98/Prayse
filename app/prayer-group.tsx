@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Keyboard,
@@ -27,7 +27,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
-import { useIsFocused } from "@react-navigation/native";
 
 import Chat from "../components/Chat";
 import { useSupabase } from "../context/useSupabase";
@@ -62,8 +61,6 @@ const PrayerGroupScreen = () => {
   const { currentUser, setRefreshMsgLikes, refreshMsgLikes, supabase } =
     useSupabase();
 
-  const isFocused = useIsFocused();
-
   useEffect(() => {
     async function fetchCurrGroup() {
       const { data } = await supabase
@@ -87,84 +84,92 @@ const PrayerGroupScreen = () => {
     fetchCurrGroupUsers();
   }, [groupId]);
 
-  useEffect(() => {
-    /** only create the channel if we have a roomCode and username */
-    if (groupId && currentUser?.id) {
-      // dispatch(clearMessages());
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
 
-      getGroupMessages();
+      if (groupId && currentUser?.id) {
+        // dispatch(clearMessages());
 
-      /**
-       * Step 1:
-       *
-       * Create the supabase channel for the roomCode, configured
-       * so the channel receives its own messages
-       */
-      const channel = supabase.channel(`room:${groupId}`, {
-        config: {
-          broadcast: {
-            self: true,
+        getGroupMessages();
+
+        /**
+         * Step 1:
+         *
+         * Create the supabase channel for the roomCode, configured
+         * so the channel receives its own messages
+         */
+        const channel = supabase.channel(`room:${groupId}`, {
+          config: {
+            broadcast: {
+              self: true,
+            },
+            presence: {
+              key: currentUser?.id,
+            },
           },
-          presence: {
-            key: currentUser?.id,
-          },
-        },
-      });
+        });
 
-      /**
-       * Step 2:
-       *
-       * Listen to broadcast messages with a `message` event
-       */
-      channel.on("broadcast", { event: "message" }, ({ payload }) => {
-        setGroupMessages((messages) => [payload, ...messages]);
-      });
+        /**
+         * Step 2:
+         *
+         * Listen to broadcast messages with a `message` event
+         */
+        channel.on("broadcast", { event: "message" }, ({ payload }) => {
+          setGroupMessages((messages) => [payload, ...messages]);
+        });
 
-      channel.on("presence", { event: "sync" }, () => {
-        /** Get the presence state from the channel, keyed by realtime identifier */
-        const presenceState = channel.presenceState();
+        channel.on("presence", { event: "sync" }, () => {
+          /** Get the presence state from the channel, keyed by realtime identifier */
+          const presenceState = channel.presenceState();
 
-        /** transform the presence */
-        const users = Object.keys(presenceState)
-          .map((presenceId) => {
-            const presences = presenceState[presenceId];
-            return presences.map((presence) => presence.currentUser);
-          })
-          .flat();
+          /** transform the presence */
+          const users = Object.keys(presenceState)
+            .map((presenceId) => {
+              const presences = presenceState[presenceId];
+              return presences.map((presence) => presence.currentUser);
+            })
+            .flat();
 
-        setOnlineUsers(users);
-      });
+          setOnlineUsers(users);
+        });
 
-      /**
-       * Step 3:
-       *
-       * Subscribe to the channel
-       */
-      channel.subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          channel.track({ currentUser });
-        }
-      });
+        /**
+         * Step 3:
+         *
+         * Subscribe to the channel
+         */
+        channel.subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            channel.track({ currentUser });
+          }
+        });
 
-      /**
-       * Step 4:
-       *
-       * Set the channel in the state
-       */
-      setChannel(channel);
+        /**
+         * Step 4:
+         *
+         * Set the channel in the state
+         */
+        setChannel(channel);
 
-      /**
-       * * Step 5:
-       *
-       * Return a clean-up function that unsubscribes from the channel
-       * and clears the channel state
-       */
+        /**
+         * * Step 5:
+         *
+         * Return a clean-up function that unsubscribes from the channel
+         * and clears the channel state
+         */
+        return () => {
+          channel.unsubscribe();
+          setChannel(undefined);
+        };
+      }
+      // Return function is invoked whenever the route gets out of focus.
       return () => {
-        channel.unsubscribe();
-        setChannel(undefined);
+        console.log("This route is now unfocused.");
       };
-    }
-  }, [groupId, currentUser?.id, isFocused]);
+    }, [groupId, currentUser.id]),
+  );
 
   async function getGroupMessages() {
     try {
