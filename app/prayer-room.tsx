@@ -820,9 +820,6 @@ function AnimatedBackground() {
         withRepeat(withTiming(0.6 * height, options), -1, true),
       );
       // Return function is invoked whenever the route gets out of focus.
-      return () => {
-        console.log("This route is now unfocused.");
-      };
     }, []),
   );
   return (

@@ -83,9 +83,9 @@ const MoreScreen = () => {
     {
       id: 2,
       icon: (
-        <Feather
-          name="book"
+        <MaterialCommunityIcons
           className="mr-3"
+          name="hours-24"
           size={24}
           color={
             actualTheme && actualTheme.SecondaryTxt
@@ -95,8 +95,14 @@ const MoreScreen = () => {
                 : "#2f2d51"
           }
         />
+        // <Feather
+        //   name="book"
+        //   className="mr-3"
+        //   size={24}
+
+        // />
       ),
-      title: "Devotional",
+      title: "Daily Praises",
       screen: DEVO_LIST_SCREEN,
     },
   ];

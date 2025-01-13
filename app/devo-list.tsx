@@ -19,7 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Feather, Entypo } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -36,6 +36,7 @@ import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import praiseImg from "../assets/praise-list.png";
 import { SafeAreaView } from "react-native-safe-area-context";
+import PraiseHelpModal from "@modals/praise-help-modal";
 const DevoListScreen = () => {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams();
@@ -43,7 +44,7 @@ const DevoListScreen = () => {
   const { currentUser, supabase } = useSupabase();
   const praiseBottomSheetRef = useRef<BottomSheetModal>(null);
   const [praiseCount, setPraiseCount] = useState(0);
-
+  const [isShowingHelpModal, setIsShowingHelpModal] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["praises"],
     queryFn: getPraises,
@@ -75,7 +76,7 @@ const DevoListScreen = () => {
       .select("*, profiles(*)")
       .order("id", { ascending: true });
 
-    return data;
+    return data as [];
   }
 
   const actualTheme = useSelector(
@@ -123,7 +124,7 @@ const DevoListScreen = () => {
     return (
       <Animated.View
         className={cn(
-          "bg-light-secondary dark:bg-dark-secondary w-fit gap-2 self-start p-3 rounded-lg",
+          "bg-light-secondary dark:bg-dark-secondary w-fit max-w-56 gap-2 self-start p-3 rounded-xl",
           item.id % 2 === 0 && "self-end",
         )}
         style={hoverStyle}
@@ -150,7 +151,7 @@ const DevoListScreen = () => {
 
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter-regular text-light-primary dark:text-dark-primary"
+          className="font-inter-regular text-base text-light-primary dark:text-dark-primary"
         >
           {item.content}
         </Text>
@@ -178,12 +179,10 @@ const DevoListScreen = () => {
         ]}
         className="bg-light-background flex-1 dark:bg-dark-background"
       >
-        <View className="flex-row mb-4 px-4 items-center">
+        <View className="flex-row justify-between mb-4 px-4 items-center">
           <TouchableOpacity
             onPress={() => {
-              if (routeParams?.previousScreen) {
-                navigation.goBack();
-              }
+              navigation.goBack();
             }}
           >
             <AntDesign
@@ -198,16 +197,29 @@ const DevoListScreen = () => {
               }
             />
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsShowingHelpModal(true)}>
+            <Feather
+              name="help-circle"
+              size={30}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme == "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
         </View>
-        <View className="flex-1 px-4 justify-center items-center">
+        <View className="flex-1 relative px-4 justify-center items-center">
           {data && (
             <View
               style={getMainBackgroundColorStyle(actualTheme)}
-              className="bg-white dark:bg-dark-secondary shadow-md shadow-gray-200 dark:shadow-gray-700 p-2 rounded-xl"
+              className="bg-white absolute z-10 top-0 dark:bg-dark-secondary shadow-md shadow-gray-200 dark:shadow-gray-700 p-2 rounded-xl"
             >
               <Text
                 style={getMainTextColorStyle(actualTheme)}
-                className="text-sm text-light-primary dark:text-dark-primary font-inter-regular"
+                className="text-sm text-light-primary dark:text-dark-primary font-inter-medium"
               >
                 {new Date().toLocaleDateString()}
               </Text>
@@ -215,14 +227,16 @@ const DevoListScreen = () => {
           )}
           <FlatList
             style={{ width: "100%", flexGrow: 1, flex: 1 }}
-            data={data}
-            inverted={data.lengh > 0}
+            data={data?.toReversed()}
+            inverted={data?.length! > 0}
             className=""
-            ListHeaderComponent={() => <View className="h-10" />}
+            ListHeaderComponent={() => (
+              <View className={data?.length! > 0 ? "h-28" : "hidden"} />
+            )}
             contentContainerClassName="gap-5 flex-grow"
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={() => (
-              <View className="flex-1 gap-3 items-center justify-center">
+              <View className="flex-1  gap-3 items-center justify-center">
                 <Image
                   source={praiseImg}
                   style={{
@@ -245,11 +259,11 @@ const DevoListScreen = () => {
                 </Text>
               </View>
             )}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item: any) => item.id.toString()}
             renderItem={({ item }) => <AnimatedPraiseItem item={item} />}
           />
           {praiseCount < 10 && (
-            <View className="py-5 w-full items-center">
+            <View className="absolute bottom-5">
               <Pressable
                 onPress={() => praiseBottomSheetRef.current?.present()}
                 className="bg-light-primary dark:bg-dark-accent size-20 items-center justify-center rounded-full"
@@ -285,7 +299,12 @@ const DevoListScreen = () => {
           actualTheme={actualTheme}
           currentUser={currentUser}
           supabase={supabase}
-          theme={colorScheme}
+          colorScheme={colorScheme}
+        />
+        <PraiseHelpModal
+          actualTheme={actualTheme}
+          isShowingHelpModal={isShowingHelpModal}
+          setIsShowingHelpModal={setIsShowingHelpModal}
         />
       </SafeAreaView>
     </>

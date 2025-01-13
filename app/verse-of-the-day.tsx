@@ -40,6 +40,7 @@ const VerseOfTheDayScreen = () => {
   const routeParams = useLocalSearchParams();
 
   const router = useRouter();
+  const navigation = useNavigation();
 
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
@@ -60,9 +61,6 @@ const VerseOfTheDayScreen = () => {
       loadDailyVerse();
 
       // Return function is invoked whenever the route gets out of focus.
-      return () => {
-        console.log("This route is now unfocused.");
-      };
     }, []),
   );
 

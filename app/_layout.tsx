@@ -39,7 +39,7 @@ const navigationIntegration = Sentry.reactNavigationIntegration({
 
 Sentry.init({
   dsn: "https://62cc83d0927020ddab15c63295a4f908@o4506981596594176.ingest.us.sentry.io/4508010266427392",
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
   tracesSampleRate: 1.0, // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing. Adjusting this value in production.
   integrations: [
     // Pass integration
@@ -138,7 +138,6 @@ function App() {
   }, [ref]);
 
   useEffect(() => {
-    console.log("fonts loaded: ", loaded);
     if (loaded || error) {
       // console.log("fonts are loaded");
       SplashScreen.hideAsync();

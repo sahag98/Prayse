@@ -119,6 +119,12 @@ export const userSlice = createSlice({
       state.alreadyEnteredGiveaway = true;
       state.isShowingGiveawayModal = true;
     },
+    resetDevotions: (state) => {
+      state.completedItems = [];
+      state.isShowingCongratsModal = false;
+      state.hasIncreasedDevoStreak = false;
+      state.devostreak = 0;
+    },
     resetGiveaway: (state) => {
       console.log("reseting giveaway");
       state.alreadyEnteredGiveaway = false;
@@ -372,6 +378,7 @@ export const {
   large,
   removeUser,
   openCheckmark,
+  resetDevotions,
   select,
   darkMode,
   systemTheme,

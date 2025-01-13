@@ -23,13 +23,17 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { useDispatch } from "react-redux";
+import { didEnterCongrats } from "@redux/userReducer";
 const FirstCompletionModal = ({
   actualTheme,
   theme,
   congratsModal,
   setCongratsModal,
 }) => {
+  const dispatch = useDispatch();
   const handleCloseModal = () => {
+    dispatch(didEnterCongrats());
     setCongratsModal(false);
   };
 
@@ -75,7 +79,7 @@ const FirstCompletionModal = ({
             className="font-inter-medium mb-3 text-light-primary dark:text-dark-primary"
           >
             You have completed your first day of daily devotions. Come back
-            tomorrow to start you streak!
+            tomorrow to start you streak.
           </Text>
 
           <TouchableOpacity

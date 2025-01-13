@@ -22,6 +22,7 @@ import {
   deleteCompletedItems,
   deletePreviousDayItems,
   deleteStreakCounter,
+  resetDevotions,
   resetGiveaway,
 } from "../redux/userReducer";
 
@@ -33,6 +34,8 @@ import {
 } from "@lib/customStyles";
 import { useRouter, useNavigation, useFocusEffect } from "expo-router";
 import { posthog } from "@lib/posthog";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import useStore from "@hooks/store";
 
 const DailyReflection = ({
   completedItems,
@@ -50,20 +53,44 @@ const DailyReflection = ({
 
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
+  const [showNewBadge, setShowNewBadge] = useState(false);
+  const [showNewVerseBadge, setShowNewVerseBadge] = useState(false);
+  const [showNewPraiseBadge, setShowNewPraiseBadge] = useState(false);
 
-  // console.log("today:", today);
+  const {
+    hasShownPraiseBadge,
+    hasShownPrayerBadge,
+    hasShownVerseBadge,
+    handleBadgeShowing,
+    resetBadgeShowing,
+  } = useStore();
 
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
     useCallback(() => {
       // Invoked whenever the route is focused.
-      console.log("here to clear");
+      const checkBadgeStatus = async () => {
+        console.log("checking badge status!!");
+        // await AsyncStorage.removeItem("lastBadgeShownDate");
+        // resetBadgeShowing();
+        const lastShownDate = await AsyncStorage.getItem("lastBadgeShownDate");
+        console.log("last shown date: ", lastShownDate);
+        const currentDate = new Date().toLocaleDateString().split("T")[0];
+
+        if (!lastShownDate) {
+          await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
+        }
+
+        if (lastShownDate && lastShownDate !== currentDate) {
+          console.log("HEREEE");
+          resetBadgeShowing();
+          await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
+        }
+      };
+      checkBadgeStatus();
       clearPreviousDayCompletion();
       // Return function is invoked whenever the route gets out of focus.
-      return () => {
-        console.log("This route is now unfocused.");
-      };
-    }, [])
+    }, [today])
   );
 
   // useEffect(() => {
@@ -71,7 +98,22 @@ const DailyReflection = ({
 
   // }, [today]);
 
-  function handleComplete(selected) {
+  async function handleComplete(selected) {
+    // dispatch(deleteCompletedItems())
+    if (!hasShownPrayerBadge && selected === "prayer-room") {
+      handleBadgeShowing(PRAYER_ROOM_SCREEN);
+      // await AsyncStorage.removeItem("showNewFeatureBadge");
+    }
+
+    if (!hasShownVerseBadge && selected === "verse-of-the-day") {
+      handleBadgeShowing(VERSE_OF_THE_DAY_SCREEN);
+      // await AsyncStorage.removeItem("showNewFeatureBadge");
+    }
+
+    if (!hasShownPraiseBadge && selected === "devo-list") {
+      handleBadgeShowing(DEVO_LIST_SCREEN);
+      // await AsyncStorage.removeItem("showNewFeatureBadge");
+    }
     if (
       completedItems.find((completedItem) =>
         completedItem.items.find((item) => item === selected)
@@ -84,7 +126,7 @@ const DailyReflection = ({
     }
     const currentDate = new Date().toLocaleDateString().split("T")[0];
 
-    // posthog.capture("Doing Devotions");
+    posthog.capture("Doing Devotions");
     // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
@@ -107,8 +149,12 @@ const DailyReflection = ({
 
     const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
 
+    console.log("yesterday string: ", yesterdayDateString);
+
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
   }
+
+  console.log("items: ", completedItems);
 
   return (
     <View className="flex-1 justify-start items-start w-full my-3 gap-2">
@@ -223,6 +269,13 @@ const DailyReflection = ({
               >
                 Pray
               </Text>
+              {!hasShownPrayerBadge && (
+                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
+                  <Text className="text-white font-inter-medium text-xs">
+                    new
+                  </Text>
+                </View>
+              )}
             </View>
             <View className="gap-1">
               <Text
@@ -373,6 +426,13 @@ const DailyReflection = ({
               >
                 Verse of the Day
               </Text>
+              {!hasShownVerseBadge && (
+                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
+                  <Text className="text-white font-inter-medium text-xs">
+                    new
+                  </Text>
+                </View>
+              )}
               {/* <Feather
                 name="book-open"
                 size={20}
@@ -498,11 +558,13 @@ const DailyReflection = ({
                   Praise
                 </Text>
               </View>
-              <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
-                <Text className="text-white font-inter-medium text-xs">
-                  NEW
-                </Text>
-              </View>
+              {!hasShownPraiseBadge && (
+                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
+                  <Text className="text-white font-inter-medium text-xs">
+                    new
+                  </Text>
+                </View>
+              )}
             </View>
             <View className="gap-1">
               <Text

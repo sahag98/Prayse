@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -27,7 +26,7 @@ import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { WelcomeContainer } from "@styles/appStyles";
-import { ActualTheme } from "@types/reduxTypes";
+import { ActualTheme } from "../../types/reduxTypes";
 import { FeatureModal } from "@modals/feature-modal";
 import { CheckReview } from "@hooks/useShowReview";
 import { handleReviewShowing } from "@redux/remindersReducer";
@@ -47,7 +46,7 @@ Notifications.setNotificationHandler({
   },
 });
 
-async function sendToken(expoPushToken) {
+async function sendToken(expoPushToken: string) {
   console.log("expo token: ", expoPushToken);
   const message = {
     to: expoPushToken,
@@ -120,13 +119,15 @@ const WelcomeScreen = () => {
   // const notificationListener = useRef();
   // const responseListener = useRef();
 
-  const streak = useSelector((state) => state.user.devostreak);
-  const completedItems = useSelector((state) => state.user.completedItems);
-  const appstreak = useSelector((state) => state.user.appstreakNum);
-  const hasShownProModal = useSelector((state) => state.user.hasShownProModal);
+  const streak = useSelector((state: any) => state.user.devostreak);
+  const completedItems = useSelector((state: any) => state.user.completedItems);
+  const appstreak = useSelector((state: any) => state.user.appstreakNum);
+  const hasShownProModal = useSelector(
+    (state: any) => state.user.hasShownProModal,
+  );
 
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
   const { colorScheme } = useColorScheme();
 
@@ -154,11 +155,11 @@ const WelcomeScreen = () => {
     }
     if (!hasShownReview) {
       if (
-        reviewCounter === 1 ||
+        reviewCounter === 3 ||
         (reviewCounter % 14 === 0 && reviewCounter > 0)
       ) {
         Alert.alert(
-          "Thank You for Praying!",
+          "Thank You for using our app!",
           "Would you take a moment to leave a review and share your experience?",
           [
             {
@@ -189,7 +190,7 @@ const WelcomeScreen = () => {
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => sendToken(token))
+      .then((token) => sendToken(token!))
       .catch((err) => console.log("push notification", err));
   }, []);
 
@@ -201,17 +202,12 @@ const WelcomeScreen = () => {
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
       style={getMainBackgroundColorStyle(actualTheme)}
+      //@ts-ignore
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      <UpdateModal theme={colorScheme} actualTheme={actualTheme} />
-      <FeatureModal
-        featureVisible={featureVisible}
-        setFeatureVisible={setFeatureVisible}
-        theme={colorScheme}
-        actualTheme={actualTheme}
-      />
+      <UpdateModal theme={colorScheme!} actualTheme={actualTheme} />
       <View className="items-center mb-3 flex-row justify-between w-full">
-        <Greeting actualTheme={actualTheme} theme={colorScheme} />
+        <Greeting actualTheme={actualTheme} theme={colorScheme!} />
         <View className="relative flex-row gap-2 items-center">
           <Ionicons
             onPress={() => setFeedbackVisible(true)}
@@ -232,7 +228,7 @@ const WelcomeScreen = () => {
             actualTheme={actualTheme}
           />
           <View className="flex items-center flex-row">
-            <StreakAction actualTheme={actualTheme} theme={colorScheme} />
+            <StreakAction actualTheme={actualTheme} theme={colorScheme!} />
           </View>
         </View>
       </View>
@@ -243,23 +239,13 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={colorScheme}
       />
-      {/* <ProModal
-        visible={proModalVisible}
-        setVisible={setProModalVisible}
-        actualTheme={actualTheme}
-        theme={colorScheme}
-      />
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      <ProBanner actualTheme={actualTheme} theme={colorScheme} /> */}
+      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme!} /> */}
 
-      {/* <NoticationsCard actualTheme={actualTheme} theme={colorScheme} /> */}
+      <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme!} />
+      <GospelOfJesus actualTheme={actualTheme} />
 
-      <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme} />
-      <GospelOfJesus actualTheme={actualTheme} theme={colorScheme} />
-      {/* <HowtoUsePrayse actualTheme={actualTheme} theme={colorScheme} /> */}
-      <MerchComponent actualTheme={actualTheme} theme={colorScheme} />
-
-      {/* <QuickLinks actualTheme={actualTheme} theme={colorScheme} /> */}
+      <MerchComponent theme={colorScheme!} actualTheme={actualTheme} />
     </WelcomeContainer>
   );
 };

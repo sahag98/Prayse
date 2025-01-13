@@ -14,9 +14,11 @@ import {
 import { posthog } from "@lib/posthog";
 
 import rejoicePrayPraise from "../assets/merch/rejoice-pray-praise.png";
+import { ActualTheme } from "@types/reduxTypes";
 
 interface MerchComponentProps {
   theme: string;
+  actualTheme: ActualTheme;
 }
 
 const blurhash = "JEI#ryj[IofR~qfj";

@@ -160,9 +160,6 @@ const CommunityHomeScreen = () => {
       getUserGroups();
       getPermission();
       // Return function is invoked whenever the route gets out of focus.
-      return () => {
-        console.log("This route is now unfocused.");
-      };
     }, []),
   );
 

@@ -14,8 +14,15 @@ import { posthog } from "@lib/posthog";
 import { COMMUNITY_SCREEN, LOGIN_SCREEN, QUESTION_SCREEN } from "@routes";
 
 import { useSupabase } from "../context/useSupabase";
+import { ActualTheme } from "@types/reduxTypes";
 
-export const QuestionOfTheWeek: React.FC = ({ actualTheme, theme }) => {
+export const QuestionOfTheWeek = ({
+  actualTheme,
+  theme,
+}: {
+  actualTheme: ActualTheme;
+  theme: string;
+}) => {
   const navigation = useNavigation();
   const { latestQuestion, currentUser } = useSupabase();
 

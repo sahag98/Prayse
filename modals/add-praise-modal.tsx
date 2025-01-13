@@ -66,12 +66,12 @@ const AddPraiseModal = ({
         setPraiseCount(newCount);
         await AsyncStorage.setItem("praiseCount", newCount.toString());
       }
+
+      praiseBottomSheetRef.current?.close();
+      queryClient.invalidateQueries({ queryKey: ["praises"] });
+      setNewPraise("");
     } catch (error) {
       console.log("error", error);
-    } finally {
-      setNewPraise("");
-      queryClient.invalidateQueries({ queryKey: ["praises"] });
-      praiseBottomSheetRef.current?.close();
     }
   }
 
@@ -90,13 +90,13 @@ const AddPraiseModal = ({
                 : "#2f2d51",
         }}
         handleStyle={{
-          borderTopWidth: 1,
-          borderTopColor: "gainsboro",
+          // borderTopWidth: 1,
+          // borderTopColor: "gainsboro",
           backgroundColor:
             actualTheme && actualTheme.Bg
               ? actualTheme.Bg
               : colorScheme === "dark"
-                ? "#121212"
+                ? "#212121"
                 : "#f2f7ff",
         }}
         snapPoints={snapPoints}
@@ -104,7 +104,7 @@ const AddPraiseModal = ({
       >
         <BottomSheetView
           style={getMainBackgroundColorStyle(actualTheme)}
-          className="flex-1 gap-4 items-center bg-light-background dark:bg-dark-background p-4 "
+          className="flex-1 gap-4 items-center bg-light-background dark:bg-dark-secondary p-4 "
         >
           {/* <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -123,8 +123,8 @@ const AddPraiseModal = ({
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
             ]}
-            className="w-full font-inter-regular rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary dark:bg-dark-secondary p-4"
-            placeholder="Praise Him! What's on your heart?"
+            className="w-full font-inter-regular rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:bg-dark-background p-4"
+            placeholder="Share a praise with us!"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
@@ -139,7 +139,7 @@ const AddPraiseModal = ({
                   ? "#e0e0e0"
                   : "#2f2d51"
             }
-            value={newPraise}
+            defaultValue={newPraise}
             onChangeText={setNewPraise}
           />
 
@@ -166,7 +166,7 @@ const AddPraiseModal = ({
                   setIsAnonymous((prev) => !prev);
                 }
               }}
-              className="size-6 border border-light-primary items-center justify-center rounded-lg"
+              className="size-6 border border-light-primary dark:border-dark-primary items-center justify-center rounded-lg"
             >
               {isAnonymous && (
                 <AntDesign
@@ -190,7 +190,7 @@ const AddPraiseModal = ({
             </Text>
           </View>
 
-          {praiseCount < 50 ? (
+          {praiseCount < 10 ? (
             <Pressable
               onPress={handleSubmit}
               style={getPrimaryBackgroundColorStyle(actualTheme)}

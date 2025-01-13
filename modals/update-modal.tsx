@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       }
 
       if (update[0].isUpdateAvailable !== nativeApplicationVersion.toString()) {
-        // setHasUpdate(true);
+        setHasUpdate(true);
       } else {
         setHasUpdate(false);
       }
@@ -82,7 +82,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       >
         <ModalView
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary dark:bg-dark-secondary w-11/12"
+          className="bg-light-secondary dark:bg-dark-secondary w-10/12"
         >
           <ModalIcon className="gap-2">
             <HeaderTitle

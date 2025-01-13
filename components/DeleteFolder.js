@@ -38,7 +38,7 @@ const DeleteFolder = ({
     } else {
       dispatch(deleteFolder(folderId));
       dispatch(deletePrayerByFolderId(folderId));
-      navigation.navigate(FOLDER_SCREEN);
+      navigation.goBack();
     }
 
     setOpenDelete(false);
