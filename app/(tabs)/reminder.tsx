@@ -24,6 +24,7 @@ const ReminderScreen = () => {
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
 
+  console.log("reminders: ", JSON.stringify(reminders, null, 2));
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
@@ -84,8 +85,8 @@ const ReminderScreen = () => {
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-sm text-center font-inter-medium leading-5 text-light-primary dark:text-dark-primary"
               >
-                Navigate to the prayer tab to add prayers to your folders, and
-                setup reminders for each.
+                Go to the prayer tab to add prayers to your lists, and setup
+                reminders for each.
               </Text>
             </View>
           </View>

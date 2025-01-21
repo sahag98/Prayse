@@ -21,7 +21,7 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
     // await AsyncStorage.removeItem("appOpenCount");
     try {
       const count = await AsyncStorage.getItem("appOpenCount");
-      console.log("Checking app open count", count);
+
       const newCount = count ? parseInt(count) + 1 : 1;
       await AsyncStorage.setItem("appOpenCount", newCount.toString());
       if (newCount % 20 === 0) {

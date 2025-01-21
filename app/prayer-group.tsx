@@ -406,11 +406,6 @@ const PrayerGroupScreen = () => {
           sendMessage={sendMessage}
         />
 
-        {/* <Button
-          onPress={handleOpenBottomModal}
-          title="Present Modal"
-          color="black"
-        /> */}
         <BottomModal
           handlePresentModalPress={handleOpenBottomModal}
           setPrayerToReact={setPrayerToReact}

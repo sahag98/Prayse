@@ -113,7 +113,7 @@ const StackContainer = () => {
           flex: 1,
           backgroundColor:
             colorScheme === "dark"
-              ? "#121212"
+              ? "#212121"
               : pathname === "/prayer-room"
                 ? "#b7d3ff"
                 : pathname === "/prayer"
@@ -136,11 +136,7 @@ const StackContainer = () => {
           name={DEVO_LIST_SCREEN}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name={ROADMAP_SCREEN} options={{ headerShown: false }} />
-        <Stack.Screen
-          name={PUBLIC_GROUPS_SCREEN}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name={OLD_PRAYER_SCREEN}
           options={{ headerShown: false }}
@@ -160,10 +156,7 @@ const StackContainer = () => {
         />
         <Stack.Screen name={QUESTION_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen name={SETTINGS_SCREEN} options={{ headerShown: false }} />
-        <Stack.Screen
-          name={REFLECTION_SCREEN}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name={FAVORITES_SCREEN}
           options={{ headerShown: false }}
@@ -193,10 +186,7 @@ const StackContainer = () => {
           name={PRAYER_ROOM_SCREEN}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name={PUBLIC_COMMUNITY_SCREEN}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name={PRAYER_GROUP_SCREEN}
           options={{ headerShown: false }}

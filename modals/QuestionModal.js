@@ -25,8 +25,11 @@ const QuestionModal = ({
   itemTitle,
   itemId,
   theme,
+  setAnswersArray,
+  answersArray,
   actualTheme,
   colorScheme,
+  fetchQuestionAnswers,
   user,
   supabase,
   setAnswersVisible,
@@ -51,13 +54,15 @@ const QuestionModal = ({
     });
   };
 
+  console.log("user: ", user);
+
   const addAnswer = async () => {
     // updateAnswers();
     if (answer.length <= 0) {
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
     } else {
-      const { error } = await supabase.from("answers").insert({
+      const { data, error } = await supabase.from("answers_test").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
@@ -97,6 +102,7 @@ const QuestionModal = ({
         console.log("ERROR insert answer: ", error);
         showToast("error", "Something went wrong. Try again.");
       }
+      fetchQuestionAnswers();
       handleCloseModal();
     }
   };

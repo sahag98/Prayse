@@ -36,18 +36,24 @@ const QuestionScreen = () => {
     useCallback(() => {
       // Invoked whenever the route is focused.
 
-      fetchAnswers();
-
-      if (itemId) {
-        setAnswersArray(
-          answers.filter(
-            (answer) => answer.question_id === parseInt(itemId, 10),
-          ),
-        );
-      }
-      // Return function is invoked whenever the route gets out of focus.
+      fetchQuestionAnswers();
     }, []),
   );
+
+  async function fetchQuestionAnswers() {
+    const { data: answers, error: answersError } = await supabase
+      .from("answers")
+      .select("*, profiles(avatar_url,full_name)")
+      .eq("question_id", itemId)
+      .order("id", { ascending: false });
+
+    if (answersError) {
+      console.log(answersError);
+    }
+
+    setAnswersArray(answers);
+  }
+  console.log("answers: ", JSON.stringify(answersArray, null, 2));
 
   return (
     <Container
@@ -165,10 +171,12 @@ const QuestionScreen = () => {
         user={currentUser}
         // question={item}
         setQuestions={setQuestions}
+        fetchQuestionAnswers={fetchQuestionAnswers}
         // fetchAnswers={fetchAnswers}
         itemTitle={itemTitle}
         itemId={itemId}
         answersArray={answersArray}
+        setAnswersArray={setAnswersArray}
         colorScheme={colorScheme}
         actualTheme={actualTheme}
         supabase={supabase}

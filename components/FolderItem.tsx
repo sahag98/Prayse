@@ -44,7 +44,7 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
       ]}
     >
       <View className="relative flex-1 justify-between">
-        <View className="w-full flex-row gap-2 justify-between items-center">
+        <View className="w-full flex-row justify-between items-center">
           <Text
             numberOfLines={1}
             style={getSecondaryTextColorStyle(actualTheme)}
@@ -52,15 +52,6 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
           >
             {item.name}
           </Text>
-          <AntDesign
-            name="folder1"
-            size={25}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : "#e8bb4e"
-            }
-          />
         </View>
         {prayers?.length === 0 ? (
           <View>

@@ -52,6 +52,8 @@ const ReminderItem = ({
     "Saturday",
   ];
 
+  console.log(content.time);
+
   const timestamp = new Date(content.time);
   let timeOptions;
 

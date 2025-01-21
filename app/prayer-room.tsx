@@ -1,73 +1,47 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Audio, ResizeMode, Video } from "expo-av";
+import React, { useCallback, useEffect, useState } from "react";
+import { Audio } from "expo-av";
 import Constants from "expo-constants";
 import {
   Link,
   useFocusEffect,
   useLocalSearchParams,
-  useNavigation,
   useRouter,
 } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar } from "expo-status-bar";
-import AnimatedLottieView from "lottie-react-native";
 import { useColorScheme } from "nativewind";
 import {
-  Alert,
-  Platform,
   Pressable,
-  StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
-import {
-  Directions,
-  Gesture,
-  GestureDetector,
-} from "react-native-gesture-handler";
+
 import Animated, {
   Easing,
-  SlideInRight,
-  SlideOutLeft,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withRepeat,
-  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  Feather,
-  FontAwesome5,
-  Ionicons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import {
-  getMainBackgroundColorStyle,
-  getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
-  getPrimaryTextColorStyle,
-} from "@lib/customStyles";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 import { addFolder } from "@redux/folderReducer";
 
-// import Ebpad from "../assets/audio/Epbad.mp3";
-// import OrganicG from "../assets/audio/OrganicG.mp3";
-
-import { CHECKLIST_SCREEN, FOLDER_SCREEN, HOME_SCREEN } from "../routes";
-import { Container, HeaderView } from "../styles/appStyles";
+import { FOLDER_SCREEN, HOME_SCREEN } from "../routes";
+import { HeaderView } from "../styles/appStyles";
 import { ActualTheme, Prayer } from "../types/reduxTypes";
 import { cn } from "@lib/utils";
 import { incrementReviewCounter } from "@redux/remindersReducer";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Gpad from "../assets/pads/g.mp3";
+import Dpad from "../assets/pads/d.mp3";
+import ABpad from "../assets/pads/ab.mp3";
 
 const PrayerRoom = () => {
-  const navigation = useNavigation();
   const prayers = useSelector(
     (state: { prayer: { prayer: Prayer[] } }) => state.prayer.prayer,
   );
@@ -315,33 +289,38 @@ const PrayerRoom = () => {
     router.back();
   }
   async function playSound() {
-    const AbPad =
-      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/Ab.mp3?v=1732569256519";
-    const DPad =
-      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/D.mp3?v=1732648293920";
-    const GPad =
-      "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/G.mp3?v=1732648318412";
+    console.log("should play sound");
+    // const AbPad =
+    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/Ab.mp3?v=1732569256519";
+    // const DPad =
+    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/D.mp3?v=1732648293920";
+    // const GPad =
+    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/G.mp3?v=1732648318412";
 
-    const pads = [AbPad, DPad, GPad];
+    const pads = [Gpad, Dpad, ABpad];
 
     const randomIndex = Math.floor(Math.random() * pads.length);
 
     // Pick a random pad from the pads array
     const randomPad = pads[randomIndex];
-    setIsPlayingSound(true);
-    const { sound } = await Audio.Sound.createAsync(
-      {
-        uri: randomPad,
-      },
-      { shouldPlay: true, volume: 0.4 },
-    );
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-    });
-    setSound(sound);
 
-    // // await sound.loadAsync(soundFile);
-    // await sound.playAsync();
+    setIsPlayingSound(true);
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        randomPad,
+
+        { shouldPlay: true, volume: 0.8 },
+      );
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+      });
+      setSound(sound);
+
+      // // await sound.loadAsync(soundFile);
+      await sound.playAsync();
+    } catch (error) {
+      console.log("error: ", error);
+    }
   }
 
   async function pauseSound() {
@@ -510,8 +489,7 @@ function PrayerPreparation({
     };
 
     const fixedLastQuestion = {
-      title:
-        "Thank you for using our app to pray. We hope this time strengthens your faith and guides your day with His grace.",
+      title: `In Jesus' name, Amen. \n\nThank you for using our app to pray. We hope this prayer strengthens your faith and guides your day with His grace.`,
       verses: [],
     };
 

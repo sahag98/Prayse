@@ -30,8 +30,17 @@ import "../global.css";
 
 import "react-native-url-polyfill/auto";
 import "expo-dev-client";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 
 const persistor = persistStore(store);
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Reanimated runs in strict mode by default
+});
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
@@ -154,11 +163,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-              <SafeAreaProvider>
-                <SupabaseProvider>
-                  <StackContainer />
-                </SupabaseProvider>
-              </SafeAreaProvider>
+              {/* <SafeAreaProvider> */}
+              <SupabaseProvider>
+                <StackContainer />
+              </SupabaseProvider>
+              {/* </SafeAreaProvider> */}
             </PersistGate>
           </Provider>
         </QueryClientProvider>

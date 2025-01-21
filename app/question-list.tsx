@@ -33,7 +33,7 @@ const QuestionListScreen = () => {
     currentUser,
     fetchQuestions,
     supabase,
-    fetchAnswers,
+    // fetchAnswers,
   } = useSupabase();
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
@@ -46,7 +46,7 @@ const QuestionListScreen = () => {
       // Invoked whenever the route is focused.
 
       fetchQuestions();
-      fetchAnswers();
+      // fetchAnswers();
       // Return function is invoked whenever the route gets out of focus.
     }, []),
   );

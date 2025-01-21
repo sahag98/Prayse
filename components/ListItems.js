@@ -134,7 +134,7 @@ const ListItems = ({
     };
 
     const isReminder = reminders.find(
-      (reminder) => reminder.reminder.prayer_id === item.id
+      (reminder) => reminder.reminder?.prayer_id === item.id
     );
 
     return (
@@ -224,11 +224,11 @@ const ListItems = ({
                     <TouchableOpacity
                       onPress={() => addReminder(item)}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
-                      className="flex-row items-center bg-light-primary dark:bg-dark-accent px-2 py-1 rounded-md gap-2"
+                      className="flex-row items-center justify-center bg-light-primary dark:bg-dark-accent w-full p-3 rounded-md gap-2"
                     >
                       <AntDesign
                         name="pluscircleo"
-                        size={18}
+                        size={20}
                         color={
                           actualTheme && actualTheme.PrimaryTxt
                             ? actualTheme.PrimaryTxt
@@ -239,7 +239,7 @@ const ListItems = ({
                       />
                       <Text
                         style={getPrimaryTextColorStyle(actualTheme)}
-                        className="font-inter-semibold text-sm text-light-background dark:text-dark-background"
+                        className="font-inter-semibold text-base text-light-background dark:text-dark-background"
                       >
                         Reminder
                       </Text>

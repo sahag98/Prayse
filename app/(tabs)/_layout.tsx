@@ -127,14 +127,9 @@ export default function TabLayout() {
                 : "dark"
         }
       />
+
       <Tabs
-        sceneContainerStyle={{
-          backgroundColor: colorScheme === "dark" ? "#121212" : "#F2F7FF",
-        }}
         screenOptions={{
-          headerBackgroundContainerStyle: {
-            backgroundColor: colorScheme === "dark" ? "#121212" : "white",
-          },
           headerShown: false,
           tabBarActiveTintColor:
             actualTheme && actualTheme.MainTxt
@@ -151,17 +146,19 @@ export default function TabLayout() {
             title: "Home",
             tabBarLabelStyle: {
               fontSize: 11,
-
               fontFamily: "Inter-Medium",
             },
             tabBarStyle: {
               height: 58,
+              paddingTop: 5,
               paddingBottom: 5,
+              // paddingTop: 5,
+              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
                   : colorScheme === "dark"
-                    ? "#121212"
+                    ? "#212121"
                     : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
@@ -181,12 +178,13 @@ export default function TabLayout() {
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              paddingTop: 2,
+              paddingTop: 5,
+              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
                   : colorScheme === "dark"
-                    ? "#121212"
+                    ? "#212121"
                     : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
@@ -198,31 +196,6 @@ export default function TabLayout() {
             ),
           }}
         />
-        {/* <Tabs.Screen
-          name={DEVOTIONAL_SCREEN}
-          options={{
-            title: "Devotional",
-            tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-            tabBarStyle: {
-              height: 58,
-              paddingBottom: 5,
-              paddingTop: 2,
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#121212"
-                    : "white",
-            },
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons
-                name={focused ? "bookmarks" : "bookmarks-outline"}
-                color={color}
-                size={size}
-              />
-            ),
-          }}
-        /> */}
         <Tabs.Screen
           name={REMINDER_SCREEN}
           options={{
@@ -231,12 +204,13 @@ export default function TabLayout() {
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              paddingTop: 2,
+              paddingTop: 5,
+              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
                   : colorScheme === "dark"
-                    ? "#121212"
+                    ? "#212121"
                     : "white",
             },
             tabBarIcon: ({ color, focused }) => (
@@ -256,12 +230,13 @@ export default function TabLayout() {
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              paddingTop: 2,
+              paddingTop: 5,
+              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
                   : colorScheme === "dark"
-                    ? "#121212"
+                    ? "#212121"
                     : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (
@@ -281,12 +256,13 @@ export default function TabLayout() {
             tabBarStyle: {
               height: 58,
               paddingBottom: 5,
-              paddingTop: 2,
+              paddingTop: 5,
+              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
                   : colorScheme === "dark"
-                    ? "#121212"
+                    ? "#212121"
                     : "white",
             },
             tabBarIcon: ({ color, size, focused }) => (

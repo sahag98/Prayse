@@ -124,7 +124,7 @@ const Header = ({
                 />
               </TouchableOpacity>
             </Link>
-            <View className="flex-row flex-1 items-center ml-2 gap-2">
+            <View className="flex-row flex-1 items-center ml-2 gap-3">
               <HeaderTitle
                 style={getMainTextColorStyle(actualTheme)}
                 numberOfLines={1}
@@ -132,17 +132,6 @@ const Header = ({
               >
                 {folderName}
               </HeaderTitle>
-              <AntDesign
-                name="folderopen"
-                size={28}
-                color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
-                    : colorScheme === "dark"
-                      ? "#e8bb4e"
-                      : "#f1d592"
-                }
-              />
             </View>
           </View>
           <View className="flex-row items-center">
@@ -220,7 +209,7 @@ const Header = ({
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter-bold text-2xl dark:text-dark-primary text-light-primary"
                 >
-                  Folder Settings
+                  List Settings
                 </Text>
                 <AntDesign
                   onPress={() => {
@@ -255,7 +244,7 @@ const Header = ({
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
                 >
-                  Rename folder
+                  Rename list
                 </Text>
                 <Feather
                   name="edit"
@@ -281,7 +270,7 @@ const Header = ({
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
                 >
-                  Share prayers
+                  Share list
                 </Text>
 
                 <Feather

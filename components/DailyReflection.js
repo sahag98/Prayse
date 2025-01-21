@@ -70,11 +70,10 @@ const DailyReflection = ({
     useCallback(() => {
       // Invoked whenever the route is focused.
       const checkBadgeStatus = async () => {
-        console.log("checking badge status!!");
         // await AsyncStorage.removeItem("lastBadgeShownDate");
         // resetBadgeShowing();
         const lastShownDate = await AsyncStorage.getItem("lastBadgeShownDate");
-        console.log("last shown date: ", lastShownDate);
+
         const currentDate = new Date().toLocaleDateString().split("T")[0];
 
         if (!lastShownDate) {
@@ -82,7 +81,6 @@ const DailyReflection = ({
         }
 
         if (lastShownDate && lastShownDate !== currentDate) {
-          console.log("HEREEE");
           resetBadgeShowing();
           await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
         }
@@ -92,11 +90,6 @@ const DailyReflection = ({
       // Return function is invoked whenever the route gets out of focus.
     }, [today])
   );
-
-  // useEffect(() => {
-  //   console.log("here");
-
-  // }, [today]);
 
   async function handleComplete(selected) {
     // dispatch(deleteCompletedItems())
@@ -149,12 +142,8 @@ const DailyReflection = ({
 
     const yesterdayDateString = yesterday.toLocaleDateString().split("T")[0]; // Format yesterday's date
 
-    console.log("yesterday string: ", yesterdayDateString);
-
     dispatch(deletePreviousDayItems({ yesterday: yesterdayDateString }));
   }
-
-  console.log("items: ", completedItems);
 
   return (
     <View className="flex-1 justify-start items-start w-full my-3 gap-2">

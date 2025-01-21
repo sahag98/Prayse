@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useColorScheme } from "nativewind";
 import {
@@ -17,6 +16,7 @@ import {
   Feather,
   Ionicons,
   MaterialCommunityIcons,
+  FontAwesome,
 } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
@@ -30,6 +30,7 @@ import { posthog } from "@lib/posthog";
 
 import DailysItems from "../../components/DailysItems";
 import SettingsItems from "../../components/SettingsItems";
+import FeedbackItems from "../../components/FeedbackItems";
 import config from "../../config";
 import {
   DEVO_LIST_SCREEN,
@@ -37,11 +38,13 @@ import {
   VERSE_OF_THE_DAY_SCREEN,
 } from "../../routes";
 import { Container, HeaderTitle } from "../../styles/appStyles";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ActualTheme } from "../../types/reduxTypes";
 
 const MoreScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
 
   async function shareApp(market: string) {
@@ -107,6 +110,47 @@ const MoreScreen = () => {
     },
   ];
 
+  const feedback = [
+    {
+      id: 1,
+      icon: (
+        <Feather
+          name="thumbs-up"
+          className="mr-3"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Write a Review",
+      link: "review",
+    },
+    {
+      id: 2,
+      icon: (
+        <FontAwesome
+          name="pencil-square-o"
+          size={24}
+          className="mr-3"
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Contact us",
+      link: "https://www.prayse.app/",
+    },
+  ];
+
   const options = [
     {
       id: 1,
@@ -146,26 +190,6 @@ const MoreScreen = () => {
       title: "About",
       link: "https://www.prayse.app/",
     },
-
-    {
-      id: 3,
-      icon: (
-        <Feather
-          name="edit-2"
-          className="mr-3"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "Write a Review",
-      link: "review",
-    },
     {
       id: 4,
       icon: (
@@ -188,62 +212,71 @@ const MoreScreen = () => {
   ];
 
   return (
-    <Container
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="bg-light-background dark:bg-dark-background"
+    <SafeAreaView
+      edges={["top"]}
+      style={{
+        backgroundColor: colorScheme === "dark" ? "#121212" : "#f2f7ff",
+      }}
+      // style={getMainBackgroundColorStyle(actualTheme)}
+      className="bg-light-background px-4 flex-1 dark:bg-dark-background"
     >
-      <View className="flex-row justify-between items-center mb-4">
+      {/* <View className="flex-row justify-between items-center mb-4">
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter-bold text-light-primary dark:text-dark-primary"
         >
           More
         </HeaderTitle>
-      </View>
+      </View> */}
 
       <ScrollView
         contentContainerStyle={{ gap: 10 }}
+        className="bg-light-background mt-10 dark:bg-dark-background px-4"
         showsVerticalScrollIndicator={false}
       >
-        {Platform.OS !== "ios" && (
-          <View
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className=" bg-light-secondary mb-2 gap-2 dark:bg-dark-secondary p-5 rounded-lg justify-between first-line:mb-3"
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="  mb-2 gap-2  rounded-lg justify-between first-line:mb-3"
+        >
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="font-inter-bold text-3xl text-light-primary dark:text-dark-primary"
+          >
+            Prayse
+          </Text>
+          <Text
+            style={getSecondaryTextColorStyle(actualTheme)}
+            className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
+          >
+            Prayse will always be free, and your support helps us continue
+            working on the app and furthering the importance of prayer and
+            praise in today's world.
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              posthog.capture("Donate");
+              Linking.openURL("https://www.prayse.app/support");
+            }}
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
           >
             <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-lg text-light-background dark:text-dark-background"
             >
-              Donate
+              Take Part
             </Text>
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
-            >
-              By donating, you help us further our mission in spreading the
-              importance of prayer and praise in today's world through all our
-              platforms.
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                posthog.capture("Donate");
-                Linking.openURL("https://buymeacoffee.com/prayse");
-              }}
-              style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-primary items-center mt-2 justify-center dark:bg-dark-accent p-4 rounded-lg"
-            >
-              <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
-                className="font-inter-bold text-lg text-light-background dark:text-dark-background"
-              >
-                Donate
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          </TouchableOpacity>
+        </View>
+
         <DailysItems
           actualTheme={actualTheme}
           options={dailys}
+          theme={colorScheme}
+        />
+        <FeedbackItems
+          actualTheme={actualTheme}
+          options={feedback}
           theme={colorScheme}
         />
         <SettingsItems
@@ -339,7 +372,7 @@ const MoreScreen = () => {
           </Text>
         </View>
       </ScrollView>
-    </Container>
+    </SafeAreaView>
   );
 };
 

@@ -41,7 +41,6 @@ const WriteFeedbackModal = ({
     const { data, error } = await supabase
       .from("feedback")
       .insert([{ name, message: feedback }]);
-    console.log("data: ", data);
 
     if (!error) {
       Toast.show({

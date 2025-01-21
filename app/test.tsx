@@ -14,6 +14,7 @@ import {
   Image,
   Keyboard,
   Platform,
+  Pressable,
   StyleSheet,
   Switch,
   Text,
@@ -75,7 +76,6 @@ export default function TestScreen() {
       // Invoked whenever the route is focused.
 
       if (routeParams.reminder !== undefined && routeParams.type === "Add") {
-        console.log("router reminder: ", routeParams);
         setReminderDate("");
         setRepeatOption("");
         setIsRepeat(false);
@@ -156,7 +156,7 @@ export default function TestScreen() {
     if (repeatOption === "daily" && isRepeat) {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Reminder",
+          title: "Pray 🙏",
           body: reminder.message,
           data: { screen: REMINDER_SCREEN },
         },
@@ -186,7 +186,7 @@ export default function TestScreen() {
     } else if (repeatOption === "weekly" && Platform.OS === "ios") {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Reminder",
+          title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN },
         },
@@ -222,7 +222,7 @@ export default function TestScreen() {
       const seconds = newDate.getTime() / 1000;
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Reminder",
+          title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN },
         },
@@ -252,7 +252,7 @@ export default function TestScreen() {
     } else {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Reminder",
+          title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN },
         },
@@ -395,11 +395,43 @@ export default function TestScreen() {
   const handleDateConfirm = (date) => {
     hideDatePicker();
 
+    const today = new Date();
+    console.log("today: ", today);
+
+    console.log("date: ", date);
+
     setReminderDate(date);
   };
 
+  function useDailyOption() {
+    const reminderTime = new Date();
+    reminderTime.setHours(12, 0, 0, 0); // Set time to 12:00 PM
+    setReminderDate(new Date());
+    setReminderTime(reminderTime);
+    setIsRepeat(true);
+    setRepeatOption("daily");
+  }
+
+  function useWeeklyOption() {
+    const reminderTime = new Date();
+    reminderTime.setHours(12, 0, 0, 0); // Set time to 12:00 PM
+
+    const reminderDate = new Date();
+
+    // Calculate days to next Wednesday (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+    const currentDay = reminderDate.getDay();
+    const daysUntilWednesday = (3 - currentDay + 7) % 7 || 7; // Ensure it's at least 1 day ahead
+    reminderDate.setDate(reminderDate.getDate() + daysUntilWednesday);
+
+    setReminderDate(reminderDate);
+    setReminderTime(reminderTime);
+    setIsRepeat(true);
+    setRepeatOption("weekly");
+  }
+
   const handleTimeConfirm = (time) => {
     hideTimePicker();
+    console.log("time: ", time);
     setReminderTime(time);
   };
 
@@ -558,7 +590,9 @@ export default function TestScreen() {
             onChangeText={(text) => setNewNote(text)}
           />
         </View>
-
+        <Text className="text-center text-light-primary dark:text-dark-primary text-lg mt-5 mb-1 font-inter-semibold">
+          Set A Custom Date/Time
+        </Text>
         <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
           className="dark:bg-dark-secondary bg-light-secondary p-3 gap-2 rounded-lg"
@@ -692,6 +726,7 @@ export default function TestScreen() {
             value={isRepeat}
           />
         </View>
+
         {isRepeat && (
           <View className="flex-row gap-5 mt-3">
             <TouchableOpacity
@@ -762,8 +797,29 @@ export default function TestScreen() {
             </TouchableOpacity>
           </View>
         )}
-        <View className="mt-2 flex-1">
-          <Text className="text-[#ff3b3b] mb-2 font-inter-medium">
+        <Text className="text-center text-light-primary dark:text-dark-primary text-lg mt-1 mb-1 font-inter-semibold">
+          Or Use Suggested Options
+        </Text>
+        <View className="flex-row items-center gap-4">
+          <Pressable
+            onPress={useDailyOption}
+            className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
+          >
+            <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+              Once a day
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={useWeeklyOption}
+            className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
+          >
+            <Text className="font-inter-semibold  text-light-primary dark:text-dark-primary">
+              Once a week
+            </Text>
+          </Pressable>
+        </View>
+        <View className="mt-auto mb-5">
+          <Text className="text-[#ff3b3b] mb-1 font-inter-medium">
             Required fields: Title, date and time.
           </Text>
 

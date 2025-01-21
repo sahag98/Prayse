@@ -28,8 +28,6 @@ export const StreakAction: React.FC<StreakActionProps> = ({
   async function appStreak() {
     const today = new Date().toLocaleDateString("en-CA");
 
-    console.log("today", today);
-
     dispatch(increaseAppStreakCounter({ today }));
   }
 

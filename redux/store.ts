@@ -5,11 +5,8 @@ import thunk from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import answeredReducer from "./answeredReducer";
 import favoritesReducer from "./favoritesReducer";
 import folderReducer from "./folderReducer";
-import messageReducer from "./messageReducer";
-import notiReducer from "./notiReducer";
 import prayerReducer from "./prayerReducer";
 import proReducer from "./proReducer";
 import remindersReducer from "./remindersReducer";
@@ -21,11 +18,8 @@ const reducers = combineReducers({
   folder: folderReducer,
   prayer: prayerReducer,
   pro: proReducer,
-  answered: answeredReducer,
-  message: messageReducer,
   favorites: favoritesReducer,
   theme: themeReducer,
-  noti: notiReducer,
   reminder: remindersReducer,
 });
 
@@ -35,11 +29,8 @@ const persistConfig = {
   whitelist: [
     "user",
     "folder",
-    "noti",
-    "message",
     "prayer",
     "pro",
-    "answered",
     "favorites",
     "reminder",
     "theme",

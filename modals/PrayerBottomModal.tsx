@@ -1,8 +1,6 @@
-//@ts-nocheck
-
 import React, { useCallback, useMemo } from "react";
-import { Share, Text, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { Alert, Share, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Feather } from "@expo/vector-icons";
 import {
@@ -21,6 +19,8 @@ import {
   deletePrayer,
   switchPrayerStatus,
 } from "@redux/prayerReducer";
+import { cancelScheduledNotificationAsync } from "expo-notifications";
+import { deleteReminder } from "@redux/remindersReducer";
 const PrayerBottomModal = ({
   handleCloseBottomModal,
   colorScheme,
@@ -30,16 +30,28 @@ const PrayerBottomModal = ({
   handleTriggerEdit,
   actualTheme,
 }: any) => {
-  console.log(prayer);
+  const reminders = useSelector(
+    (state: { reminder: { reminders: [] } }) => state.reminder.reminders,
+  );
+
+  const reminderPrayer = reminders.find(
+    (reminder: any) => reminder.reminder.prayer_id === prayer?.id,
+  );
+
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
   const snapPoints = useMemo(() => ["50%"], []);
   const dispatch = useDispatch();
-  const handleAddToAnsweredPrayer = () => {
-    console.log("will switch to answered");
+  const handleAddToAnsweredPrayer = async () => {
     dispatch(switchPrayerStatus(prayer));
+    if (reminderPrayer) {
+      //@ts-expect-error
+      dispatch(deleteReminder(reminderPrayer.reminder.id));
+      //@ts-expect-error
+      await cancelScheduledNotificationAsync(reminderPrayer.identifier);
+    }
     handleCloseBottomModal();
   };
 
@@ -59,7 +71,7 @@ const PrayerBottomModal = ({
       await Share.share({
         message: prayer.prayer,
       });
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert(error.message);
     }
   };

@@ -86,7 +86,7 @@ const EditFolder = ({
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="font-inter-bold mb-2 text-light-primary dark:text-dark-primary"
               >
-                Change folder name
+                Change list name
               </HeaderTitle>
             </ModalIcon>
 
@@ -99,7 +99,7 @@ const EditFolder = ({
                 }
               }
               className="items-center self-center font-inter-regular text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary"
-              placeholder="Enter new folder name"
+              placeholder="Enter new list name"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt

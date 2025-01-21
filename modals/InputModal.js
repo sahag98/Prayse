@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch } from "react-redux";
-
+import * as Notifications from "expo-notifications";
 import { AntDesign } from "@expo/vector-icons";
 
 import { addPrayer, editPrayer } from "../redux/prayerReducer";
@@ -30,6 +30,8 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import { addNewReminder } from "@redux/remindersReducer";
+import { REMINDER_SCREEN } from "@routes";
 
 const InputModal = ({
   actualTheme,
@@ -88,7 +90,17 @@ const InputModal = ({
     );
   };
 
-  const handleSubmit = () => {
+  function getRandomTime() {
+    const randomHour = Math.floor(Math.random() * (22 - 8 + 1)) + 8; // Random hour between 8 and 22
+    const randomMinute = 0; // Always 0
+    return { hour: randomHour, minute: randomMinute };
+  }
+
+  const handleSubmit = async () => {
+    const newId = uuid.v4();
+    const reminderId = uuid.v4();
+    console.log("newid: ", newId);
+    console.log("reminder id: ", reminderId);
     if (prayerValue.length === 0) {
       alert("Type in a prayer and try again.");
       return;
@@ -101,9 +113,39 @@ const InputModal = ({
           status: "Active",
           folderId,
           date: new Date().toLocaleString(),
-          id: uuid.v4(),
+          id: newId,
         })
       );
+      // const randomTime = getRandomTime();
+      // console.log("random time: ", randomTime);
+      // const identifier = await Notifications.scheduleNotificationAsync({
+      //   content: {
+      //     title: "Pray 🙏",
+      //     body: prayerValue,
+      //     data: { screen: REMINDER_SCREEN },
+      //   },
+      //   trigger: {
+      //     hour: randomTime.hour,
+      //     minute: randomTime.minute,
+      //     repeats: true, // Set to false if you want it to trigger just once
+      //   },
+      // });
+      // const combinedDate = new Date(randomTime.hour, randomTime.minute);
+
+      // const reminder = {
+      //   id: reminderId,
+      //   message: prayerValue,
+      //   prayer_id: newId,
+      //   time: combinedDate,
+      // };
+
+      // dispatch(
+      //   addNewReminder({
+      //     reminder,
+      //     identifier,
+      //     ocurrence: "Daily",
+      //   })
+      // );
     } else {
       dispatch(
         editPrayer({
@@ -132,7 +174,7 @@ const InputModal = ({
             setModalVisible(true);
             setTaskName("Add");
           }}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-5 rounded-xl shadow-gray-300 dark:shadow-none"
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-6 rounded-full shadow-gray-300 dark:shadow-none"
         >
           <AntDesign
             name="plus"
@@ -198,13 +240,13 @@ const InputModal = ({
                       }
                     : colorScheme === "dark"
                       ? {
-                          height: inputHeight < 60 ? 60 : inputHeight,
+                          height: inputHeight < 80 ? 80 : inputHeight,
                         }
                       : {
-                          height: inputHeight < 60 ? 60 : inputHeight,
+                          height: inputHeight < 80 ? 80 : inputHeight,
                         }
                 }
-                placeholder="Add a prayer"
+                placeholder="What are you praying for?"
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
@@ -228,14 +270,6 @@ const InputModal = ({
                 }}
                 multiline
               />
-              <TouchableOpacity
-                className="my-2 self-end"
-                onPress={dismissKeyboard}
-              >
-                <Text className="font-inter text-red-500 mt-1 font-medium">
-                  Close Keyboard
-                </Text>
-              </TouchableOpacity>
 
               <ModalActionGroup>
                 <ModalAction color="white" onPress={handleCloseModal}>

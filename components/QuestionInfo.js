@@ -41,7 +41,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
       </Text>
       <View className="flex-row items-center gap-2 justify-between">
         <View className="flex-row items-center gap-3">
-          <View
+          {/* <View
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             className="bg-light-primary dark:bg-dark-accent rounded-xl px-2 py-1"
           >
@@ -51,7 +51,7 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
             >
               Posted by: {item.posted_by}
             </Text>
-          </View>
+          </View> */}
 
           {item.isNew ? (
             <View className="bg-red-500 rounded-lg px-2 py-1">

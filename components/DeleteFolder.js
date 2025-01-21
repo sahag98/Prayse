@@ -62,14 +62,14 @@ const DeleteFolder = ({
       >
         <ModalView
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary dark:bg-dark-secondary"
+          className="bg-light-secondary w-4/5 dark:bg-dark-secondary"
         >
           <ModalIcon>
             <HeaderTitle
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
-              Are you sure you want to delete this folder?
+              This will permenantly delete this prayer list.
             </HeaderTitle>
           </ModalIcon>
           <ModalActionGroup>

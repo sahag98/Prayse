@@ -123,8 +123,8 @@ const AddPraiseModal = ({
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
             ]}
-            className="w-full font-inter-regular rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:bg-dark-background p-4"
-            placeholder="Share a praise with us!"
+            className="w-full font-inter-medium rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:bg-dark-background p-4"
+            placeholder="How can you praise God today?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt

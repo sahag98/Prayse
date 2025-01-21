@@ -4,7 +4,7 @@ import * as Notifications from "expo-notifications";
 import { Redirect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Alert, Platform, View } from "react-native";
+import { Alert, Platform, Pressable, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import * as StoreReview from "expo-store-review";
 import DailyReflection from "@components/DailyReflection";
@@ -29,7 +29,7 @@ import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "../../types/reduxTypes";
 import { FeatureModal } from "@modals/feature-modal";
 import { CheckReview } from "@hooks/useShowReview";
-import { handleReviewShowing } from "@redux/remindersReducer";
+import { clearReminders, handleReviewShowing } from "@redux/remindersReducer";
 import ProModal from "@modals/ProModal";
 import { showProModal } from "@redux/userReducer";
 // import { setProModalVisible } from "@redux/userReducer";
@@ -47,7 +47,6 @@ Notifications.setNotificationHandler({
 });
 
 async function sendToken(expoPushToken: string) {
-  console.log("expo token: ", expoPushToken);
   const message = {
     to: expoPushToken,
     sound: "default",
@@ -148,7 +147,6 @@ const WelcomeScreen = () => {
 
   useEffect(() => {
     if (reviewCounter === 5 && !hasShownProModal) {
-      console.log("here");
       setProModalVisible(true);
       // dispatch(setProModalVisible());
       // setProModalVisible(true);
@@ -239,6 +237,9 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={colorScheme}
       />
+      <Pressable onPress={() => dispatch(clearReminders())}>
+        <Text>Delete reminders</Text>
+      </Pressable>
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       {/* <ProBanner actualTheme={actualTheme} theme={colorScheme!} /> */}
 

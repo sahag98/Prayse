@@ -140,7 +140,6 @@ export const userSlice = createSlice({
         state.appstreak[state.appstreak.length - 1]?.today ===
           action.payload.today
       ) {
-        console.log("exists");
         return;
       } else {
         state.appstreak = [...state.appstreak, action.payload];
@@ -204,7 +203,6 @@ export const userSlice = createSlice({
       const { yesterday } = action.payload;
       const currentDate = new Date().toLocaleDateString().split("T")[0];
 
-      console.log("current: ", currentDate);
       const dateIndex = state.completedItems.findIndex(
         (entry) => entry?.date === yesterday,
       );
@@ -225,7 +223,6 @@ export const userSlice = createSlice({
         state.completedItems.length > 0 &&
         currentDateIndex === -1
       ) {
-        console.log("no yesterday date but there are completed items.");
         state.completedItems = [];
         state.hasIncreasedDevoStreak = false;
         state.devostreak = 0;
@@ -244,7 +241,6 @@ export const userSlice = createSlice({
       // console.log("before last: ", oneBeforeLastItem);
 
       if (dateIndex === -1 && oneBeforeLastItem) {
-        console.log("should erase array.");
         state.completedItems = [];
         state.hasIncreasedDevoStreak = false;
         state.devostreak = 0;
@@ -275,8 +271,6 @@ export const userSlice = createSlice({
         const differenceInDays =
           (lastItemDate - oneBeforeLastItemDate) / oneDayInMilliseconds;
 
-        console.log("difference: ", differenceInDays);
-
         // Check if the difference is exactly one day
         if (differenceInDays === 1) {
           if (
@@ -284,7 +278,6 @@ export const userSlice = createSlice({
             lastItemData.items.length === 3 &&
             state.hasIncreasedDevoStreak === false
           ) {
-            console.log("should increase devo");
             state.devostreak += 1;
             state.hasIncreasedDevoStreak = true;
           }
@@ -295,14 +288,10 @@ export const userSlice = createSlice({
           // Perform your function here
         } else {
           state.devostreak = 0;
-          console.log(
-            "The oneBeforeLastItemDate is not the correct date before the lastItemDate.",
-          );
         }
       }
     },
     deleteCompletedItems: (state) => {
-      console.log("<<deleting ITEMS>>");
       state.completedItems = [];
       // state.completedItems.length = 0;
     },
@@ -311,7 +300,6 @@ export const userSlice = createSlice({
         state.completedItems.length === 2 &&
         state.alreadyIncreasedStreak === false
       ) {
-        console.log("will increase devo streak");
         state.devostreak = state.devostreak + 1;
         state.alreadyIncreasedStreak = true;
       }

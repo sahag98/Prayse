@@ -1,11 +1,14 @@
-//@ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import {
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
@@ -15,19 +18,26 @@ import {
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
 
-import AddFolderModal from "../modals/AddFolderModal";
 import { addFolder } from "../redux/folderReducer";
 import { PRAYER_ROOM_SCREEN } from "../routes";
-import { HeaderTitle } from "../styles/appStyles";
 
 import FolderItem from "./FolderItem";
+import { ActualTheme } from "../types/reduxTypes";
+import AddListModal from "@modals/AddListModal";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
-const Folder = ({ colorScheme, navigation }) => {
-  const folders = useSelector((state) => state.folder.folders);
+const Folder = ({
+  colorScheme,
+  navigation,
+}: {
+  colorScheme: string;
+  navigation: any;
+}) => {
+  const folders = useSelector((state: any) => state.folder.folders);
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
-
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [open, setOpen] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
@@ -60,10 +70,9 @@ const Folder = ({ colorScheme, navigation }) => {
         prayers: [],
       }),
     );
-    setTimeout(() => {
-      setAddVisible(false);
-      setFolderName("");
-    }, 0);
+
+    setFolderName("");
+    bottomSheetModalRef.current?.close();
     // setAddVisible(false);
     // setFolderName("");
   }
@@ -77,146 +86,130 @@ const Folder = ({ colorScheme, navigation }) => {
     navigation.navigate(PRAYER_ROOM_SCREEN);
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: any) => {
     return (
       <FolderItem
         actualTheme={actualTheme}
         item={item}
         navigation={navigation}
-        open={open}
-        setOpen={setOpen}
-        idToDelete={idToDelete}
-        setIdToDelete={setIdToDelete}
       />
     );
   };
 
   return (
-    <View className="relative flex-1">
-      <View className="my-4 flex-row justify-between items-center">
-        <HeaderTitle
-          style={getMainTextColorStyle(actualTheme)}
-          className=" py-3 font-inter-bold text-lg text-light-primary dark:text-dark-primary"
-        >
-          Prayer Folders
-        </HeaderTitle>
-      </View>
+    <>
+      <View className="px-4  h-full">
+        <View className="my-4 flex-row justify-between items-center">
+          <Text
+            style={getMainTextColorStyle(actualTheme)}
+            className="py-3 font-inter-bold text-3xl text-light-primary dark:text-dark-primary"
+          >
+            Prayer Lists
+          </Text>
+        </View>
 
-      <FlatList
-        data={folders}
-        keyExtractor={(item) => item.id}
-        onEndReachedThreshold={0}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={6}
-        contentContainerStyle={{ flex: folders?.length === 0 ? 1 : 0 }}
-        windowSize={8}
-        renderItem={renderItem}
-        numColumns={2}
-        ListEmptyComponent={() => (
-          <View className="flex-1 justify-center items-center">
+        <FlatList
+          data={folders}
+          keyExtractor={(item) => item.id}
+          onEndReachedThreshold={0}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={6}
+          contentContainerStyle={{ flex: folders?.length === 0 ? 1 : 0 }}
+          windowSize={8}
+          renderItem={renderItem}
+          numColumns={2}
+          ListEmptyComponent={() => (
+            <View className="flex-1 justify-center items-center">
+              <Ionicons
+                name="list-outline"
+                size={70}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "dark"
+                      ? "#e8bb4e"
+                      : "#2f2d51"
+                }
+              />
+              <Text
+                style={getMainTextColorStyle(actualTheme)}
+                className="font-inter-medium text-light-primary dark:text-white text-lg"
+              >
+                Start by creating a prayer list.
+              </Text>
+            </View>
+          )}
+          ListFooterComponent={() => <View className="h-32" />}
+          columnWrapperStyle={{
+            justifyContent: "space-between",
+            columnGap: 8,
+          }}
+        />
+
+        <View className="absolute w-full flex-row justify-between self-center items-center bottom-5 h-16">
+          <TouchableOpacity
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            onPress={() => {
+              bottomSheetModalRef.current?.present();
+              posthog.capture("Create folder");
+            }}
+            className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+          >
             <AntDesign
-              name="folder1"
-              size={80}
+              name="plus"
+              size={24}
               color={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
+                actualTheme && actualTheme.PrimaryTxt
+                  ? actualTheme.PrimaryTxt
                   : colorScheme === "dark"
-                    ? "#e8bb4e"
-                    : "#2f2d51"
+                    ? "#121212"
+                    : "white"
               }
             />
             <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-bold text-light-primary dark:text-white text-xl"
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-lg text-light-background dark:text-dark-background"
             >
-              Start by creating a prayer folder.
+              List
             </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={getSecondaryBackgroundColorStyle(actualTheme)}
+            onPress={handleGuidedPrayerPress}
+            className="dark:bg-dark-secondary relative flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+          >
             <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-medium dark:text-[#d2d2d2] text-base text-[#2f2d51]"
+              style={getSecondaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
             >
-              (These folders are only visible to you)
+              Pray
             </Text>
-          </View>
-        )}
-        ListFooterComponent={() => <View className="h-32" />}
-        columnWrapperStyle={{
-          justifyContent: "space-between",
-          columnGap: 8,
-        }}
-      />
 
-      <View className="absolute w-full flex-row justify-between items-center bottom-5 h-16">
-        <TouchableOpacity
-          style={getPrimaryBackgroundColorStyle(actualTheme)}
-          onPress={() => {
-            setAddVisible(true);
-            posthog.capture("Create folder");
-          }}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
-        >
-          <AntDesign
-            name="plus"
-            size={24}
-            color={
-              actualTheme && actualTheme.PrimaryTxt
-                ? actualTheme.PrimaryTxt
-                : colorScheme === "dark"
-                  ? "#121212"
-                  : "white"
-            }
-          />
-          <Text
-            style={getPrimaryTextColorStyle(actualTheme)}
-            className="font-inter-bold text-lg text-light-background dark:text-dark-background"
-          >
-            Folder
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          onPress={handleGuidedPrayerPress}
-          className="dark:bg-dark-secondary relative flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
-        >
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
-          >
-            Prayer
-          </Text>
-
-          <MaterialCommunityIcons
-            name="hands-pray"
-            size={24}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-          {/* {showNewBadge && (
-            <View className="bg-red-500 absolute -top-2 -left-2 rounded-full px-2 py-1">
-              <Text className="text-white font-inter-medium text-xs">New</Text>
-            </View>
-          )} */}
-        </TouchableOpacity>
+            <MaterialCommunityIcons
+              name="hands-pray"
+              size={24}
+              color={
+                actualTheme && actualTheme.SecondaryTxt
+                  ? actualTheme.SecondaryTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <AddFolderModal
+      <AddListModal
         actualTheme={actualTheme}
-        addVisible={addVisible}
         addNewFolder={addNewFolder}
         colorScheme={colorScheme}
         folderName={folderName}
-        setAddVisible={setAddVisible}
-        handleCloseModal={handleCloseModal}
         setFolderName={setFolderName}
+        bottomSheetModalRef={bottomSheetModalRef}
       />
-    </View>
+    </>
   );
 };
 
