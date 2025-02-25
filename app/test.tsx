@@ -43,7 +43,12 @@ import {
   deleteReminder,
   editReminder,
 } from "../redux/remindersReducer";
-import { HOME_SCREEN, REMINDER_SCREEN, SETTINGS_SCREEN } from "../routes";
+import {
+  HOME_SCREEN,
+  REMINDER_SCREEN,
+  SETTINGS_SCREEN,
+  WELCOME_SCREEN,
+} from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 export default function TestScreen() {
@@ -158,9 +163,10 @@ export default function TestScreen() {
         content: {
           title: "Pray 🙏",
           body: reminder.message,
-          data: { screen: REMINDER_SCREEN },
+          data: { screen: REMINDER_SCREEN, reminder_id: reminder.id },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DAILY,
           hour: combinedDate.getHours(),
           minute: combinedDate.getMinutes(),
           repeats: true,
@@ -188,9 +194,10 @@ export default function TestScreen() {
         content: {
           title: "Pray 🙏",
           body: reminder.message,
-          data: { url: REMINDER_SCREEN },
+          data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
           weekday: combinedDate.getDay() + 1,
           hour: combinedDate.getHours(),
           minute: combinedDate.getMinutes(),
@@ -224,9 +231,10 @@ export default function TestScreen() {
         content: {
           title: "Pray 🙏",
           body: reminder.message,
-          data: { url: REMINDER_SCREEN },
+          data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
           seconds,
           repeats: isRepeat,
         },
@@ -250,13 +258,15 @@ export default function TestScreen() {
         );
       }
     } else {
+      console.log("HEREEE", secondsUntilNotification);
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Pray 🙏",
           body: reminder.message,
-          data: { url: REMINDER_SCREEN },
+          data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
           seconds: secondsUntilNotification,
         },
       });
@@ -293,6 +303,7 @@ export default function TestScreen() {
     const newReminderObj = {
       id: uuid.v4(),
       message: newReminder,
+      prayer_id: routeParams.reminderEditPrayerId,
       note: newNote,
       time: combinedDate,
     };
@@ -311,7 +322,7 @@ export default function TestScreen() {
       // reminderTime.getMinutes()
     );
 
-    showEditToast();
+    // showEditToast();
     setNewReminder("");
     setNewNote("");
     setReminderDate("");
@@ -319,7 +330,8 @@ export default function TestScreen() {
     setRepeatOption("");
     setIsRepeat(false);
     Keyboard.dismiss();
-    navigation.navigate(REMINDER_SCREEN);
+    router.replace(`/reminder/${newReminderObj.id}`);
+    // navigation.navigate(WELCOME_SCREEN);
   };
 
   const addReminder = () => {
@@ -590,7 +602,7 @@ export default function TestScreen() {
             onChangeText={(text) => setNewNote(text)}
           />
         </View>
-        <Text className="text-center text-light-primary dark:text-dark-primary text-lg mt-5 mb-1 font-inter-semibold">
+        <Text className="text-center text-light-primary dark:text-dark-primary text-lg my-1 font-inter-semibold">
           Set A Custom Date/Time
         </Text>
         <View

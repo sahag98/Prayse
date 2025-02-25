@@ -17,7 +17,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import {
   AntDesign,
   Entypo,
@@ -70,7 +70,7 @@ const Header = ({
     try {
       await Share.share({
         message:
-          "Prayer requests: " +
+          `${folderName} Prayer List: ` +
           "\n\n" +
           folderPrayersbyNewLine.toLocaleString(),
       });
@@ -230,15 +230,15 @@ const Header = ({
               </View>
 
               <TouchableOpacity
-                style={[
-                  getSecondaryBackgroundColorStyle(actualTheme),
-                  { borderColor: actualTheme && actualTheme.SecondaryTxt },
-                ]}
+                // style={[
+                //   getSecondaryBackgroundColorStyle(actualTheme),
+                //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
+                // ]}
                 onPress={() => {
                   setIsShowingModal(false);
                   setOpenEdit(true);
                 }}
-                className="flex-row items-center border border-light-primary dark:border-dark-primary rounded-lg justify-between p-4 dark:bg-dark-secondary bg-light-secondary"
+                className="flex-row items-center border border-light-primary dark:border-dark-primary/50 rounded-lg justify-between p-4 dark:bg-dark-secondary bg-light-secondary"
               >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
@@ -259,12 +259,12 @@ const Header = ({
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  getSecondaryBackgroundColorStyle(actualTheme),
-                  { borderColor: actualTheme && actualTheme.SecondaryTxt },
-                ]}
+                // style={[
+                //   getSecondaryBackgroundColorStyle(actualTheme),
+                //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
+                // ]}
                 onPress={onShare}
-                className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary p-4 dark:bg-dark-secondary bg-light-secondary"
+                className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary/50 p-4 dark:bg-dark-secondary bg-light-secondary"
               >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}

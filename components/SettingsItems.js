@@ -21,7 +21,7 @@ const SettingsItems = ({ options, actualTheme, theme }) => {
       >
         General
       </Text>
-      <View className="bg-light-secondary rounded-lg overflow-hidden">
+      <View className=" rounded-lg overflow-hidden">
         {options.map((option) =>
           option.link ? (
             <TouchableOpacity

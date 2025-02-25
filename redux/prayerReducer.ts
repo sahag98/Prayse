@@ -58,7 +58,9 @@ export const prayerSlice = createSlice({
           ? {
               ...prayer,
               status:
-                prayer.status === "Active" || prayer.status === undefined
+                prayer.status === "Active" ||
+                prayer.status === undefined ||
+                prayer.status === "Answered"
                   ? "Archived"
                   : "Active",
             }
@@ -66,14 +68,14 @@ export const prayerSlice = createSlice({
       );
     },
     switchPrayerStatus: (state, action) => {
+      console.log("action: ", JSON.stringify(action.payload, null, 2));
       const currentDate = new Date().toLocaleDateString().split("T")[0];
+
       state.prayer = state.prayer.map((prayer) =>
-        prayer.id === action.payload.id
+        prayer.id === action.payload.prayer.id
           ? {
               ...prayer,
-              status:
-                prayer.status === "Active" || undefined ? "Answered" : "Active",
-              answeredDate: currentDate,
+              status: (prayer.status = action.payload.newStatus),
             }
           : prayer,
       );

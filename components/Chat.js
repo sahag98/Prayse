@@ -18,10 +18,12 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
+import BottomModal from "@modals/BottomSheetModal";
 
 const Chat = ({
   prayerToReact,
   setPrayerToReact,
+  reactionChannel,
   setReactionChannel,
   handleOpenBottomModal,
   theme,
@@ -40,6 +42,7 @@ const Chat = ({
   setNewMessage,
   handleContentSizeChange,
   sendMessage,
+  bottomSheetModalRef,
 }) => {
   return (
     <View
@@ -210,6 +213,15 @@ const Chat = ({
           />
         </TouchableOpacity>
       </View>
+      <BottomModal
+        handlePresentModalPress={handleOpenBottomModal}
+        setPrayerToReact={setPrayerToReact}
+        prayerToReact={prayerToReact}
+        reactionChannel={reactionChannel}
+        supabase={supabase}
+        currentUser={currentUser}
+        bottomSheetModalRef={bottomSheetModalRef}
+      />
     </View>
   );
 };

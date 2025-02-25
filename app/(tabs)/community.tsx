@@ -540,7 +540,7 @@ const CommunityHomeScreen = () => {
                     <Text
                       numberOfLines={1}
                       style={getMainTextColorStyle(actualTheme)}
-                      className="font-inter-regular  text-light-primary dark:text-dark-accent"
+                      className="font-inter-regular text-sm  text-light-primary dark:text-dark-accent"
                     >
                       {item.groups?.description}
                     </Text>
@@ -560,7 +560,7 @@ const CommunityHomeScreen = () => {
                         }}
                       >
                         <Image
-                          className="w-9 h-9 rounded-full"
+                          className="w-7 h-7 rounded-full"
                           source={{
                             uri: g.profiles?.avatar_url
                               ? g.profiles?.avatar_url

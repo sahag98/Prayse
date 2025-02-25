@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from "react";
 import { useColorScheme } from "nativewind";
-import { FlatList, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { Alert, FlatList, Pressable, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import ReminderItem from "@components/ReminderItem";
 
@@ -14,7 +14,8 @@ import {
 } from "@lib/customStyles";
 import { ActualTheme } from "@types/reduxTypes";
 
-import { Container, HeaderTitle, HeaderView } from "../../styles/appStyles";
+import { Container, HeaderTitle, HeaderView } from "../../../styles/appStyles";
+import { deleteAllReminders } from "@redux/remindersReducer";
 // import { deleteReminder } from "../redux/remindersReducer";
 
 const ReminderScreen = () => {
@@ -23,6 +24,8 @@ const ReminderScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
+
+  const dispatch = useDispatch();
 
   console.log("reminders: ", JSON.stringify(reminders, null, 2));
   return (
@@ -33,10 +36,32 @@ const ReminderScreen = () => {
       <HeaderView className="justify-between  w-full">
         <HeaderTitle
           style={getMainTextColorStyle(actualTheme)}
-          className="font-inter-bold py-3 text-lg text-light-primary dark:text-dark-primary"
+          className="font-inter-bold pt-5 text-lg text-light-primary dark:text-dark-primary"
         >
           Reminders
         </HeaderTitle>
+        <Pressable
+          onPress={() =>
+            Alert.alert(
+              "Clear Reminders",
+              "This action will permenantly delete all reminders.",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => dispatch(deleteAllReminders()),
+                },
+              ],
+            )
+          }
+        >
+          <Ionicons name="trash-outline" size={24} color="red" />
+        </Pressable>
       </HeaderView>
       <View className="mb-5">
         <Text

@@ -246,7 +246,7 @@ const ProfileModal = ({
 
   return (
     <Modal
-      animationType="fade"
+      animationType="slide"
       onShow={onModalShow}
       transparent
       visible={profileVisible}
@@ -257,7 +257,7 @@ const ProfileModal = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ModalContainer
-          className="bg-light-background dark:bg-dark-background justify-start items-start"
+          className="bg-light-background flex-1 dark:bg-dark-background justify-start items-start"
           style={[
             getMainBackgroundColorStyle(actualTheme),
             colorScheme === "dark"

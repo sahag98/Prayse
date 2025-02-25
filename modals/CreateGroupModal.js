@@ -18,7 +18,11 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { HeaderView, ModalContainer } from "../styles/appStyles";
 
-import { getMainTextColorStyle } from "@lib/customStyles";
+import {
+  getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
+} from "@lib/customStyles";
 
 const CreateGroupModal = ({
   actualTheme,
@@ -129,44 +133,18 @@ const CreateGroupModal = ({
           </TouchableOpacity>
           <TouchableOpacity
             disabled={groupName.length === 0}
-            className="flex-row justify-center items-center py-3 px-4 rounded-lg"
-            style={
-              actualTheme && actualTheme.Primary
-                ? {
-                    backgroundColor:
-                      groupName.length === 0 ? "grey" : actualTheme.Primary,
-                  }
-                : {
-                    backgroundColor:
-                      theme === "dark"
-                        ? groupName.length === 0
-                          ? "#212121"
-                          : "#a5c9ff"
-                        : groupName.length === 0
-                          ? "grey"
-                          : "#2f2d51",
-                  }
-            }
+            className="flex-row justify-center bg-light-primary dark:bg-dark-accent items-center py-3 px-4 rounded-lg"
+            style={[
+              getPrimaryBackgroundColorStyle(actualTheme),
+              {
+                opacity: groupName.length === 0 ? 0.3 : 1,
+              },
+            ]}
             onPress={createGroup}
           >
             <Text
-              className="font-inter-bold text-lg"
-              style={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? {
-                      color:
-                        groupName.length === 0
-                          ? "white"
-                          : actualTheme.PrimaryTxt,
-                    }
-                  : theme == "dark"
-                    ? {
-                        color: groupName.length === 0 ? "grey" : "#121212",
-                      }
-                    : {
-                        color: groupName.length === 0 && "white",
-                      }
-              }
+              style={getPrimaryTextColorStyle(actualTheme)}
+              className="font-inter-bold text-light-background dark:text-dark-background text-lg"
             >
               Create
             </Text>

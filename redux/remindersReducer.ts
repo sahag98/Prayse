@@ -46,12 +46,36 @@ export const reminderSlice = createSlice({
         (reminder) => reminder.reminder.id !== action.payload,
       );
     },
+    deleteAllReminders: (state) => {
+      state.reminders = [];
+    },
+
+    handleReminderAmen: (state, action) => {
+      console.log("payload: ", action.payload);
+
+      const foundReminder = state.reminders.find(
+        (reminder) => reminder.reminder.id === action.payload,
+      );
+      console.log("found: ", foundReminder);
+
+      if (foundReminder) {
+        console.log("found: ", foundReminder);
+
+        // Add the new field
+        foundReminder.prayer_times = foundReminder.prayer_times
+          ? foundReminder.prayer_times + 1
+          : 1;
+
+        console.log("updated reminder: ", foundReminder);
+      }
+    },
+
     editReminder: (state, action) => {
       const newReminders = [...state.reminders];
       const reminderIndex = state.reminders.findIndex(
         (reminder) => reminder.id === action.payload.reminder.id,
       );
-      newReminders.splice(reminderIndex, 1, action.payload.re);
+      newReminders.splice(reminderIndex, 1, action.payload.reminder);
       state.reminders = newReminders;
     },
   },
@@ -60,10 +84,12 @@ export const reminderSlice = createSlice({
 export const {
   clearReminders,
   handleReviewShowing,
+  deleteAllReminders,
   incrementReviewCounter,
   addNewReminder,
   deleteReminder,
   editReminder,
+  handleReminderAmen,
 } = reminderSlice.actions;
 
 export default reminderSlice.reducer;

@@ -45,7 +45,7 @@ const BottomBox = ({
         answeredDate: new Date().toDateString(),
         prayer,
         id: uuid.v4(),
-      }),
+      })
     );
     setLoading(true);
     setIsBoxVisible(false);
@@ -105,7 +105,7 @@ const BottomBox = ({
           }).start();
         }
       },
-    }),
+    })
   ).current;
 
   return (

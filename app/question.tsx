@@ -107,7 +107,7 @@ const QuestionScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           onEndReachedThreshold={0}
           scrollEventThrottle={16}
-          contentContainerStyle={{ gap: 5, flex: 1 }}
+          contentContainerStyle={{ gap: 5, flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={() => <View className="h-24" />}
           ListEmptyComponent={() => (

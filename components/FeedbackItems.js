@@ -21,7 +21,7 @@ const FeedbackItems = ({ options, actualTheme, theme }) => {
       >
         Feedback
       </Text>
-      <View className="bg-light-secondary rounded-lg overflow-hidden">
+      <View className=" rounded-lg overflow-hidden">
         {options.map((option) =>
           option.link ? (
             <TouchableOpacity

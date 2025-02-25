@@ -1,9 +1,9 @@
 // @ts-nocheck
 import * as Notifications from "expo-notifications";
-import { useNavigation } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { router, useNavigation } from "expo-router";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 
 import {
   getPrimaryBackgroundColorStyle,
@@ -52,8 +52,6 @@ const ReminderItem = ({
     "Saturday",
   ];
 
-  console.log(content.time);
-
   const timestamp = new Date(content.time);
   let timeOptions;
 
@@ -99,13 +97,14 @@ const ReminderItem = ({
   // const isPrayTime = formattedDate === currentDate;
 
   return (
-    <View
+    <Pressable
+      onPress={() => router.push(`/reminder/${reminder.reminder.id}`)}
       style={getSecondaryBackgroundColorStyle(actualTheme)}
-      className="gap-3 p-3 items-center rounded-lg bg-light-secondary dark:bg-dark-secondary justify-between w-full"
+      className="gap-3 p-4 items-center rounded-lg bg-light-secondary dark:bg-dark-secondary justify-between w-full"
     >
-      <View className="flex-row w-full justify-between">
-        <View className="gap-2">
-          <View className="flex-row items-center justify-between">
+      <View className="flex-row w-full gap-2 justify-between">
+        <View className="gap-2 flex-1">
+          {/* <View className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-2">
               <Ionicons
                 name="time-outline"
@@ -143,15 +142,15 @@ const ReminderItem = ({
                 </Text>
               )}
             </View>
-          </View>
+          </View> */}
           <Text
-            numberOfLines={3}
+            numberOfLines={1}
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-medium text-light-primary dark:text-dark-primary text-lg"
           >
             {content.message}
           </Text>
-          {content.note && (
+          {/* {content.note && (
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
               numberOfLines={5}
@@ -159,11 +158,23 @@ const ReminderItem = ({
             >
               {content.note}
             </Text>
-          )}
+          )} */}
         </View>
+
+        <AntDesign
+          name="right"
+          size={24}
+          color={
+            actualTheme && actualTheme.MainTxt
+              ? actualTheme.MainTxt
+              : colorScheme === "light"
+                ? "#2f2d51"
+                : "white"
+          }
+        />
       </View>
 
-      <View className="flex-row gap-3 self-end items-center mt-auto">
+      {/* <View className="flex-row gap-3 self-end items-center mt-auto">
         <TouchableOpacity
           onPress={() =>
             navigation.navigate(TEST_SCREEN, {
@@ -191,8 +202,8 @@ const ReminderItem = ({
         <TouchableOpacity onPress={() => dismissNotification(reminder)}>
           <Text className="font-inter-medium text-red-500">Delete</Text>
         </TouchableOpacity>
-      </View>
-    </View>
+      </View> */}
+    </Pressable>
   );
 };
 

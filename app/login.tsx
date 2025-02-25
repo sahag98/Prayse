@@ -114,8 +114,6 @@ const LoginScreen = () => {
           access_token: data.access_token,
           refresh_token: data.refresh_token,
         });
-      } else if (result.type === "cancel") {
-        showToast("info", "Google sign-in was cancelled");
       }
     } catch (error) {
       console.error("Google sign-in error:", error);

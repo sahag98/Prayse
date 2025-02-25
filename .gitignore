@@ -20,3 +20,8 @@ credentials/
 
 # macOS
 .DS_Store
+
+# Expo
+.expo
+dist/
+web-build/

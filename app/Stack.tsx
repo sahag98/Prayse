@@ -26,6 +26,7 @@ import {
   REMINDER_SCREEN,
   ROADMAP_SCREEN,
   SETTINGS_SCREEN,
+  SINGLE_REMINDER_SCREEN,
   TEST_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
   WALLPAPERS_SCREEN,
@@ -136,7 +137,15 @@ const StackContainer = () => {
           name={DEVO_LIST_SCREEN}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name={SINGLE_REMINDER_SCREEN}
+          options={{
+            presentation: "modal",
+            sheetAllowedDetents: [0.2, 1],
+            sheetGrabberVisible: true,
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name={OLD_PRAYER_SCREEN}
           options={{ headerShown: false }}

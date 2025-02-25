@@ -45,6 +45,7 @@ const DailyReflection = ({
   appStreak,
 }) => {
   const navigation = useNavigation();
+  const { addPrayerTracking, addVODTracking } = useStore();
   const [isShowingStreak, setIsShowingStreak] = useState(false);
   const router = useRouter();
   const hasEnteredGiveaway = useSelector(
@@ -53,59 +54,25 @@ const DailyReflection = ({
 
   const dispatch = useDispatch();
   const today = new Date().toLocaleDateString().split("T")[0];
-  const [showNewBadge, setShowNewBadge] = useState(false);
-  const [showNewVerseBadge, setShowNewVerseBadge] = useState(false);
-  const [showNewPraiseBadge, setShowNewPraiseBadge] = useState(false);
-
-  const {
-    hasShownPraiseBadge,
-    hasShownPrayerBadge,
-    hasShownVerseBadge,
-    handleBadgeShowing,
-    resetBadgeShowing,
-  } = useStore();
 
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
     useCallback(() => {
       // Invoked whenever the route is focused.
-      const checkBadgeStatus = async () => {
-        // await AsyncStorage.removeItem("lastBadgeShownDate");
-        // resetBadgeShowing();
-        const lastShownDate = await AsyncStorage.getItem("lastBadgeShownDate");
-
-        const currentDate = new Date().toLocaleDateString().split("T")[0];
-
-        if (!lastShownDate) {
-          await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
-        }
-
-        if (lastShownDate && lastShownDate !== currentDate) {
-          resetBadgeShowing();
-          await AsyncStorage.setItem("lastBadgeShownDate", currentDate);
-        }
-      };
-      checkBadgeStatus();
       clearPreviousDayCompletion();
       // Return function is invoked whenever the route gets out of focus.
     }, [today])
   );
 
   async function handleComplete(selected) {
+    // addPrayer();
     // dispatch(deleteCompletedItems())
-    if (!hasShownPrayerBadge && selected === "prayer-room") {
-      handleBadgeShowing(PRAYER_ROOM_SCREEN);
-      // await AsyncStorage.removeItem("showNewFeatureBadge");
+    if (selected === PRAYER_ROOM_SCREEN) {
+      addPrayerTracking();
     }
 
-    if (!hasShownVerseBadge && selected === "verse-of-the-day") {
-      handleBadgeShowing(VERSE_OF_THE_DAY_SCREEN);
-      // await AsyncStorage.removeItem("showNewFeatureBadge");
-    }
-
-    if (!hasShownPraiseBadge && selected === "devo-list") {
-      handleBadgeShowing(DEVO_LIST_SCREEN);
-      // await AsyncStorage.removeItem("showNewFeatureBadge");
+    if (selected === VERSE_OF_THE_DAY_SCREEN) {
+      addVODTracking();
     }
     if (
       completedItems.find((completedItem) =>
@@ -123,6 +90,7 @@ const DailyReflection = ({
     // dispatch(resetGiveaway());
     // dispatch(deleteCompletedItems());
     // dispatch(deleteStreakCounter());
+
     dispatch(
       addtoCompletedItems({
         item: selected,
@@ -181,10 +149,7 @@ const DailyReflection = ({
       </View>
 
       <View className="gap-3 relative w-full">
-        <TouchableOpacity
-          onPress={() => handleComplete(PRAYER_ROOM_SCREEN)}
-          className="flex-row items-center justify-between"
-        >
+        <TouchableOpacity className="flex-row items-center justify-between">
           <View
             className="absolute w-[5px] h-3/4 top-1/2 left-[10px]"
             style={
@@ -258,13 +223,6 @@ const DailyReflection = ({
               >
                 Pray
               </Text>
-              {!hasShownPrayerBadge && (
-                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
-                  <Text className="text-white font-inter-medium text-xs">
-                    new
-                  </Text>
-                </View>
-              )}
             </View>
             <View className="gap-1">
               <Text
@@ -415,13 +373,7 @@ const DailyReflection = ({
               >
                 Verse of the Day
               </Text>
-              {!hasShownVerseBadge && (
-                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
-                  <Text className="text-white font-inter-medium text-xs">
-                    new
-                  </Text>
-                </View>
-              )}
+
               {/* <Feather
                 name="book-open"
                 size={20}
@@ -547,13 +499,6 @@ const DailyReflection = ({
                   Praise
                 </Text>
               </View>
-              {!hasShownPraiseBadge && (
-                <View className="bg-red-500 ml-auto rounded-full px-2 py-1">
-                  <Text className="text-white font-inter-medium text-xs">
-                    new
-                  </Text>
-                </View>
-              )}
             </View>
             <View className="gap-1">
               <Text

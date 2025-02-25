@@ -10,7 +10,7 @@ import { SupabaseContext } from "./SupabaseContext";
 
 import "react-native-url-polyfill/auto";
 import { useRouter } from "expo-router";
-import { COMMUNITY_SCREEN } from "@routes";
+import { COMMUNITY_SCREEN, WELCOME_SCREEN } from "@routes";
 import { useQueryClient } from "@tanstack/react-query";
 
 // We are using Expo Secure Store to persist session info
@@ -48,6 +48,8 @@ export const SupabaseProvider = (props) => {
   const [refreshAnswers, setRefreshAnswers] = useState(false);
   const [refreshReflections, setRefreshReflections] = useState(false);
   const [latestQuestion, setLatestQuestion] = useState(null);
+
+  const [callGroup, setCallGroup] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -275,6 +277,16 @@ export const SupabaseProvider = (props) => {
               }
 
               if (
+                payload.eventType === "UPDATE" &&
+                payload.new.active_call_id
+              ) {
+                console.log("STARTED CALL!!");
+                console.log("new: ", payload.new);
+                setCallGroup(payload.new);
+                // router.push(`prayer-video-call/${payload.new.id}`);
+              }
+
+              if (
                 payload.eventType === "INSERT" ||
                 payload.eventType === "DELETE"
               ) {
@@ -406,6 +418,8 @@ export const SupabaseProvider = (props) => {
   return (
     <SupabaseContext.Provider
       value={{
+        callGroup,
+        setCallGroup,
         newPost,
         setNewPost,
         newAnswer,

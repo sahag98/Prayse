@@ -56,7 +56,10 @@ const AddListModal = ({
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
-        containerStyle={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+        backgroundStyle={{
+          backgroundColor: colorScheme === "dark" ? "#212121" : "#f2f7ff",
+        }}
+        containerStyle={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
         handleIndicatorStyle={{
           backgroundColor:
             actualTheme && actualTheme.MainTxt
@@ -66,14 +69,11 @@ const AddListModal = ({
                 : "#2f2d51",
         }}
         handleStyle={{
-          borderTopWidth: 1,
-          borderRadius: 15,
-          borderTopColor: "gainsboro",
           backgroundColor:
             actualTheme && actualTheme.Bg
               ? actualTheme.Bg
               : colorScheme === "dark"
-                ? "#121212"
+                ? "#212121"
                 : "#f2f7ff",
         }}
         snapPoints={snapPoints}
@@ -81,7 +81,7 @@ const AddListModal = ({
       >
         <BottomSheetView
           style={getMainBackgroundColorStyle(actualTheme)}
-          className="flex-1 gap-3 items-center bg-light-background dark:bg-dark-background p-4 "
+          className="flex-1 gap-3 items-center bg-light-background dark:bg-dark-secondary p-4 "
         >
           <Text
             style={getMainTextColorStyle(actualTheme)}
@@ -93,7 +93,7 @@ const AddListModal = ({
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-medium text-light-primary dark:text-dark-primary"
           >
-            Choose one of these examples or create your own!
+            Choose one of these names or create your own!
           </Text>
           <View className="flex-row mb-3 items-center gap-2 justify-between">
             <Pressable
@@ -131,7 +131,7 @@ const AddListModal = ({
                   borderColor: actualTheme.SecondaryTxt,
                 },
             ]}
-            className="w-full border text-light-primary font-inter-regular dark:text-dark-primary border-light-primary dark:border-[#c1c0c0] p-5 rounded-lg"
+            className="w-full border text-light-primary font-inter-regular dark:text-dark-primary border-light-primary dark:border-[#c1c0c0] p-5 mb-3 rounded-lg"
             placeholder="What's the name of the list?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt

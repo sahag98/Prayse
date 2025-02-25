@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import { Alert, Platform, Pressable, Text, View } from "react-native";
@@ -11,10 +11,10 @@ import DailyReflection from "@components/DailyReflection";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 // import HowtoUsePrayse from "@components/HowtoUsePrayse";
 import { MerchComponent } from "@components/MerchComponent";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ProBanner } from "@components/pro-banner";
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
 import { Greeting } from "@components/welcome/greeting";
-import { StreakAction } from "@components/welcome/streak-action";
 
 import { UpdateModal } from "@modals/update-modal";
 import WriteFeedbackModal from "@modals/WriteFeedbackModal";
@@ -27,11 +27,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { WelcomeContainer } from "@styles/appStyles";
 import { ActualTheme } from "../../types/reduxTypes";
-import { FeatureModal } from "@modals/feature-modal";
+
 import { CheckReview } from "@hooks/useShowReview";
-import { clearReminders, handleReviewShowing } from "@redux/remindersReducer";
-import ProModal from "@modals/ProModal";
-import { showProModal } from "@redux/userReducer";
+import { handleReviewShowing } from "@redux/remindersReducer";
+
+import useStore from "@hooks/store";
 // import { setProModalVisible } from "@redux/userReducer";
 
 SplashScreen.preventAutoHideAsync();
@@ -124,7 +124,7 @@ const WelcomeScreen = () => {
   const hasShownProModal = useSelector(
     (state: any) => state.user.hasShownProModal,
   );
-
+  const { deletePrayerTracking, addPrayerTracking } = useStore();
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
@@ -206,11 +206,12 @@ const WelcomeScreen = () => {
       <UpdateModal theme={colorScheme!} actualTheme={actualTheme} />
       <View className="items-center mb-3 flex-row justify-between w-full">
         <Greeting actualTheme={actualTheme} theme={colorScheme!} />
+
         <View className="relative flex-row gap-2 items-center">
           <Ionicons
             onPress={() => setFeedbackVisible(true)}
             name="chatbubble-ellipses-outline"
-            size={24}
+            size={25}
             color={
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
@@ -225,9 +226,23 @@ const WelcomeScreen = () => {
             theme={colorScheme}
             actualTheme={actualTheme}
           />
-          <View className="flex items-center flex-row">
-            <StreakAction actualTheme={actualTheme} theme={colorScheme!} />
-          </View>
+          <Pressable
+            onPress={() => router.push("tracking")}
+            className="flex items-center ml-3 flex-row"
+          >
+            <MaterialCommunityIcons
+              style={{ zIndex: 10 }}
+              name="hands-pray"
+              size={25}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </Pressable>
         </View>
       </View>
       <DailyReflection
@@ -237,9 +252,6 @@ const WelcomeScreen = () => {
         appStreak={appstreak}
         theme={colorScheme}
       />
-      <Pressable onPress={() => dispatch(clearReminders())}>
-        <Text>Delete reminders</Text>
-      </Pressable>
       <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
       {/* <ProBanner actualTheme={actualTheme} theme={colorScheme!} /> */}
 

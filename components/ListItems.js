@@ -269,7 +269,7 @@ const ListItems = ({
   };
 
   return (
-    <View className={cn(prayer && "opacity-25", "transition-all flex-1")}>
+    <View className="flex-1">
       <VerseModal
         verseModal={verseModal}
         setVerseModal={setVerseModal}
@@ -321,7 +321,7 @@ const ListItems = ({
                   ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
                   : activeTab === "Answered"
                     ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
-                    : "Tap the + button to add a prayer to your list."}
+                    : "Add a prayer using your voice or just type it in!"}
               </Text>
             </View>
           </View>

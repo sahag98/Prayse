@@ -31,7 +31,8 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
 
   const prayers = prayerList
     ?.filter((item) => item.folderId === id)
-    .filter((item) => item.status !== "Archived");
+    .filter((item) => item.status !== "Archived")
+    .filter((item) => item.status !== "Answered");
 
   return (
     <TouchableOpacity

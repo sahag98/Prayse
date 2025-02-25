@@ -45,7 +45,7 @@ const PrayerBottomModal = ({
   const snapPoints = useMemo(() => ["50%"], []);
   const dispatch = useDispatch();
   const handleAddToAnsweredPrayer = async () => {
-    dispatch(switchPrayerStatus(prayer));
+    dispatch(switchPrayerStatus({ prayer, newStatus: "Answered" }));
     if (reminderPrayer) {
       //@ts-expect-error
       dispatch(deleteReminder(reminderPrayer.reminder.id));
@@ -57,7 +57,12 @@ const PrayerBottomModal = ({
 
   const handleArchivePrayer = () => {
     console.log("will switch to archived");
-    dispatch(archivePrayer(prayer));
+    if (prayer.status === "Archived") {
+      dispatch(switchPrayerStatus({ prayer, newStatus: "Active" }));
+    } else {
+      dispatch(switchPrayerStatus({ prayer, newStatus: "Archived" }));
+    }
+
     handleCloseBottomModal();
   };
 
@@ -91,6 +96,7 @@ const PrayerBottomModal = ({
         <BottomSheetModal
           ref={prayerBottomSheetModalRef}
           index={0}
+          containerStyle={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
           handleIndicatorStyle={{
             backgroundColor:
               actualTheme && actualTheme.MainTxt
@@ -100,25 +106,25 @@ const PrayerBottomModal = ({
                   : "#2f2d51",
           }}
           handleStyle={{
-            borderTopWidth: 1,
-            borderTopColor: "gainsboro",
+            // borderTopWidth: 1,
+            // borderTopColor: "gainsboro",
             backgroundColor:
               actualTheme && actualTheme.Bg
                 ? actualTheme.Bg
                 : colorScheme === "dark"
-                  ? "#121212"
-                  : "white",
+                  ? "#212121"
+                  : "#f2f7ff",
           }}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
         >
           <BottomSheetView
             style={getMainBackgroundColorStyle(actualTheme)}
-            className="flex-1 dark:bg-dark-background gap-3 p-4"
+            className="flex-1 dark:bg-dark-secondary bg-light-background gap-3 p-4"
           >
             <TouchableOpacity
               onPress={handleDelete}
-              className="bg-red-400 flex-row justify-between items-center p-4 rounded-md"
+              className="dark:bg-red-800 bg-red-500 flex-row justify-between items-center p-4 rounded-md"
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}
@@ -132,7 +138,7 @@ const PrayerBottomModal = ({
               <TouchableOpacity
                 onPress={handleArchivePrayer}
                 style={getSecondaryBackgroundColorStyle(actualTheme)}
-                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
+                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-background p-4 rounded-md"
               >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
@@ -149,7 +155,7 @@ const PrayerBottomModal = ({
                     actualTheme && actualTheme.SecondaryTxt
                       ? actualTheme.SecondaryTxt
                       : colorScheme === "dark"
-                        ? "#A5C9FF"
+                        ? "white"
                         : "#2f2d51"
                   }
                 />
@@ -160,7 +166,7 @@ const PrayerBottomModal = ({
                 <TouchableOpacity
                   onPress={() => handleTriggerEdit(prayer)}
                   style={getSecondaryBackgroundColorStyle(actualTheme)}
-                  className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
+                  className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-background p-4 rounded-md"
                 >
                   <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
@@ -175,7 +181,7 @@ const PrayerBottomModal = ({
                       actualTheme && actualTheme.SecondaryTxt
                         ? actualTheme.SecondaryTxt
                         : colorScheme === "dark"
-                          ? "#A5C9FF"
+                          ? "white"
                           : "#2f2d51"
                     }
                   />
@@ -185,7 +191,7 @@ const PrayerBottomModal = ({
                   <TouchableOpacity
                     onPress={handleAddToAnsweredPrayer}
                     style={getSecondaryBackgroundColorStyle(actualTheme)}
-                    className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
+                    className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-background p-4 rounded-md"
                   >
                     <Text
                       style={getSecondaryTextColorStyle(actualTheme)}
@@ -200,7 +206,7 @@ const PrayerBottomModal = ({
                         actualTheme && actualTheme.SecondaryTxt
                           ? actualTheme.SecondaryTxt
                           : colorScheme === "dark"
-                            ? "#A5C9FF"
+                            ? "white"
                             : "#2f2d51"
                       }
                     />
@@ -212,7 +218,7 @@ const PrayerBottomModal = ({
               <TouchableOpacity
                 onPress={onShare}
                 style={getSecondaryBackgroundColorStyle(actualTheme)}
-                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-secondary p-4 rounded-md"
+                className="bg-light-secondary flex-row justify-between items-center dark:bg-dark-background p-4 rounded-md"
               >
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
@@ -227,7 +233,7 @@ const PrayerBottomModal = ({
                     actualTheme && actualTheme.SecondaryTxt
                       ? actualTheme.SecondaryTxt
                       : colorScheme === "dark"
-                        ? "#A5C9FF"
+                        ? "white"
                         : "#2f2d51"
                   }
                 />

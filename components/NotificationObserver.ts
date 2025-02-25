@@ -1,19 +1,25 @@
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import {
   PRAYER_GROUP_SCREEN,
   QUESTION_SCREEN,
+  REMINDER_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
 } from "@routes";
+import { useDispatch } from "react-redux";
 export function useNotificationObserver() {
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
 
     function redirect(notification: Notifications.Notification) {
       const data = notification.request.content.data;
+
+      console.log("data: ", notification.request.content);
 
       const url = data?.url || data?.screen;
 
@@ -45,6 +51,12 @@ export function useNotificationObserver() {
             title: data.title,
             question_id: data.question_id,
           });
+        } else if (["Prayer Reminder", REMINDER_SCREEN].includes(url)) {
+          // navigateWithDelay(REMINDER_SCREEN)
+          router.push(`${REMINDER_SCREEN}/${data.reminder_id}`);
+        } else if (["prayer-video-call"].includes(url) && data.group_id) {
+          console.log("HEREEEE");
+          router.push(`prayer-video-call/${data.group_id}`);
         } else {
           navigateWithDelay(url);
         }

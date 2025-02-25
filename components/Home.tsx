@@ -5,7 +5,7 @@ import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import PrayerBottomModal from "@modals/PrayerBottomModal";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,6 +15,7 @@ import { PrayerContainer } from "../styles/appStyles";
 
 import Header from "./Header";
 import ListItems from "./ListItems";
+import { router } from "expo-router";
 
 const Home = ({
   navigation,
@@ -108,17 +109,14 @@ const Home = ({
   };
 
   return (
-    <PrayerContainer
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
-      className="relative bg-light-background dark:bg-dark-background"
+      className="relative h-full"
     >
-      <Animated.View
-        pointerEvents={isBoxVisible ? "none" : "auto"}
-        style={
-          isBoxVisible
-            ? { paddingHorizontal: 15, opacity }
-            : { flex: 1, paddingHorizontal: 15, opacity, height: "100%" }
-        }
+      <View
+        className="flex-1 px-4"
+        // pointerEvents={isBoxVisible ? "none" : "auto"}
+        // style={{ flex: 1, paddingHorizontal: 15, height: "100%" }}
       >
         <Header
           actualTheme={actualTheme}
@@ -129,8 +127,7 @@ const Home = ({
           theme={theme}
           navigation={navigation}
         />
-
-        <View style={{ flex: 1 }}>
+        <View className="flex-1">
           <ListItems
             prayer={prayer}
             actualTheme={actualTheme}
@@ -141,7 +138,7 @@ const Home = ({
             answeredAlready={answeredAlready}
             setAnsweredAlready={setAnsweredAlready}
             loading={loading}
-            opacity={opacity}
+            // opacity={opacity}
             setOpacity={setOpacity}
             slideUpValue={slideUpValue}
             setIsBoxVisible={setIsBoxVisible}
@@ -153,7 +150,6 @@ const Home = ({
             handleTriggerEdit={handleTriggerEdit}
           />
         </View>
-
         <PrayerBottomModal
           handlePresentModalPress={handleOpenBottomModal}
           handleCloseBottomModal={handleCloseBottomModal}
@@ -166,12 +162,13 @@ const Home = ({
           setLoading={setLoading}
           handleTriggerEdit={handleTriggerEdit}
           answeredAlready={answeredAlready}
-          opacity={opacity}
+          // opacity={opacity}
           theme={theme}
           selectedEdit={selectedEdit}
           setSelectedEdit={setSelectedEdit}
           setIsBoxVisible={setIsBoxVisible}
         />
+
         {!prayer && (
           <InputModal
             actualTheme={actualTheme}
@@ -198,8 +195,8 @@ const Home = ({
             setPrayertoBeEdited={setPrayertoBeEdited}
           />
         )}
-      </Animated.View>
-    </PrayerContainer>
+      </View>
+    </View>
   );
 };
 

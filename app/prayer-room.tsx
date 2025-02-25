@@ -216,14 +216,25 @@ const PrayerRoom = () => {
 
   const sayings = [
     "When you seek God, He meets you where you are.",
+    "God walks with you, even in the valley.",
+    "The Lord’s mercy is new every morning.",
+    "Faith moves mountains when hope anchors the soul.",
+    "God is working, even when you can’t see it.",
+    "Even a mustard seed of faith can change everything.",
     "The closer you get to God, the closer He gets to you.",
     "Move your heart toward God, and He will move His grace toward you.",
     "Lean into God, and He will embrace you with His presence.",
     "Take a step toward God, and He’ll take a step toward you.",
+    "The Lord’s plans stand firm forever.",
+    "From everlasting to everlasting, He is God.",
+    "God’s love never fails, never fades, never ends.",
     "Open your heart to God, and He will open His blessings to you.",
     "Focus your mind on God, and He will fill it with His truth.",
+    "His ways are higher, His wisdom unfailing.",
     "Quiet your soul before God, and He will speak to your heart.",
     "Rest in God’s presence, and you will find His peace.",
+    "You are fully known and fully loved by God.",
+    "Nothing can separate you from the love of Christ.",
     "Seek God with all your heart, and you will find His love.",
   ];
 
@@ -325,8 +336,28 @@ const PrayerRoom = () => {
 
   async function pauseSound() {
     setIsPlayingSound(false);
-    await sound?.pauseAsync();
-    await sound?.unloadAsync();
+
+    setTimeout(async () => {
+      let currentVolume = 1;
+
+      const fadeDuration = 2000; // 2 seconds fade out
+
+      const decrementStep = 0.02; // Adjust based on desired fade smoothness
+
+      while (currentVolume > 0) {
+        await sound?.setVolumeAsync(currentVolume);
+
+        currentVolume -= decrementStep;
+
+        await new Promise((resolve) => setTimeout(resolve, 10)); // Small delay for smooth fade
+      }
+
+      // Stop the sound when fully faded out
+
+      await sound?.stopAsync();
+    }, 500);
+    // await sound?.pauseAsync();
+    // await sound?.unloadAsync();
   }
 
   async function checkSound() {
@@ -489,7 +520,7 @@ function PrayerPreparation({
     };
 
     const fixedLastQuestion = {
-      title: `In Jesus' name, Amen. \n\nThank you for using our app to pray. We hope this prayer strengthens your faith and guides your day with His grace.`,
+      title: `In Jesus' name, Amen. \n\nThank you for using our app to pray. We hope this prayer strengthens your faith and guides your day with His grace!`,
       verses: [],
     };
 

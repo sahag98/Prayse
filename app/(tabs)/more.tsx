@@ -17,6 +17,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   FontAwesome,
+  FontAwesome5,
 } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
@@ -98,15 +99,32 @@ const MoreScreen = () => {
                 : "#2f2d51"
           }
         />
-        // <Feather
-        //   name="book"
-        //   className="mr-3"
-        //   size={24}
-
-        // />
       ),
       title: "Daily Praises",
       screen: DEVO_LIST_SCREEN,
+    },
+
+    {
+      id: 3,
+      icon: (
+        <FontAwesome5
+          className="mr-3"
+          name="bible"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "New Bible Study app!",
+      link:
+        Platform.OS == "ios"
+          ? "https://apps.apple.com/us/app/bible-study-prayse/id6739017076"
+          : "https://play.google.com/store/apps/details?id=com.sahag98.praysetogether",
     },
   ];
 
@@ -147,7 +165,7 @@ const MoreScreen = () => {
         />
       ),
       title: "Contact us",
-      link: "https://www.prayse.app/",
+      link: "https://www.prayse.app/contact",
     },
   ];
 
@@ -285,26 +303,7 @@ const MoreScreen = () => {
           theme={colorScheme}
         />
 
-        <View className="flex-row justify-around mt-5 items-center">
-          <TouchableOpacity
-            onPress={() => {
-              Linking.openURL("https://prayse.canny.io/feature-requests");
-            }}
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-secondary dark:bg-dark-secondary p-4  justify-center items-center rounded-lg"
-          >
-            <MaterialCommunityIcons
-              name="email-edit-outline"
-              size={24}
-              color={
-                actualTheme && actualTheme.SecondaryTxt
-                  ? actualTheme.SecondaryTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
-              }
-            />
-          </TouchableOpacity>
+        <View className="flex-row justify-center gap-10 mt-5 items-center">
           <TouchableOpacity
             onPress={() => {
               Linking.openURL("https://instagram.com/prayse.app");

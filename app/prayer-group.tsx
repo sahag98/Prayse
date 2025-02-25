@@ -2,27 +2,37 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Clipboard from "expo-clipboard";
-import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
+import * as Crypto from "expo-crypto";
 
 import BottomModal from "@modals/BottomSheetModal";
 import GroupInfoModal from "@modals/GroupInfoModal";
 
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
+  getPrimaryBackgroundColorStyle,
+  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
@@ -32,6 +42,7 @@ import Chat from "../components/Chat";
 import { useSupabase } from "../context/useSupabase";
 import { COMMUNITY_SCREEN, PRAYER_GROUP_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
+import VideoProvider from "@context/VideoProvider";
 
 const PrayerGroupScreen = () => {
   const params = useLocalSearchParams();
@@ -48,6 +59,8 @@ const PrayerGroupScreen = () => {
   const [channel, setChannel] = useState();
   const [reactionChannel, setReactionChannel] = useState();
 
+  const [selectPrayerMethod, setselectPrayerMethod] = useState("");
+
   const groupId = params?.group_id;
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
@@ -58,8 +71,15 @@ const PrayerGroupScreen = () => {
 
   const [prayerToReact, setPrayerToReact] = useState();
 
-  const { currentUser, setRefreshMsgLikes, refreshMsgLikes, supabase } =
-    useSupabase();
+  const {
+    currentUser,
+    setRefreshMsgLikes,
+    callGroup,
+    refreshMsgLikes,
+    supabase,
+  } = useSupabase();
+
+  const [isCallActive, setIsCallActive] = useState(false);
 
   useEffect(() => {
     async function fetchCurrGroup() {
@@ -72,6 +92,8 @@ const PrayerGroupScreen = () => {
       setCurrentGroup(data);
     }
     fetchCurrGroup();
+
+    console.log("curr group:", JSON.stringify(currentGroup, null, 2));
 
     async function fetchCurrGroupUsers() {
       const { data } = await supabase
@@ -205,6 +227,26 @@ const PrayerGroupScreen = () => {
     return groups;
   }
 
+  async function startPrayerVideoCall() {
+    console.log("heree");
+    try {
+      const { data, error } = await supabase
+        .from("groups")
+        .update({
+          start_video_call: true,
+          active_call_id: Crypto.randomUUID(),
+        })
+        .eq("id", groupId)
+        .select();
+
+      if (error) throw error;
+
+      router.push(`prayer-video-call/${groupId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const sendMessage = async () => {
     if (newMessage.length === 0) {
       return;
@@ -289,134 +331,232 @@ const PrayerGroupScreen = () => {
     copyToClipboard(currentUser.code.toString());
   };
 
+  // console.log(callGroup.id);
+
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
-    >
-      <PrayerContainer
-        style={getMainBackgroundColorStyle(actualTheme)}
-        className="bg-light-background dark:bg-dark-background relative"
+    <VideoProvider>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
       >
-        <HeaderView
-          style={
-            actualTheme &&
-            actualTheme.Secondary && {
-              borderBottomColor: actualTheme.Secondary,
-            }
-          }
-          className={cn(
-            "justify-between border-b border-b-light-primary dark:border-b-dark-secondary p-2 w-full transition-all",
-            prayerToReact && "opacity-50",
-          )}
+        <PrayerContainer
+          style={getMainBackgroundColorStyle(actualTheme)}
+          className="bg-light-background dark:bg-dark-background relative"
         >
-          <View className="flex-row flex-1">
-            <Link href={`/${COMMUNITY_SCREEN}`}>
-              <AntDesign
-                name="left"
-                size={24}
+          <HeaderView
+            style={
+              actualTheme &&
+              actualTheme.Secondary && {
+                borderBottomColor: actualTheme.Secondary,
+              }
+            }
+            className={cn(
+              "justify-between border-b border-b-light-primary dark:border-b-dark-secondary p-2 w-full transition-all",
+              prayerToReact && "opacity-50",
+            )}
+          >
+            <View className="flex-row flex-1">
+              <Link href={`/${COMMUNITY_SCREEN}`}>
+                <AntDesign
+                  name="left"
+                  size={24}
+                  color={
+                    actualTheme && actualTheme.MainTxt
+                      ? actualTheme.MainTxt
+                      : colorScheme === "dark"
+                        ? "white"
+                        : "#2f2d51"
+                  }
+                />
+              </Link>
+
+              <TouchableOpacity
+                onPress={() => setGroupInfoVisible(true)}
+                className="pb-1 ml-3 gap-2"
+              >
+                <HeaderTitle
+                  numberOfLines={1}
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
+                >
+                  {currentGroup?.name}
+                </HeaderTitle>
+                <Text
+                  style={getMainTextColorStyle(actualTheme)}
+                  className="text-sm underline font-inter-medium text-light-primary dark:text-dark-primary/50"
+                >
+                  Tap for more info
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {groupInfoVisible && (
+              <GroupInfoModal
+                group={currentGroup}
+                theme={colorScheme}
+                actualTheme={actualTheme}
+                supabase={supabase}
+                groupUsers={groupUsers}
+                currentUser={currentUser}
+                groupInfoVisible={groupInfoVisible}
+                setGroupInfoVisible={setGroupInfoVisible}
+              />
+            )}
+
+            <TouchableOpacity
+              onPress={copyCode}
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="p-2 ml-5 flex-row items-center bg-light-secondary dark:bg-dark-secondary rounded-lg gap-2"
+            >
+              <Feather
+                name="copy"
+                size={15}
                 color={
-                  actualTheme && actualTheme.MainTxt
-                    ? actualTheme.MainTxt
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
                       ? "white"
                       : "#2f2d51"
                 }
               />
-            </Link>
-
-            <TouchableOpacity
-              onPress={() => setGroupInfoVisible(true)}
-              className="pb-1 ml-3 gap-2"
-            >
-              <HeaderTitle
-                numberOfLines={1}
-                style={getMainTextColorStyle(actualTheme)}
-                className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
-              >
-                {currentGroup?.name}
-              </HeaderTitle>
               <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="text-sm underline font-inter-medium text-light-primary dark:text-dark-primary/50"
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-sm text-light-primary dark:text-dark-primary"
               >
-                Tap for more info
+                {currentGroup?.code}
               </Text>
             </TouchableOpacity>
-          </View>
-          {groupInfoVisible && (
-            <GroupInfoModal
-              group={currentGroup}
-              theme={colorScheme}
-              actualTheme={actualTheme}
-              supabase={supabase}
-              groupUsers={groupUsers}
-              currentUser={currentUser}
-              groupInfoVisible={groupInfoVisible}
-              setGroupInfoVisible={setGroupInfoVisible}
-            />
+          </HeaderView>
+          {callGroup && callGroup?.id === currentGroup?.id && (
+            <Pressable
+              style={getPrimaryBackgroundColorStyle(actualTheme)}
+              onPress={() => router.push(`prayer-video-call/${groupId}`)}
+              className="dark:bg-dark-secondary relative dark:shadow-purple-400 flex-row items-center shadow-lg shadow-purple-200 justify-center gap-2 bg-white rounded-2xl self-center p-5"
+            >
+              <Text
+                style={getPrimaryTextColorStyle(actualTheme)}
+                className="font-inter-semibold text-light-primary dark:text-dark-primary"
+              >
+                Join Prayer Call
+              </Text>
+            </Pressable>
+          )}
+          {currentGroup?.start_video_call && (
+            <Pressable
+              onPress={() => router.push(`prayer-video-call/${groupId}`)}
+              className="absolute top-20 z-10 bg-green-500 w-full p-4 flex-row justify-between items-center"
+            >
+              <Text className="text-white font-inter-bold">
+                Prayer Call in Progress
+              </Text>
+              <Text className="text-white font-inter-medium">
+                Tap to Join →
+              </Text>
+            </Pressable>
           )}
 
-          <TouchableOpacity
-            onPress={copyCode}
-            style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="p-2 ml-5 flex-row items-center bg-light-secondary dark:bg-dark-secondary rounded-lg gap-2"
-          >
-            <Feather
-              name="copy"
-              size={15}
-              color={
-                actualTheme && actualTheme.SecondaryTxt
-                  ? actualTheme.SecondaryTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
-              }
+          {!selectPrayerMethod && (
+            <>
+              <View className="flex-1 p-4 w-full justify-center items-center">
+                <View className="w-4/5 gap-3">
+                  <Pressable
+                    onPress={() =>
+                      Alert.alert(
+                        "Start Call",
+                        "Make sure that everyone is on this group screen for them to receive the call.",
+                        [
+                          {
+                            text: "Cancel",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel",
+                          },
+                          {
+                            text: "Start",
+                            style: "default",
+                            onPress: startPrayerVideoCall,
+                          },
+                        ],
+                      )
+                    }
+                    disabled={currentGroup?.admin_id !== currentUser.id}
+                    style={{
+                      opacity:
+                        currentGroup?.admin_id !== currentUser.id ? 0.5 : 1,
+                    }}
+                    className="bg-light-primary dark:bg-dark-accent p-3 rounded-xl items-center justify-center w-full"
+                  >
+                    <Feather
+                      name="video"
+                      size={40}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : colorScheme === "dark"
+                            ? "white"
+                            : "white"
+                      }
+                    />
+                    <Text className="font-inter-semibold mb-3 text-lg text-light-background dark:text-dark-background">
+                      Start a Prayer Video Call
+                    </Text>
+                    <Text className="font-inter-regular  text-light-background dark:text-dark-background">
+                      Only an admin can do this.
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setselectPrayerMethod("Chat")}
+                    className="bg-light-primary dark:bg-dark-accent p-3 rounded-xl items-center justify-center w-full"
+                  >
+                    <FontAwesome
+                      name="list-alt"
+                      size={40}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : colorScheme === "dark"
+                            ? "white"
+                            : "white"
+                      }
+                    />
+
+                    <Text className="font-inter-semibold text-lg text-light-background dark:text-dark-background">
+                      Add prayers to the group list
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </>
+          )}
+          {selectPrayerMethod === "Chat" && (
+            <Chat
+              theme={colorScheme}
+              prayerToReact={prayerToReact}
+              setPrayerToReact={setPrayerToReact}
+              setReactionChannel={setReactionChannel}
+              reactionChannel={reactionChannel}
+              bottomSheetModalRef={bottomSheetModalRef}
+              actualTheme={actualTheme}
+              currentUser={currentUser}
+              onlineUsers={onlineUsers}
+              handleOpenBottomModal={handleOpenBottomModal}
+              areMessagesLoading={areMessagesLoading}
+              groupMessages={groupMessages}
+              setGroupMessages={setGroupMessages}
+              flatListRef={flatListRef}
+              supabase={supabase}
+              currGroup={currentGroup}
+              setRefreshMsgLikes={setRefreshMsgLikes}
+              refreshMsgLikes={refreshMsgLikes}
+              showToast={showToast}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              sendMessage={sendMessage}
             />
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-sm text-light-primary dark:text-dark-primary"
-            >
-              {currentGroup?.code}
-            </Text>
-          </TouchableOpacity>
-        </HeaderView>
-
-        <Chat
-          theme={colorScheme}
-          prayerToReact={prayerToReact}
-          setPrayerToReact={setPrayerToReact}
-          setReactionChannel={setReactionChannel}
-          actualTheme={actualTheme}
-          currentUser={currentUser}
-          onlineUsers={onlineUsers}
-          handleOpenBottomModal={handleOpenBottomModal}
-          areMessagesLoading={areMessagesLoading}
-          groupMessages={groupMessages}
-          setGroupMessages={setGroupMessages}
-          flatListRef={flatListRef}
-          supabase={supabase}
-          currGroup={currentGroup}
-          setRefreshMsgLikes={setRefreshMsgLikes}
-          refreshMsgLikes={refreshMsgLikes}
-          showToast={showToast}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          sendMessage={sendMessage}
-        />
-
-        <BottomModal
-          handlePresentModalPress={handleOpenBottomModal}
-          setPrayerToReact={setPrayerToReact}
-          prayerToReact={prayerToReact}
-          reactionChannel={reactionChannel}
-          supabase={supabase}
-          currentUser={currentUser}
-          bottomSheetModalRef={bottomSheetModalRef}
-        />
-      </PrayerContainer>
-    </KeyboardAvoidingView>
+          )}
+        </PrayerContainer>
+      </KeyboardAvoidingView>
+    </VideoProvider>
   );
 };
 

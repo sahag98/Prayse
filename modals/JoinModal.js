@@ -139,7 +139,7 @@ const JoinModal = ({
       onRequestClose={handleCloseModal}
     >
       <ModalContainer
-        className="bg-light-background dark:bg-dark-background items-center"
+        className="bg-light-background flex-1 dark:bg-dark-background items-center"
         style={
           actualTheme && actualTheme.Bg
             ? {

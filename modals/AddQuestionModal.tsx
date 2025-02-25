@@ -87,7 +87,7 @@ const AddQuestionModal = ({
               ? actualTheme.MainTxt
               : colorScheme === "dark"
                 ? "white"
-                : "#f2f7ff",
+                : "#2f2d51",
         }}
         handleStyle={{
           borderTopWidth: 1,
@@ -142,7 +142,7 @@ const AddQuestionModal = ({
                   ? "#e0e0e0"
                   : "#2f2d51"
             }
-            value={newQuestion}
+            defaultValue={newQuestion}
             multiline
             onChangeText={setNewQuestion}
           />

@@ -1,5 +1,6 @@
 export const HOME_SCREEN = "welcome";
 export const FOLDER_SCREEN = "folder";
+export const SINGLE_REMINDER_SCREEN = "single-reminder";
 export const PRO_SCREEN = "pro";
 export const CREATE_THEME_SCREEN = "create-theme";
 export const YOUR_THEMES_SCREEN = "your-themes";
