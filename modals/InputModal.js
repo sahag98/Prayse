@@ -178,7 +178,7 @@ const InputModal = ({
     if (!prayertoBeEdited) {
       dispatch(
         addPrayer({
-          prayer: transcript ?? prayerValue,
+          prayer: transcript ? transcript : prayerValue,
           folder: folderName,
           status: "Active",
           folderId,

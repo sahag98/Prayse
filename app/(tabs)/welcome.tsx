@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Redirect, router } from "expo-router";
+import { Redirect, router, useFocusEffect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
 import { Alert, Platform, Pressable, Text, View } from "react-native";
@@ -40,7 +45,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => {
     return {
       shouldShowAlert: true,
-      shouldPlaySound: false,
+      shouldPlaySound: true,
       shouldSetBadge: false,
     };
   },
@@ -105,6 +110,7 @@ async function registerForPushNotificationsAsync() {
 const WelcomeScreen = () => {
   // const [_, setNotification] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
+  const [hasNewUpdate, setHasNewUpdate] = useState(false);
   const dispatch = useDispatch();
   const [featureVisible, setFeatureVisible] = useState(false);
   const [proModalVisible, setProModalVisible] = useState(false);
@@ -124,18 +130,30 @@ const WelcomeScreen = () => {
   const hasShownProModal = useSelector(
     (state: any) => state.user.hasShownProModal,
   );
-  const { deletePrayerTracking, addPrayerTracking } = useStore();
+  const { deletePrayerTracking, addPrayerTracking, isShowingNewUpdate } =
+    useStore();
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
   const { colorScheme } = useColorScheme();
 
+  console.log(isShowingNewUpdate);
+
   const loadIsFirstTime = async () => {
     try {
       const hasIsFirstTime = await AsyncStorage.getItem("isFirstTime");
+      const hasNewUpdate = await AsyncStorage.getItem("newUpdate");
 
       if (hasIsFirstTime) {
         setIsFirst(false);
+
+        if (hasNewUpdate) {
+          setHasNewUpdate(false);
+        } else {
+          setHasNewUpdate(true);
+          await AsyncStorage.setItem("newUpdate", "true");
+          router.push("new-update");
+        }
       } else {
         setIsFirst(true);
         await AsyncStorage.setItem("isFirstTime", "true");
@@ -145,42 +163,40 @@ const WelcomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (reviewCounter === 5 && !hasShownProModal) {
-      setProModalVisible(true);
-      // dispatch(setProModalVisible());
-      // setProModalVisible(true);
-    }
-    if (!hasShownReview) {
-      if (
-        reviewCounter === 3 ||
-        (reviewCounter % 14 === 0 && reviewCounter > 0)
-      ) {
-        Alert.alert(
-          "Thank You for using our app!",
-          "Would you take a moment to leave a review and share your experience?",
-          [
-            {
-              text: "Not Now",
-              onPress: () => dispatch(handleReviewShowing()),
-              style: "cancel",
-            },
-            {
-              text: "Leave a Review 🙌",
-              onPress: () => {
-                dispatch(handleReviewShowing());
-                CheckReview();
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      console.log("focused: ", reviewCounter);
+      console.log("has shown review: ", hasShownReview);
+      // Invoked whenever the route is focused.
+      if (!hasShownReview) {
+        if (
+          reviewCounter === 3 ||
+          (reviewCounter % 14 === 0 && reviewCounter > 0)
+        ) {
+          Alert.alert(
+            "Thank You for using our app!",
+            "Would you take a moment to leave a review and share your experience?",
+            [
+              {
+                text: "Not Now",
+                onPress: () => dispatch(handleReviewShowing()),
+                style: "cancel",
               },
-            },
-          ],
-        );
+              {
+                text: "Leave a Review 🙌",
+                onPress: () => {
+                  dispatch(handleReviewShowing());
+                  CheckReview();
+                },
+              },
+            ],
+          );
+        }
       }
-    }
-    // if (reviewCounter > 0 && reviewCounter % 3 === 0 && !hasShownReview) {
-    //   dispatch(handleReviewShowing());
-    //   CheckReview();
-    // }
-  }, [reviewCounter]);
+      // Return function is invoked whenever the route gets out of focus.
+    }, [reviewCounter]),
+  );
 
   useEffect(() => {
     loadIsFirstTime();
@@ -196,6 +212,10 @@ const WelcomeScreen = () => {
     return <Redirect href="/onboarding" />;
   }
 
+  // if (isFirst === false && isShowingNewUpdate) {
+  //   return <Redirect href="/new-update" />;
+  // }
+
   return (
     <WelcomeContainer
       showsVerticalScrollIndicator={false}
@@ -208,18 +228,25 @@ const WelcomeScreen = () => {
         <Greeting actualTheme={actualTheme} theme={colorScheme!} />
 
         <View className="relative flex-row gap-2 items-center">
-          <Ionicons
+          <Pressable
             onPress={() => setFeedbackVisible(true)}
-            name="chatbubble-ellipses-outline"
-            size={25}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
+            className="flex-row items-center gap-3 border p-2 rounded-xl border-light-primary dark:border-dark-primary"
+          >
+            <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+              Feedback
+            </Text>
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={25}
+              color={
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+              }
+            />
+          </Pressable>
           <WriteFeedbackModal
             feedbackVisible={feedbackVisible}
             setFeedbackVisible={setFeedbackVisible}

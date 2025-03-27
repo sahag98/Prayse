@@ -29,6 +29,7 @@ interface UserStore {
   handleShowNewBadge: () => void;
   handleAmenButton: (data: any) => void;
   resetBadgeShowing: () => void;
+  handleShowUpdate: () => void;
   prayers: PrayerTrackingEntry[]; // Changed to array
   addPrayerTracking: () => void;
   deletePrayerTracking: () => void;
@@ -36,16 +37,13 @@ interface UserStore {
   verseoftheday: VODTrackingEntry[]; // Changed to array
   addVODTracking: () => void;
   deleteVODTracking: () => void;
+  isShowingNewUpdate: boolean;
 }
-
-// Add this type for our storage
-type StorageState = Omit<UserStore, "prayers"> & {
-  prayers: string[];
-};
 
 const useStore = create(
   persist<UserStore>(
     (set, get) => ({
+      isShowingNewUpdate: true,
       isShowingNewBadge: true,
       isShowingAmenButton: true,
       isShowingProModal: false,
@@ -66,6 +64,9 @@ const useStore = create(
       },
       deleteVODTracking: () => {
         set({ verseoftheday: [] });
+      },
+      handleShowUpdate: () => {
+        set({ isShowingNewUpdate: false });
       },
       resetBadgeShowing: () => {
         set({ hasShownPraiseBadge: false });

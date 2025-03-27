@@ -174,13 +174,22 @@ const SingleReminderScreen = () => {
     position: "absolute",
   }));
 
+  console.log(singleReminder);
+
   function handleAmen() {
     posthog.capture("Amen");
     buttonProgress.value = withTiming(1, { duration: 800 });
     textProgress.value = withTiming(1, { duration: 800 });
     setHasPrayed(true);
     dispatch(handleReminderAmen(singleReminder.reminder.id));
+
     setTimeout(() => router.push(REMINDER_SCREEN), 1000);
+    if (singleReminder.ocurrence === "None") {
+      setTimeout(
+        () => dispatch(deleteReminder(singleReminder?.reminder.id)),
+        1300,
+      );
+    }
   }
 
   function handlePrayerStatus(

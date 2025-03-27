@@ -11,6 +11,7 @@ import {
   DEVO_LIST_SCREEN,
   FAVORITES_SCREEN,
   GOSPEL_SCREEN,
+  NEW_UPDATE_SCREEN,
   OLD_PRAYER_SCREEN,
   ONBOARDING_SCREEN,
   OUR_PRESENTATION_SCREEN,
@@ -134,6 +135,10 @@ const StackContainer = () => {
         />
         <Stack.Screen name={PRAYER_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
+          name={NEW_UPDATE_SCREEN}
+          options={{ headerShown: false, animation: "fade" }}
+        />
+        <Stack.Screen
           name={DEVO_LIST_SCREEN}
           options={{ headerShown: false }}
         />
@@ -185,10 +190,7 @@ const StackContainer = () => {
           name={OUR_PRESENTATION_SCREEN}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
-      name="prayer"
-      options={{ headerShown: false }}
-    /> */}
+        {/* <Stack.Screen name="prayer" options={{ headerShown: false }} /> */}
         <Stack.Screen name={TEST_SCREEN} options={{ headerShown: false }} />
 
         <Stack.Screen

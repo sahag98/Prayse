@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,6 +25,9 @@ import FolderItem from "./FolderItem";
 import { ActualTheme } from "../types/reduxTypes";
 import AddListModal from "@modals/AddListModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { handleReviewShowing } from "@redux/remindersReducer";
+import { CheckReview } from "@hooks/useShowReview";
+import { useFocusEffect } from "expo-router";
 
 const Folder = ({
   colorScheme,
@@ -43,13 +46,51 @@ const Folder = ({
   const [folderName, setFolderName] = useState("");
   const [idToDelete, setIdToDelete] = useState(null);
   const [showNewBadge, setShowNewBadge] = useState(false);
-
+  const reviewCounter = useSelector(
+    (state: any) => state.reminder.reviewCounter,
+  );
+  const hasShownReview = useSelector(
+    (state: any) => state.reminder.hasShownReview,
+  );
   const dispatch = useDispatch();
   const handleCloseModal = () => {
     setAddVisible(false);
     setOpen(false);
     setFolderName("");
   };
+
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      console.log("focused: ", reviewCounter);
+      console.log("has shown review: ", hasShownReview);
+      console.log("folder length: ", folders.length);
+      // Invoked whenever the route is focused.
+      if (!hasShownReview) {
+        if (folders.length === 3) {
+          Alert.alert(
+            "Thank You for using our app!",
+            "Would you take a moment to leave a review and share your experience?",
+            [
+              {
+                text: "Not Now",
+                onPress: () => dispatch(handleReviewShowing()),
+                style: "cancel",
+              },
+              {
+                text: "Leave a Review 🙌",
+                onPress: () => {
+                  dispatch(handleReviewShowing());
+                  CheckReview();
+                },
+              },
+            ],
+          );
+        }
+      }
+      // Return function is invoked whenever the route gets out of focus.
+    }, [reviewCounter]),
+  );
 
   useEffect(() => {
     const checkBadgeStatus = async () => {

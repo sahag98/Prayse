@@ -76,6 +76,7 @@ export const prayerSlice = createSlice({
           ? {
               ...prayer,
               status: (prayer.status = action.payload.newStatus),
+              answeredDate: currentDate,
             }
           : prayer,
       );

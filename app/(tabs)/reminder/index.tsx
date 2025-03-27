@@ -27,7 +27,6 @@ const ReminderScreen = () => {
 
   const dispatch = useDispatch();
 
-  console.log("reminders: ", JSON.stringify(reminders, null, 2));
   return (
     <Container
       style={getMainBackgroundColorStyle(actualTheme)}
@@ -40,28 +39,30 @@ const ReminderScreen = () => {
         >
           Reminders
         </HeaderTitle>
-        <Pressable
-          onPress={() =>
-            Alert.alert(
-              "Clear Reminders",
-              "This action will permenantly delete all reminders.",
-              [
-                {
-                  text: "Cancel",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-                {
-                  text: "Delete",
-                  style: "destructive",
-                  onPress: () => dispatch(deleteAllReminders()),
-                },
-              ],
-            )
-          }
-        >
-          <Ionicons name="trash-outline" size={24} color="red" />
-        </Pressable>
+        {reminders.length > 0 && (
+          <Pressable
+            onPress={() =>
+              Alert.alert(
+                "Clear Reminders",
+                "This action will permenantly delete all reminders.",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => dispatch(deleteAllReminders()),
+                  },
+                ],
+              )
+            }
+          >
+            <Ionicons name="trash-outline" size={24} color="red" />
+          </Pressable>
+        )}
       </HeaderView>
       <View className="mb-5">
         <Text

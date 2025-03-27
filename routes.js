@@ -5,6 +5,7 @@ export const PRO_SCREEN = "pro";
 export const CREATE_THEME_SCREEN = "create-theme";
 export const YOUR_THEMES_SCREEN = "your-themes";
 export const PRAYER_SCREEN = "prayer";
+export const NEW_UPDATE_SCREEN = "new-update";
 export const REMINDER_SCREEN = "reminder";
 export const DEVOTIONAL_SCREEN = "devotional";
 export const DEVO_LIST_SCREEN = "devo-list";

@@ -110,7 +110,7 @@ const AddQuestionModal = ({
             style={getMainTextColorStyle(actualTheme)}
             className="text-2xl text-light-primary dark:text-dark-primary font-inter-bold"
           >
-            Write a Question
+            Add a Question
           </Text>
           <Text
             style={getSecondaryTextColorStyle(actualTheme)}

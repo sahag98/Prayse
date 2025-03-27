@@ -45,6 +45,7 @@ const PrayerBottomModal = ({
   const snapPoints = useMemo(() => ["50%"], []);
   const dispatch = useDispatch();
   const handleAddToAnsweredPrayer = async () => {
+    console.log("marking as answered");
     dispatch(switchPrayerStatus({ prayer, newStatus: "Answered" }));
     if (reminderPrayer) {
       //@ts-expect-error

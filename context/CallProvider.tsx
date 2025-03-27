@@ -19,7 +19,9 @@ export default function CallProvider({ children }: PropsWithChildren) {
     }
 
     console.log("isoncallscreen: ", isOnCallScreen);
+    console.log("Custom Data: ", call.state.custom);
     if (!isOnCallScreen) {
+      console.log("HEREEE");
       router.push(`prayer-video-call/call`);
     }
   }, [call, isOnCallScreen]);

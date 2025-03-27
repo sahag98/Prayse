@@ -38,7 +38,9 @@ const GroupVideoCall = () => {
 
       if (videoClient) {
         const call = videoClient.call("default", id as string); // Use group ID as call ID
-        call.join({ create: true });
+        call.join({
+          create: true,
+        });
         // await call.getOrCreate({
         //   ring: false, // Don't ring others
         //   data: { members },

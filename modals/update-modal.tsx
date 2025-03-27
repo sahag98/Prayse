@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       }
 
       if (update[0].isUpdateAvailable !== nativeApplicationVersion.toString()) {
-        // setHasUpdate(true);
+        setHasUpdate(true);
       } else {
         setHasUpdate(false);
       }
@@ -76,8 +76,8 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       <ModalContainer
         style={
           theme === "dark"
-            ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
-            : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
+            ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+            : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
         <ModalView
@@ -85,17 +85,17 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
           className="bg-light-secondary dark:bg-dark-secondary w-10/12"
         >
           <ModalIcon className="gap-2">
-            <HeaderTitle
+            <Text
               style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-xl text-light-primary dark:text-dark-primary"
+              className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
             >
-              New Update Available!
-            </HeaderTitle>
+              New Update ✅
+            </Text>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
               className="dark:text-white text-light-primary mt-1 text-center font-inter-regular"
             >
-              Update your app to the latest version and check out the newly
+              Update your app to the latest version and check out our newly
               added features.
             </Text>
           </ModalIcon>
@@ -114,7 +114,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
                   );
                 }
               }}
-              className="dark:bg-dark-accent bg-light-primary justify-center items-center w-full p-4 rounded-lg"
+              className="dark:bg-dark-accent bg-light-primary justify-center items-center w-full p-3 rounded-lg"
             >
               <Text
                 style={getPrimaryTextColorStyle(actualTheme)}

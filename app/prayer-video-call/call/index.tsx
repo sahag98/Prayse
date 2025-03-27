@@ -1,3 +1,4 @@
+import { useSupabase } from "@context/useSupabase";
 import { COMMUNITY_SCREEN, WELCOME_SCREEN } from "@routes";
 import {
   StreamCall,
@@ -12,9 +13,14 @@ export default function CallScreen() {
   const calls = useCalls();
   const call = calls[0];
 
+  const { callGroup, setCallGroup } = useSupabase();
+
   useEffect(() => {
     if (!call) {
       router.push(COMMUNITY_SCREEN);
+      if (callGroup) {
+        setCallGroup(null);
+      }
     }
   }, [call]);
 

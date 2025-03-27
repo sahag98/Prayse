@@ -10,6 +10,7 @@ import Animated, {
 
 import { Feather } from "@expo/vector-icons";
 import { getMainTextColorStyle } from "@lib/customStyles";
+import { CheckReview } from "@hooks/useShowReview";
 
 interface GreetingProps {
   theme: string;
@@ -63,10 +64,8 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   return (
     <Animated.View className="flex flex-row items-center gap-2">
       <Animated.Text
+        onPress={() => CheckReview()}
         style={getMainTextColorStyle(actualTheme)}
-        onPress={() => {
-          setColorScheme(colorScheme === "light" ? "dark" : "light");
-        }}
         className="text-xl tracking-wide font-inter-semibold  text-light-primary dark:text-[#d2d2d2]"
       >
         {greeting}

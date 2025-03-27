@@ -124,6 +124,8 @@ const ListItems = ({
   const renderItem = ({ item }) => {
     const RowText = TodoText;
 
+    console.log("item: ", item);
+
     const addReminder = (item) => {
       posthog.capture("Create reminder");
       navigation.navigate(TEST_SCREEN, {

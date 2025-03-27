@@ -92,28 +92,27 @@ const QuestionListScreen = () => {
           </HeaderTitle>
         </View>
         <View className="flex-row items-center gap-3">
-          {questionsEnabled && (
-            <TouchableOpacity
-              style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-primary dark:bg-dark-accent p-2 rounded-lg"
-              onPress={() => {
-                setIsAddingQuestion(true);
-                questionBottomSheetModalRef.current?.present();
-              }}
-            >
-              <AntDesign
-                name="plus"
-                size={25}
-                color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
-                    : colorScheme === "dark"
-                      ? "#121212"
-                      : "white"
-                }
-              />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={getPrimaryBackgroundColorStyle(actualTheme)}
+            className="bg-light-primary dark:bg-dark-accent p-2 rounded-lg"
+            onPress={() => {
+              setIsAddingQuestion(true);
+              questionBottomSheetModalRef.current?.present();
+            }}
+          >
+            <AntDesign
+              name="plus"
+              size={25}
+              color={
+                actualTheme && actualTheme.PrimaryTxt
+                  ? actualTheme.PrimaryTxt
+                  : colorScheme === "dark"
+                    ? "#121212"
+                    : "white"
+              }
+            />
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={fetchQuestions}>
             <Ionicons
               name="refresh"

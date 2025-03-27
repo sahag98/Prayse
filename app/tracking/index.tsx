@@ -43,7 +43,7 @@ const TrackingScreen = () => {
   //   const data = generateMockData();
   const prayers = useStore((state) => state.prayers);
   const verseoftheday = useStore((state) => state.verseoftheday);
-
+  // console.log(prayers);
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );

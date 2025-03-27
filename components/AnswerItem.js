@@ -17,8 +17,8 @@ const AnswerItem = ({ item, actualTheme, theme }) => {
           <Image
             style={styles.profileImg}
             source={{
-              uri: item.profiles.avatar_url
-                ? item.profiles.avatar_url
+              uri: item.profiles?.avatar_url
+                ? item.profiles?.avatar_url
                 : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
             }}
           />
@@ -26,7 +26,7 @@ const AnswerItem = ({ item, actualTheme, theme }) => {
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-bold text-lg text-light-primary dark:text-dark-primary"
           >
-            {item.profiles.full_name}
+            {item.profiles?.full_name}
           </Text>
         </View>
 

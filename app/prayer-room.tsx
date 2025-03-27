@@ -320,7 +320,7 @@ const PrayerRoom = () => {
       const { sound } = await Audio.Sound.createAsync(
         randomPad,
 
-        { shouldPlay: true, volume: 0.8 },
+        { shouldPlay: true, volume: 0.9 },
       );
       await Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
