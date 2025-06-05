@@ -18,7 +18,7 @@ import { cn } from "@lib/utils";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
-import { COMMUNITY_SCREEN } from "../routes";
+import { EXPLORE_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionListScreen = () => {
@@ -71,7 +71,7 @@ const QuestionListScreen = () => {
         )}
       >
         <View className="flex-row items-center gap-3">
-          <Link href={`/${COMMUNITY_SCREEN}`}>
+          <Link href={`/${EXPLORE_SCREEN}`}>
             <AntDesign
               name="left"
               size={24}
@@ -92,27 +92,6 @@ const QuestionListScreen = () => {
           </HeaderTitle>
         </View>
         <View className="flex-row items-center gap-3">
-          <TouchableOpacity
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-primary dark:bg-dark-accent p-2 rounded-lg"
-            onPress={() => {
-              setIsAddingQuestion(true);
-              questionBottomSheetModalRef.current?.present();
-            }}
-          >
-            <AntDesign
-              name="plus"
-              size={25}
-              color={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
-                  : colorScheme === "dark"
-                    ? "#121212"
-                    : "white"
-              }
-            />
-          </TouchableOpacity>
-
           <TouchableOpacity onPress={fetchQuestions}>
             <Ionicons
               name="refresh"
@@ -151,14 +130,6 @@ const QuestionListScreen = () => {
             theme={colorScheme}
           />
         )}
-      />
-      <AddQuestionModal
-        actualTheme={actualTheme}
-        supabase={supabase}
-        colorScheme={colorScheme}
-        currentUser={currentUser}
-        setIsAddingQuestion={setIsAddingQuestion}
-        questionBottomSheetModalRef={questionBottomSheetModalRef}
       />
     </Container>
   );

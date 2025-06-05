@@ -30,21 +30,17 @@ import "../global.css";
 
 import "react-native-url-polyfill/auto";
 import "expo-dev-client";
-import {
-  configureReanimatedLogger,
-  ReanimatedLogLevel,
-} from "react-native-reanimated";
+// import { vexo } from "vexo-analytics";
 
 const persistor = persistStore(store);
-
-configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
-  strict: false, // Reanimated runs in strict mode by default
-});
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
 });
+
+// if (!__DEV__) {
+//   vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY!);
+// }
 
 Sentry.init({
   dsn: "https://62cc83d0927020ddab15c63295a4f908@o4506981596594176.ingest.us.sentry.io/4508010266427392",

@@ -54,6 +54,7 @@ import {
 import useStore from "@hooks/store";
 
 const InputModal = ({
+  addPrayerBottomSheetModalRef,
   actualTheme,
   colorScheme,
   setTaskName,
@@ -67,8 +68,8 @@ const InputModal = ({
   folderName,
   folderId,
   setModalVisible,
-  prayerValue,
-  setPrayerValue,
+  prayerTitle,
+  setPrayerTitle,
   prayertoBeEdited,
   setPrayertoBeEdited,
 }) => {
@@ -178,7 +179,8 @@ const InputModal = ({
     if (!prayertoBeEdited) {
       dispatch(
         addPrayer({
-          prayer: transcript ? transcript : prayerValue,
+          prayer: "Prayer Title",
+          notes: transcript,
           folder: folderName,
           status: "Active",
           folderId,
@@ -266,16 +268,17 @@ const InputModal = ({
               actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
                 : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
+                ? "white"
+                : "#2f2d51"
             }
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => {
-            setModalVisible(true);
-            setTaskName("Add");
+            addPrayerBottomSheetModalRef?.current.present();
+            // setModalVisible(true);
+            // setTaskName("Add");
           }}
           className="dark:bg-dark-accent border border-light-primary dark:border-dark-background flex-row items-center justify-center gap-2 bg-light-primary size-20 rounded-full shadow-gray-300 dark:shadow-none"
         >
@@ -286,8 +289,8 @@ const InputModal = ({
               actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
                 : colorScheme === "dark"
-                  ? "#121212"
-                  : "white"
+                ? "#121212"
+                : "white"
             }
           />
         </TouchableOpacity>
@@ -349,31 +352,31 @@ const InputModal = ({
                         borderColor: actualTheme.SecondaryTxt,
                       }
                     : colorScheme === "dark"
-                      ? {
-                          borderColor: recognizing ? "#0096FF" : "#bbbbbb",
-                          borderWidth: recognizing ? 2 : 1,
-                          height: inputHeight < 80 ? 80 : inputHeight,
-                        }
-                      : {
-                          borderColor: recognizing ? "#0096FF" : "#2f2d51",
-                          borderWidth: recognizing ? 2 : 1,
-                          height: inputHeight < 80 ? 80 : inputHeight,
-                        }
+                    ? {
+                        borderColor: recognizing ? "#0096FF" : "#bbbbbb",
+                        borderWidth: recognizing ? 2 : 1,
+                        height: inputHeight < 80 ? 80 : inputHeight,
+                      }
+                    : {
+                        borderColor: recognizing ? "#0096FF" : "#2f2d51",
+                        borderWidth: recognizing ? 2 : 1,
+                        height: inputHeight < 80 ? 80 : inputHeight,
+                      }
                 }
                 placeholder="What are you praying for?"
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                      ? "#e0e0e0"
-                      : "#2f2d51"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                      ? "#e0e0e0"
-                      : "#2f2d51"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
                 }
                 onChangeText={(text) => setTranscript(text)}
                 value={transcript}
@@ -420,8 +423,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                        ? "#121212"
-                        : "#b7d3ff"
+                      ? "#121212"
+                      : "#b7d3ff"
                   }
                   onPress={() => {
                     setIsSpeechVisible(false);
@@ -439,8 +442,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                        ? "#a5c9ff"
-                        : "#2F2D51"
+                      ? "#a5c9ff"
+                      : "#2F2D51"
                   }
                   onPress={handleSubmit}
                 >
@@ -451,8 +454,8 @@ const InputModal = ({
                       actualTheme && actualTheme.PrimaryTxt
                         ? actualTheme.PrimaryTxt
                         : colorScheme === "dark"
-                          ? "#121212"
-                          : "white"
+                        ? "#121212"
+                        : "white"
                     }
                   />
                 </ModalAction>
@@ -495,8 +498,8 @@ const InputModal = ({
                       actualTheme && actualTheme.SecondaryTxt
                         ? actualTheme.SecondaryTxt
                         : colorScheme === "dark"
-                          ? "white"
-                          : "#2F2D51"
+                        ? "white"
+                        : "#2F2D51"
                     }
                   />
                 </View>
@@ -511,31 +514,31 @@ const InputModal = ({
                         borderColor: actualTheme.SecondaryTxt,
                       }
                     : colorScheme === "dark"
-                      ? {
-                          height: inputHeight < 80 ? 80 : inputHeight,
-                        }
-                      : {
-                          height: inputHeight < 80 ? 80 : inputHeight,
-                        }
+                    ? {
+                        height: inputHeight < 80 ? 80 : inputHeight,
+                      }
+                    : {
+                        height: inputHeight < 80 ? 80 : inputHeight,
+                      }
                 }
                 placeholder="What are you praying for?"
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                      ? "#e0e0e0"
-                      : "#2f2d51"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                      ? "#e0e0e0"
-                      : "#2f2d51"
+                    ? "#e0e0e0"
+                    : "#2f2d51"
                 }
                 // autoFocus
-                onChangeText={(text) => setPrayerValue(text)}
-                value={prayerValue}
+                onChangeText={(text) => setPrayerTitle(text)}
+                value={prayerTitle}
                 onContentSizeChange={handleContentSizeChange}
                 onSubmitEditing={(e) => {
                   e.key === "Enter" && e.preventDefault();
@@ -556,8 +559,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                        ? "#121212"
-                        : "#2F2D51"
+                      ? "#121212"
+                      : "#2F2D51"
                   }
                   onPress={handleSubmit}
                 >

@@ -72,15 +72,7 @@ const SingleReminderScreen = () => {
   );
 
   //   console.log(JSON.stringify(singleReminder, null, 2));
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const timestamp = new Date(singleReminder?.reminder.time);
   let timeOptions;
@@ -105,7 +97,7 @@ const SingleReminderScreen = () => {
     timeOptions = options;
   } else if (singleReminder?.ocurrence === "None") {
     const options = {
-      month: "numeric",
+      month: "short",
       day: "numeric",
       year: "2-digit",
       hour: "numeric",
@@ -303,8 +295,7 @@ const SingleReminderScreen = () => {
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
               >
-                {singleReminder.ocurrence} on {dayOfWeekName}s at{" "}
-                {formattedDate}
+                {singleReminder.ocurrence} on {dayOfWeekName} @ {formattedDate}
               </Text>
             )}
             {singleReminder.ocurrence === "None" && (
@@ -316,86 +307,77 @@ const SingleReminderScreen = () => {
               </Text>
             )}
           </View>
+          <View className="flex-row items-center gap-1">
+            <Text className="dark:text-dark-primary text-light-primary font-inter-regular text-sm">
+              You've prayed{" "}
+              <Text className="font-inter-bold text-base">
+                {singleReminder.prayer_times ? singleReminder.prayer_times : 0}
+              </Text>
+              {singleReminder.prayer_times < 2 ? " time" : " times"}
+            </Text>
+          </View>
         </View>
-        <View className="flex-row items-center gap-1">
-          <MaterialCommunityIcons
-            name="hands-pray"
-            size={20}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "light"
-                  ? "#2f2d51"
-                  : "white"
-            }
-          />
-          <Text className="dark:text-dark-primary text-light-primary font-inter-regular text-sm">
-            You've prayed this prayer{" "}
-            <Text className="font-inter-bold text-base">
-              {singleReminder.prayer_times ? singleReminder.prayer_times : 0}
-            </Text>{" "}
-            {singleReminder.prayer_times < 2 ? "time" : "times"}.
-          </Text>
-        </View>
+
         <View className="gap-3">
-          <Text
-            //   numberOfLines={1}
-            className="text-2xl text-light-primary dark:text-dark-primary font-inter-semibold"
-          >
-            {singleReminder.reminder.message}
-          </Text>
+          <View className="flex-row gap-3 justify-between items-center">
+            <Text
+              //   numberOfLines={1}
+              className="text-2xl flex-1 text-light-primary dark:text-dark-primary font-inter-semibold"
+            >
+              {singleReminder.reminder.message}
+            </Text>
 
-          <View className="flex-row items-center">
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Pressable
-                  className="self-start flex-row items-center gap-2 p-2 rounded-lg bg-light-secondary dark:bg-dark-secondary"
-                  // onPress={() => {
-                  //   console.log("hereeee");
-                  //   setIsChangingStatus(true);
-                  // }}
-                >
-                  <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
-                    {prayer?.status}
-                  </Text>
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    color={
-                      actualTheme && actualTheme.MainTxt
-                        ? actualTheme.MainTxt
-                        : colorScheme === "light"
-                          ? "#2f2d51"
-                          : "white"
-                    }
-                  />
-                </Pressable>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
-                <DropdownMenu.Label>Change Status</DropdownMenu.Label>
-                <DropdownMenu.Item
-                  onSelect={() => handlePrayerStatus(prayer, "Active")}
-                  key="1"
-                >
-                  <DropdownMenu.ItemTitle>Active</DropdownMenu.ItemTitle>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  onSelect={() => handlePrayerStatus(prayer, "Answered")}
-                  key="2"
-                >
-                  <DropdownMenu.ItemTitle>Answered</DropdownMenu.ItemTitle>
-                </DropdownMenu.Item>
+            <View className="flex-row items-center">
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Pressable
+                    className="self-start flex-row items-center gap-2 p-2 rounded-lg bg-light-secondary dark:bg-dark-secondary"
+                    // onPress={() => {
+                    //   console.log("hereeee");
+                    //   setIsChangingStatus(true);
+                    // }}
+                  >
+                    <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+                      {prayer?.status}
+                    </Text>
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      color={
+                        actualTheme && actualTheme.MainTxt
+                          ? actualTheme.MainTxt
+                          : colorScheme === "light"
+                            ? "#2f2d51"
+                            : "white"
+                      }
+                    />
+                  </Pressable>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                  <DropdownMenu.Label>Change Status</DropdownMenu.Label>
+                  <DropdownMenu.Item
+                    onSelect={() => handlePrayerStatus(prayer, "Active")}
+                    key="1"
+                  >
+                    <DropdownMenu.ItemTitle>Active</DropdownMenu.ItemTitle>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    onSelect={() => handlePrayerStatus(prayer, "Answered")}
+                    key="2"
+                  >
+                    <DropdownMenu.ItemTitle>Answered</DropdownMenu.ItemTitle>
+                  </DropdownMenu.Item>
 
-                <DropdownMenu.Item
-                  key="3"
-                  onSelect={() => handlePrayerStatus(prayer, "Archived")}
-                >
-                  <DropdownMenu.ItemTitle>Archived</DropdownMenu.ItemTitle>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
-            <View />
-            {/* <DropdownMenu.Root>
+                  <DropdownMenu.Item
+                    key="3"
+                    onSelect={() => handlePrayerStatus(prayer, "Archived")}
+                  >
+                    <DropdownMenu.ItemTitle>Archived</DropdownMenu.ItemTitle>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
+              <View />
+              {/* <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <Pressable
                   className="self-start flex-row items-center gap-2 p-2 rounded-lg bg-light-secondary dark:bg-dark-secondary"
@@ -437,6 +419,7 @@ const SingleReminderScreen = () => {
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Root> */}
+            </View>
           </View>
         </View>
         <View className="gap-2">

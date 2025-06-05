@@ -27,13 +27,11 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
   theme,
   actualTheme,
 }) => {
-  //const merchImages = [pfeBlueBack, pfeBlueFront, pfeBlackBack, pfeBlackFront];
   return (
     <View
       style={
         actualTheme && actualTheme.PrimaryTxt && { borderTopColor: "gainsboro" }
       }
-      className="border-t pt-3 mb-24 border-t-gray-300 dark:border-t-[#707070]"
     >
       <View className="flex-row items-center mb-4 gap-3">
         <Feather
@@ -62,7 +60,6 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
           className="w-full justify-between items-center"
           style={{
             flexDirection: Platform.isPad ? "row" : "column",
-
             gap: Platform.isPad ? 30 : 10,
           }}
         >
@@ -76,7 +73,7 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-xl dark:text-white text-light-primary"
             >
-              Rejoice Pray Praise
+              Prayse Merch
             </Text>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
@@ -85,38 +82,6 @@ export const MerchComponent: React.FC<MerchComponentProps> = ({
               Reminding us of the power of prayer and praise in our walk with
               God.
             </Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL("https://shop.prayse.app/");
-                posthog.capture("Shop now");
-              }}
-              className="dark:bg-dark-accent bg-light-primary justify-center items-center flex-row gap-[10px] p-3 rounded-lg"
-              style={[
-                getPrimaryBackgroundColorStyle(actualTheme),
-                {
-                  width: Platform.isPad ? "50%" : "100%",
-                },
-              ]}
-            >
-              <Text
-                style={getPrimaryTextColorStyle(actualTheme)}
-                className="text-white dark:text-dark-background font-inter-bold text-[15px]"
-              >
-                Shop Now
-              </Text>
-              <AntDesign
-                name="shoppingcart"
-                size={22}
-                color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
-                    : theme === "dark"
-                      ? "#121212"
-                      : "white"
-                }
-              />
-            </TouchableOpacity>
           </View>
           <Image
             source={rejoicePrayPraise}

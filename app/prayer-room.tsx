@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "nativewind";
 import {
   Pressable,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -55,8 +56,13 @@ const PrayerRoom = () => {
   );
 
   const [isPraying, setIsPraying] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound>();
+  const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const [isEndingPrayer, setIsEndingPrayer] = useState(false);
+  const [saying, setSaying] = useState("");
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
@@ -76,7 +82,7 @@ const PrayerRoom = () => {
       ],
     },
     {
-      title: "What is one area of your life where you need God’s strength?",
+      title: "What is one area of your life where you need God's strength?",
       verses: [
         'Philippians 4:13 "I can do all things through Christ which strengtheneth me."',
         'Isaiah 40:31 "But they that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint."',
@@ -140,7 +146,7 @@ const PrayerRoom = () => {
       ],
     },
     {
-      title: "How can you reflect God’s character in your actions today?",
+      title: "How can you reflect God's character in your actions today?",
       verses: [
         'Ephesians 5:1-2 "Be ye therefore followers of God, as dear children; And walk in love, as Christ also hath loved us, and hath given himself for us an offering and a sacrifice to God for a sweetsmelling savour."',
         'Colossians 3:12 "Put on therefore, as the elect of God, holy and beloved, bowels of mercies, kindness, humbleness of mind, meekness, longsuffering."',
@@ -164,7 +170,7 @@ const PrayerRoom = () => {
       ],
     },
     {
-      title: "What is a way you can reflect Jesus’ humility today?",
+      title: "What is a way you can reflect Jesus' humility today?",
       verses: [
         'Philippians 2:3-4 "Let nothing be done through strife or vainglory; but in lowliness of mind let each esteem other better than themselves. Look not every man on his own things, but every man also on the things of others."',
         'Philippians 2:5-7 "Let this mind be in you, which was also in Christ Jesus: Who, being in the form of God, thought it not robbery to be equal with God: But made himself of no reputation, and took upon him the form of a servant, and was made in the likeness of men."',
@@ -208,31 +214,26 @@ const PrayerRoom = () => {
   const pressFadeIn = useSharedValue(0);
 
   const [step, setStep] = useState(0);
-  const [sound, setSound] = useState<Audio.Sound>();
-  const [isPlayingSound, setIsPlayingSound] = useState(false);
-  const [isEndingPrayer, setIsEndingPrayer] = useState(false);
-  const [saying, setSaying] = useState("");
-  const dispatch = useDispatch();
 
   const sayings = [
     "When you seek God, He meets you where you are.",
     "God walks with you, even in the valley.",
-    "The Lord’s mercy is new every morning.",
+    "The Lord's mercy is new every morning.",
     "Faith moves mountains when hope anchors the soul.",
-    "God is working, even when you can’t see it.",
+    "God is working, even when you can't see it.",
     "Even a mustard seed of faith can change everything.",
     "The closer you get to God, the closer He gets to you.",
     "Move your heart toward God, and He will move His grace toward you.",
     "Lean into God, and He will embrace you with His presence.",
-    "Take a step toward God, and He’ll take a step toward you.",
-    "The Lord’s plans stand firm forever.",
+    "Take a step toward God, and He'll take a step toward you.",
+    "The Lord's plans stand firm forever.",
     "From everlasting to everlasting, He is God.",
-    "God’s love never fails, never fades, never ends.",
+    "God's love never fails, never fades, never ends.",
     "Open your heart to God, and He will open His blessings to you.",
     "Focus your mind on God, and He will fill it with His truth.",
     "His ways are higher, His wisdom unfailing.",
     "Quiet your soul before God, and He will speak to your heart.",
-    "Rest in God’s presence, and you will find His peace.",
+    "Rest in God's presence, and you will find His peace.",
     "You are fully known and fully loved by God.",
     "Nothing can separate you from the love of Christ.",
     "Seek God with all your heart, and you will find His love.",
@@ -280,8 +281,56 @@ const PrayerRoom = () => {
 
   const statusBarHeight = Constants.statusBarHeight;
 
+  useEffect(() => {
+    const initializeSound = async () => {
+      try {
+        const pads = [Gpad, Dpad, ABpad];
+        const randomIndex = Math.floor(Math.random() * pads.length);
+        const randomPad = pads[randomIndex];
+
+        const { sound } = await Audio.Sound.createAsync(randomPad, {
+          shouldPlay: true,
+          volume: 0,
+        });
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+        });
+        setSound(sound);
+
+        // Start playing with volume 0
+        await sound.playAsync();
+
+        // Fade in the volume
+        let currentVolume = 0;
+        const fadeDuration = 5000; // 3 seconds fade in
+        const incrementStep = 0.01; // Adjust based on desired fade smoothness
+
+        while (currentVolume < 0.9) {
+          await sound.setVolumeAsync(currentVolume);
+          currentVolume += incrementStep;
+          await new Promise((resolve) =>
+            setTimeout(resolve, fadeDuration / (0.9 / incrementStep)),
+          );
+        }
+
+        // Set final volume
+        await sound.setVolumeAsync(0.9);
+      } catch (error) {
+        console.log("Error initializing sound:", error);
+      }
+    };
+
+    initializeSound();
+
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
   async function beginPrayer() {
-    await playSound();
+    setIsPlayingSound(true);
   }
 
   function nextStep() {
@@ -293,45 +342,11 @@ const PrayerRoom = () => {
 
   async function endPrayer() {
     dispatch(incrementReviewCounter());
-    console.log("prayer ended!");
+
     // setStep(0);
     setIsEndingPrayer(true);
     pauseSound();
     router.back();
-  }
-  async function playSound() {
-    console.log("should play sound");
-    // const AbPad =
-    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/Ab.mp3?v=1732569256519";
-    // const DPad =
-    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/D.mp3?v=1732648293920";
-    // const GPad =
-    //   "https://cdn.glitch.me/5ade1166-b0a6-48ca-8864-e523ce61e8f5/G.mp3?v=1732648318412";
-
-    const pads = [Gpad, Dpad, ABpad];
-
-    const randomIndex = Math.floor(Math.random() * pads.length);
-
-    // Pick a random pad from the pads array
-    const randomPad = pads[randomIndex];
-
-    setIsPlayingSound(true);
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        randomPad,
-
-        { shouldPlay: true, volume: 0.9 },
-      );
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-      });
-      setSound(sound);
-
-      // // await sound.loadAsync(soundFile);
-      await sound.playAsync();
-    } catch (error) {
-      console.log("error: ", error);
-    }
   }
 
   async function pauseSound() {
@@ -397,6 +412,7 @@ const PrayerRoom = () => {
       // style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background p-0 relative flex-1"
     >
+      <ProgressBar step={step} totalSteps={4} />
       <Pressable
         onPress={
           isPlayingSound && step !== 3
@@ -456,19 +472,31 @@ const PrayerRoom = () => {
           isEndingPrayer={isEndingPrayer}
           saying={saying}
         />
-        <Animated.Text
+        {/* <Text>{step}</Text> */}
+        {step !== 3 ? (
+          <Animated.Text
+            // onPress={playSound}
+            style={animatedPressFadeInStyle}
+            className="text-center font-inter-medium text-light-primary dark:text-dark-primary text-base mb-10"
+          >
+            Tap the screen to{" "}
+            {isPlayingSound && step !== 4 ? "continue" : "begin"}
+          </Animated.Text>
+        ) : (
+          <View className="mb-20 self-center bg-light-primary dark:bg-dark-accent size-20 items-center justify-center rounded-full">
+            <Text className="font-inter-bold text-light-background dark:text-dark-background text-xl">
+              Done
+            </Text>
+          </View>
+        )}
+        {/* <Animated.Text
           // onPress={playSound}
           style={animatedPressFadeInStyle}
           className="text-center font-inter-medium text-light-primary dark:text-dark-primary text-base mb-10"
         >
           Tap the screen to{" "}
-          {isPlayingSound && step !== 3
-            ? "continue"
-            : isPlayingSound && step === 3
-              ? "end"
-              : "begin"}
-          .
-        </Animated.Text>
+          {isPlayingSound && step !== 4 ? "continue" : "begin"}
+        </Animated.Text> */}
       </Pressable>
     </SafeAreaView>
   );
@@ -653,7 +681,7 @@ function PrayerPreparation({
   }));
 
   return (
-    <View className="flex-1 justify-start items-start mt-10">
+    <View className="flex-1 justify-start items-start mt-20">
       <View className="absolute w-full top-0 left-0 self-start h-full flex-1 justify-start gap-3 right-0 items-start">
         <Animated.Text
           style={titleFadeInStyle}
@@ -786,16 +814,16 @@ function PrayerPreparation({
         </Animated.Text>
         <Animated.Text
           style={animatedSayingFadeInStyle}
-          className="italic text-light-primary dark:text-dark-primary text-xl"
+          className="font-inter-semibold text-light-primary mt-3 dark:text-dark-primary text-3xl"
         >
           {saying}
         </Animated.Text>
 
         <Animated.Text
           style={animatedMomentFadeInStyle}
-          className="font-inter-medium mt-5 text-light-primary dark:text-dark-primary text-2xl"
+          className="font-inter-medium mt-5 text-light-primary dark:text-dark-primary text-3xl"
         >
-          Have a moment to quiet your mind and think on these questions as you
+          Have a moment to quiet your mind and reflect on these questions as you
           pray.
         </Animated.Text>
       </View>
@@ -849,3 +877,32 @@ function AnimatedBackground() {
     </View>
   );
 }
+
+const ProgressBar = ({
+  step,
+  totalSteps,
+}: {
+  step: number;
+  totalSteps: number;
+}) => {
+  const { colorScheme } = useColorScheme();
+
+  return (
+    <View className="flex-row gap-2 mx-4">
+      {Array.from({ length: totalSteps }).map((_, index) => (
+        <View
+          key={index}
+          className="flex-1 h-1 bg-gray-500 rounded-lg"
+          style={{
+            backgroundColor:
+              index <= step
+                ? colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+                : "#acacac",
+          }}
+        />
+      ))}
+    </View>
+  );
+};

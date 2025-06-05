@@ -38,7 +38,7 @@ const NewUpdate = () => {
         },
       ]}
     >
-      <View className="gap-3 mt-10 mb-3">
+      <View className="gap-4 mt-10 mb-4">
         <Image
           source={require("../assets/prayse-logo.png")}
           style={{
@@ -49,11 +49,11 @@ const NewUpdate = () => {
             marginBottom: 20,
           }}
         />
-        <Text className="font-inter-bold text-3xl text-light-primary dark:text-dark-primary">
-          New Update v10.3.0
+        <Text className="font-inter-bold text-center text-3xl text-light-primary dark:text-dark-primary">
+          v10.4.0 🙌
         </Text>
         <Text className="font-inter-semibold text-2xl text-light-primary dark:text-dark-primary">
-          What's New 🙌
+          What's new:
         </Text>
       </View>
       <FlatList

@@ -66,8 +66,11 @@ const Folder = ({
       console.log("has shown review: ", hasShownReview);
       console.log("folder length: ", folders.length);
       // Invoked whenever the route is focused.
-      if (!hasShownReview) {
-        if (folders.length === 3) {
+
+      const showReviewPrompt = async () => {
+        if (!hasShownReview && folders.length === 3) {
+          await new Promise((resolve) => setTimeout(resolve, 500)); // Delay to avoid transition issues
+
           Alert.alert(
             "Thank You for using our app!",
             "Would you take a moment to leave a review and share your experience?",
@@ -79,15 +82,16 @@ const Folder = ({
               },
               {
                 text: "Leave a Review 🙌",
-                onPress: () => {
+                onPress: async () => {
                   dispatch(handleReviewShowing());
-                  CheckReview();
+                  await CheckReview();
                 },
               },
             ],
           );
         }
-      }
+      };
+      showReviewPrompt();
       // Return function is invoked whenever the route gets out of focus.
     }, [reviewCounter]),
   );
@@ -139,7 +143,7 @@ const Folder = ({
 
   return (
     <>
-      <View className="px-4  h-full">
+      <View className="px-4 h-full">
         <View className="my-4 flex-row justify-between items-center">
           <Text
             style={getMainTextColorStyle(actualTheme)}
@@ -188,14 +192,14 @@ const Folder = ({
           }}
         />
 
-        <View className="absolute w-full flex-row justify-between self-center items-center bottom-5 h-16">
+        <View className="absolute  right-4 flex-row bottom-4">
           <TouchableOpacity
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             onPress={() => {
               bottomSheetModalRef.current?.present();
               posthog.capture("Create folder");
             }}
-            className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
+            className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary rounded-full size-20  shadow-gray-300 dark:shadow-none"
           >
             <AntDesign
               name="plus"
@@ -208,15 +212,9 @@ const Folder = ({
                     : "white"
               }
             />
-            <Text
-              style={getPrimaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-lg text-light-background dark:text-dark-background"
-            >
-              List
-            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
             onPress={handleGuidedPrayerPress}
             className="dark:bg-dark-secondary relative flex-row items-center justify-center gap-2 bg-light-secondary p-4 rounded-xl  shadow-gray-300 dark:shadow-none"
@@ -239,7 +237,7 @@ const Folder = ({
                     : "#2f2d51"
               }
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
       <AddListModal

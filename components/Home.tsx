@@ -16,6 +16,7 @@ import { PrayerContainer } from "../styles/appStyles";
 import Header from "./Header";
 import ListItems from "./ListItems";
 import { router } from "expo-router";
+import AddPrayerModal from "@modals/add-prayer-modal";
 
 const Home = ({
   navigation,
@@ -29,10 +30,12 @@ const Home = ({
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
   );
+  const addPrayerBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const theme = useSelector((state) => state.user.theme);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
-  const [prayerValue, setPrayerValue] = useState("");
+  const [prayerTitle, setPrayerTitle] = useState("");
+  const [prayerNote, setPrayerNote] = useState("");
   const [opacity, setOpacity] = useState(new Animated.Value(1));
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -104,99 +107,121 @@ const Home = ({
     setSelectedEdit("");
     setIsBoxVisible(false);
     setPrayertoBeEdited(item);
-    setModalVisible(true);
-    setPrayerValue(item.prayer);
+    // setModalVisible(true);
+    addPrayerBottomSheetModalRef.current?.present();
+    setPrayerTitle(item.prayer);
+    setPrayerNote(item.notes);
   };
 
   return (
-    <View
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="relative h-full"
-    >
+    <>
       <View
-        className="flex-1 px-4"
-        // pointerEvents={isBoxVisible ? "none" : "auto"}
-        // style={{ flex: 1, paddingHorizontal: 15, height: "100%" }}
+        style={getMainBackgroundColorStyle(actualTheme)}
+        className="relative h-full"
       >
-        <Header
-          actualTheme={actualTheme}
-          prayer={prayer}
-          folderId={folderId}
-          folderName={folderName}
-          colorScheme={colorScheme}
-          theme={theme}
-          navigation={navigation}
-        />
-        <View className="flex-1">
-          <ListItems
+        <View
+          className="flex-1 px-4"
+          // pointerEvents={isBoxVisible ? "none" : "auto"}
+          // style={{ flex: 1, paddingHorizontal: 15, height: "100%" }}
+        >
+          <Header
+            actualTheme={actualTheme}
             prayer={prayer}
-            actualTheme={actualTheme}
-            colorScheme={colorScheme}
-            navigation={navigation}
-            prayerList={prayerList}
-            pickedPrayer={pickedPrayer}
-            answeredAlready={answeredAlready}
-            setAnsweredAlready={setAnsweredAlready}
-            loading={loading}
-            // opacity={opacity}
-            setOpacity={setOpacity}
-            slideUpValue={slideUpValue}
-            setIsBoxVisible={setIsBoxVisible}
-            selectedEdit={selectedEdit}
-            setSelectedEdit={setSelectedEdit}
-            folderName={folderName}
             folderId={folderId}
-            onScroll={onScroll}
-            handleTriggerEdit={handleTriggerEdit}
-          />
-        </View>
-        <PrayerBottomModal
-          handlePresentModalPress={handleOpenBottomModal}
-          handleCloseBottomModal={handleCloseBottomModal}
-          colorScheme={colorScheme}
-          prayer={prayer}
-          setPrayer={setPrayer}
-          actualTheme={actualTheme}
-          prayerBottomSheetModalRef={prayerBottomSheetModalRef}
-          setIsEditing={setIsEditing}
-          setLoading={setLoading}
-          handleTriggerEdit={handleTriggerEdit}
-          answeredAlready={answeredAlready}
-          // opacity={opacity}
-          theme={theme}
-          selectedEdit={selectedEdit}
-          setSelectedEdit={setSelectedEdit}
-          setIsBoxVisible={setIsBoxVisible}
-        />
-
-        {!prayer && (
-          <InputModal
-            actualTheme={actualTheme}
-            colorScheme={colorScheme}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            setTaskName={setTaskName}
-            taskName={taskName}
             folderName={folderName}
-            folderId={folderId}
-            xwxx
-            animatedValue={velocity}
-            extended={extended}
-            isIOS={isIOS}
-            // isExtended={isExtended}
+            colorScheme={colorScheme}
             theme={theme}
-            prayerValue={prayerValue}
-            setPrayerValue={setPrayerValue}
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            oldPrayers={oldPrayers}
-            handleAddOldPrayers={handleAddOldPrayers}
-            prayertoBeEdited={prayertoBeEdited}
-            setPrayertoBeEdited={setPrayertoBeEdited}
+            navigation={navigation}
           />
-        )}
+          <View className="flex-1">
+            <ListItems
+              prayer={prayer}
+              actualTheme={actualTheme}
+              colorScheme={colorScheme}
+              navigation={navigation}
+              prayerList={prayerList}
+              pickedPrayer={pickedPrayer}
+              answeredAlready={answeredAlready}
+              setAnsweredAlready={setAnsweredAlready}
+              loading={loading}
+              // opacity={opacity}
+              setOpacity={setOpacity}
+              slideUpValue={slideUpValue}
+              setIsBoxVisible={setIsBoxVisible}
+              selectedEdit={selectedEdit}
+              setSelectedEdit={setSelectedEdit}
+              folderName={folderName}
+              folderId={folderId}
+              onScroll={onScroll}
+              handleTriggerEdit={handleTriggerEdit}
+            />
+          </View>
+
+          {!prayer && (
+            <>
+              <InputModal
+                addPrayerBottomSheetModalRef={addPrayerBottomSheetModalRef}
+                actualTheme={actualTheme}
+                colorScheme={colorScheme}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+                setTaskName={setTaskName}
+                taskName={taskName}
+                folderName={folderName}
+                folderId={folderId}
+                animatedValue={velocity}
+                extended={extended}
+                isIOS={isIOS}
+                // isExtended={isExtended}
+                theme={theme}
+                prayerTitle={prayerTitle}
+                setPrayerTitle={setPrayerTitle}
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                oldPrayers={oldPrayers}
+                handleAddOldPrayers={handleAddOldPrayers}
+                prayertoBeEdited={prayertoBeEdited}
+                setPrayertoBeEdited={setPrayertoBeEdited}
+              />
+            </>
+          )}
+        </View>
       </View>
-    </View>
+      <PrayerBottomModal
+        handlePresentModalPress={handleOpenBottomModal}
+        handleCloseBottomModal={handleCloseBottomModal}
+        colorScheme={colorScheme}
+        prayer={prayer}
+        setPrayer={setPrayer}
+        actualTheme={actualTheme}
+        prayerBottomSheetModalRef={prayerBottomSheetModalRef}
+        setIsEditing={setIsEditing}
+        setLoading={setLoading}
+        handleTriggerEdit={handleTriggerEdit}
+        answeredAlready={answeredAlready}
+        // opacity={opacity}
+        theme={theme}
+        selectedEdit={selectedEdit}
+        setSelectedEdit={setSelectedEdit}
+        setIsBoxVisible={setIsBoxVisible}
+      />
+      <AddPrayerModal
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        prayerTitle={prayerTitle}
+        prayerNote={prayerNote}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        setTaskName={setTaskName}
+        folderName={folderName}
+        folderId={folderId}
+        setPrayerTitle={setPrayerTitle}
+        setPrayerNote={setPrayerNote}
+        prayertoBeEdited={prayertoBeEdited}
+        setPrayertoBeEdited={setPrayertoBeEdited}
+        addPrayerBottomSheetModalRef={addPrayerBottomSheetModalRef}
+      />
+    </>
   );
 };
 

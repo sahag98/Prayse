@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import Constants from "expo-constants";
@@ -47,15 +47,15 @@ import {
 } from "@lib/customStyles";
 import { posthog } from "@lib/posthog";
 import { useIsFocused } from "@react-navigation/native";
-import { ActualTheme } from "@types/reduxTypes";
+import { ActualTheme } from "../types/reduxTypes";
 
-import config from "../../config";
-import { useSupabase } from "../../context/useSupabase";
-import CreateGroupModal from "../../modals/CreateGroupModal";
-import JoinModal from "../../modals/JoinModal";
-import ProfileModal from "../../modals/ProfileModal";
-import { PRAYER_GROUP_SCREEN, QUESTION_LIST_SCREEN } from "../../routes";
-import { HeaderTitle } from "../../styles/appStyles";
+import config from "../config";
+import { useSupabase } from "../context/useSupabase";
+import CreateGroupModal from "../modals/CreateGroupModal";
+import JoinModal from "../modals/JoinModal";
+import ProfileModal from "../modals/ProfileModal";
+import { PRAYER_GROUP_SCREEN, QUESTION_LIST_SCREEN } from "../routes";
+import { HeaderTitle } from "../styles/appStyles";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -65,7 +65,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const CommunityHomeScreen = () => {
+const PrayerGroupsComponent = () => {
   const navigation = useNavigation();
   const {
     currentUser,
@@ -282,71 +282,10 @@ const CommunityHomeScreen = () => {
 
   return (
     <View
-      className="bg-light-background dark:bg-dark-background p-4 flex-1 justify-center gap-3 pb-3 relative"
-      style={[
-        { paddingTop: statusBarHeight },
-        getMainBackgroundColorStyle(actualTheme),
-      ]}
+      className="  px-4 flex-1 justify-center gap-3 pb-3 relative"
+      style={[getMainBackgroundColorStyle(actualTheme)]}
     >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-2">
-          <HeaderTitle
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
-          >
-            Hey {currentUser?.full_name}
-          </HeaderTitle>
-          <Animated.View style={animatedStyle}>
-            <MaterialCommunityIcons
-              name="hand-wave"
-              size={30}
-              color="#ffe03b"
-            />
-          </Animated.View>
-        </View>
-        <ProfileModal
-          getUserPrayers={getUserPrayers}
-          userPrayers={userPrayers}
-          logout={logout}
-          session={session}
-          setCurrentUser={setCurrentUser}
-          actualTheme={actualTheme}
-          colorScheme={colorScheme}
-          supabase={supabase}
-          profileVisible={profileVisible}
-          user={currentUser}
-          setProfileVisible={setProfileVisible}
-        />
-
-        <TouchableOpacity className="relative p-3 self-end ml-auto">
-          <Image
-            className="w-16 h-16 rounded-full"
-            source={{
-              uri: currentUser?.avatar_url
-                ? currentUser?.avatar_url
-                : "https://cdn.glitch.global/bcf084df-5ed4-42b3-b75f-d5c89868051f/profile-icon.png?v=1698180898451",
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => setProfileVisible(true)}
-            style={getPrimaryBackgroundColorStyle(actualTheme)}
-            className="absolute bg-light-primary p-2 dark:bg-dark-accent rounded-full items-center justify-center bottom-1 right-1"
-          >
-            <Ionicons
-              name="settings"
-              size={17}
-              color={
-                actualTheme && actualTheme.PrimaryTxt
-                  ? actualTheme.PrimaryTxt
-                  : colorScheme === "dark"
-                    ? "#121212"
-                    : "white"
-              }
-            />
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </View>
-      <View className="flex-row w-full gap-3 items-center">
+      {/* <View className="flex-row w-full gap-3 items-center">
         <Link asChild className="w-full" href={`/${QUESTION_LIST_SCREEN}`}>
           <TouchableOpacity
             style={getSecondaryBackgroundColorStyle(actualTheme)}
@@ -398,7 +337,7 @@ const CommunityHomeScreen = () => {
             </View>
           </TouchableOpacity>
         </Link>
-      </View>
+      </View> */}
       <CreateGroupModal
         getUserGroups={getUserGroups}
         getGroupUsers={getGroupUsers}
@@ -593,4 +532,4 @@ const CommunityHomeScreen = () => {
   );
 };
 
-export default CommunityHomeScreen;
+export default PrayerGroupsComponent;

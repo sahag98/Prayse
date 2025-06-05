@@ -1,32 +1,45 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Redirect, router, useFocusEffect } from "expo-router";
+import {
+  Redirect,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "nativewind";
-import { Alert, Platform, Pressable, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  Alert,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import * as StoreReview from "expo-store-review";
-import DailyReflection from "@components/DailyReflection";
+
+import DailyDevotion from "@components/DailyDevotion";
 import { GospelOfJesus } from "@components/gospel-of-jesus";
 // import HowtoUsePrayse from "@components/HowtoUsePrayse";
 import { MerchComponent } from "@components/MerchComponent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { ProBanner } from "@components/pro-banner";
+
 import { QuestionOfTheWeek } from "@components/question-of-the-week";
 import { Greeting } from "@components/welcome/greeting";
 
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+
 import { UpdateModal } from "@modals/update-modal";
-import WriteFeedbackModal from "@modals/WriteFeedbackModal";
 
 import FeedbackModal from "@/modals/FeedbackModal";
 import config from "@config";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -37,7 +50,8 @@ import { CheckReview } from "@hooks/useShowReview";
 import { handleReviewShowing } from "@redux/remindersReducer";
 
 import useStore from "@hooks/store";
-// import { setProModalVisible } from "@redux/userReducer";
+import PrayerGroupsComponent from "@components/prayer-groups";
+import { ANON_SCREEN } from "@routes";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -108,21 +122,17 @@ async function registerForPushNotificationsAsync() {
 }
 
 const WelcomeScreen = () => {
-  // const [_, setNotification] = useState(false);
+  const { active } = useLocalSearchParams();
   const [isFirst, setIsFirst] = useState(false);
   const [hasNewUpdate, setHasNewUpdate] = useState(false);
   const dispatch = useDispatch();
-  const [featureVisible, setFeatureVisible] = useState(false);
-  const [proModalVisible, setProModalVisible] = useState(false);
-  const [feedbackVisible, setFeedbackVisible] = useState(false);
+
   const reviewCounter = useSelector(
     (state: any) => state.reminder.reviewCounter,
   );
   const hasShownReview = useSelector(
     (state: any) => state.reminder.hasShownReview,
   );
-  // const notificationListener = useRef();
-  // const responseListener = useRef();
 
   const streak = useSelector((state: any) => state.user.devostreak);
   const completedItems = useSelector((state: any) => state.user.completedItems);
@@ -130,6 +140,7 @@ const WelcomeScreen = () => {
   const hasShownProModal = useSelector(
     (state: any) => state.user.hasShownProModal,
   );
+  console.log("streak: ", streak);
   const { deletePrayerTracking, addPrayerTracking, isShowingNewUpdate } =
     useStore();
   const actualTheme = useSelector(
@@ -137,12 +148,20 @@ const WelcomeScreen = () => {
   );
   const { colorScheme } = useColorScheme();
 
-  console.log(isShowingNewUpdate);
+  const [currentTab, setCurrentTab] = useState(active ? "community" : "today");
+  const activeTab = useSharedValue(active ? 0 : 1);
+
+  // Animation values for staggered animations
+  const greetingOpacity = useSharedValue(0);
+  const dailyReflectionOpacity = useSharedValue(0);
+  const questionOpacity = useSharedValue(0);
+  const gospelOpacity = useSharedValue(0);
+  const merchOpacity = useSharedValue(0);
 
   const loadIsFirstTime = async () => {
     try {
-      const hasIsFirstTime = await AsyncStorage.getItem("isFirstTime");
-      const hasNewUpdate = await AsyncStorage.getItem("newUpdate");
+      const hasIsFirstTime = await AsyncStorage.getItem("isFirstTime1");
+      const hasNewUpdate = await AsyncStorage.getItem("newUpdate1");
 
       if (hasIsFirstTime) {
         setIsFirst(false);
@@ -151,17 +170,19 @@ const WelcomeScreen = () => {
           setHasNewUpdate(false);
         } else {
           setHasNewUpdate(true);
-          await AsyncStorage.setItem("newUpdate", "true");
+          await AsyncStorage.setItem("newUpdate1", "true");
           router.push("new-update");
         }
       } else {
         setIsFirst(true);
-        await AsyncStorage.setItem("isFirstTime", "true");
+        await AsyncStorage.setItem("isFirstTime1", "true");
       }
     } catch (error) {
       console.log("isTime", error);
     }
   };
+
+  console.log(activeTab.value);
 
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
@@ -169,46 +190,154 @@ const WelcomeScreen = () => {
       console.log("focused: ", reviewCounter);
       console.log("has shown review: ", hasShownReview);
       // Invoked whenever the route is focused.
-      if (!hasShownReview) {
-        if (
-          reviewCounter === 3 ||
-          (reviewCounter % 14 === 0 && reviewCounter > 0)
-        ) {
-          Alert.alert(
-            "Thank You for using our app!",
-            "Would you take a moment to leave a review and share your experience?",
-            [
-              {
-                text: "Not Now",
-                onPress: () => dispatch(handleReviewShowing()),
-                style: "cancel",
-              },
-              {
-                text: "Leave a Review 🙌",
-                onPress: () => {
-                  dispatch(handleReviewShowing());
-                  CheckReview();
+      const showReviewPrompt = async () => {
+        if (!hasShownReview) {
+          await new Promise((resolve) => setTimeout(resolve, 500)); // Delay to avoid transition issues
+          if (
+            reviewCounter === 3 ||
+            (reviewCounter % 14 === 0 && reviewCounter > 0)
+          ) {
+            Alert.alert(
+              "Thank You for using our app!",
+              "Would you take a moment to leave a review and share your experience?",
+              [
+                {
+                  text: "Not Now",
+                  onPress: () => dispatch(handleReviewShowing()),
+                  style: "cancel",
                 },
-              },
-            ],
-          );
+                {
+                  text: "Leave a Review 🙌",
+                  onPress: () => {
+                    dispatch(handleReviewShowing());
+                    CheckReview();
+                  },
+                },
+              ],
+            );
+          }
         }
-      }
+      };
+      showReviewPrompt();
+
       // Return function is invoked whenever the route gets out of focus.
     }, [reviewCounter]),
   );
+  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+  const todayTabStyle = useAnimatedStyle(() => {
+    return {
+      borderBottomWidth: 2,
+      borderBottomColor:
+        activeTab.value === 1
+          ? colorScheme === "dark"
+            ? "white"
+            : "#2f2d51"
+          : colorScheme === "dark"
+            ? "#121212"
+            : "#f2f7ff",
+      transform: [{ scale: activeTab.value === 1 ? 1.1 : 1 }],
+    };
+  });
+
+  const communityTabStyle = useAnimatedStyle(() => {
+    return {
+      borderBottomWidth: 2,
+      borderBottomColor:
+        activeTab.value === 2
+          ? colorScheme === "dark"
+            ? "white"
+            : "#2f2d51"
+          : colorScheme === "dark"
+            ? "#121212"
+            : "#f2f7ff",
+      transform: [{ scale: activeTab.value === 0 ? 1.1 : 1 }],
+    };
+  });
+
+  const todayTextStyle = useAnimatedStyle(() => {
+    return {
+      fontSize: withTiming(activeTab.value === 1 ? 18 : 16, {
+        duration: 300,
+        easing: Easing.out(Easing.exp),
+      }),
+      opacity: withTiming(activeTab.value === 1 ? 1 : 0.7, {
+        duration: 300,
+        easing: Easing.out(Easing.exp),
+      }),
+    };
+  });
+
+  const communityTextStyle = useAnimatedStyle(() => {
+    return {
+      fontSize: withTiming(activeTab.value === 0 ? 18 : 16, {
+        duration: 300,
+        easing: Easing.out(Easing.exp),
+      }),
+      opacity: withTiming(activeTab.value === 0 ? 1 : 0.7, {
+        duration: 300,
+        easing: Easing.out(Easing.exp),
+      }),
+    };
+  });
 
   useEffect(() => {
     loadIsFirstTime();
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => sendToken(token!))
-      .catch((err) => console.log("push notification", err));
+    registerForPushNotificationsAsync().then((token) => sendToken(token!));
   }, []);
 
-  if (isFirst === true) {
+  useEffect(() => {
+    // Stagger the animations
+    greetingOpacity.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+
+    dailyReflectionOpacity.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+
+    questionOpacity.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+
+    gospelOpacity.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+
+    merchOpacity.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+
+  const greetingStyle = useAnimatedStyle(() => ({
+    opacity: greetingOpacity.value,
+  }));
+
+  const dailyReflectionStyle = useAnimatedStyle(() => ({
+    opacity: dailyReflectionOpacity.value,
+  }));
+
+  const questionStyle = useAnimatedStyle(() => ({
+    opacity: questionOpacity.value,
+  }));
+
+  const gospelStyle = useAnimatedStyle(() => ({
+    opacity: gospelOpacity.value,
+  }));
+
+  const merchStyle = useAnimatedStyle(() => ({
+    opacity: merchOpacity.value,
+  }));
+
+  if (isFirst) {
     return <Redirect href="/onboarding" />;
   }
 
@@ -218,74 +347,145 @@ const WelcomeScreen = () => {
 
   return (
     <WelcomeContainer
-      showsVerticalScrollIndicator={false}
       style={getMainBackgroundColorStyle(actualTheme)}
       //@ts-ignore
       className="flex relative flex-1 dark:bg-dark-background bg-light-background"
     >
-      <UpdateModal theme={colorScheme!} actualTheme={actualTheme} />
-      <View className="items-center mb-3 flex-row justify-between w-full">
-        <Greeting actualTheme={actualTheme} theme={colorScheme!} />
+      <LinearGradient
+        colors={
+          colorScheme === "dark"
+            ? ["#121212", "#1f1f1f"]
+            : ["#f2f7ff", "#e0ecff"]
+        } // Adjust for desired softness
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <UpdateModal theme={colorScheme!} actualTheme={actualTheme} />
+        <View className="items-center px-4 mb-3 flex-row justify-between w-full">
+          <View className="flex-row items-center gap-3">
+            <AnimatedPressable
+              style={todayTabStyle}
+              onPress={() => {
+                activeTab.value = withTiming(1, {
+                  duration: 300,
+                  easing: Easing.out(Easing.exp),
+                });
+                setCurrentTab("today");
+              }}
+              className="p-2 dark:border-b-dark-primary"
+            >
+              <Animated.Text
+                style={todayTextStyle}
+                className="font-inter-semibold text-light-primary dark:text-dark-primary"
+              >
+                Today
+              </Animated.Text>
+            </AnimatedPressable>
 
-        <View className="relative flex-row gap-2 items-center">
-          <Pressable
-            onPress={() => setFeedbackVisible(true)}
-            className="flex-row items-center gap-3 border p-2 rounded-xl border-light-primary dark:border-dark-primary"
-          >
-            <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
-              Feedback
+            <AnimatedPressable
+              style={communityTabStyle}
+              onPress={() => {
+                activeTab.value = withTiming(0, {
+                  duration: 300,
+                  easing: Easing.out(Easing.exp),
+                });
+                setCurrentTab("community");
+              }}
+              className="p-2"
+            >
+              <Animated.Text
+                style={communityTextStyle}
+                className="font-inter-semibold text-light-primary dark:text-dark-primary"
+              >
+                Community
+              </Animated.Text>
+            </AnimatedPressable>
+          </View>
+
+          <View className="flex-row items-center gap-1">
+            <Text className="font-inter-semibold text-light-primary dark:text-dark-primary text-lg">
+              {streak}
             </Text>
-            <Ionicons
-              name="chatbubble-ellipses-outline"
-              size={25}
-              color={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
-              }
-            />
-          </Pressable>
-          <WriteFeedbackModal
-            feedbackVisible={feedbackVisible}
-            setFeedbackVisible={setFeedbackVisible}
-            theme={colorScheme}
-            actualTheme={actualTheme}
-          />
-          <Pressable
-            onPress={() => router.push("tracking")}
-            className="flex items-center ml-3 flex-row"
-          >
-            <MaterialCommunityIcons
-              style={{ zIndex: 10 }}
-              name="hands-pray"
-              size={25}
-              color={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
-              }
-            />
-          </Pressable>
+            <Pressable
+              onPress={() => router.push("tracking")}
+              className="flex items-center flex-row"
+            >
+              <Image
+                source={require("@assets/prayse-transparent.png")}
+                style={{
+                  tintColor: colorScheme === "dark" ? "white" : "#2f2d51",
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            </Pressable>
+          </View>
         </View>
-      </View>
-      <DailyReflection
-        actualTheme={actualTheme}
-        completedItems={completedItems}
-        devoStreak={streak}
-        appStreak={appstreak}
-        theme={colorScheme}
-      />
-      <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
-      {/* <ProBanner actualTheme={actualTheme} theme={colorScheme!} /> */}
+        {currentTab === "today" ? (
+          <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+            <Animated.View style={greetingStyle} className="mb-1">
+              <Greeting actualTheme={actualTheme} theme={colorScheme!} />
+            </Animated.View>
 
-      <QuestionOfTheWeek actualTheme={actualTheme} theme={colorScheme!} />
-      <GospelOfJesus actualTheme={actualTheme} />
+            <Animated.View style={dailyReflectionStyle}>
+              <DailyDevotion
+                actualTheme={actualTheme}
+                completedItems={completedItems}
+                devoStreak={streak}
+                appStreak={appstreak}
+                theme={colorScheme}
+              />
+            </Animated.View>
+            <View className="px-4 my-2">
+              <Animated.View style={dailyReflectionStyle}>
+                <Pressable
+                  onPress={() => router.push(ANON_SCREEN)}
+                  className="bg-white dark:bg-dark-secondary border p-4 gap-2 rounded-lg border-light-primary dark:border-[#a6a6a6]"
+                >
+                  <Text className="absolute top-4 right-4 text-red-400 font-inter-bold">
+                    NEW
+                  </Text>
+                  <Text className="font-inter-semibold text-light-primary dark:text-dark-primary text-lg">
+                    Share Anonymous Prayers
+                  </Text>
+                  <Text className="font-inter-regular text-light-primary dark:text-dark-primary">
+                    A place to share prayers anonymously, and pray for others.
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            </View>
 
-      <MerchComponent theme={colorScheme!} actualTheme={actualTheme} />
+            <Animated.View style={dailyReflectionStyle}>
+              <FeedbackModal actualTheme={actualTheme} theme={colorScheme} />
+            </Animated.View>
+
+            <View className="px-4 my-4">
+              <Animated.View style={questionStyle}>
+                <QuestionOfTheWeek
+                  actualTheme={actualTheme}
+                  theme={colorScheme!}
+                />
+              </Animated.View>
+
+              <Animated.View style={gospelStyle}>
+                <GospelOfJesus actualTheme={actualTheme} />
+              </Animated.View>
+            </View>
+
+            <View className="px-4">
+              <Animated.View style={merchStyle}>
+                <MerchComponent
+                  theme={colorScheme!}
+                  actualTheme={actualTheme}
+                />
+              </Animated.View>
+            </View>
+          </ScrollView>
+        ) : (
+          <PrayerGroupsComponent />
+        )}
+      </LinearGradient>
     </WelcomeContainer>
   );
 };

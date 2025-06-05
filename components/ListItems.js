@@ -8,20 +8,22 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import {
+  Entypo,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
 import { TEST_SCREEN } from "../routes";
-import { ListView, TodoText } from "../styles/appStyles";
+import { ListView } from "../styles/appStyles";
 
 import {
   getPrimaryBackgroundColorStyle,
-  getPrimaryTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import PrayerTabs from "./PrayerTabs";
-import { cn } from "@lib/utils";
 import { useSupabase } from "@context/useSupabase";
 import { addVerseToPrayer } from "@redux/prayerReducer";
 import VerseModal from "@modals/VerseModal";
@@ -29,13 +31,12 @@ import VerseModal from "@modals/VerseModal";
 import { posthog } from "@lib/posthog";
 
 const ListItems = ({
-  prayer,
   actualTheme,
   colorScheme,
   pickedPrayer,
   prayerList,
   onScroll,
-  loading,
+
   folderId,
 }) => {
   const dispatch = useDispatch();
@@ -122,14 +123,11 @@ const ListItems = ({
   const filteredList = getFilteredList();
 
   const renderItem = ({ item }) => {
-    const RowText = TodoText;
-
-    console.log("item: ", item);
-
     const addReminder = (item) => {
       posthog.capture("Create reminder");
       navigation.navigate(TEST_SCREEN, {
         reminder: item.prayer,
+        note: item.notes ?? "",
         reminderId: item.id,
         type: "Add",
       });
@@ -139,6 +137,8 @@ const ListItems = ({
       (reminder) => reminder.reminder?.prayer_id === item.id
     );
 
+    console.log(item);
+
     return (
       <>
         <ListView
@@ -146,17 +146,21 @@ const ListItems = ({
           className="bg-light-secondary dark:bg-dark-secondary relative"
         >
           <>
-            <View className="flex-row items-center justify-between">
+            <Text
+              style={[getSecondaryTextColorStyle(actualTheme)]}
+              className="text-xl mb-2 font-inter-semibold text-light-primary dark:text-dark-primary"
+            >
+              {item.prayer}
+            </Text>
+
+            {item.notes && (
               <Text
-                style={[
-                  getSecondaryTextColorStyle(actualTheme),
-                  { fontSize: size ? size : 16 },
-                ]}
-                className=" text-lg w-11/12 font-inter-medium text-light-primary dark:text-dark-primary"
+                style={[getSecondaryTextColorStyle(actualTheme)]}
+                className="font-inter-regular text-light-primary dark:text-dark-primary"
               >
-                {item.prayer}
+                {item?.notes}
               </Text>
-            </View>
+            )}
 
             {/* {item.verse && (
               <Text
@@ -178,13 +182,13 @@ const ListItems = ({
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme == "dark"
-                      ? "white"
-                      : "#2F2D51"
+                    ? "white"
+                    : "#2F2D51"
                 }
               />
             </TouchableOpacity>
 
-            <View className="flex-row justify-between mt-8 items-end">
+            <View className="flex-row justify-between mt-3 items-end">
               {item.status === "Answered" ? (
                 <>
                   <View className="flex-row bg-green-300 px-2 py-1 rounded-md items-center">
@@ -201,54 +205,47 @@ const ListItems = ({
                   Archived
                 </Text>
               ) : (
-                <View className="flex-row items-end w-full justify-between">
+                <View className="flex-row items-end w-full justify-end">
                   {isReminder?.reminder.prayer_id === item.id ? (
-                    <View className="rounded-lg flex-row items-center gap-2">
-                      <Text
-                        style={getSecondaryTextColorStyle(actualTheme)}
-                        className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
-                      >
-                        Reminder
-                      </Text>
-                      <AntDesign
-                        name="check"
-                        size={20}
-                        color={
-                          actualTheme && actualTheme.SecondaryTxt
-                            ? actualTheme.SecondaryTxt
-                            : colorScheme === "dark"
-                              ? "#a5c9ff"
-                              : "#2f2d51"
-                        }
-                      />
-                    </View>
+                    <MaterialCommunityIcons
+                      name="bell-check-outline"
+                      size={24}
+                      color={
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? actualTheme.SecondaryTxt
+                          : colorScheme === "dark"
+                          ? "#a5c9ff"
+                          : "#2f2d51"
+                      }
+                    />
                   ) : (
                     <TouchableOpacity
                       onPress={() => addReminder(item)}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
-                      className="flex-row items-center justify-center bg-light-primary dark:bg-dark-accent w-full p-3 rounded-md gap-2"
+                      className="flex-row items-center justify-center bg-light-primary dark:bg-dark-accent p-3 rounded-md gap-2"
                     >
-                      <AntDesign
-                        name="pluscircleo"
+                      <FontAwesome
+                        name="bell-o"
                         size={20}
                         color={
                           actualTheme && actualTheme.PrimaryTxt
                             ? actualTheme.PrimaryTxt
                             : colorScheme === "dark"
-                              ? "#121212"
-                              : "#f2f7ff"
+                            ? "#121212"
+                            : "#f2f7ff"
                         }
                       />
-                      <Text
+
+                      {/* <Text
                         style={getPrimaryTextColorStyle(actualTheme)}
                         className="font-inter-semibold text-base text-light-background dark:text-dark-background"
                       >
                         Reminder
-                      </Text>
+                      </Text> */}
                     </TouchableOpacity>
                   )}
 
-                  {versesEnabled && (
+                  {/* {versesEnabled && (
                     <TouchableOpacity
                       onPress={() => getBibleVerse(item)}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
@@ -260,7 +257,7 @@ const ListItems = ({
                         color={colorScheme === "dark" ? "#121212" : "white"}
                       />
                     </TouchableOpacity>
-                  )}
+                  )} */}
                 </View>
               )}
             </View>
@@ -311,8 +308,8 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? " archive "
                   : activeTab === "Answered"
-                    ? " answered list "
-                    : " prayer list "}
+                  ? " answered list "
+                  : " prayer list "}
                 is empty.
               </Text>
               <Text
@@ -322,12 +319,13 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
                   : activeTab === "Answered"
-                    ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
-                    : "Add a prayer using your voice or just type it in!"}
+                  ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
+                  : "Add a prayer using your voice or just type it in!"}
               </Text>
             </View>
           </View>
         )}
+        ListFooterComponent={() => <View className="h-32" />}
         onScroll={onScroll}
         renderItem={renderItem}
       />

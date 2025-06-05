@@ -13,9 +13,9 @@ export const colors = {
 
 const statusBarHeight = Constants.statusBarHeight;
 
-export const WelcomeContainer = styled.ScrollView`
+export const WelcomeContainer = styled.View`
   /* background-color: "${colors.primary}"; */
-  padding: 15px;
+  padding: 0px;
   height: "100%";
   padding-bottom: 0px;
   flex: 1;

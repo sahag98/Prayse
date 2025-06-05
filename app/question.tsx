@@ -1,8 +1,19 @@
 // @ts-nocheck
 import { useCallback, useEffect, useState } from "react";
-import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { useColorScheme } from "nativewind";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
@@ -16,7 +27,7 @@ import {
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
 import QuestionModal from "../modals/QuestionModal";
-import { QUESTION_LIST_SCREEN } from "../routes";
+import { EXPLORE_SCREEN, QUESTION_LIST_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const QuestionScreen = () => {
@@ -53,7 +64,6 @@ const QuestionScreen = () => {
 
     setAnswersArray(answers);
   }
-  console.log("answers: ", JSON.stringify(answersArray, null, 2));
 
   return (
     <Container
@@ -62,7 +72,13 @@ const QuestionScreen = () => {
     >
       <HeaderView style={{ marginTop: 10, alignItems: "center" }}>
         <View className="flex-row items-center gap-3">
-          <Link href={`/${QUESTION_LIST_SCREEN}`}>
+          <Pressable
+            onPress={() =>
+              router.canGoBack()
+                ? router.back()
+                : router.replace(EXPLORE_SCREEN)
+            }
+          >
             <AntDesign
               name="left"
               size={24}
@@ -74,7 +90,7 @@ const QuestionScreen = () => {
                     : "#2f2d51"
               }
             />
-          </Link>
+          </Pressable>
           <HeaderTitle
             style={getMainTextColorStyle(actualTheme)}
             className="font-inter-bold dark:text-dark-primary text-light-primary"
@@ -141,11 +157,11 @@ const QuestionScreen = () => {
           )}
         />
       </View>
-      <View className="absolute flex left-4 bottom-4 ">
+      <View className="absolute flex right-4 bottom-8 ">
         <TouchableOpacity
           style={getPrimaryBackgroundColorStyle(actualTheme)}
           onPress={() => setAnswersVisible(true)}
-          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary p-4 rounded-xl shadow-gray-300 dark:shadow-none"
+          className="dark:bg-dark-accent flex-row items-center justify-center gap-2 bg-light-primary size-16 rounded-full shadow-gray-300 dark:shadow-none"
         >
           <AntDesign
             name="plus"
@@ -158,12 +174,12 @@ const QuestionScreen = () => {
                   : "white"
             }
           />
-          <Text
+          {/* <Text
             style={getPrimaryTextColorStyle(actualTheme)}
             className="font-inter-bold text-lg text-light-background dark:text-dark-background"
           >
             Answer
-          </Text>
+          </Text> */}
         </TouchableOpacity>
       </View>
       <QuestionModal

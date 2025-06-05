@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { Redirect, useNavigation } from "expo-router";
-
+import { Image } from "expo-image";
 import { WELCOME_SCREEN } from "@routes";
 
 export default function HomeScreen() {

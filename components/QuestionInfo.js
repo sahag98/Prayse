@@ -1,7 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
 import { QUESTION_SCREEN } from "../routes";
@@ -12,10 +18,11 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useNavigation } from "expo-router";
+import { useColorScheme } from "nativewind";
 
 const QuestionInfo = ({ item, actualTheme, theme }) => {
   const navigation = useNavigation();
-
+  const { colorScheme } = useColorScheme();
   const { answers } = useSupabase();
 
   const existingAnswers = answers.filter(
@@ -63,25 +70,16 @@ const QuestionInfo = ({ item, actualTheme, theme }) => {
             <View />
           )}
         </View>
-        <View className="flex-row items-center gap-2">
-          <FontAwesome5
-            name="check-circle"
-            size={20}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : theme === "dark"
-                  ? "#A5C9FF"
-                  : "#2f2d51"
-            }
-          />
-          <Text
-            style={getSecondaryTextColorStyle(actualTheme)}
-            className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
-          >
+        <Pressable className="bg-light-background border-none dark:border dark:border-[#616161] dark:bg-dark-background flex-row items-center gap-2 px-2 py-1 rounded-lg">
+          <Text className="text-light-primary dark:text-dark-primary text-sm font-medium">
             {existingAnswers.length}
           </Text>
-        </View>
+          <Ionicons
+            name="chatbubble-outline"
+            size={18}
+            color={colorScheme === "dark" ? "white" : "#2f2d51"}
+          />
+        </Pressable>
       </View>
     </TouchableOpacity>
   );

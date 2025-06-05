@@ -40,7 +40,7 @@ import { cn } from "@lib/utils";
 
 import Chat from "../components/Chat";
 import { useSupabase } from "../context/useSupabase";
-import { COMMUNITY_SCREEN, PRAYER_GROUP_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, HOME_SCREEN, PRAYER_GROUP_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, PrayerContainer } from "../styles/appStyles";
 import VideoProvider from "@context/VideoProvider";
 
@@ -92,8 +92,6 @@ const PrayerGroupScreen = () => {
       setCurrentGroup(data);
     }
     fetchCurrGroup();
-
-    console.log("curr group:", JSON.stringify(currentGroup, null, 2));
 
     async function fetchCurrGroupUsers() {
       const { data } = await supabase
@@ -228,7 +226,6 @@ const PrayerGroupScreen = () => {
   }
 
   async function startPrayerVideoCall() {
-    console.log("heree");
     try {
       const { data, error } = await supabase
         .from("groups")
@@ -292,7 +289,6 @@ const PrayerGroupScreen = () => {
 
     members.map(async (m) => {
       if (m.profiles.expoToken !== currentUser.expoToken) {
-        console.log("tokens to send: ", m.profiles.expoToken);
         const message = {
           to: m.profiles.expoToken,
           sound: "default",
@@ -331,8 +327,6 @@ const PrayerGroupScreen = () => {
     copyToClipboard(currentUser.code.toString());
   };
 
-  // console.log(callGroup.id);
-
   return (
     <VideoProvider>
       <KeyboardAvoidingView
@@ -357,7 +351,7 @@ const PrayerGroupScreen = () => {
             )}
           >
             <View className="flex-row flex-1">
-              <Link href={`/${COMMUNITY_SCREEN}`}>
+              <Link href={`/${HOME_SCREEN}?active=community`}>
                 <AntDesign
                   name="left"
                   size={24}

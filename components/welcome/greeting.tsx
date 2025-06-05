@@ -62,11 +62,11 @@ export const Greeting: React.FC<GreetingProps> = ({ theme, actualTheme }) => {
   }, []);
 
   return (
-    <Animated.View className="flex flex-row items-center gap-2">
+    <Animated.View className="flex px-4 my-2 flex-row items-center gap-2">
       <Animated.Text
         onPress={() => CheckReview()}
         style={getMainTextColorStyle(actualTheme)}
-        className="text-xl tracking-wide font-inter-semibold  text-light-primary dark:text-[#d2d2d2]"
+        className="text-2xl tracking-wide font-inter-semibold  text-light-primary dark:text-[#d2d2d2]"
       >
         {greeting}
       </Animated.Text>

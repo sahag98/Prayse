@@ -32,9 +32,9 @@ export const GospelOfJesus = ({
         </Text>
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="leading-6 font-inter-bold text-light-primary dark:text-white text-xl"
+          className="font-inter-semibold text-light-primary dark:text-white text-xl"
         >
-          How can someone receive Jesus, and get saved?
+          What does it mean to receive Jesus and begin a relationship with Him?
         </Text>
       </TouchableOpacity>
     </Link>

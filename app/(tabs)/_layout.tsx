@@ -15,6 +15,7 @@ import {
   REMINDER_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
   WELCOME_SCREEN,
+  EXPLORE_SCREEN,
 } from "@routes";
 import * as Notifications from "expo-notifications";
 import { ActualTheme } from "../../types/reduxTypes";
@@ -143,17 +144,13 @@ export default function TabLayout() {
         <Tabs.Screen
           name={WELCOME_SCREEN}
           options={{
-            title: "Home",
+            // title: "Today",
+            tabBarShowLabel: false,
             tabBarLabelStyle: {
               fontSize: 11,
               fontFamily: "Inter-Medium",
             },
             tabBarStyle: {
-              height: 58,
-              paddingTop: 5,
-              paddingBottom: 5,
-              // paddingTop: 5,
-              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
@@ -161,6 +158,7 @@ export default function TabLayout() {
                     ? "#212121"
                     : "white",
             },
+
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
                 name={focused ? "home" : "home-outline"}
@@ -173,13 +171,10 @@ export default function TabLayout() {
         <Tabs.Screen
           name={FOLDER_SCREEN}
           options={{
-            title: "Prayer",
+            // title: "Prayer",
+            tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              height: 58,
-              paddingBottom: 5,
-              paddingTop: 5,
-              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
@@ -187,6 +182,7 @@ export default function TabLayout() {
                     ? "#212121"
                     : "white",
             },
+
             tabBarIcon: ({ color, size, focused }) => (
               <MaterialIcons
                 name={focused ? "hands-pray" : "hands-pray"}
@@ -196,16 +192,14 @@ export default function TabLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
           name={REMINDER_SCREEN}
           options={{
-            title: "Reminders",
+            // title: "Reminders",
+            tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              height: 58,
-              paddingBottom: 5,
-              paddingTop: 5,
-              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
@@ -213,6 +207,7 @@ export default function TabLayout() {
                     ? "#212121"
                     : "white",
             },
+
             tabBarIcon: ({ color, focused }) => (
               <Ionicons
                 name={focused ? "time-outline" : "time-outline"}
@@ -223,15 +218,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name={COMMUNITY_SCREEN}
+          name={EXPLORE_SCREEN}
           options={{
-            title: "Community",
+            // title: "Explore",
+            tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              height: 58,
-              paddingBottom: 5,
-              paddingTop: 5,
-              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
@@ -241,7 +233,7 @@ export default function TabLayout() {
             },
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
-                name={focused ? "globe-outline" : "globe-outline"}
+                name={focused ? "compass" : "compass-outline"}
                 color={color}
                 size={size}
               />
@@ -251,13 +243,10 @@ export default function TabLayout() {
         <Tabs.Screen
           name={MORE_SCREEN}
           options={{
-            title: "More",
+            // title: "More",
+            tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              height: 58,
-              paddingBottom: 5,
-              paddingTop: 5,
-              borderTopColor: colorScheme === "dark" ? "#787878" : "#d2d2d2",
               backgroundColor:
                 actualTheme && actualTheme.Bg
                   ? actualTheme.Bg
@@ -265,9 +254,10 @@ export default function TabLayout() {
                     ? "#212121"
                     : "white",
             },
+
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons
-                name={focused ? "list" : "list-outline"}
+                name={focused ? "menu" : "menu-outline"}
                 color={color}
                 size={size}
               />

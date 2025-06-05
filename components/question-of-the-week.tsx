@@ -31,7 +31,6 @@ export const QuestionOfTheWeek = ({
       style={
         actualTheme && actualTheme.PrimaryTxt && { borderTopColor: "gainsboro" }
       }
-      className="border-t pt-3 border-t-gray-300 dark:border-t-[#707070]"
     >
       <View className="flex-row items-center mb-4 gap-3">
         <Feather
@@ -76,7 +75,7 @@ export const QuestionOfTheWeek = ({
 
         <Text
           style={getSecondaryTextColorStyle(actualTheme)}
-          className="font-inter-bold text-xl leading-6 text-light-primary dark:text-white"
+          className="font-inter-semibold text-xl text-light-primary dark:text-white"
         >
           {latestQuestion?.title}
         </Text>

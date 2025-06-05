@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Link,
@@ -11,42 +10,66 @@ import * as Speech from "expo-speech";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
+  Alert,
+  Pressable,
   ScrollView,
   Share,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 import { useDispatch, useSelector } from "react-redux";
+import Animated, {
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  withSequence,
+  withDelay,
+  Easing,
+  useSharedValue,
+} from "react-native-reanimated";
 
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  MaterialIcons,
+  Feather,
+  Ionicons,
+} from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
 import { FAVORITES_SCREEN, MORE_SCREEN } from "../routes";
 import { Container, HeaderTitle } from "../styles/appStyles";
+import { ActualTheme } from "../types/reduxTypes";
 
 const VerseOfTheDayScreen = () => {
-  const favorites = useSelector((state) => state.favorites.favoriteVerses);
+  const favorites = useSelector((state: any) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
-  const [verse, setVerse] = useState([]);
+  const [verse, setVerse] = useState<any>([]);
+
+  const AnimatedImage = Animated.createAnimatedComponent(Image);
 
   const routeParams = useLocalSearchParams();
 
   const router = useRouter();
   const navigation = useNavigation();
 
+  const scaleValue = useSharedValue(1);
+
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
-  const speak = async (verse, chapter) => {
+  const speak = async (verse: string, chapter: string) => {
     if (verse && chapter) {
       const speakVerse = verse + " - " + chapter;
 
@@ -54,18 +77,39 @@ const VerseOfTheDayScreen = () => {
     }
   };
 
+  useEffect(() => {
+    Image.prefetch(
+      "https://images.pexels.com/photos/30694611/pexels-photo-30694611/free-photo-of-scenic-palm-tree-avenue-on-a-sunny-day.jpeg",
+    ).then(() => console.log("prefetched image"));
+  }, []);
+
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
     useCallback(() => {
       // Invoked whenever the route is focused.
       loadDailyVerse();
 
+      scaleValue.value = withRepeat(
+        withSequence(
+          withTiming(1.5, { duration: 30000, easing: Easing.linear }),
+          withTiming(1, { duration: 30000, easing: Easing.linear }),
+        ),
+        -1,
+        true,
+      );
       // Return function is invoked whenever the route gets out of focus.
     }, []),
   );
 
   const loadDailyVerse = () => {
-    const query = '*[_type=="verse"]';
+    const query = `*[_type=="verse"]{
+      _id,
+      _updatedAt,
+      _createdAt,
+     "image": image.asset->url,
+     chapter,
+     verse
+    }`;
     client
       .fetch(query)
       .then((data) => {
@@ -76,7 +120,7 @@ const VerseOfTheDayScreen = () => {
       });
   };
 
-  const onShare = async (verse, chapter) => {
+  const onShare = async (verse: string, chapter: string) => {
     if (verse && chapter) {
       const shareVerse = verse + " - " + chapter;
 
@@ -84,13 +128,13 @@ const VerseOfTheDayScreen = () => {
         await Share.share({
           message: shareVerse,
         });
-      } catch (error) {
+      } catch (error: any) {
         Alert.alert(error.message);
       }
     }
   };
 
-  const HandleFavorites = (verse) => {
+  const HandleFavorites = (verse: any) => {
     dispatch(
       addToFavorites({
         verse,
@@ -115,185 +159,122 @@ const VerseOfTheDayScreen = () => {
     );
   };
 
+  console.log(verse[0]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: scaleValue.value,
+        },
+      ],
+    };
+  });
+
   if (verse.length === 0) {
-    return <BusyIndicator />;
+    return null;
   }
 
   return (
-    <Container
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="bg-light-background dark:bg-dark-background"
-    >
-      <View className="mb-10 pt-4 flex-row items-center">
-        <TouchableOpacity
-          className="mr-2"
-          onPress={() => {
-            if (routeParams?.previousScreen) {
-              // router.back();
-              navigation.goBack();
-            } else {
-              router.push(MORE_SCREEN);
-            }
+    <View className="flex-1 px-4 bg-light-background dark:bg-dark-background">
+      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        {/* <Image
+          source={{
+            uri: "https://images.pexels.com/photos/9443229/pexels-photo-9443229.jpeg",
           }}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={30}
-            color={
-              actualTheme && actualTheme.MainTxt
-                ? actualTheme.MainTxt
-                : colorScheme === "light"
-                  ? "#2f2d51"
-                  : "white"
-            }
-          />
-        </TouchableOpacity>
-        <HeaderTitle
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter-bold text-light-primary dark:text-dark-primary"
-        >
-          Verse of the Day
-        </HeaderTitle>
-      </View>
-      <Link asChild href={`/${FAVORITES_SCREEN}`}>
-        <TouchableOpacity
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="w-full rounded-lg bg-light-secondary dark:bg-dark-secondary flex-row items-center justify-between p-3"
-        >
-          <View className="flex-row items-center gap-2">
-            <Feather
-              name="bookmark"
-              size={40}
+          style={[StyleSheet.absoluteFill]}
+        /> */}
+        <View className="mb-10 pt-4 flex-row items-center">
+          <TouchableOpacity
+            className="mr-2"
+            onPress={() => {
+              if (routeParams?.previousScreen) {
+                navigation.goBack();
+              } else {
+                router.push(MORE_SCREEN);
+              }
+            }}
+          >
+            <Ionicons
+              name="chevron-back"
+              size={30}
               color={
-                actualTheme && actualTheme.SecondaryTxt
-                  ? actualTheme.SecondaryTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                actualTheme && actualTheme.MainTxt
+                  ? actualTheme.MainTxt
+                  : colorScheme === "light"
+                    ? "#2f2d51"
+                    : "white"
               }
             />
-
-            <Text
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-medium text-lg text-light-primary dark:text-dark-primary"
-            >
-              Saved verses
+          </TouchableOpacity>
+          <HeaderTitle
+            style={getMainTextColorStyle(actualTheme)}
+            //@ts-ignore
+            className="font-inter-bold text-light-primary dark:text-dark-primary"
+          >
+            Verse of the Day
+          </HeaderTitle>
+        </View>
+        <Link
+          href="/favorites"
+          asChild
+          className="bg-light-secondary justify-between flex-row items-center p-5 rounded-lg"
+        >
+          <Pressable>
+            <View className="flex-row items-center gap-2">
+              <Feather name="bookmark" size={28} color="black" />
+              <Text className="font-inter-medium text-lg">Saved Verses</Text>
+            </View>
+            <AntDesign
+              name="right"
+              size={24}
+              color={colorScheme === "dark" ? "white" : "#2f2d51"}
+            />
+          </Pressable>
+        </Link>
+        <View className="flex-col flex-1 h-full justify-center gap-5">
+          <Text className="font-inter-bold text-xl text-light-primary dark:text-dark-primary">
+            {new Date(verse[0]?._updatedAt).toDateString()}
+          </Text>
+          <View className="gap-2">
+            <Text className="font-inter-medium text-2xl text-light-primary dark:text-dark-primary">
+              {verse[0].verse}
+            </Text>
+            <Text className="font-inter-medium text-2xl text-light-primary dark:text-dark-primary">
+              - {verse[0].chapter}
             </Text>
           </View>
-          <AntDesign
-            name="right"
-            size={20}
-            color={
-              actualTheme && actualTheme.SecondaryTxt
-                ? actualTheme.SecondaryTxt
-                : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
-            }
-          />
-        </TouchableOpacity>
-      </Link>
-      <ScrollView
-        contentContainerClassName="justify-center gap-3 flex-1 items-center"
-        // contentContainerStyle={{ gap: 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter font-bold text-2xl text-light-primary dark:text-dark-primary"
-        >
-          {new Date(verse[0]?._updatedAt).toDateString()}
-        </Text>
-        <View
-          style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="justify-center w-11/12 bg-light-secondary dark:bg-dark-secondary self-center rounded-lg p-3"
-        >
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter-regular leading-7 text-lg mb-2 text-light-primary dark:text-dark-primary"
-          >
-            {verse[0].verse}
-          </Text>
-          <View>
-            {verse[0] !==
-              "No daily verse just yet. (Make sure to enable notifications to recieve the daily verse)" && (
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="self-end font-inter-medium text-lg text-light-primary dark:text-dark-primary"
-              >
-                - {verse[0].chapter}
+
+          <View className="flex-row  w-full justify-evenly mt-5 items-center">
+            {favorites.some(
+              (favorite: any) => favorite.verse.verse === verse[0].verse,
+            ) ? (
+              <Text className="font-inter-semibold text-xl dark:text-white text-light-primary ">
+                Saved
               </Text>
+            ) : (
+              <Pressable onPress={() => HandleFavorites(verse[0])}>
+                <MaterialIcons
+                  name="bookmark-border"
+                  size={30}
+                  color={colorScheme === "dark" ? "white" : "#2f2d51"}
+                />
+              </Pressable>
             )}
-            <View className="items-center flex-row justify-evenly mt-5">
-              <TouchableOpacity
-                onPress={() => onShare(verse[0].verse, verse[0].chapter)}
-                className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
-              >
-                <Feather
-                  name="share"
-                  size={26}
-                  color={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : colorScheme === "dark"
-                        ? "#ebebeb"
-                        : "#2f2d51"
-                  }
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => speak(verse[0].verse, verse[0].chapter)}
-                className="flex-row w-[33.33%] h-full border-r border-r-gray-500 items-center justify-center"
-              >
-                <AntDesign
-                  name="sound"
-                  size={26}
-                  color={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : colorScheme === "dark"
-                        ? "#ebebeb"
-                        : "#2f2d51"
-                  }
-                />
-              </TouchableOpacity>
-              {favorites?.some(
-                (item) => item.verse.verse === verse[0].verse,
-              ) ? (
-                <TouchableOpacity
-                  disabled
-                  className="flex-row w-[33.33%] h-full items-center justify-center"
-                >
-                  <Text
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter-semibold text-light-primary dark:text-dark-primary  text-lg"
-                  >
-                    Saved
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => HandleFavorites(verse[0])}
-                  className="flex-row w-[33.33%] h-full  items-center justify-center"
-                >
-                  <Feather
-                    name="bookmark"
-                    size={30}
-                    color={
-                      actualTheme && actualTheme.SecondaryTxt
-                        ? actualTheme.SecondaryTxt
-                        : colorScheme === "dark"
-                          ? "white"
-                          : "#2f2d51"
-                    }
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
+
+            <Pressable
+              onPress={() => onShare(verse[0].verse, verse[0].chapter)}
+            >
+              <Feather
+                name="share"
+                size={30}
+                color={colorScheme === "dark" ? "white" : "#2f2d51"}
+              />
+            </Pressable>
           </View>
         </View>
-      </ScrollView>
-    </Container>
+      </SafeAreaView>
+    </View>
   );
 };
 

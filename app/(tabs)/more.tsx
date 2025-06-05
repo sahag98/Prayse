@@ -17,10 +17,8 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   FontAwesome,
-  FontAwesome5,
 } from "@expo/vector-icons";
 import {
-  getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
   getPrimaryTextColorStyle,
@@ -34,11 +32,11 @@ import SettingsItems from "../../components/SettingsItems";
 import FeedbackItems from "../../components/FeedbackItems";
 import config from "../../config";
 import {
-  DEVO_LIST_SCREEN,
+  PRAISE_SCREEN,
   SETTINGS_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
 } from "../../routes";
-import { Container, HeaderTitle } from "../../styles/appStyles";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActualTheme } from "../../types/reduxTypes";
 
@@ -101,31 +99,31 @@ const MoreScreen = () => {
         />
       ),
       title: "Daily Praises",
-      screen: DEVO_LIST_SCREEN,
+      screen: PRAISE_SCREEN,
     },
 
-    {
-      id: 3,
-      icon: (
-        <FontAwesome5
-          className="mr-3"
-          name="bible"
-          size={24}
-          color={
-            actualTheme && actualTheme.SecondaryTxt
-              ? actualTheme.SecondaryTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
-          }
-        />
-      ),
-      title: "New Bible Study app!",
-      link:
-        Platform.OS == "ios"
-          ? "https://apps.apple.com/us/app/bible-study-prayse/id6739017076"
-          : "https://play.google.com/store/apps/details?id=com.sahag98.praysetogether",
-    },
+    // {
+    //   id: 4,
+    //   icon: (
+    //     <FontAwesome5
+    //       className="mr-3"
+    //       name="bible"
+    //       size={24}
+    //       color={
+    //         actualTheme && actualTheme.SecondaryTxt
+    //           ? actualTheme.SecondaryTxt
+    //           : colorScheme === "dark"
+    //             ? "white"
+    //             : "#2f2d51"
+    //       }
+    //     />
+    //   ),
+    //   title: "New Bible Study app!",
+    //   link:
+    //     Platform.OS == "ios"
+    //       ? "https://apps.apple.com/us/app/bible-study-prayse/id6739017076"
+    //       : "https://play.google.com/store/apps/details?id=com.sahag98.praysetogether",
+    // },
   ];
 
   const feedback = [
@@ -282,14 +280,13 @@ const MoreScreen = () => {
               style={getPrimaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-lg text-light-background dark:text-dark-background"
             >
-              Take Part
+              Be a Blessing
             </Text>
           </TouchableOpacity>
         </View>
-
-        <DailysItems
+        <SettingsItems
           actualTheme={actualTheme}
-          options={dailys}
+          options={options}
           theme={colorScheme}
         />
         <FeedbackItems
@@ -297,9 +294,9 @@ const MoreScreen = () => {
           options={feedback}
           theme={colorScheme}
         />
-        <SettingsItems
+        <DailysItems
           actualTheme={actualTheme}
-          options={options}
+          options={dailys}
           theme={colorScheme}
         />
 

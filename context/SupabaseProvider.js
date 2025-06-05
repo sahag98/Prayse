@@ -10,7 +10,7 @@ import { SupabaseContext } from "./SupabaseContext";
 
 import "react-native-url-polyfill/auto";
 import { useRouter } from "expo-router";
-import { COMMUNITY_SCREEN, WELCOME_SCREEN } from "@routes";
+import { COMMUNITY_SCREEN, HOME_SCREEN, WELCOME_SCREEN } from "@routes";
 import { useQueryClient } from "@tanstack/react-query";
 
 // We are using Expo Secure Store to persist session info
@@ -94,7 +94,7 @@ export const SupabaseProvider = (props) => {
 
     // Add navigation logic here
     if (profiles[0] && profiles[0].full_name !== null) {
-      router.replace(COMMUNITY_SCREEN);
+      router.replace(`${HOME_SCREEN}?active=community`);
     } else if (profiles[0] && profiles[0].full_name === null) {
       router.replace("profile-setup");
     }
@@ -117,7 +117,7 @@ export const SupabaseProvider = (props) => {
     const profiles = await checkIfUserIsLoggedIn();
 
     if (profiles[0] && profiles[0].full_name !== null) {
-      router.push("/(tabs)/community");
+      router.push("/(tabs)/explore");
     } else if (profiles[0] && profiles[0].full_name === null) {
       router.push("profile-setup");
     }
@@ -170,6 +170,15 @@ export const SupabaseProvider = (props) => {
     setQuestions(allQuestions);
   };
 
+  const fetchTestQuestions = async () => {
+    console.log("fetch test");
+    const { data: allQuestions } = await supabase
+      .from("questions_test")
+      .select("*, profiles(*)")
+      .order("id", { ascending: false });
+    setQuestions(allQuestions);
+  };
+
   const fetchLatestQuestion = async () => {
     const { data } = await supabase
       .from("questions")
@@ -200,6 +209,19 @@ export const SupabaseProvider = (props) => {
   async function fetchAnswers() {
     const { data: answers, error: answersError } = await supabase
       .from("answers")
+      .select("*, profiles(avatar_url,full_name)")
+      .order("id", { ascending: false });
+
+    if (answersError) {
+      console.log(answersError);
+    }
+
+    setAnswers(answers);
+  }
+
+  async function fetchTestAnswers() {
+    const { data: answers, error: answersError } = await supabase
+      .from("answers_test")
       .select("*, profiles(avatar_url,full_name)")
       .order("id", { ascending: false });
 
@@ -404,6 +426,17 @@ export const SupabaseProvider = (props) => {
               queryClient.invalidateQueries({ queryKey: ["praises"] });
             }
           )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "anonymous",
+            },
+            (payload) => {
+              queryClient.invalidateQueries({ queryKey: ["anonprayers"] });
+            }
+          )
           .subscribe();
 
         return () => {
@@ -421,6 +454,7 @@ export const SupabaseProvider = (props) => {
         callGroup,
         setCallGroup,
         newPost,
+        fetchTestQuestions,
         setNewPost,
         newAnswer,
         publicGroups,
@@ -446,6 +480,7 @@ export const SupabaseProvider = (props) => {
         setRefreshGroup,
         refreshGroup,
         setIsNewMessage,
+        fetchTestAnswers,
         refreshMembers,
         setRefreshMembers,
         isLoggedIn,

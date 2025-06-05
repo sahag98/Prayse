@@ -40,7 +40,7 @@ import {
   ModalContainer,
   ModalView,
 } from "../styles/appStyles";
-import { COMMUNITY_SCREEN } from "@routes";
+import { EXPLORE_SCREEN, HOME_SCREEN } from "@routes";
 
 const LoginScreen = () => {
   const [forgotModal, setForgotModal] = useState(false);
@@ -421,7 +421,9 @@ const LoginScreen = () => {
                         console.log(JSON.stringify({ error, user }, null, 2));
                         if (!error) {
                           console.log("Signed in!");
-                          router.push(COMMUNITY_SCREEN);
+
+                          router.replace(HOME_SCREEN);
+                          // router.push(EXPLORE_SCREEN);
                         }
                       } else {
                         throw new Error("No identityToken.");

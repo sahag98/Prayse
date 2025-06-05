@@ -11,6 +11,5 @@ export const cn = (...inputs: ClassValue[]) => {
 export const tokenProvider = async (supabase: any) => {
   const { data } = await supabase.functions.invoke("stream-token");
 
-  // console.log('data: ', data)
   return data.token;
 };

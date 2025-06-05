@@ -42,7 +42,7 @@ const PrayerBottomModal = ({
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ["50%"], []);
+  const snapPoints = useMemo(() => ["50%", "75%"], []);
   const dispatch = useDispatch();
   const handleAddToAnsweredPrayer = async () => {
     console.log("marking as answered");

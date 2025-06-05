@@ -166,9 +166,6 @@ const ProfileSetup = () => {
     }
 
     if (isUniqueName) {
-      console.log("is unique");
-
-      console.log("current user id: ", currentUser.id);
       const { data } = await supabase
         .from("profiles")
         .update({

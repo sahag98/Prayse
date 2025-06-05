@@ -86,6 +86,10 @@ export default function TestScreen() {
         setIsRepeat(false);
         setReminderTime("");
         setNewReminder(routeParams?.reminder);
+        if (routeParams.note) {
+          console.log("here");
+          setNewNote(routeParams.note);
+        }
       }
 
       if (routeParams.reminder === undefined && routeParams.type === "Add") {
@@ -478,41 +482,18 @@ export default function TestScreen() {
           onPress={
             routeParams.type === "Add" ? addReminder : handleEditReminder
           }
-          disabled={newReminder.length === 0}
+          disabled={newReminder.length === 0 || !reminderTime}
           className="flex-row gap-1 items-center"
         >
-          <Text
-            className="text-xl font-inter-bold"
-            style={
-              newReminder.length === 0 ||
-              reminderDate.toString().length === 0 ||
-              reminderTime.toString().length === 0
-                ? {
-                    color: colorScheme === "dark" ? "#5c5c5c" : "grey",
-                  }
-                : {
-                    color:
-                      actualTheme && actualTheme.Primary
-                        ? actualTheme.Primary
-                        : colorScheme === "light"
-                          ? "#2f2d51"
-                          : "#A5C9FF",
-                  }
-            }
-          >
-            {routeParams.type}
-          </Text>
           {routeParams.type === "Edit" ? (
             <Feather
               name="edit-2"
               size={23}
               color={
-                newReminder.length === 0 ||
-                reminderDate.toString().length === 0 ||
-                reminderTime.toString().length === 0
+                newReminder.length === 0 || !reminderDate || !reminderTime
                   ? colorScheme === "dark"
                     ? "#5c5c5c"
-                    : "grey"
+                    : "#cbcbcb"
                   : actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
                     : colorScheme === "light"
@@ -521,16 +502,14 @@ export default function TestScreen() {
               }
             />
           ) : (
-            <Entypo
-              name="plus"
+            <AntDesign
+              name="check"
               size={30}
               color={
-                newReminder.length === 0 ||
-                reminderDate.toString().length === 0 ||
-                reminderTime.toString().length === 0
+                newReminder.length === 0 || !reminderDate || !reminderTime
                   ? colorScheme === "dark"
                     ? "#5c5c5c"
-                    : "grey"
+                    : "#cbcbcb"
                   : actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
                     : colorScheme === "light"
@@ -618,8 +597,8 @@ export default function TestScreen() {
                 <Image
                   style={
                     colorScheme === "dark"
-                      ? [styles.img, { tintColor: "#f1d592" }]
-                      : [styles.img, { tintColor: "#dda41c" }]
+                      ? [styles.img, { tintColor: "#A5C9FF" }]
+                      : [styles.img, { tintColor: "#2f2d51" }]
                   }
                   source={calendar}
                 />
@@ -630,7 +609,7 @@ export default function TestScreen() {
                   Date
                 </Text>
               </View>
-              {reminderDate.toString().length > 0 && (
+              {reminderDate && (
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter-regular dark:text-dark-primary text-light-primary"
@@ -670,7 +649,7 @@ export default function TestScreen() {
                   style={
                     colorScheme === "dark"
                       ? [styles.img, { tintColor: "#A5C9FF" }]
-                      : [styles.img, { tintColor: "#438eff" }]
+                      : [styles.img, { tintColor: "#2F2D51" }]
                   }
                   source={time}
                 />
@@ -681,7 +660,7 @@ export default function TestScreen() {
                   Time
                 </Text>
               </View>
-              {reminderTime.toString().length > 0 && (
+              {reminderTime && (
                 <Text
                   style={getSecondaryTextColorStyle(actualTheme)}
                   className="font-inter-regular dark:text-dark-primary text-light-primary"
@@ -731,105 +710,38 @@ export default function TestScreen() {
             </Text>
           </View>
           <Switch
-            trackColor={{ false: "grey", true: "green" }}
+            trackColor={{
+              false: "#cbcbcb",
+              true: colorScheme === "dark" ? "#a5c9ff" : "#2f2d51",
+            }}
             thumbColor={isRepeat ? "white" : "white"}
-            ios_backgroundColor="#bbbbbb"
+            ios_backgroundColor="#cbcbcb"
             onValueChange={toggleSwitch}
             value={isRepeat}
           />
         </View>
 
         {isRepeat && (
-          <View className="flex-row gap-5 mt-3">
-            <TouchableOpacity
-              onPress={() => setRepeatOption("daily")}
-              className="gap-2 flex-row items-center"
+          <View className="flex-row items-center gap-4">
+            <Pressable
+              onPress={useDailyOption}
+              className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
             >
-              <View
-                className="w-5 dark:border-dark-primary border-light-primary border-2 h-5 rounded-full"
-                style={
-                  colorScheme === "dark"
-                    ? {
-                        borderColor:
-                          actualTheme && actualTheme.Secondary
-                            ? actualTheme.Secondary
-                            : "",
-                        backgroundColor:
-                          repeatOption === "daily" ? "#00cc00" : "#aaa8a8",
-                      }
-                    : {
-                        borderColor:
-                          actualTheme &&
-                          actualTheme.Secondary &&
-                          actualTheme.Secondary,
-                        backgroundColor:
-                          repeatOption === "daily" ? "#00cc00" : "#aaa8a8",
-                      }
-                }
-              />
-              <Text
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary font-inter-medium"
-              >
-                Daily
+              <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+                Once a day
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="gap-2 flex-row items-center"
-              onPress={() => setRepeatOption("weekly")}
+            </Pressable>
+            <Pressable
+              onPress={useWeeklyOption}
+              className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
             >
-              <View
-                className="w-5 dark:border-white border-[#2f2d51] border-2 h-5 rounded-full"
-                style={
-                  colorScheme === "dark"
-                    ? {
-                        borderColor:
-                          actualTheme &&
-                          actualTheme.Secondary &&
-                          actualTheme.Secondary,
-                        backgroundColor:
-                          repeatOption === "weekly" ? "#00cc00" : "#aaa8a8",
-                      }
-                    : {
-                        borderColor:
-                          actualTheme &&
-                          actualTheme.Secondary &&
-                          actualTheme.Secondary,
-                        backgroundColor:
-                          repeatOption === "weekly" ? "#00cc00" : "#aaa8a8",
-                      }
-                }
-              />
-              <Text
-                style={getMainTextColorStyle(actualTheme)}
-                className="dark:text-dark-primary text-light-primary font-inter-medium"
-              >
-                Weekly
+              <Text className="font-inter-semibold  text-light-primary dark:text-dark-primary">
+                Once a week
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
-        <Text className="text-center text-light-primary dark:text-dark-primary text-lg mt-1 mb-1 font-inter-semibold">
-          Or Use Suggested Options
-        </Text>
-        <View className="flex-row items-center gap-4">
-          <Pressable
-            onPress={useDailyOption}
-            className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
-          >
-            <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
-              Once a day
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={useWeeklyOption}
-            className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
-          >
-            <Text className="font-inter-semibold  text-light-primary dark:text-dark-primary">
-              Once a week
-            </Text>
-          </Pressable>
-        </View>
+
         <View className="mt-auto mb-5">
           <Text className="text-[#ff3b3b] mb-1 font-inter-medium">
             Required fields: Title, date and time.

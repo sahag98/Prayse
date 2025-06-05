@@ -18,7 +18,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-import { COMMUNITY_SCREEN } from "../routes";
+import { COMMUNITY_SCREEN, HOME_SCREEN } from "../routes";
 import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
 
 import {
@@ -27,7 +27,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import Animated from "react-native-reanimated";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 
 const GroupInfoModal = ({
   groupInfoVisible,
@@ -122,7 +122,8 @@ const GroupInfoModal = ({
     if (error) {
       console.log(error);
     }
-    navigation.navigate(COMMUNITY_SCREEN);
+    router.replace(`${HOME_SCREEN}?active=community`);
+    // navigation.navigate(HOME_SCREEN);
     setGroupInfoVisible(false);
   };
 

@@ -29,7 +29,7 @@ const DailysItems = ({ options, actualTheme, theme }) => {
                 onPress={() => Linking.openURL(option.link)}
                 className={cn(
                   "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
-                  (option.id === 1 || option.id === 2) &&
+                  option.id === 1 &&
                     "border-b border-b-light-primary/50 dark:border-b-[#585858]"
                 )}
               >
@@ -68,7 +68,7 @@ const DailysItems = ({ options, actualTheme, theme }) => {
                 <TouchableOpacity
                   className={cn(
                     "w-full flex-row items-center bg-light-secondary dark:bg-dark-secondary p-5 justify-between",
-                    (option.id === 1 || option.id === 2) &&
+                    option.id === 1 &&
                       "border-b border-b-light-primary/50 dark:border-b-[#585858]"
                   )}
                 >

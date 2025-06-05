@@ -1,62 +1,49 @@
 export const update = [
   {
-    title: "Reminder Tracking Screen ✅",
+    title: "Anonymous Prayers  ✅",
     data: [
       {
         description:
-          "Easily track prayer reminders using our new reminder screen.",
+          "A safe, judgment-free space to connect through prayer and support, quietly and sincerely.",
       },
       {
-        img: require("../assets/update/track-reminder.png"),
+        img: require("../assets/update/anonymous.png"),
       },
     ],
   },
   {
-    title: "Voice To Prayer ✅",
+    title: "Refreshed Home Page  ✅",
     data: [
       {
-        description: "Add prayer requests using your voice.",
+        description: "A refreshed home page with a new look and feel.",
       },
       {
-        img: require("../assets/update/voice-to-prayer.png"),
+        img: require("../assets/update/home.png"),
       },
     ],
   },
   {
-    title: "Post Questions ✅",
+    title: "New Explore Page  ✅",
     data: [
       {
         description:
-          "Post approved biblical questions on our questions screen.",
+          "Discover a fresh new look with this week’s featured questions and the most popular ones from the community.",
       },
       {
-        img: require("../assets/update/post-questions.png"),
+        img: require("../assets/update/explore.png"),
         blurash: "LERy$;WE~Uxt%gWCads.eRoetRay",
       },
     ],
   },
   {
-    title: "Prayer Video Calls ✅",
+    title: "Prayers Page Redesign  ✅",
     data: [
       {
         description:
-          "Create a prayer video call and have a moment of prayer with your group.",
+          "Add titles and optional notes to your prayers, all with a fresh new look.",
       },
       {
-        img: require("../assets/update/prayer-video-call.png"),
-        blurash: "LERy$;WE~Uxt%gWCads.eRoetRay",
-      },
-    ],
-  },
-  {
-    title: "Tracking Graph ✅",
-    data: [
-      {
-        description:
-          "Visualize your prayer and verse of day tasks on our tracking graphs.",
-      },
-      {
-        img: require("../assets/update/tracking-graph.png"),
+        img: require("../assets/update/prayers.png"),
         blurash: "LERy$;WE~Uxt%gWCads.eRoetRay",
       },
     ],

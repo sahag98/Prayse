@@ -62,7 +62,7 @@ const QuestionModal = ({
       showToast("error", "The answer field can't be left empty.");
       setAnswersVisible(false);
     } else {
-      const { data, error } = await supabase.from("answers_test").insert({
+      const { data, error } = await supabase.from("answers").insert({
         user_id: user.id,
         answer,
         question_id: itemId,
@@ -137,8 +137,8 @@ const QuestionModal = ({
               actualTheme && actualTheme.Secondary
                 ? { backgroundColor: actualTheme.Secondary }
                 : colorScheme === "dark"
-                  ? { backgroundColor: "#212121" }
-                  : { backgroundColor: "#b7d3ff" }
+                ? { backgroundColor: "#212121" }
+                : { backgroundColor: "#b7d3ff" }
             }
           >
             <StyledInput
@@ -152,29 +152,29 @@ const QuestionModal = ({
                       verticalAlign: "top",
                     }
                   : colorScheme === "dark"
-                    ? {
-                        height: inputHeight < 100 ? 100 : inputHeight,
-                        verticalAlign: "top",
-                      }
-                    : {
-                        height: inputHeight < 100 ? 100 : inputHeight,
-                        verticalAlign: "top",
-                      }
+                  ? {
+                      height: inputHeight < 100 ? 100 : inputHeight,
+                      verticalAlign: "top",
+                    }
+                  : {
+                      height: inputHeight < 100 ? 100 : inputHeight,
+                      verticalAlign: "top",
+                    }
               }
               placeholder="Write your answer"
               placeholderTextColor={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                  ? "#e0e0e0"
+                  : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               autoFocus
               onChangeText={(text) => setAnswer(text)}
@@ -206,8 +206,8 @@ const QuestionModal = ({
                   actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
                     : colorScheme === "dark"
-                      ? "#121212"
-                      : "#2F2D51"
+                    ? "#121212"
+                    : "#2F2D51"
                 }
                 onPress={addAnswer}
               >

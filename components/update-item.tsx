@@ -93,7 +93,7 @@ const UpdateItem = ({ item }: { item: UpdateItemType }) => {
   return (
     <Pressable
       onPress={() => onPress(item.title)}
-      className=" rounded-2xl border border-light-primary dark:border-dark-secondary p-5"
+      className=" rounded-2xl border border-light-primary bg-light-secondary dark:bg-dark-secondary dark:border-dark-secondary p-5"
     >
       <View className="flex-row items-center justify-between">
         <View className="gap-1">
@@ -111,7 +111,7 @@ const UpdateItem = ({ item }: { item: UpdateItemType }) => {
       </View>
       <AccordionItem isExpanded={open} viewKey="Accordion">
         {item.data.map((d, idx) => (
-          <View className="my-2" key={idx}>
+          <View className="my-2 mt-4" key={idx}>
             <Text className="font-inter-regular text-light-primary dark:text-dark-primary">
               {d.description}
             </Text>

@@ -40,8 +40,6 @@ const ProfileModal = ({
   colorScheme,
   logout,
   setCurrentUser,
-
-  getUserPrayers,
   profileVisible,
   setProfileVisible,
   supabase,
@@ -55,9 +53,6 @@ const ProfileModal = ({
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    getUserPrayers();
-  }, []);
 
   const handleCloseModal = () => {
     setProfileVisible(false);
@@ -86,7 +81,6 @@ const ProfileModal = ({
   }
 
   function onModalShow() {
-    getUserPrayers();
     setIsUnique(true);
     setName(user?.full_name);
     setImage(user?.avatar_url);
