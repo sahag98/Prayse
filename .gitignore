@@ -12,10 +12,10 @@ web-build/
 /android
 /ios
 prayer-app.jks
-google-services.json
-eas.json
-app.json
-credentials.json
+# google-services.json
+# eas.json
+# app.json
+# credentials.json
 credentials/
 
 # macOS

@@ -2,45 +2,36 @@ import {
   FlatList,
   Image,
   Pressable,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Container } from "@components/Container";
 import { router } from "expo-router";
 import Moment from "moment";
-import {
-  AntDesign,
-  Feather,
-  Entypo,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AddAnonymousPrayerModal from "@modals/add-anon-prayer";
 import { useSupabase } from "@context/useSupabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMainTextColorStyle } from "@lib/customStyles";
 import axios from "@node_modules/axios";
 import { ANON_SCREEN } from "@routes";
 import { cn } from "@lib/utils";
 const AnonymousScreen = () => {
   const { colorScheme } = useColorScheme();
-  const [isAddingPrayer, setIsAddingPrayer] = useState(false);
   const { currentUser, supabase } = useSupabase();
   const prayerBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["anonprayers"],
     queryFn: getAnonymousPrayers,
   });
   async function getAnonymousPrayers() {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("anonymous")
       .select("*, profiles(*)")
       .order("id", { ascending: false });
@@ -80,7 +71,7 @@ const AnonymousScreen = () => {
     }
 
     // Step 2: Increment and update
-    const { data, error } = await supabase
+    await supabase
       .from("anonymous")
       .update({ prayers: currentData.prayers + 1 })
       .eq("id", id);
@@ -98,7 +89,7 @@ const AnonymousScreen = () => {
         <AntDesign
           name="left"
           size={30}
-          color={colorScheme == "dark" ? "white" : "#2f2d51"}
+          color={colorScheme === "dark" ? "white" : "#2f2d51"}
         />
       </TouchableOpacity>
       <FlatList
@@ -205,7 +196,6 @@ const AnonymousScreen = () => {
         supabase={supabase}
         colorScheme={colorScheme}
         currentUser={currentUser}
-        setIsAddingPrayer={setIsAddingPrayer}
         prayerBottomSheetModalRef={prayerBottomSheetModalRef}
       />
     </Container>
@@ -213,5 +203,3 @@ const AnonymousScreen = () => {
 };
 
 export default AnonymousScreen;
-
-const styles = StyleSheet.create({});

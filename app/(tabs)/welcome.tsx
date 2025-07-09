@@ -49,9 +49,8 @@ import { ActualTheme } from "../../types/reduxTypes";
 import { CheckReview } from "@hooks/useShowReview";
 import { handleReviewShowing } from "@redux/remindersReducer";
 
-import useStore from "@hooks/store";
 import PrayerGroupsComponent from "@components/prayer-groups";
-import { ANON_SCREEN } from "@routes";
+import { ANON_SCREEN, JOURNAL_SCREEN } from "@routes";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -124,7 +123,6 @@ async function registerForPushNotificationsAsync() {
 const WelcomeScreen = () => {
   const { active } = useLocalSearchParams();
   const [isFirst, setIsFirst] = useState(false);
-  const [hasNewUpdate, setHasNewUpdate] = useState(false);
   const dispatch = useDispatch();
 
   const reviewCounter = useSelector(
@@ -137,17 +135,13 @@ const WelcomeScreen = () => {
   const streak = useSelector((state: any) => state.user.devostreak);
   const completedItems = useSelector((state: any) => state.user.completedItems);
   const appstreak = useSelector((state: any) => state.user.appstreakNum);
-  const hasShownProModal = useSelector(
-    (state: any) => state.user.hasShownProModal,
-  );
-  console.log("streak: ", streak);
-  const { deletePrayerTracking, addPrayerTracking, isShowingNewUpdate } =
-    useStore();
+  // const hasShownProModal = useSelector(
+  //   (state: any) => state.user.hasShownProModal
+  // );
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
   const { colorScheme } = useColorScheme();
-
   const [currentTab, setCurrentTab] = useState(active ? "community" : "today");
   const activeTab = useSharedValue(active ? 0 : 1);
 
@@ -167,9 +161,8 @@ const WelcomeScreen = () => {
         setIsFirst(false);
 
         if (hasNewUpdate) {
-          setHasNewUpdate(false);
+          console.log("hasNewUpdate is not null");
         } else {
-          setHasNewUpdate(true);
           await AsyncStorage.setItem("newUpdate1", "true");
           router.push("new-update");
         }
@@ -422,12 +415,31 @@ const WelcomeScreen = () => {
             </Pressable>
           </View>
         </View>
+
         {currentTab === "today" ? (
           <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
             <Animated.View style={greetingStyle} className="mb-1">
               <Greeting actualTheme={actualTheme} theme={colorScheme!} />
             </Animated.View>
-
+            <View className="px-4 my-2">
+              <Animated.View style={dailyReflectionStyle}>
+                <Pressable
+                  onPress={() => router.push(JOURNAL_SCREEN)}
+                  className="bg-white dark:bg-dark-secondary border p-4 gap-2 rounded-lg border-light-primary dark:border-[#a6a6a6]"
+                >
+                  <Text className="absolute top-4 right-4 text-red-400 font-inter-bold">
+                    NEW
+                  </Text>
+                  <Text className="font-inter-semibold text-light-primary dark:text-dark-primary text-lg">
+                    Prayer Journals
+                  </Text>
+                  <Text className="font-inter-regular text-light-primary dark:text-dark-primary">
+                    Journal prayers in a video format and remember all the ways
+                    the Lord answers those prayers.
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            </View>
             <Animated.View style={dailyReflectionStyle}>
               <DailyDevotion
                 actualTheme={actualTheme}
@@ -437,15 +449,13 @@ const WelcomeScreen = () => {
                 theme={colorScheme}
               />
             </Animated.View>
+
             <View className="px-4 my-2">
               <Animated.View style={dailyReflectionStyle}>
                 <Pressable
                   onPress={() => router.push(ANON_SCREEN)}
                   className="bg-white dark:bg-dark-secondary border p-4 gap-2 rounded-lg border-light-primary dark:border-[#a6a6a6]"
                 >
-                  <Text className="absolute top-4 right-4 text-red-400 font-inter-bold">
-                    NEW
-                  </Text>
                   <Text className="font-inter-semibold text-light-primary dark:text-dark-primary text-lg">
                     Share Anonymous Prayers
                   </Text>

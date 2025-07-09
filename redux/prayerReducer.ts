@@ -69,7 +69,7 @@ export const prayerSlice = createSlice({
     },
     switchPrayerStatus: (state, action) => {
       console.log("action: ", JSON.stringify(action.payload, null, 2));
-      const currentDate = new Date().toLocaleDateString().split("T")[0];
+      const currentDate = new Date().toLocaleString();
 
       state.prayer = state.prayer.map((prayer) =>
         prayer.id === action.payload.prayer.id

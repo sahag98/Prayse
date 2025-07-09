@@ -139,7 +139,7 @@ const DailyDevotion = ({
   return (
     <Animated.View
       style={animatedStyle}
-      className="flex-1 justify-start pr-5 items-start w-full my-3 gap-2"
+      className="flex-1 justify-start pr-4 items-start w-full my-3 gap-2"
     >
       <GiveawayModal
         isShowingGiveaway={hasEnteredGiveaway}
@@ -154,7 +154,7 @@ const DailyDevotion = ({
         setIsShowingStreak={setIsShowingStreak}
         isShowingStreak={isShowingStreak}
       />
-      <View className="bg-blue-200 dark:bg-dark-secondary w-full p-4 rounded-tr-xl rounded-br-xl">
+      <View className="bg-blue-200 dark:bg-dark-secondary w-full p-3 rounded-tr-xl rounded-br-xl">
         <View className="flex-row mb-4 items-center gap-3">
           <Image
             source={require("@assets/prayse-transparent.png")}

@@ -3,7 +3,7 @@ import React from "react";
 import { useColorScheme } from "nativewind";
 import { Alert, FlatList, Pressable, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-
+import * as Notifications from "expo-notifications";
 import ReminderItem from "@components/ReminderItem";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -26,6 +26,16 @@ const ReminderScreen = () => {
   );
 
   const dispatch = useDispatch();
+
+  async function handleDeleteAllReminders() {
+    const allReminders =
+      await Notifications.getAllScheduledNotificationsAsync();
+
+    allReminders.map(async (reminder) => {
+      await Notifications.cancelScheduledNotificationAsync(reminder.identifier);
+    });
+    dispatch(deleteAllReminders());
+  }
 
   return (
     <Container
@@ -54,7 +64,7 @@ const ReminderScreen = () => {
                   {
                     text: "Delete",
                     style: "destructive",
-                    onPress: () => dispatch(deleteAllReminders()),
+                    onPress: handleDeleteAllReminders,
                   },
                 ],
               )

@@ -71,7 +71,12 @@ const ListItems = ({
 
   const [activeTab, setActiveTab] = useState(titles[0]);
 
-  const answeredList = prayers.filter((item) => item.status === "Answered");
+  const answeredList = prayers
+    .filter((item) => item.status === "Answered")
+    .sort((b, a) => new Date(b.answeredDate) - new Date(a.answeredDate));
+
+  console.log(JSON.stringify(answeredList, null, 2));
+
   const archivedList = prayers.filter((item) => item.status === "Archived");
   const [verse, setVerse] = useState(null);
   const activeList = prayers.filter(
@@ -182,8 +187,8 @@ const ListItems = ({
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme == "dark"
-                    ? "white"
-                    : "#2F2D51"
+                      ? "white"
+                      : "#2F2D51"
                 }
               />
             </TouchableOpacity>
@@ -193,7 +198,7 @@ const ListItems = ({
                 <>
                   <View className="flex-row bg-green-300 px-2 py-1 rounded-md items-center">
                     <Text className="font-inter-medium text-light-primary dark:text-dark-background">
-                      Answered on {item?.answeredDate}
+                      Answered on {item?.answeredDate?.split(",")[0]}
                     </Text>
                   </View>
                 </>
@@ -214,8 +219,8 @@ const ListItems = ({
                         actualTheme && actualTheme.SecondaryTxt
                           ? actualTheme.SecondaryTxt
                           : colorScheme === "dark"
-                          ? "#a5c9ff"
-                          : "#2f2d51"
+                            ? "#a5c9ff"
+                            : "#2f2d51"
                       }
                     />
                   ) : (
@@ -231,8 +236,8 @@ const ListItems = ({
                           actualTheme && actualTheme.PrimaryTxt
                             ? actualTheme.PrimaryTxt
                             : colorScheme === "dark"
-                            ? "#121212"
-                            : "#f2f7ff"
+                              ? "#121212"
+                              : "#f2f7ff"
                         }
                       />
 
@@ -308,8 +313,8 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? " archive "
                   : activeTab === "Answered"
-                  ? " answered list "
-                  : " prayer list "}
+                    ? " answered list "
+                    : " prayer list "}
                 is empty.
               </Text>
               <Text
@@ -319,8 +324,8 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
                   : activeTab === "Answered"
-                  ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
-                  : "Add a prayer using your voice or just type it in!"}
+                    ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
+                    : "Add a prayer using your voice or just type it in!"}
               </Text>
             </View>
           </View>

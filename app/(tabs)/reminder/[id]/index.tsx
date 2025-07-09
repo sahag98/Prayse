@@ -1,19 +1,6 @@
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useCallback, useState } from "react";
-import {
-  Link,
-  router,
-  useFocusEffect,
-  useLocalSearchParams,
-  useNavigation,
-} from "expo-router";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import React from "react";
+import { Link, router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Container, HeaderView } from "@styles/appStyles";
 import {
   getMainBackgroundColorStyle,
@@ -25,33 +12,22 @@ import { cancelScheduledNotificationAsync } from "expo-notifications";
 //@ts-ignore
 import { ActualTheme } from "@types/reduxTypes";
 import { posthog } from "@lib/posthog";
-import {
-  FontAwesome5,
-  MaterialCommunityIcons,
-  Ionicons,
-  AntDesign,
-} from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
 import { REMINDER_SCREEN, TEST_SCREEN } from "@routes";
-import {
-  deleteAllReminders,
-  deleteReminder,
-  handleReminderAmen,
-} from "@redux/remindersReducer";
+import { deleteReminder, handleReminderAmen } from "@redux/remindersReducer";
 import Animated, {
   useAnimatedStyle,
   withTiming,
   useSharedValue,
   interpolateColor,
 } from "react-native-reanimated";
-import { archivePrayer, switchPrayerStatus } from "@redux/prayerReducer";
+import { switchPrayerStatus } from "@redux/prayerReducer";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const SingleReminderScreen = () => {
   const { colorScheme } = useColorScheme();
-  const [hasPrayed, setHasPrayed] = useState(false);
-  const [isChangingStatus, setIsChangingStatus] = useState(false);
   const dispatch = useDispatch();
   const prayerList = useSelector((state: any) => state.prayer.prayer);
   const reminders = useSelector(
@@ -108,31 +84,12 @@ const SingleReminderScreen = () => {
 
   const dismissNotification = async () => {
     dispatch(deleteReminder(singleReminder?.reminder.id));
-    await cancelScheduledNotificationAsync(singleReminder?.identifier);
+    await cancelScheduledNotificationAsync(singleReminder.identifier);
     router.replace(REMINDER_SCREEN);
   };
 
   //@ts-ignore
   const formattedDate = timestamp.toLocaleString("en-US", timeOptions);
-
-  const nowDate = new Date();
-
-  //   console.log("now: ", nowDate);
-
-  //   const localDate = new Date(singleReminder.reminder.time);
-  //   console.log("reminder: ", localDate); // Outputs local date and time
-
-  // useFocusEffect(
-  //   // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
-  //   useCallback(() => {
-  //     // Invoked whenever the route is focused.
-
-  //     console.log("here");
-
-  //     // fetchAnswers();
-  //     // Return function is invoked whenever the route gets out of focus.
-  //   }, [])
-  // );
 
   const buttonProgress = useSharedValue(0);
   const textProgress = useSharedValue(0);
@@ -172,7 +129,6 @@ const SingleReminderScreen = () => {
     posthog.capture("Amen");
     buttonProgress.value = withTiming(1, { duration: 800 });
     textProgress.value = withTiming(1, { duration: 800 });
-    setHasPrayed(true);
     dispatch(handleReminderAmen(singleReminder.reminder.id));
 
     setTimeout(() => router.push(REMINDER_SCREEN), 1000);
@@ -463,5 +419,3 @@ const SingleReminderScreen = () => {
 };
 
 export default SingleReminderScreen;
-
-const styles = StyleSheet.create({});

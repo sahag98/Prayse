@@ -123,7 +123,7 @@ const InputModal = ({
   const handleCloseModal = () => {
     setModalVisible(false);
     setIsEditing(false);
-    setPrayerValue("");
+    setTranscript("");
   };
   const dispatch = useDispatch();
 
@@ -219,6 +219,7 @@ const InputModal = ({
       //   })
       // );
     } else {
+      console.log("prayer to be edited: ", prayertoBeEdited);
       dispatch(
         editPrayer({
           prayer: prayerValue,
@@ -234,7 +235,6 @@ const InputModal = ({
     }
     setModalVisible(false);
     setIsSpeechVisible(false);
-    setPrayerValue("");
     setTranscript("");
     setIsEditing(false);
   };
@@ -268,8 +268,8 @@ const InputModal = ({
               actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
                 : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
             }
           />
         </TouchableOpacity>
@@ -289,8 +289,8 @@ const InputModal = ({
               actualTheme && actualTheme.PrimaryTxt
                 ? actualTheme.PrimaryTxt
                 : colorScheme === "dark"
-                ? "#121212"
-                : "white"
+                  ? "#121212"
+                  : "white"
             }
           />
         </TouchableOpacity>
@@ -352,31 +352,31 @@ const InputModal = ({
                         borderColor: actualTheme.SecondaryTxt,
                       }
                     : colorScheme === "dark"
-                    ? {
-                        borderColor: recognizing ? "#0096FF" : "#bbbbbb",
-                        borderWidth: recognizing ? 2 : 1,
-                        height: inputHeight < 80 ? 80 : inputHeight,
-                      }
-                    : {
-                        borderColor: recognizing ? "#0096FF" : "#2f2d51",
-                        borderWidth: recognizing ? 2 : 1,
-                        height: inputHeight < 80 ? 80 : inputHeight,
-                      }
+                      ? {
+                          borderColor: recognizing ? "#0096FF" : "#bbbbbb",
+                          borderWidth: recognizing ? 2 : 1,
+                          height: inputHeight < 80 ? 80 : inputHeight,
+                        }
+                      : {
+                          borderColor: recognizing ? "#0096FF" : "#2f2d51",
+                          borderWidth: recognizing ? 2 : 1,
+                          height: inputHeight < 80 ? 80 : inputHeight,
+                        }
                 }
                 placeholder="What are you praying for?"
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 onChangeText={(text) => setTranscript(text)}
                 value={transcript}
@@ -423,8 +423,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                      ? "#121212"
-                      : "#b7d3ff"
+                        ? "#121212"
+                        : "#b7d3ff"
                   }
                   onPress={() => {
                     setIsSpeechVisible(false);
@@ -442,8 +442,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                      ? "#a5c9ff"
-                      : "#2F2D51"
+                        ? "#a5c9ff"
+                        : "#2F2D51"
                   }
                   onPress={handleSubmit}
                 >
@@ -454,8 +454,8 @@ const InputModal = ({
                       actualTheme && actualTheme.PrimaryTxt
                         ? actualTheme.PrimaryTxt
                         : colorScheme === "dark"
-                        ? "#121212"
-                        : "white"
+                          ? "#121212"
+                          : "white"
                     }
                   />
                 </ModalAction>
@@ -498,8 +498,8 @@ const InputModal = ({
                       actualTheme && actualTheme.SecondaryTxt
                         ? actualTheme.SecondaryTxt
                         : colorScheme === "dark"
-                        ? "white"
-                        : "#2F2D51"
+                          ? "white"
+                          : "#2F2D51"
                     }
                   />
                 </View>
@@ -514,27 +514,27 @@ const InputModal = ({
                         borderColor: actualTheme.SecondaryTxt,
                       }
                     : colorScheme === "dark"
-                    ? {
-                        height: inputHeight < 80 ? 80 : inputHeight,
-                      }
-                    : {
-                        height: inputHeight < 80 ? 80 : inputHeight,
-                      }
+                      ? {
+                          height: inputHeight < 80 ? 80 : inputHeight,
+                        }
+                      : {
+                          height: inputHeight < 80 ? 80 : inputHeight,
+                        }
                 }
                 placeholder="What are you praying for?"
                 placeholderTextColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                      ? "#e0e0e0"
+                      : "#2f2d51"
                 }
                 // autoFocus
                 onChangeText={(text) => setPrayerTitle(text)}
@@ -559,8 +559,8 @@ const InputModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : colorScheme === "dark"
-                      ? "#121212"
-                      : "#2F2D51"
+                        ? "#121212"
+                        : "#2F2D51"
                   }
                   onPress={handleSubmit}
                 >

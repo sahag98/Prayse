@@ -1,11 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
-import {
-  Pressable,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { Pressable, Text, View } from "react-native";
 
 import {
   BottomSheetModal,
@@ -16,7 +10,6 @@ import {
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
@@ -24,30 +17,24 @@ import { cn } from "@lib/utils";
 import uuid from "react-native-uuid";
 import { useDispatch } from "react-redux";
 import { addPrayer, editPrayer } from "@redux/prayerReducer";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 const AddPrayerModal = ({
   actualTheme,
   colorScheme,
   prayertoBeEdited,
   setPrayertoBeEdited,
-  isEditing,
+
   setIsEditing,
-  setTaskName,
   folderName,
   folderId,
   prayerTitle,
   setPrayerTitle,
   prayerNote,
   setPrayerNote,
-  setFolderName,
   addPrayerBottomSheetModalRef,
 }: any) => {
-  const [newQuestion, setNewQuestion] = useState("");
-  const [isApproving, setIsApproving] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const insets = useSafeAreaInsets();
+
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -138,7 +125,6 @@ const AddPrayerModal = ({
     addPrayerBottomSheetModalRef.current.close();
   };
 
-  // renders
   return (
     <BottomSheetModalProvider>
       <BottomSheetModal
@@ -193,7 +179,7 @@ const AddPrayerModal = ({
                   },
               ]}
               className="w-full text-light-primary font-inter-regular dark:text-dark-primary  bg-light-secondary dark:bg-dark-background p-5 mb-3 rounded-lg"
-              placeholder="What are you praying for?"
+              placeholder="Who are you praying for?"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
@@ -222,6 +208,7 @@ const AddPrayerModal = ({
                     borderColor: actualTheme.SecondaryTxt,
                   },
               ]}
+              textAlignVertical="top"
               className="w-full bg-light-secondary min-h-32 text-light-primary font-inter-regular dark:text-dark-primary  dark:bg-dark-background  p-5 mb-3 rounded-lg"
               placeholder="Write more information on the prayer (optional)"
               multiline

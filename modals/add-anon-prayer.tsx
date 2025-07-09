@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
@@ -7,7 +7,6 @@ import {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -18,6 +17,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { LOGIN_SCREEN } from "@routes";
+import axios from "axios";
 
 const AddAnonymousPrayerModal = ({
   actualTheme,
@@ -25,11 +25,9 @@ const AddAnonymousPrayerModal = ({
   currentUser,
   supabase,
   prayerBottomSheetModalRef,
-  setIsAddingPrayer,
 }: any) => {
   const [newPrayer, setNewPrayer] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
-  const [praiseCount, setPraiseCount] = useState(0);
 
   const queryClient = useQueryClient();
   const snapPoints = useMemo(() => ["25%", "50%"], []);
@@ -48,7 +46,7 @@ const AddAnonymousPrayerModal = ({
     const randomNumber2 = Math.floor(Math.random() * 10);
     const anonName = `Anonymous${randomNumber1}${randomNumber2}`;
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("anonymous")
         .insert({
           title: newPrayer,
@@ -62,6 +60,28 @@ const AddAnonymousPrayerModal = ({
       setNewPrayer("");
     } catch (error) {
       console.log("error", error);
+    } finally {
+      const { data } = await supabase.functions.invoke("get-tokens");
+
+      data.map(async (d: any) => {
+        console.log(d.token);
+        const message = {
+          to: d.token,
+          sound: "default",
+          title: `New Anonymous Prayer 🙏`,
+          body: `Someone has a prayer request. Tap to lift them up.`,
+          data: {
+            route: `anonymous`,
+          },
+        };
+        await axios.post("https://exp.host/--/api/v2/push/send", message, {
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+        });
+      });
     }
   }
 
@@ -166,7 +186,7 @@ const AddAnonymousPrayerModal = ({
                   color={
                     actualTheme && actualTheme.MainTxt
                       ? actualTheme.MainTxt
-                      : colorScheme == "dark"
+                      : colorScheme === "dark"
                         ? "white"
                         : "#2f2d51"
                   }

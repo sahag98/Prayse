@@ -22,6 +22,7 @@ import {
   VERSE_OF_THE_DAY_SCREEN,
   WALLPAPERS_SCREEN,
   YOUR_THEMES_SCREEN,
+  JOURNAL_SCREEN,
 } from "@routes";
 import { useNotificationObserver } from "@components/NotificationObserver";
 
@@ -40,6 +41,7 @@ const StackContainer = () => {
         />
         <Stack.Screen name={PRAYER_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen name={ANON_SCREEN} options={{ headerShown: false }} />
+        <Stack.Screen name={JOURNAL_SCREEN} options={{ headerShown: false }} />
         <Stack.Screen
           name={NEW_UPDATE_SCREEN}
           options={{ headerShown: false, animation: "fade" }}

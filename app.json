@@ -1,0 +1,187 @@
+{
+  "expo": {
+    "name": "Prayse",
+    "slug": "prayer-app",
+    "scheme": "prayseapp",
+    "version": "10.4.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "owner": "sahag98",
+    "icon": "./assets/PRAYSE.png",
+    "newArchEnabled": true,
+    "notification": {
+      "icon": "./assets/PRAYSE.png",
+      "color": "#349eeb"
+    },
+    "plugins": [
+      "@stream-io/video-react-native-sdk",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": "Prayse requires camera access in order to capture and transmit video",
+          "microphonePermission": "Prayse requires microphone access in order to capture and transmit audio"
+        }
+      ],
+      ["expo-apple-authentication"],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Prayse access to your photos/videos to allow you to record journals and set profile pictures.",
+          "savePhotosPermission": "Allow Prayse to save files to your gallery.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "sahag",
+          "project": "react-native",
+          "url": "https://sentry.io/"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you change your profile picture."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/noti-image.png",
+          "color": "#349eeb"
+        }
+      ],
+
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow Prayse to use the microphone to insert prayers.",
+          "speechRecognitionPermission": "Allow Prayse to use speech recognition to insert prayers.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
+      ],
+      [
+        "expo-updates",
+        {
+          "username": "sahag98"
+        }
+      ],
+      "expo-localization",
+      "expo-font",
+      "expo-secure-store",
+      "expo-router",
+      "expo-asset",
+      "expo-video"
+    ],
+    "splash": {
+      "image": "./assets/prayse-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/baaf16f2-e4cf-467c-87f4-0abb7a76c040"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "usesAppleSignIn": true,
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic",
+      "bundleIdentifier": "com.sahag98.prayerListApp",
+      "buildNumber": "104",
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": ["DDA9.1", "C617.1", "3B52.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": ["35F9.1", "8FFB.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": ["E174.1", "85F4.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1", "1C8F.1", "C56D.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": ["DDA9.1", "C617.1", "3B52.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": ["35F9.1", "8FFB.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": ["E174.1", "85F4.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1", "1C8F.1", "C56D.1"]
+          }
+        ]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "softwareKeyboardLayoutMode": "pan",
+      "edgeToEdgeEnabled": true,
+      "userInterfaceStyle": "automatic",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/PRAYSE.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.sahag98.prayerListApp",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 90
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "baaf16f2-e4cf-467c-87f4-0abb7a76c040"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
+  }
+}

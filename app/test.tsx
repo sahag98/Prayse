@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import * as Notifications from "expo-notifications";
 import {
   Link,
@@ -7,7 +7,6 @@ import {
   useLocalSearchParams,
   useNavigation,
   useRouter,
-  useIsFocused,
 } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
@@ -27,7 +26,7 @@ import Toast from "react-native-toast-message";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -43,13 +42,10 @@ import {
   deleteReminder,
   editReminder,
 } from "../redux/remindersReducer";
-import {
-  HOME_SCREEN,
-  REMINDER_SCREEN,
-  SETTINGS_SCREEN,
-  WELCOME_SCREEN,
-} from "../routes";
+import { REMINDER_SCREEN, SETTINGS_SCREEN } from "../routes";
 import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import useStore from "@hooks/store";
+import { CheckReview } from "@hooks/useShowReview";
 
 export default function TestScreen() {
   const navigation = useNavigation();
@@ -135,6 +131,8 @@ export default function TestScreen() {
 
   const router = useRouter();
 
+  const { reviewRequested, setReviewRequested } = useStore();
+
   const showToast = (type) => {
     Toast.show({
       type,
@@ -143,17 +141,6 @@ export default function TestScreen() {
       visibilityTime: 3000,
       position: "bottom",
       onPress: () => router.replace("/(tabs)/reminder"),
-    });
-  };
-
-  const showEditToast = () => {
-    Toast.show({
-      type: "edit",
-      text1: "Reminder has been edited.",
-      text2: "View",
-      visibilityTime: 3000,
-      position: "bottom",
-      onPress: () => navigation.navigate(HOME_SCREEN),
     });
   };
 
@@ -168,6 +155,7 @@ export default function TestScreen() {
           title: "Pray 🙏",
           body: reminder.message,
           data: { screen: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -199,6 +187,7 @@ export default function TestScreen() {
           title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
@@ -236,6 +225,7 @@ export default function TestScreen() {
           title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
@@ -268,6 +258,7 @@ export default function TestScreen() {
           title: "Pray 🙏",
           body: reminder.message,
           data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
@@ -318,15 +309,8 @@ export default function TestScreen() {
 
     dispatch(deleteReminder(routeParams.reminderEditId));
 
-    scheduleNotification(
-      newReminderObj,
-      combinedDate,
-      "add",
-      // reminderTime.getHours(),
-      // reminderTime.getMinutes()
-    );
+    scheduleNotification(newReminderObj, combinedDate, "add");
 
-    // showEditToast();
     setNewReminder("");
     setNewNote("");
     setReminderDate("");
@@ -335,7 +319,6 @@ export default function TestScreen() {
     setIsRepeat(false);
     Keyboard.dismiss();
     router.replace(`/reminder/${newReminderObj.id}`);
-    // navigation.navigate(WELCOME_SCREEN);
   };
 
   const addReminder = () => {
@@ -372,6 +355,11 @@ export default function TestScreen() {
     setIsRepeat(false);
     navigation.goBack();
     Keyboard.dismiss();
+
+    if (!reviewRequested) {
+      CheckReview();
+      setReviewRequested(true);
+    }
   };
 
   const clearAll = () => {
