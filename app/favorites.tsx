@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -6,25 +5,24 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Ionicons } from "@expo/vector-icons";
-import {
-  getMainBackgroundColorStyle,
-  getMainTextColorStyle,
-} from "@lib/customStyles";
+import { getMainTextColorStyle } from "@lib/customStyles";
 
 import FavoriteVerses from "../components/FavoriteVerses";
 import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import { Container } from "@components/Container";
+import HeaderText from "@components/HeaderText";
+import { ActualTheme } from "../types/reduxTypes";
 
 const FavoritesScreen = () => {
-  const favorites = useSelector((state) => state.favorites.favoriteVerses);
+  const favorites = useSelector((state: any) => state.favorites.favoriteVerses);
 
   const { colorScheme } = useColorScheme();
 
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
 
-  const renderFavoriteVerses = ({ item }) => {
+  const renderFavoriteVerses = ({ item }: { item: any }) => {
     return (
       <FavoriteVerses
         item={item.verse}
@@ -35,19 +33,12 @@ const FavoritesScreen = () => {
   };
 
   return (
-    <Container
-      className="bg-light-background dark:bg-dark-background"
-      style={getMainBackgroundColorStyle(actualTheme)}
-    >
+    <Container>
       <View className="flex-row items-center mt-3 mb-5">
         <Link asChild href={`/${VERSE_OF_THE_DAY_SCREEN}`}>
-          <TouchableOpacity
-            href={`/${VERSE_OF_THE_DAY_SCREEN}`}
-            className="mr-2"
-          >
+          <TouchableOpacity className="mr-2">
             <Ionicons
               name="chevron-back"
-              href={`/${VERSE_OF_THE_DAY_SCREEN}`}
               size={30}
               color={
                 actualTheme && actualTheme.MainTxt
@@ -59,12 +50,7 @@ const FavoritesScreen = () => {
             />
           </TouchableOpacity>
         </Link>
-        <HeaderTitle
-          className="font-inter-bold text-light-primary dark:text-dark-primary"
-          style={getMainTextColorStyle(actualTheme)}
-        >
-          Saved Verses
-        </HeaderTitle>
+        <HeaderText text="Saved Verses" />
       </View>
 
       <FlatList

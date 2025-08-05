@@ -14,11 +14,7 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import {
-  archivePrayer,
-  deletePrayer,
-  switchPrayerStatus,
-} from "@redux/prayerReducer";
+import { deletePrayer, switchPrayerStatus } from "@redux/prayerReducer";
 import { cancelScheduledNotificationAsync } from "expo-notifications";
 import { deleteReminder } from "@redux/remindersReducer";
 const PrayerBottomModal = ({

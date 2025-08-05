@@ -253,199 +253,51 @@ export const SupabaseProvider = (props) => {
   };
 
   useEffect(() => {
-    fetchQuestions();
-    fetchLatestQuestion();
-    fetchPublicGroups();
-    fetchAnswers();
-    const fetchData = async () => {
-      const profiles = await checkIfUserIsLoggedIn();
-
-      if (!profiles) {
-        return;
-      }
-      // Check if user is logged in before setting up subscriptions
-      if (profiles[0] && profiles?.length > 0) {
-        //prayers for production
-        //prayers_test for testing
-        const prayersChannel = supabase
-          .channel("table_db_changes")
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "prayers",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" &&
-                profiles[0].id !== payload.new.user_id
-              ) {
-                setNewPost(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "groups",
-            },
-            (payload) => {
-              if (payload.eventType === "DELETE") {
-                console.log(payload);
-                setRefreshGroup(true);
-              }
-
-              if (
-                payload.eventType === "UPDATE" &&
-                payload.new.active_call_id
-              ) {
-                console.log("STARTED CALL!!");
-                console.log("new: ", payload.new);
-                setCallGroup(payload.new);
-                // router.push(`prayer-video-call/${payload.new.id}`);
-              }
-
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE"
-              ) {
-                fetchPublicGroups();
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "messages",
-            },
-            (payload) => {
-              setIsNewMessage(true);
-              setNewGroupMsgNum((prevState) => prevState + 1);
-              setNewMsgGroupId(payload.new.group_id);
-
-              setUserofSentMessage(payload.new.user_id);
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "members",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE"
-              ) {
-                setRefreshMembers(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "questions",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE" ||
-                payload.eventType === "UPDATE"
-              ) {
-                console.log("refresh test questions");
-                fetchQuestions();
-                fetchAnswers();
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "answers",
-            },
-            (payload) => {
-              console.log("payload: ", payload.new.question_id);
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE"
-              ) {
-                console.log("refreshing answers");
-                setRefreshAnswers(true);
-                fetchAnswers();
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "likes",
-            },
-            (payload) => {
-              if (
-                payload.eventType === "INSERT" ||
-                payload.eventType === "DELETE"
-              ) {
-                setRefreshLikes(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "comments",
-            },
-            (payload) => {
-              if (payload.eventType === "INSERT") {
-                setRefreshComments(true);
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "praises",
-            },
-            (payload) => {
-              console.log("DELETEE ALL>>>");
-              queryClient.invalidateQueries({ queryKey: ["praises"] });
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "anonymous",
-            },
-            (payload) => {
-              queryClient.invalidateQueries({ queryKey: ["anonprayers"] });
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(prayersChannel);
-        };
-      }
-    };
-
-    fetchData();
+    // fetchQuestions();
+    // fetchLatestQuestion();
+    // fetchPublicGroups();
+    // fetchAnswers();
+    // const fetchData = async () => {
+    //   const profiles = await checkIfUserIsLoggedIn();
+    //   if (!profiles) {
+    //     return;
+    //   }
+    //   // Check if user is logged in before setting up subscriptions
+    //   if (profiles[0] && profiles?.length > 0) {
+    //     //prayers for production
+    //     //prayers_test for testing
+    //     const prayersChannel = supabase
+    //       .channel("table_db_changes")
+    //       .on(
+    //         "postgres_changes",
+    //         {
+    //           event: "*",
+    //           schema: "public",
+    //           table: "praises",
+    //         },
+    //         (payload) => {
+    //           console.log("DELETEE ALL>>>");
+    //           queryClient.invalidateQueries({ queryKey: ["praises"] });
+    //         }
+    //       )
+    //       .on(
+    //         "postgres_changes",
+    //         {
+    //           event: "*",
+    //           schema: "public",
+    //           table: "anonymous",
+    //         },
+    //         (payload) => {
+    //           queryClient.invalidateQueries({ queryKey: ["anonprayers"] });
+    //         }
+    //       )
+    //       .subscribe();
+    //     return () => {
+    //       supabase.removeChannel(prayersChannel);
+    //     };
+    //   }
+    // };
+    // fetchData();
   }, []);
 
   return (

@@ -1,27 +1,13 @@
 import React from "react";
 import { useColorScheme } from "nativewind";
-import {
-  Alert,
-  Modal,
-  Share,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Modal, Text, View } from "react-native";
 
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { ActualTheme } from "../types/reduxTypes";
-
-import { ModalContainer } from "../styles/appStyles";
 
 interface PraiseHelpModalProps {
   isShowingHelpModal: boolean;
@@ -43,7 +29,8 @@ const PraiseHelpModal = ({
       onRequestClose={() => setIsShowingHelpModal(false)}
       statusBarTranslucent
     >
-      <ModalContainer
+      <View
+        className="flex-1 items-center justify-center"
         style={
           colorScheme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
@@ -85,10 +72,10 @@ const PraiseHelpModal = ({
             style={getSecondaryTextColorStyle(actualTheme)}
             className=" dark:text-white text-light-primary font-inter-regular text-sm text-center mt-[5px]"
           >
-            The list will renew each day.
+            The list will renew every day.
           </Text>
         </View>
-      </ModalContainer>
+      </View>
     </Modal>
   );
 };

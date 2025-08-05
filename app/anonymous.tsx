@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -26,7 +27,7 @@ const AnonymousScreen = () => {
 
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["anonprayers"],
     queryFn: getAnonymousPrayers,
   });
@@ -77,6 +78,20 @@ const AnonymousScreen = () => {
       .eq("id", id);
 
     queryClient.invalidateQueries({ queryKey: ["anonprayers"] });
+  }
+
+  if (isLoading) {
+    return (
+      <ActivityIndicator color={colorScheme === "dark" ? "white" : "#2f2d51"} />
+    );
+  }
+
+  if (isError) {
+    return (
+      <Text className="text-light-primary dark:text-dark-primary font-inter-semibold text-lg">
+        Something went wrong. Restart your app.
+      </Text>
+    );
   }
 
   return (

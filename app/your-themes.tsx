@@ -3,13 +3,7 @@
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
-import {
-  Dimensions,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -23,7 +17,6 @@ import {
 } from "@lib/customStyles";
 import { resetTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
-import { Container, HeaderView } from "@styles/appStyles";
 
 const YourThemesScreen = () => {
   const { colorScheme } = useColorScheme();
@@ -105,11 +98,11 @@ const YourThemesScreen = () => {
 
   console.log("actual theme: ", actualTheme);
   return (
-    <Container
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
-      <HeaderView>
+      <View>
         <Link href="/pro">
           <View className="flex-row items-center justify-between gap-2">
             <AntDesign
@@ -133,7 +126,7 @@ const YourThemesScreen = () => {
             </Text>
           </View>
         </Link>
-      </HeaderView>
+      </View>
 
       {availableThemes.length === 0 ? (
         <View className="flex-1 items-center gap-3 justify-center">
@@ -265,7 +258,7 @@ const YourThemesScreen = () => {
           />
         </>
       )}
-    </Container>
+    </View>
   );
 };
 

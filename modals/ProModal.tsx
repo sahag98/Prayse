@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {
-  Image,
-  Modal,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { Image, Modal, Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ModalContainer } from "@styles/appStyles";
 
+//@ts-ignore
 import probanner from "../assets/probanner.png";
 
-import { ProBanner } from "@components/pro-banner";
 import { useDispatch } from "react-redux";
 import { showProModal } from "@redux/userReducer";
 import { ProModalButton } from "@components/pro-modal-button";
@@ -26,7 +17,7 @@ const ProModal = ({ visible, setVisible, actualTheme, theme }: any) => {
   const dispatch = useDispatch();
   return (
     <Modal visible={visible} animationType="fade" transparent>
-      <ModalContainer
+      <View
         style={
           theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
@@ -78,7 +69,7 @@ const ProModal = ({ visible, setVisible, actualTheme, theme }: any) => {
             theme={theme}
           />
         </View>
-      </ModalContainer>
+      </View>
     </Modal>
   );
 };

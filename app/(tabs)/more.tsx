@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
-
+import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {
   AntDesign,
   Feather,
@@ -32,6 +32,7 @@ import SettingsItems from "../../components/SettingsItems";
 import FeedbackItems from "../../components/FeedbackItems";
 import config from "../../config";
 import {
+  ANON_SCREEN,
   PRAISE_SCREEN,
   SETTINGS_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
@@ -84,6 +85,25 @@ const MoreScreen = () => {
     },
     {
       id: 2,
+      icon: (
+        <MaterialIcons
+          className="mr-3"
+          name="hands-pray"
+          size={24}
+          color={
+            actualTheme && actualTheme.SecondaryTxt
+              ? actualTheme.SecondaryTxt
+              : colorScheme === "dark"
+                ? "white"
+                : "#2f2d51"
+          }
+        />
+      ),
+      title: "Anonymous Prayers",
+      screen: ANON_SCREEN,
+    },
+    {
+      id: 3,
       icon: (
         <MaterialCommunityIcons
           className="mr-3"
@@ -247,7 +267,7 @@ const MoreScreen = () => {
 
       <ScrollView
         contentContainerStyle={{ gap: 10 }}
-        className="bg-light-background mt-10 dark:bg-dark-background px-4"
+        className="bg-light-background dark:bg-dark-background"
         showsVerticalScrollIndicator={false}
       >
         <View
@@ -264,9 +284,8 @@ const MoreScreen = () => {
             style={getSecondaryTextColorStyle(actualTheme)}
             className="font-inter-regular leading-6 text-lg text-light-primary dark:text-dark-primary"
           >
-            Prayse will always be free, and your support helps us continue
-            working on the app and furthering the importance of prayer and
-            praise in today's world.
+            Your support helps us further our mission in elevating the role of
+            prayer in our daily walk with God. Let's do this together!
           </Text>
           <TouchableOpacity
             onPress={() => {
@@ -284,9 +303,9 @@ const MoreScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <SettingsItems
+        <DailysItems
           actualTheme={actualTheme}
-          options={options}
+          options={dailys}
           theme={colorScheme}
         />
         <FeedbackItems
@@ -294,9 +313,9 @@ const MoreScreen = () => {
           options={feedback}
           theme={colorScheme}
         />
-        <DailysItems
+        <SettingsItems
           actualTheme={actualTheme}
-          options={dailys}
+          options={options}
           theme={colorScheme}
         />
 

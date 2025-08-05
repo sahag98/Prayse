@@ -53,7 +53,7 @@ const PrayerTabs = ({
         actualTheme && actualTheme.Primary
           ? actualTheme.Primary
           : colorScheme === "dark"
-            ? "#a5c9ff"
+            ? "white"
             : "#2f2d51",
       ],
     ),
@@ -68,7 +68,7 @@ const PrayerTabs = ({
         actualTheme && actualTheme.Primary
           ? actualTheme.Primary
           : colorScheme === "dark"
-            ? "#a5c9ff"
+            ? "white"
             : "#2f2d51",
       ],
     ),
@@ -83,7 +83,7 @@ const PrayerTabs = ({
         actualTheme && actualTheme.Primary
           ? actualTheme.Primary
           : colorScheme === "dark"
-            ? "#a5c9ff"
+            ? "white"
             : "#2f2d51",
       ],
     ),
@@ -97,7 +97,7 @@ const PrayerTabs = ({
       actualTheme && actualTheme.Primary
         ? actualTheme.Primary
         : colorScheme === "dark"
-          ? "#a5c9ff"
+          ? "white"
           : "#2f2d51",
     position: "absolute",
     bottom: 0,

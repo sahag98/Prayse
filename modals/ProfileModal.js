@@ -19,12 +19,7 @@ import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  HeaderTitle,
-  HeaderView,
-  ModalContainer,
-  ModalView,
-} from "../styles/appStyles";
+import { HeaderTitle, ModalContainer, ModalView } from "../styles/appStyles";
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
@@ -269,7 +264,7 @@ const ProfileModal = ({
                 },
           ]}
         >
-          <HeaderView className="w-full flex-row justify-between">
+          <View className="w-full flex-row justify-between">
             <TouchableOpacity onPress={handleCloseModal}>
               <AntDesign
                 name="close"
@@ -278,8 +273,8 @@ const ProfileModal = ({
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : colorScheme === "dark"
-                      ? "white"
-                      : "#2f2d51"
+                    ? "white"
+                    : "#2f2d51"
                 }
               />
             </TouchableOpacity>
@@ -298,12 +293,12 @@ const ProfileModal = ({
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : colorScheme === "dark"
-                      ? "#A5C9FF"
-                      : "#2f2d51"
+                    ? "#A5C9FF"
+                    : "#2f2d51"
                 }
               />
             </TouchableOpacity>
-          </HeaderView>
+          </View>
           <View className="relative self-center p-2">
             <Image
               className="w-32 aspect-square rounded-full"
@@ -325,8 +320,8 @@ const ProfileModal = ({
                   actualTheme && actualTheme.PrimaryTxt
                     ? actualTheme.PrimaryTxt
                     : colorScheme === "dark"
-                      ? "white"
-                      : "white"
+                    ? "white"
+                    : "white"
                 }
               />
             </TouchableOpacity>
@@ -346,8 +341,8 @@ const ProfileModal = ({
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               value={name}
               onChangeText={(text) => setName(text)}

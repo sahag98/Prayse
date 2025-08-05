@@ -1,10 +1,8 @@
 // @ts-nocheck
 import React, { useRef, useState } from "react";
-import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
-  ActivityIndicator,
   Alert,
   Animated,
   FlatList,
@@ -25,15 +23,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { ActualTheme } from "@types/reduxTypes";
-
-import {
-  Container,
-  HeaderView,
-  ModalActionGroup2,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-} from "../styles/appStyles";
 
 const Gospel = () => {
   const navigation = useNavigation();
@@ -96,7 +85,9 @@ const Gospel = () => {
           borderBottomColor: actualTheme.MainTxt,
         }
       }
-      className={`gap-1 ${title !== "RECEIVE JESUS AS YOUR SAVIOR" && "border-b"} border-b-light-primary dark:border-b-[#7b7b7b]`}
+      className={`gap-1 ${
+        title !== "RECEIVE JESUS AS YOUR SAVIOR" && "border-b"
+      } border-b-light-primary dark:border-b-[#7b7b7b]`}
     >
       <Text
         style={getMainTextColorStyle(actualTheme)}
@@ -169,12 +160,12 @@ const Gospel = () => {
   };
 
   return (
-    <Container
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
       <View className="flex-row items-center justify-between">
-        <HeaderView className="flex-row items-center gap-1">
+        <View className="flex-row items-center gap-1">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons
               name="chevron-back"
@@ -194,7 +185,7 @@ const Gospel = () => {
           >
             Gospel
           </Text>
-        </HeaderView>
+        </View>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -226,11 +217,11 @@ const Gospel = () => {
         visible={clearModalVisible}
         onRequestClose={handleCloseModal}
       >
-        <ModalContainer
+        <View
           style={getMainBackgroundColorStyle(actualTheme)}
           className="bg-light-background dark:bg-dark-background"
         >
-          <ModalView
+          <View
             className="gap-2 w-[95%] bg-light-secondary dark:bg-dark-secondary"
             style={
               actualTheme && actualTheme.Secondary
@@ -240,7 +231,7 @@ const Gospel = () => {
                   : { backgroundColor: "#b7d3ff" }
             }
           >
-            <ModalIcon style={{ gap: 5 }}>
+            <View style={{ gap: 5 }}>
               <Text
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="text-center dark:text-dark-primary text-light-primary font-inter-bold text-2xl mb-3"
@@ -262,8 +253,8 @@ const Gospel = () => {
               >
                 In Jesus' name I pray, Amen.
               </Text>
-            </ModalIcon>
-            <ModalActionGroup2>
+            </View>
+            <View style={{ gap: 10 }}>
               <TouchableOpacity
                 style={getPrimaryBackgroundColorStyle(actualTheme)}
                 className="dark:bg-dark-accent items-center bg-light-primary p-4 rounded-lg w-full"
@@ -276,11 +267,11 @@ const Gospel = () => {
                   Amen
                 </Text>
               </TouchableOpacity>
-            </ModalActionGroup2>
-          </ModalView>
-        </ModalContainer>
+            </View>
+          </View>
+        </View>
       </Modal>
-    </Container>
+    </View>
   );
 };
 

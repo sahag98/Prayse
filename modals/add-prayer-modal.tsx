@@ -17,7 +17,7 @@ import { cn } from "@lib/utils";
 import uuid from "react-native-uuid";
 import { useDispatch } from "react-redux";
 import { addPrayer, editPrayer } from "@redux/prayerReducer";
-
+import { posthog } from "@lib/posthog";
 const AddPrayerModal = ({
   actualTheme,
   colorScheme,
@@ -120,7 +120,7 @@ const AddPrayerModal = ({
 
     setPrayerTitle("");
     setPrayerNote("");
-
+    posthog.capture("Adding prayer");
     setIsEditing(false);
     addPrayerBottomSheetModalRef.current.close();
   };

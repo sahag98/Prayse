@@ -1,6 +1,5 @@
 import { Dimensions, Pressable, ScrollView, Text, View } from "react-native";
 import React from "react";
-import { HeaderView } from "@styles/appStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import useStore from "@hooks/store";
@@ -71,7 +70,7 @@ const TrackingScreen = () => {
         },
       ]}
     >
-      <HeaderView>
+      <View>
         <Link className="items-center" asChild href={`/${WELCOME_SCREEN}`}>
           <Pressable>
             <Ionicons
@@ -87,7 +86,7 @@ const TrackingScreen = () => {
             />
           </Pressable>
         </Link>
-      </HeaderView>
+      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="gap-3">
           <View className="border p-4 bg-light-secondary dark:bg-dark-secondary rounded-xl gap-3">

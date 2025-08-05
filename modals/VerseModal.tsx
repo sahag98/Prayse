@@ -14,7 +14,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { ModalContainer, ModalView } from "@styles/appStyles";
 
 const VerseModal = ({
   verseModal,
@@ -31,14 +30,14 @@ const VerseModal = ({
       visible={verseModal}
       onRequestClose={() => setVerseModal(false)}
     >
-      <ModalContainer
+      <View
         style={
           colorScheme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.8)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.8)" }
         }
       >
-        <ModalView
+        <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
           className="bg-light-secondary gap-2 w-5/6 dark:bg-dark-secondary"
         >
@@ -91,8 +90,8 @@ const VerseModal = ({
               {verse}
             </Text>
           )}
-        </ModalView>
-      </ModalContainer>
+        </View>
+      </View>
     </Modal>
   );
 };

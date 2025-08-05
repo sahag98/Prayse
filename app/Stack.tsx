@@ -6,11 +6,8 @@ import {
   FAVORITES_SCREEN,
   GOSPEL_SCREEN,
   NEW_UPDATE_SCREEN,
-  OLD_PRAYER_SCREEN,
   ONBOARDING_SCREEN,
-  OUR_PRESENTATION_SCREEN,
   PRAISE_SCREEN,
-  PRAYER_GROUP_SCREEN,
   PRAYER_ROOM_SCREEN,
   PRAYER_SCREEN,
   PRO_SCREEN,
@@ -25,9 +22,10 @@ import {
   JOURNAL_SCREEN,
 } from "@routes";
 import { useNotificationObserver } from "@components/NotificationObserver";
-
+import { useColorScheme } from "nativewind";
 const StackContainer = () => {
   useNotificationObserver();
+  const { colorScheme } = useColorScheme();
 
   return (
     <>
@@ -35,6 +33,9 @@ const StackContainer = () => {
         <Stack.Screen
           name="(tabs)"
           options={{
+            contentStyle: {
+              backgroundColor: colorScheme === "dark" ? "#121212" : "#f2f7ff",
+            },
             animation: "fade",
             headerShown: false,
           }}
@@ -56,10 +57,10 @@ const StackContainer = () => {
             headerShown: false,
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name={OLD_PRAYER_SCREEN}
           options={{ headerShown: false }}
-        />
+        /> */}
         <Stack.Screen
           name={ONBOARDING_SCREEN}
           options={{ headerShown: false }}
@@ -91,10 +92,10 @@ const StackContainer = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name={GOSPEL_SCREEN} options={{ headerShown: false }} />
-        <Stack.Screen
+        {/* <Stack.Screen
           name={OUR_PRESENTATION_SCREEN}
           options={{ headerShown: false }}
-        />
+        /> */}
         {/* <Stack.Screen name="prayer" options={{ headerShown: false }} /> */}
         <Stack.Screen name={TEST_SCREEN} options={{ headerShown: false }} />
 
@@ -102,11 +103,11 @@ const StackContainer = () => {
           name={PRAYER_ROOM_SCREEN}
           options={{ headerShown: false }}
         />
-
+        {/* 
         <Stack.Screen
           name={PRAYER_GROUP_SCREEN}
           options={{ headerShown: false }}
-        />
+        /> */}
 
         <Stack.Screen name="+not-found" />
       </Stack>

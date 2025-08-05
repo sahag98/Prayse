@@ -15,18 +15,10 @@ import {
 } from "@lib/customStyles";
 
 import config from "../config";
-import { deleteAnsweredPrayers } from "../redux/answeredReducer";
-import { deleteAllFolders } from "../redux/folderReducer";
-import { clearPrayerData } from "../redux/prayerReducer";
-import {
-  darkMode,
-  large,
-  regular,
-  small,
-  systemTheme,
-} from "../redux/userReducer";
+import { large, regular, small } from "../redux/userReducer";
 import { MORE_SCREEN } from "../routes";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import { Container } from "@components/Container";
+import HeaderText from "@components/HeaderText";
 
 const SettingsScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -138,12 +130,7 @@ const SettingsScreen = () => {
                 }
               />
             </Link>
-            <HeaderTitle
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-bold text-light-primary dark:text-dark-primary"
-            >
-              Settings
-            </HeaderTitle>
+            <HeaderText text="Settings" />
           </View>
         </View>
         <View>
@@ -303,7 +290,7 @@ const SettingsScreen = () => {
           </View>
         </View>
       </View>
-      <View className="mb-1 gap-2 items-center justify-center">
+      <View className="mb-4 gap-2 items-center justify-center">
         <Text
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter-medium text-light-primary dark:text-dark-primary"

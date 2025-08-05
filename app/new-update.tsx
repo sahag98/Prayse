@@ -1,29 +1,13 @@
-import {
-  FlatList,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "@node_modules/react-redux/es";
-import { ActualTheme } from "../types/reduxTypes";
 import { useColorScheme } from "nativewind";
 import { Image } from "expo-image";
 import useStore from "@hooks/store";
-import { update } from "@constants/update";
-import UpdateItem from "@components/update-item";
-import { UpdateItemType } from "../types/appTypes";
-import { router } from "@node_modules/expo-router/build";
-import { WELCOME_SCREEN } from "@routes";
+import { router } from "expo-router";
+import { FOLDER_SCREEN } from "@routes";
 
 const NewUpdate = () => {
-  const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
-  );
-
   const { handleShowUpdate } = useStore();
 
   const { colorScheme } = useColorScheme();
@@ -50,13 +34,32 @@ const NewUpdate = () => {
           }}
         />
         <Text className="font-inter-bold text-center text-3xl text-light-primary dark:text-dark-primary">
-          v10.4.0 🙌
+          v11 🙌
         </Text>
         <Text className="font-inter-semibold text-2xl text-light-primary dark:text-dark-primary">
           What's new:
         </Text>
       </View>
-      <FlatList
+      <ScrollView
+        className="gap-4"
+        contentContainerClassName="gap-4"
+        showsVerticalScrollIndicator={false}
+      >
+        <Text className="font-inter-medium text-light-primary dark:text-dark-primary">
+          Dear Prayse users, we’re excited to introduce Version 11! In this
+          update, we took a step back and focused on the core features that make
+          Prayse meaningful and enjoyable to use.
+        </Text>
+        <Text className="font-inter-medium text-light-primary dark:text-dark-primary">
+          The app will look a bit different, but it's now much simpler and
+          easier to use in your daily life.
+        </Text>
+        <Text className="font-inter-medium bg-white dark:bg-dark-secondary p-2 rounded-xl text-light-primary dark:text-dark-primary">
+          "I truly hope you enjoy this simpler version of Prayse. Praying for
+          you!" – Sahag
+        </Text>
+      </ScrollView>
+      {/* <FlatList
         data={update}
         contentContainerStyle={{ flexGrow: 1, gap: 10 }}
         showsVerticalScrollIndicator={false}
@@ -64,12 +67,12 @@ const NewUpdate = () => {
         renderItem={({ item }: { item: UpdateItemType }) => (
           <UpdateItem item={item} />
         )}
-      />
+      /> */}
 
       <Pressable
         onPress={() => {
           handleShowUpdate();
-          router.push(WELCOME_SCREEN);
+          router.push(FOLDER_SCREEN);
         }}
         className="mt-auto self-center w-full items-center justify-center bg-light-primary dark:bg-dark-accent p-4 rounded-lg"
       >
@@ -82,5 +85,3 @@ const NewUpdate = () => {
 };
 
 export default NewUpdate;
-
-const styles = StyleSheet.create({});

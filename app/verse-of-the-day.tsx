@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Link,
   useFocusEffect,
@@ -6,28 +6,21 @@ import {
   useNavigation,
   useRouter,
 } from "expo-router";
-import * as Speech from "expo-speech";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
   Alert,
   Pressable,
-  ScrollView,
   Share,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Image } from "expo-image";
 import { useDispatch, useSelector } from "react-redux";
-import Animated, {
-  useAnimatedStyle,
+import {
   withRepeat,
   withTiming,
   withSequence,
-  withDelay,
   Easing,
   useSharedValue,
 } from "react-native-reanimated";
@@ -38,25 +31,19 @@ import {
   Feather,
   Ionicons,
 } from "@expo/vector-icons";
-import {
-  getMainBackgroundColorStyle,
-  getMainTextColorStyle,
-  getSecondaryBackgroundColorStyle,
-  getSecondaryTextColorStyle,
-} from "@lib/customStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { client } from "../lib/client";
 import { addToFavorites } from "../redux/favoritesReducer";
-import { FAVORITES_SCREEN, MORE_SCREEN } from "../routes";
-import { Container, HeaderTitle } from "../styles/appStyles";
+import { MORE_SCREEN } from "../routes";
+
 import { ActualTheme } from "../types/reduxTypes";
+import { Container } from "@components/Container";
+import HeaderText from "@components/HeaderText";
 
 const VerseOfTheDayScreen = () => {
   const favorites = useSelector((state: any) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
   const [verse, setVerse] = useState<any>([]);
-
-  const AnimatedImage = Animated.createAnimatedComponent(Image);
 
   const routeParams = useLocalSearchParams();
 
@@ -69,19 +56,6 @@ const VerseOfTheDayScreen = () => {
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
-  const speak = async (verse: string, chapter: string) => {
-    if (verse && chapter) {
-      const speakVerse = verse + " - " + chapter;
-
-      Speech.speak(speakVerse);
-    }
-  };
-
-  useEffect(() => {
-    Image.prefetch(
-      "https://images.pexels.com/photos/30694611/pexels-photo-30694611/free-photo-of-scenic-palm-tree-avenue-on-a-sunny-day.jpeg",
-    ).then(() => console.log("prefetched image"));
-  }, []);
 
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
@@ -142,48 +116,21 @@ const VerseOfTheDayScreen = () => {
     );
   };
 
-  const BusyIndicator = () => {
-    return (
-      <View
-        style={
-          colorScheme === "dark"
-            ? { backgroundColor: "#121212", flex: 1, justifyContent: "center" }
-            : { backgroundColor: "#F2F7FF", flex: 1, justifyContent: "center" }
-        }
-      >
-        <ActivityIndicator
-          size="large"
-          color={colorScheme === "dark" ? "white" : "#2f2d51"}
-        />
-      </View>
-    );
-  };
-
-  console.log(verse[0]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: scaleValue.value,
-        },
-      ],
-    };
-  });
-
   if (verse.length === 0) {
-    return null;
+    return (
+      <Container>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator
+            color={colorScheme === "dark" ? "white" : "#2f2d51"}
+          />
+        </View>
+      </Container>
+    );
   }
 
   return (
     <View className="flex-1 px-4 bg-light-background dark:bg-dark-background">
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        {/* <Image
-          source={{
-            uri: "https://images.pexels.com/photos/9443229/pexels-photo-9443229.jpeg",
-          }}
-          style={[StyleSheet.absoluteFill]}
-        /> */}
         <View className="mb-10 pt-4 flex-row items-center">
           <TouchableOpacity
             className="mr-2"
@@ -207,13 +154,7 @@ const VerseOfTheDayScreen = () => {
               }
             />
           </TouchableOpacity>
-          <HeaderTitle
-            style={getMainTextColorStyle(actualTheme)}
-            //@ts-ignore
-            className="font-inter-bold text-light-primary dark:text-dark-primary"
-          >
-            Verse of the Day
-          </HeaderTitle>
+          <HeaderText text=" Verse of the Day" />
         </View>
         <Link
           href="/favorites"

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import { AntDesign } from "@expo/vector-icons";
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
@@ -38,7 +37,7 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
     <TouchableOpacity
       onPress={() => handleOpen(item)}
       key={item.id}
-      className="bg-light-secondary w-1/2 aspect-square dark:bg-dark-secondary p-3  mb-4 rounded-lg"
+      className="bg-light-secondary w-1/2 aspect-square mb-2 dark:bg-dark-secondary p-3 rounded-xl"
       style={[
         { width: width / 2 - 8 },
         getSecondaryBackgroundColorStyle(actualTheme),
@@ -49,7 +48,7 @@ const FolderItem = ({ actualTheme, item, navigation }) => {
           <Text
             numberOfLines={1}
             style={getSecondaryTextColorStyle(actualTheme)}
-            className="text-2xl flex-1 dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter-bold"
+            className="text-xl flex-1 dark:text-dark-primary  text-light-primary my-1 max-w-[90%] font-inter-bold"
           >
             {item.name}
           </Text>

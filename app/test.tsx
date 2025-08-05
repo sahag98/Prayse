@@ -21,6 +21,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Toast from "react-native-toast-message";
 import uuid from "react-native-uuid";
@@ -28,13 +29,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 import {
-  getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { ActualTheme } from "@types/reduxTypes";
-
+import { posthog } from "@lib/posthog";
 import calendar from "../assets/calendar.png";
 import time from "../assets/time.png";
 import {
@@ -43,24 +43,27 @@ import {
   editReminder,
 } from "../redux/remindersReducer";
 import { REMINDER_SCREEN, SETTINGS_SCREEN } from "../routes";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 import useStore from "@hooks/store";
 import { CheckReview } from "@hooks/useShowReview";
+import { Container } from "@components/Container";
 
 export default function TestScreen() {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams();
+  console.log("params: ", routeParams.prayer_times);
 
   const [reminders, setReminders] = useState([]);
   const [newReminder, setNewReminder] = useState("");
   const [newNote, setNewNote] = useState("");
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [repeatOption, setRepeatOption] = useState("");
-  const [reminderDate, setReminderDate] = useState("");
-  const [reminderTime, setReminderTime] = useState("");
+  const [reminderDate, setReminderDate] = useState(null);
+  const [reminderTime, setReminderTime] = useState(null);
   const { colorScheme } = useColorScheme();
   const [isRepeat, setIsRepeat] = useState(false);
+  const [isIOSDatePickerVisible, setIOSDatePickerVisible] = useState(false);
+  const [isIOSTimePickerVisible, setIOSTimePickerVisible] = useState(false);
 
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
@@ -77,10 +80,10 @@ export default function TestScreen() {
       // Invoked whenever the route is focused.
 
       if (routeParams.reminder !== undefined && routeParams.type === "Add") {
-        setReminderDate("");
+        setReminderDate(null);
         setRepeatOption("");
         setIsRepeat(false);
-        setReminderTime("");
+        setReminderTime(null);
         setNewReminder(routeParams?.reminder);
         if (routeParams.note) {
           console.log("here");
@@ -91,10 +94,10 @@ export default function TestScreen() {
       if (routeParams.reminder === undefined && routeParams.type === "Add") {
         setNewReminder("");
         setNewNote("");
-        setReminderDate("");
+        setReminderDate(null);
         setRepeatOption("");
         setIsRepeat(false);
-        setReminderTime("");
+        setReminderTime(null);
       }
 
       if (routeParams.reminderToEditTitle && routeParams.type !== "Add") {
@@ -145,6 +148,7 @@ export default function TestScreen() {
   };
 
   const scheduleNotification = async (reminder, combinedDate, type) => {
+    console.log("type: ", type);
     const secondsUntilNotification = Math.floor(
       (combinedDate.getTime() - Date.now()) / 1000,
     );
@@ -169,6 +173,7 @@ export default function TestScreen() {
           editReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Daily",
           }),
         );
@@ -177,6 +182,7 @@ export default function TestScreen() {
           addNewReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Daily",
           }),
         );
@@ -203,6 +209,7 @@ export default function TestScreen() {
           editReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Weekly",
           }),
         );
@@ -211,6 +218,7 @@ export default function TestScreen() {
           addNewReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Weekly",
           }),
         );
@@ -239,6 +247,7 @@ export default function TestScreen() {
           editReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Weekly",
           }),
         );
@@ -247,6 +256,7 @@ export default function TestScreen() {
           addNewReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "Weekly",
           }),
         );
@@ -271,6 +281,7 @@ export default function TestScreen() {
           editReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "None",
           }),
         );
@@ -279,6 +290,7 @@ export default function TestScreen() {
           addNewReminder({
             reminder,
             identifier,
+            prayer_times: routeParams.prayer_times,
             ocurrence: "None",
           }),
         );
@@ -287,6 +299,13 @@ export default function TestScreen() {
   };
 
   const handleEditReminder = async () => {
+    if (!reminderDate || !reminderTime) {
+      Toast.show({
+        type: "error",
+        text1: "Please select both date and time.",
+      });
+      return;
+    }
     const combinedDate = new Date(
       reminderDate.getFullYear(),
       reminderDate.getMonth(),
@@ -299,6 +318,7 @@ export default function TestScreen() {
       id: uuid.v4(),
       message: newReminder,
       prayer_id: routeParams.reminderEditPrayerId,
+
       note: newNote,
       time: combinedDate,
     };
@@ -313,20 +333,26 @@ export default function TestScreen() {
 
     setNewReminder("");
     setNewNote("");
-    setReminderDate("");
-    setReminderTime("");
+    setReminderDate(null);
+    setReminderTime(null);
     setRepeatOption("");
     setIsRepeat(false);
     Keyboard.dismiss();
     router.replace(`/reminder/${newReminderObj.id}`);
   };
 
-  const addReminder = () => {
+  const addReminder = async () => {
     if (newReminder.length === 0) {
       setTitleError("Title is required.");
       return;
     }
-
+    if (!reminderDate || !reminderTime) {
+      Toast.show({
+        type: "error",
+        text1: "Please select both date and time.",
+      });
+      return;
+    }
     const combinedDate = new Date(
       reminderDate.getFullYear(),
       reminderDate.getMonth(),
@@ -339,6 +365,7 @@ export default function TestScreen() {
       id: uuid.v4(),
       message: newReminder,
       prayer_id: routeParams.reminderId,
+      prayer_times: routeParams.prayer_times,
       note: newNote,
       time: combinedDate,
     };
@@ -349,62 +376,68 @@ export default function TestScreen() {
     showToast();
     setNewReminder("");
     setNewNote("");
-    setReminderDate("");
-    setReminderTime("");
+    setReminderDate(null);
+    setReminderTime(null);
     setRepeatOption("");
     setIsRepeat(false);
-    navigation.goBack();
-    Keyboard.dismiss();
 
     if (!reviewRequested) {
       CheckReview();
       setReviewRequested(true);
     }
+    posthog.capture("Create reminder");
+    navigation.goBack();
+    Keyboard.dismiss();
   };
 
   const clearAll = () => {
     setNewReminder("");
-    setDatePickerVisibility(false);
-    setTimePickerVisibility(false);
-    setReminderDate("");
+    setShowDatePicker(false);
+    setShowTimePicker(false);
+    setReminderDate(null);
     setNewNote("");
     setRepeatOption("");
-    setReminderTime("");
+    setReminderTime(null);
     navigation.goBack();
   };
-  const showDatePicker = () => {
+
+  const handleDatePress = () => {
     Keyboard.dismiss();
-    setDatePickerVisibility(true);
+    if (Platform.OS === "ios") {
+      setIOSDatePickerVisible(true);
+    } else {
+      setShowDatePicker(true);
+    }
   };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const showTimePicker = () => {
+  const handleTimePress = () => {
     Keyboard.dismiss();
-
-    if (reminderDate.length === 0) {
+    if (!reminderDate) {
       const today = new Date();
       setReminderDate(today);
     }
-    setReminderTime(Date.now());
-    setTimePickerVisibility(true);
+    if (Platform.OS === "ios") {
+      setIOSTimePickerVisible(true);
+    } else {
+      setReminderTime(new Date());
+      setShowTimePicker(true);
+    }
   };
 
-  const hideTimePicker = () => {
-    setTimePickerVisibility(false);
-  };
-
-  const handleDateConfirm = (date) => {
-    hideDatePicker();
-
-    const today = new Date();
-    console.log("today: ", today);
-
-    console.log("date: ", date);
-
+  // iOS handlers
+  const handleIOSDateConfirm = (date) => {
+    setIOSDatePickerVisible(false);
     setReminderDate(date);
+  };
+  const handleIOSDateCancel = () => {
+    setIOSDatePickerVisible(false);
+  };
+  const handleIOSTimeConfirm = (time) => {
+    setIOSTimePickerVisible(false);
+    setReminderTime(time);
+  };
+  const handleIOSTimeCancel = () => {
+    setIOSTimePickerVisible(false);
   };
 
   function useDailyOption() {
@@ -433,18 +466,9 @@ export default function TestScreen() {
     setRepeatOption("weekly");
   }
 
-  const handleTimeConfirm = (time) => {
-    hideTimePicker();
-    console.log("time: ", time);
-    setReminderTime(time);
-  };
-
   return (
-    <Container
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="flex-1 dark:bg-[#121212] bg-[#f2f7ff] justify-center items-center p-4"
-    >
-      <HeaderView style={{ justifyContent: "space-between", width: "100%" }}>
+    <Container className="flex-1 justify-center items-center p-4">
+      <View className="flex-row justify-between w-full items-center">
         <View className="flex-row gap-2 items-center">
           <TouchableOpacity onPress={clearAll}>
             <AntDesign
@@ -459,12 +483,13 @@ export default function TestScreen() {
               }
             />
           </TouchableOpacity>
-          <HeaderTitle
+
+          <Text
             style={getMainTextColorStyle(actualTheme)}
-            className="font-inter-bold text-light-primary dark:text-dark-primary"
+            className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
           >
             {routeParams.type} Reminder
-          </HeaderTitle>
+          </Text>
         </View>
         <TouchableOpacity
           onPress={
@@ -507,7 +532,7 @@ export default function TestScreen() {
             />
           )}
         </TouchableOpacity>
-      </HeaderView>
+      </View>
       <View className="flex-1 mt-3 w-full relative gap-2">
         <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
@@ -577,7 +602,7 @@ export default function TestScreen() {
           className="dark:bg-dark-secondary bg-light-secondary p-3 gap-2 rounded-lg"
         >
           <TouchableOpacity
-            onPress={showDatePicker}
+            onPress={handleDatePress}
             className="w-full flex-row justify-between p-2 items-center"
           >
             <View className="gap-2">
@@ -628,7 +653,7 @@ export default function TestScreen() {
             className="w-full dark:bg-gray-500 bg-light-primary h-[1px]"
           />
           <TouchableOpacity
-            onPress={showTimePicker}
+            onPress={handleTimePress}
             className="w-full flex-row justify-between p-2"
           >
             <View className="gap-2">
@@ -713,24 +738,48 @@ export default function TestScreen() {
           <View className="flex-row items-center gap-4">
             <Pressable
               onPress={useDailyOption}
-              className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
+              className={cn(
+                " items-center justify-center rounded-lg p-4 flex-1",
+                repeatOption === "daily"
+                  ? "bg-light-primary dark:bg-dark-accent"
+                  : "bg-light-secondary dark:bg-dark-secondary",
+              )}
             >
-              <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+              <Text
+                className={cn(
+                  "font-inter-semibold text-light-primary dark:text-dark-primary",
+                  repeatOption === "daily"
+                    ? "text-light-background dark:text-dark-background"
+                    : "text-light-primary dark:text-dark-primary",
+                )}
+              >
                 Once a day
               </Text>
             </Pressable>
             <Pressable
               onPress={useWeeklyOption}
-              className="bg-light-secondary items-center justify-center dark:bg-dark-secondary rounded-lg p-4 flex-1"
+              className={cn(
+                " items-center justify-center rounded-lg p-4 flex-1",
+                repeatOption === "weekly"
+                  ? "bg-light-primary dark:bg-dark-accent"
+                  : "bg-light-secondary dark:bg-dark-secondary",
+              )}
             >
-              <Text className="font-inter-semibold  text-light-primary dark:text-dark-primary">
+              <Text
+                className={cn(
+                  "font-inter-semibold text-light-primary dark:text-dark-primary",
+                  repeatOption === "weekly"
+                    ? "text-light-background dark:text-dark-background"
+                    : "text-light-primary dark:text-dark-primary",
+                )}
+              >
                 Once a week
               </Text>
             </Pressable>
           </View>
         )}
 
-        <View className="mt-auto mb-5">
+        <View className="mt-auto mb-10">
           <Text className="text-[#ff3b3b] mb-1 font-inter-medium">
             Required fields: Title, date and time.
           </Text>
@@ -757,19 +806,51 @@ export default function TestScreen() {
             </Text>
           </Link>
         </View>
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="date"
-          onConfirm={handleDateConfirm}
-          onCancel={hideDatePicker}
-        />
 
-        <DateTimePickerModal
-          isVisible={isTimePickerVisible}
-          mode="time"
-          onConfirm={handleTimeConfirm}
-          onCancel={hideTimePicker}
-        />
+        {/* Date Picker */}
+        {Platform.OS === "ios" ? (
+          <DateTimePickerModal
+            isVisible={isIOSDatePickerVisible}
+            mode="date"
+            onConfirm={handleIOSDateConfirm}
+            onCancel={handleIOSDateCancel}
+            date={reminderDate || new Date()}
+          />
+        ) : (
+          showDatePicker && (
+            <DateTimePicker
+              value={reminderDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) setReminderDate(selectedDate);
+              }}
+            />
+          )
+        )}
+        {/* Time Picker */}
+        {Platform.OS === "ios" ? (
+          <DateTimePickerModal
+            isVisible={isIOSTimePickerVisible}
+            mode="time"
+            onConfirm={handleIOSTimeConfirm}
+            onCancel={handleIOSTimeCancel}
+            date={reminderTime || new Date()}
+          />
+        ) : (
+          showTimePicker && (
+            <DateTimePicker
+              value={reminderTime || new Date()}
+              mode="time"
+              display="default"
+              onChange={(event, selectedTime) => {
+                setShowTimePicker(false);
+                if (selectedTime) setReminderTime(selectedTime);
+              }}
+            />
+          )
+        )}
       </View>
     </Container>
   );

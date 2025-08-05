@@ -27,7 +27,7 @@ import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
 } from "@lib/customStyles";
-import { HeaderView, WallpaperContainer } from "@styles/appStyles";
+
 import WallpaperItem from "@components/WallpaperItem";
 import WallpaperPagination from "@components/WallpaperPagination";
 
@@ -152,12 +152,12 @@ const Wallpapers = () => {
   ]);
 
   return (
-    <WallpaperContainer
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       //@ts-ignore
       className="bg-light-background dark:bg-dark-background"
     >
-      <HeaderView>
+      <View>
         <Link href="/pro">
           <View className="flex-row px-4 items-center justify-between gap-2">
             <AntDesign
@@ -181,7 +181,7 @@ const Wallpapers = () => {
             </Text>
           </View>
         </Link>
-      </HeaderView>
+      </View>
       <Text
         style={getMainTextColorStyle(actualTheme)}
         className="font-inter-medium px-4 mb-3 text-light-primary dark:text-dark-primary"
@@ -223,7 +223,7 @@ const Wallpapers = () => {
           </View>
         </View>
       )}
-    </WallpaperContainer>
+    </View>
   );
 };
 

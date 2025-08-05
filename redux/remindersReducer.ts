@@ -26,7 +26,6 @@ export const reminderSlice = createSlice({
     },
     handleReviewShowing: (state) => {
       state.hasShownReview = false;
-      const currentDate = new Date().toLocaleDateString();
       state.hasShownReview = true;
 
       const nextReviewDate = new Date();
@@ -62,9 +61,8 @@ export const reminderSlice = createSlice({
         console.log("found: ", foundReminder);
 
         // Add the new field
-        foundReminder.prayer_times = foundReminder.prayer_times
-          ? foundReminder.prayer_times + 1
-          : 1;
+        foundReminder.prayer_times =
+          Number(foundReminder.prayer_times || 0) + 1;
 
         console.log("updated reminder: ", foundReminder);
       }

@@ -22,6 +22,7 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
+import { CheckReview } from "@hooks/useShowReview";
 
 const questions = [
   "What's on your heart today?",
@@ -46,7 +47,8 @@ const NewJournal = () => {
     null,
   );
   const [title, setTitle] = useState("");
-  const { handleAddJournal } = useStore();
+  const { handleAddJournal, reviewRequested, setReviewRequested } = useStore();
+  const [cameraType, setCameraType] = useState<"front" | "back">("front");
 
   // Speech recognition states
   const [transcript, setTranscript] = useState("");
@@ -113,10 +115,10 @@ const NewJournal = () => {
 
   if (!permission.granted || !micPermission.granted) {
     return (
-      <View className="flex-1 items-center justify-center gap-4 p-4">
+      <View className="flex-1 bg-light-background dark:bg-dark-background items-center justify-center gap-4 p-4">
         <Text className="w-4/5 text-center font-inter-medium text-lg text-light-primary dark:text-dark-primary">
           We need permission to use the camera and microphone to record your
-          journal
+          journal.
         </Text>
         <Pressable
           className="w-full items-center justify-center rounded-xl border bg-light-primary dark:bg-dark-primary p-3"
@@ -218,6 +220,11 @@ const NewJournal = () => {
       setRecordingSeconds(0);
       setLastVideoDuration(null);
 
+      if (!reviewRequested) {
+        await CheckReview();
+        setReviewRequested(true);
+      }
+
       // Navigate back to journal list
       router.back();
     }
@@ -292,21 +299,43 @@ const NewJournal = () => {
               </Pressable>
             </View>
           ) : (
-            <CameraView
+            <View
               style={{
                 flex: 1,
                 marginTop: 10,
                 borderRadius: 16,
                 overflow: "hidden",
+                position: "relative",
               }}
-              ref={cameraRef}
-              facing="front"
-              mode="video"
-              enableTorch={false}
-              onCameraReady={() => {
-                // Camera ready
-              }}
-            />
+            >
+              <CameraView
+                style={{ flex: 1, borderRadius: 16, overflow: "hidden" }}
+                ref={cameraRef}
+                facing={cameraType}
+                mode="video"
+                enableTorch={false}
+                onCameraReady={() => {
+                  // Camera ready
+                }}
+              />
+              <Pressable
+                style={{
+                  position: "absolute",
+                  bottom: 16,
+                  right: 16,
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  borderRadius: 24,
+                  padding: 8,
+                  zIndex: 10,
+                }}
+                onPress={() =>
+                  setCameraType((prev) => (prev === "front" ? "back" : "front"))
+                }
+                accessibilityLabel="Switch camera"
+              >
+                <Ionicons name="camera-reverse" size={28} color="#fff" />
+              </Pressable>
+            </View>
           )}
         </View>
         {!videoUri && (
@@ -357,11 +386,15 @@ const NewJournal = () => {
               )}
               {!videoUri && (
                 <Pressable
-                  className={`size-16 ${isRecording ? "bg-red-500" : "bg-white"} border border-gray-200 items-center justify-center rounded-full`}
+                  className={`size-16 ${
+                    isRecording ? "bg-red-500" : "bg-white"
+                  } border border-gray-200 items-center justify-center rounded-full`}
                   onPress={handleRecordPress}
                 >
                   <View
-                    className={`w-3/4 h-3/4 rounded-full ${isRecording ? "bg-white" : "bg-red-500"}`}
+                    className={`w-3/4 h-3/4 rounded-full ${
+                      isRecording ? "bg-white" : "bg-red-500"
+                    }`}
                   />
                 </Pressable>
               )}

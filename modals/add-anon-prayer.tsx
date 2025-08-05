@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Pressable, Text } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -15,8 +14,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
-import { LOGIN_SCREEN } from "@routes";
 import axios from "axios";
 
 const AddAnonymousPrayerModal = ({
@@ -27,7 +24,7 @@ const AddAnonymousPrayerModal = ({
   prayerBottomSheetModalRef,
 }: any) => {
   const [newPrayer, setNewPrayer] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [isAnonymous] = useState(true);
 
   const queryClient = useQueryClient();
   const snapPoints = useMemo(() => ["25%", "50%"], []);
@@ -71,7 +68,7 @@ const AddAnonymousPrayerModal = ({
           title: `New Anonymous Prayer 🙏`,
           body: `Someone has a prayer request. Tap to lift them up.`,
           data: {
-            route: `anonymous`,
+            screen: `anonymous`,
           },
         };
         await axios.post("https://exp.host/--/api/v2/push/send", message, {
@@ -133,14 +130,14 @@ const AddAnonymousPrayerModal = ({
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
             ]}
-            className="w-full font-inter-medium min-h-24 rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:bg-dark-background p-4"
+            className="w-full font-inter-medium min-h-24 rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:placeholder:text-stone-400 dark:bg-dark-background p-4"
             placeholder="How can we pray for you today?"
             multiline
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "#e0e0e0"
+                  ? "#f4f4f4"
                   : "#2f2d51"
             }
             selectionColor={
@@ -153,53 +150,6 @@ const AddAnonymousPrayerModal = ({
             defaultValue={newPrayer}
             onChangeText={setNewPrayer}
           />
-
-          <View className="flex-row gap-2 items-center self-start">
-            <Pressable
-              onPress={() => {
-                if (isAnonymous && !currentUser) {
-                  Alert.alert(
-                    "Sign In",
-                    "You need to sign in to submit a praise with your name.",
-                    [
-                      {
-                        text: "Cancel",
-                        onPress: () => setIsAnonymous(true),
-                        style: "cancel",
-                      },
-                      {
-                        text: "OK",
-                        onPress: () => router.push(LOGIN_SCREEN),
-                      },
-                    ],
-                  );
-                } else {
-                  setIsAnonymous((prev) => !prev);
-                }
-              }}
-              className="size-6 border border-light-primary dark:border-dark-primary items-center justify-center rounded-lg"
-            >
-              {isAnonymous && (
-                <AntDesign
-                  name="check"
-                  size={15}
-                  color={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : colorScheme === "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              )}
-            </Pressable>
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
-            >
-              Anonymous
-            </Text>
-          </View>
 
           <Pressable
             onPress={handleSubmit}

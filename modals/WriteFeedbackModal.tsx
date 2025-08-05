@@ -19,7 +19,6 @@ import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { ModalContainer } from "@styles/appStyles";
 // import * as StoreReview from "expo-store-review";
 const WriteFeedbackModal = ({
   feedbackVisible,
@@ -38,7 +37,7 @@ const WriteFeedbackModal = ({
       setFeedbackError("Feedback field can't be empty.");
       return;
     }
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("feedback")
       .insert([{ name, message: feedback }]);
 
@@ -59,7 +58,7 @@ const WriteFeedbackModal = ({
 
   return (
     <Modal visible={feedbackVisible} animationType="fade" transparent>
-      <ModalContainer
+      <View
         style={
           theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
@@ -177,7 +176,7 @@ const WriteFeedbackModal = ({
             </View>
           </View>
         </KeyboardAvoidingView>
-      </ModalContainer>
+      </View>
     </Modal>
   );
 };

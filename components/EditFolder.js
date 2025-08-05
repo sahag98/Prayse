@@ -3,7 +3,9 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
+  Pressable,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useDispatch } from "react-redux";
@@ -12,18 +14,12 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
 import { editFolderName } from "../redux/folderReducer";
-import {
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
+
 import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import HeaderText from "./HeaderText";
 
 const EditFolder = ({
   actualTheme,
@@ -77,20 +73,13 @@ const EditFolder = ({
             backgroundColor: "rgba(0, 0, 0, 0.6)",
           }}
         >
-          <ModalView
+          <View
             style={getSecondaryBackgroundColorStyle(actualTheme)}
-            className="bg-light-secondary dark:bg-dark-secondary"
+            className="bg-light-secondary p-3 w-4/5 items-center rounded-2xl justify-center dark:bg-dark-secondary"
           >
-            <ModalIcon>
-              <HeaderTitle
-                style={getSecondaryTextColorStyle(actualTheme)}
-                className="font-inter-bold mb-2 text-light-primary dark:text-dark-primary"
-              >
-                Change list name
-              </HeaderTitle>
-            </ModalIcon>
+            <HeaderText className="text-xl mb-4" text="Change list name" />
 
-            <StyledInput
+            <TextInput
               style={
                 actualTheme &&
                 actualTheme.SecondaryTxt && {
@@ -98,21 +87,21 @@ const EditFolder = ({
                   color: actualTheme.SecondaryTxt,
                 }
               }
-              className="items-center self-center font-inter-regular text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary"
+              className="items-center w-full p-3 rounded-lg self-center font-inter-regular text-light-primary dark:text-dark-primary border border-light-primary dark:border-dark-primary/40"
               placeholder="Enter new list name"
               placeholderTextColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                  ? "#e0e0e0"
+                  : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "#e0e0e0"
-                    : "#2f2d51"
+                  ? "#e0e0e0"
+                  : "#2f2d51"
               }
               autoFocus
               onChangeText={(text) => setNewFolderName(text)}
@@ -126,9 +115,9 @@ const EditFolder = ({
                 {error}
               </Text>
             )}
-            <ModalActionGroup>
-              <ModalAction
-                color="white"
+            <View className="flex-row w-full items-center justify-evenly mt-4 mb-2">
+              <Pressable
+                className="bg-white size-16 rounded-full items-center justify-center"
                 onPress={() => {
                   setError("");
                   setOpenEdit(false);
@@ -139,15 +128,9 @@ const EditFolder = ({
                   size={28}
                   color={colorScheme === "dark" ? "black" : "#2F2D51"}
                 />
-              </ModalAction>
-              <ModalAction
-                color={
-                  actualTheme && actualTheme.Primary
-                    ? actualTheme.Primary
-                    : colorScheme === "dark"
-                      ? "#121212"
-                      : "#2F2D51"
-                }
+              </Pressable>
+              <Pressable
+                className="bg-light-primary dark:bg-dark-accent size-16 rounded-full items-center justify-center"
                 onPress={() => HandleEditFolder(folderId)}
               >
                 <AntDesign
@@ -156,12 +139,14 @@ const EditFolder = ({
                   color={
                     actualTheme && actualTheme.PrimaryTxt
                       ? actualTheme.PrimaryTxt
+                      : colorScheme === "dark"
+                      ? "#121212"
                       : "white"
                   }
                 />
-              </ModalAction>
-            </ModalActionGroup>
-          </ModalView>
+              </Pressable>
+            </View>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>

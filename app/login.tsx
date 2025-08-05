@@ -34,13 +34,9 @@ import {
 import { ActualTheme } from "@types/reduxTypes";
 
 import { useSupabase } from "../context/useSupabase";
-import {
-  Container,
-  ModalActionGroup,
-  ModalContainer,
-  ModalView,
-} from "../styles/appStyles";
-import { EXPLORE_SCREEN, HOME_SCREEN } from "@routes";
+
+import { HOME_SCREEN } from "@routes";
+import { Container } from "@components/Container";
 
 const LoginScreen = () => {
   const [forgotModal, setForgotModal] = useState(false);
@@ -141,10 +137,7 @@ const LoginScreen = () => {
     >
       <Stack.Screen options={{ headerShown: false }} />
 
-      <Container
-        style={getMainBackgroundColorStyle(actualTheme)}
-        className="bg-light-background relative dark:bg-dark-background justify-center items-center"
-      >
+      <Container className="bg-light-background relative dark:bg-dark-background justify-center items-center">
         <AntDesign
           onPress={() => router.replace("/(tabs)/welcome")}
           className="self-start"
@@ -278,14 +271,14 @@ const LoginScreen = () => {
               statusBarTranslucent
               // onShow={() => inputRef.current?.focus()}
             >
-              <ModalContainer
+              <View
                 style={
                   colorScheme === "dark"
                     ? { backgroundColor: "rgba(0, 0, 0, 0.5)" }
                     : { backgroundColor: "rgba(0, 0, 0, 0.5)" }
                 }
               >
-                <ModalView
+                <View
                   style={getSecondaryBackgroundColorStyle(actualTheme)}
                   className="bg-light-secondary dark:bg-dark-secondary w-5/6"
                 >
@@ -296,7 +289,7 @@ const LoginScreen = () => {
                     Forgot Password
                   </Text>
 
-                  <ModalActionGroup>
+                  <View>
                     <TouchableOpacity
                       onPress={resetAccount}
                       style={getPrimaryBackgroundColorStyle(actualTheme)}
@@ -321,9 +314,9 @@ const LoginScreen = () => {
                         Contact Developer
                       </Text>
                     </TouchableOpacity>
-                  </ModalActionGroup>
-                </ModalView>
-              </ModalContainer>
+                  </View>
+                </View>
+              </View>
             </Modal>
 
             <TouchableOpacity
