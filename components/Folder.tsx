@@ -28,7 +28,7 @@ import Animated, {
 import { posthog } from "@lib/posthog";
 
 import { addFolder } from "../redux/folderReducer";
-import { JOURNAL_SCREEN, PRAYER_ROOM_SCREEN } from "../routes";
+import { JOURNAL_SCREEN, PRAYER_ROOM_SCREEN, PRAYER_SCREEN } from "../routes";
 
 import FolderItem from "./FolderItem";
 import { ActualTheme } from "../types/reduxTypes";
@@ -101,13 +101,21 @@ const Folder = ({
   const dispatch = useDispatch();
 
   async function addNewFolder() {
+    const newId = uuid.v4();
     dispatch(
       addFolder({
-        id: uuid.v4(),
+        id: newId,
         name: folderName,
         prayers: [],
       }),
     );
+    if (reviewRequested) {
+      navigation.navigate(PRAYER_SCREEN, {
+        title: folderName,
+        prayers: [],
+        id: newId,
+      });
+    }
 
     setFolderName("");
     bottomSheetModalRef.current?.close();
@@ -116,8 +124,6 @@ const Folder = ({
       await CheckReview();
       setReviewRequested(true);
     }
-    // setAddVisible(false);
-    // setFolderName("");
   }
 
   const handleGuidedPrayerPress = async () => {

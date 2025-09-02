@@ -23,6 +23,8 @@ import {
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import { CheckReview } from "@hooks/useShowReview";
+import EncouragementModal from "@modals/encouragement-modal";
+import { getRandomJournalEncouragement } from "@lib/encouragement";
 
 const questions = [
   "What's on your heart today?",
@@ -47,8 +49,11 @@ const NewJournal = () => {
     null,
   );
   const [title, setTitle] = useState("");
-  const { handleAddJournal, reviewRequested, setReviewRequested } = useStore();
+  const { handleAddJournal, reviewRequested, setReviewRequested, journals } =
+    useStore();
   const [cameraType, setCameraType] = useState<"front" | "back">("front");
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [encouragementData, setEncouragementData] = useState<any>(null);
 
   // Speech recognition states
   const [transcript, setTranscript] = useState("");
@@ -214,6 +219,22 @@ const NewJournal = () => {
       };
 
       handleAddJournal(journalEntry);
+
+      // Check if this is the first journal overall or a milestone journal
+      const totalJournals = journals.length;
+      const isFirstJournal = totalJournals === 0;
+      const isMilestoneJournal =
+        totalJournals > 0 && (totalJournals + 1) % 5 === 0;
+
+      if (isFirstJournal || isMilestoneJournal) {
+        const encouragement = getRandomJournalEncouragement(isFirstJournal);
+        setEncouragementData(encouragement);
+        setShowEncouragement(true);
+      } else {
+        // Navigate back to journal list if no encouragement modal
+        router.back();
+      }
+
       setVideoUri(null);
       setTitle("");
       setTranscript("");
@@ -224,9 +245,6 @@ const NewJournal = () => {
         await CheckReview();
         setReviewRequested(true);
       }
-
-      // Navigate back to journal list
-      router.back();
     }
   };
 
@@ -236,6 +254,12 @@ const NewJournal = () => {
     setTranscript("");
     setRecordingSeconds(0);
     setLastVideoDuration(null);
+  };
+
+  const handleCloseEncouragement = () => {
+    setShowEncouragement(false);
+    setEncouragementData(null);
+    router.back();
   };
 
   return (
@@ -402,6 +426,16 @@ const NewJournal = () => {
           </View>
         )}
       </View>
+
+      {/* Encouragement Modal */}
+      <EncouragementModal
+        visible={showEncouragement && encouragementData !== null}
+        onClose={handleCloseEncouragement}
+        actualTheme={null}
+        colorScheme={colorScheme}
+        message={encouragementData?.message || ""}
+        verse={encouragementData?.verse || { text: "", reference: "" }}
+      />
     </Container>
   );
 };

@@ -46,6 +46,7 @@ import { REMINDER_SCREEN, SETTINGS_SCREEN } from "../routes";
 import useStore from "@hooks/store";
 import { CheckReview } from "@hooks/useShowReview";
 import { Container } from "@components/Container";
+import { cn } from "@lib/utils";
 
 export default function TestScreen() {
   const navigation = useNavigation();

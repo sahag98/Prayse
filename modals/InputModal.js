@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import uuid from "react-native-uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
@@ -38,6 +38,8 @@ import {
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import useStore from "@hooks/store";
+import EncouragementModal from "./encouragement-modal";
+import { getRandomEncouragement } from "@lib/encouragement";
 
 const InputModal = ({
   addPrayerBottomSheetModalRef,
@@ -68,6 +70,10 @@ const InputModal = ({
   const [transcript, setTranscript] = useState("");
 
   const { isShowingNewBadge, handleShowNewBadge } = useStore();
+
+  const prayerList = useSelector((state) => state.prayer.prayer);
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [encouragementData, setEncouragementData] = useState(null);
 
   const scale = useSharedValue(1);
 
@@ -174,6 +180,18 @@ const InputModal = ({
           id: newId,
         })
       );
+
+      // Check if this is the first prayer overall or a milestone prayer
+      const totalPrayers = prayerList.length;
+      const isFirstPrayer = totalPrayers === 0;
+      const isMilestonePrayer =
+        totalPrayers > 0 && (totalPrayers + 1) % 5 === 0;
+
+      if (isFirstPrayer || isMilestonePrayer) {
+        const encouragement = getRandomEncouragement(isFirstPrayer);
+        setEncouragementData(encouragement);
+        setShowEncouragement(true);
+      }
       // const randomTime = getRandomTime();
       // console.log("random time: ", randomTime);
       // const identifier = await Notifications.scheduleNotificationAsync({
@@ -223,6 +241,11 @@ const InputModal = ({
     setIsSpeechVisible(false);
     setTranscript("");
     setIsEditing(false);
+  };
+
+  const handleCloseEncouragement = () => {
+    setShowEncouragement(false);
+    setEncouragementData(null);
   };
 
   return (
@@ -529,6 +552,16 @@ const InputModal = ({
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Encouragement Modal */}
+      <EncouragementModal
+        visible={showEncouragement && encouragementData !== null}
+        onClose={handleCloseEncouragement}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        message={encouragementData?.message || ""}
+        verse={encouragementData?.verse || { text: "", reference: "" }}
+      />
     </View>
   );
 };
