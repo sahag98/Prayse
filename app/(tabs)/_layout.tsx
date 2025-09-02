@@ -6,13 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
 
-import {
-  FOLDER_SCREEN,
-  MORE_SCREEN,
-  REMINDER_SCREEN,
-  WELCOME_SCREEN,
-  EXPLORE_SCREEN,
-} from "@routes";
+import { FOLDER_SCREEN, MORE_SCREEN, REMINDER_SCREEN } from "@routes";
 import { ActualTheme } from "../../types/reduxTypes";
 
 export default function TabLayout() {
@@ -42,6 +36,7 @@ export default function TabLayout() {
       <Tabs
         initialRouteName={FOLDER_SCREEN}
         screenOptions={{
+          animation: "fade",
           headerShown: false,
           tabBarActiveTintColor:
             actualTheme && actualTheme.MainTxt
@@ -53,37 +48,11 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name={WELCOME_SCREEN}
-          options={{
-            // title: "Today",
-            tabBarShowLabel: false,
-            tabBarLabelStyle: {
-              fontSize: 11,
-              fontFamily: "Inter-Medium",
-            },
-            tabBarStyle: {
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#212121"
-                    : "white",
-            },
-
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                color={color}
-                size={size}
-              />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
           name={REMINDER_SCREEN}
           options={{
+            animation: "shift",
             // title: "Reminders",
+
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
@@ -107,6 +76,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name={FOLDER_SCREEN}
           options={{
+            animation: "shift",
             // title: "Prayer",
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
@@ -128,32 +98,11 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Tabs.Screen
-          name={EXPLORE_SCREEN}
-          options={{
-            // title: "Explore",
-            tabBarShowLabel: false,
-            tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
-            tabBarStyle: {
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#212121"
-                    : "white",
-            },
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons
-                name={focused ? "compass" : "compass-outline"}
-                color={color}
-                size={size}
-              />
-            ),
-          }}
-        />
+
         <Tabs.Screen
           name={MORE_SCREEN}
           options={{
+            animation: "shift",
             // title: "More",
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },

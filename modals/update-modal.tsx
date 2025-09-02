@@ -19,13 +19,6 @@ import {
 } from "@lib/customStyles";
 import { ActualTheme } from "@types/reduxTypes";
 
-import {
-  HeaderTitle,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-} from "../styles/appStyles";
-
 interface UpdateModalProps {
   theme: string;
   actualTheme: ActualTheme;
@@ -73,18 +66,19 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
       onRequestClose={handleCloseModal}
       statusBarTranslucent
     >
-      <ModalContainer
+      <View
+        className="flex-1 items-center justify-center"
         style={
           theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
-        <ModalView
+        <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary dark:bg-dark-secondary w-10/12"
+          className="bg-light-secondary p-4 rounded-xl dark:bg-dark-secondary w-10/12"
         >
-          <ModalIcon className="gap-2">
+          <View className="gap-2 items-center">
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-inter-bold text-2xl text-light-primary dark:text-dark-primary"
@@ -98,8 +92,8 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               Update your app to the latest version and check out our newly
               added features.
             </Text>
-          </ModalIcon>
-          <View className="mt-2 items-center justify-between">
+          </View>
+          <View className="mt-4 items-center justify-between">
             <TouchableOpacity
               style={getPrimaryBackgroundColorStyle(actualTheme)}
               onPress={() => {
@@ -110,7 +104,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
                 }
                 if (Platform.OS === "ios") {
                   Linking.openURL(
-                    "https://apps.apple.com/us/app/prayerlist-app/id6443480347",
+                    "https://apps.apple.com/us/app/prayse-prayer-journal/id6443480347",
                   );
                 }
               }}
@@ -132,8 +126,8 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </ModalView>
-      </ModalContainer>
+        </View>
+      </View>
     </Modal>
   );
 };

@@ -26,7 +26,6 @@ import { useSelector } from "react-redux";
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
 
 import bible from "../assets/Bible.png";
-import cm2 from "../assets/cm2.png";
 import prayseIcon from "../assets/prayse-logo.png";
 import reminderIcon from "../assets/reminder2.png";
 
@@ -48,15 +47,6 @@ const onboardingSteps = [
     verse:
       "And he spake a parable unto them to this end, that men ought always to pray, and not to faint;",
     reference: "Luke 18:1",
-  },
-  {
-    icon: cm2,
-    title: "Community",
-    description:
-      "Create prayer groups and pray with others, strengthening your relationship with God alongside others.",
-    verse:
-      "Confess your faults one to another, and pray one for another, that ye may be healed. The effectual fervent prayer of a righteous man availeth much.",
-    reference: "James 5:16",
   },
   {
     icon: bible,
@@ -97,7 +87,7 @@ export default function OnboardingScreen() {
 
   const endOnboarding = () => {
     setScreenIndex(0);
-    router.push("/(tabs)/welcome");
+    router.push("/(tabs)/folder");
     // navigation.navigate("/(tabs)");
     // router.push("/");
   };
@@ -211,7 +201,7 @@ const styles = StyleSheet.create({
   image: {
     alignSelf: "center",
     width: 150,
-    borderRadius: 100,
+    borderRadius: 20,
     padding: 10,
     height: 150,
     margin: 20,

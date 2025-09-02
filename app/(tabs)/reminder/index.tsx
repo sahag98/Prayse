@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useColorScheme } from "nativewind";
 import { Alert, FlatList, Pressable, Text, View } from "react-native";
@@ -8,21 +7,19 @@ import ReminderItem from "@components/ReminderItem";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
-  getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { ActualTheme } from "@types/reduxTypes";
-
-import { Container, HeaderTitle, HeaderView } from "../../../styles/appStyles";
+import { ActualTheme } from "../../../types/reduxTypes";
 import { deleteAllReminders } from "@redux/remindersReducer";
-// import { deleteReminder } from "../redux/remindersReducer";
+import { Container } from "@components/Container";
+import HeaderText from "@components/HeaderText";
 
 const ReminderScreen = () => {
   const { colorScheme } = useColorScheme();
-  const reminders = useSelector((state) => state.reminder.reminders);
+  const reminders = useSelector((state: any) => state.reminder.reminders);
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
 
   const dispatch = useDispatch();
@@ -38,42 +35,37 @@ const ReminderScreen = () => {
   }
 
   return (
-    <Container
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="dark:bg-[#121212] bg-[#f2f7ff] flex-1"
-    >
-      <HeaderView className="justify-between  w-full">
-        <HeaderTitle
-          style={getMainTextColorStyle(actualTheme)}
-          className="font-inter-bold pt-5 text-lg text-light-primary dark:text-dark-primary"
-        >
-          Reminders
-        </HeaderTitle>
-        {reminders.length > 0 && (
-          <Pressable
-            onPress={() =>
-              Alert.alert(
-                "Clear Reminders",
-                "This action will permenantly delete all reminders.",
-                [
-                  {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  {
-                    text: "Delete",
-                    style: "destructive",
-                    onPress: handleDeleteAllReminders,
-                  },
-                ],
-              )
-            }
-          >
-            <Ionicons name="trash-outline" size={24} color="red" />
-          </Pressable>
-        )}
-      </HeaderView>
+    <Container>
+      <View className="justify-between mb-4 flex-row items-center  w-full">
+        <View className="flex-row justify-between items-center w-full">
+          <HeaderText className="text-3xl" text="Reminders" />
+
+          {reminders.length > 0 && (
+            <Pressable
+              onPress={() =>
+                Alert.alert(
+                  "Delete Reminders",
+                  "This action will permenantly delete all reminders.",
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel",
+                    },
+                    {
+                      text: "Delete",
+                      style: "destructive",
+                      onPress: handleDeleteAllReminders,
+                    },
+                  ],
+                )
+              }
+            >
+              <Ionicons name="trash-outline" size={24} color="red" />
+            </Pressable>
+          )}
+        </View>
+      </View>
       <View className="mb-5">
         <Text
           style={getMainTextColorStyle(actualTheme)}

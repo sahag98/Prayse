@@ -1,11 +1,8 @@
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import React from "react";
 import { Link, router, useLocalSearchParams, useNavigation } from "expo-router";
-import { Container, HeaderView } from "@styles/appStyles";
-import {
-  getMainBackgroundColorStyle,
-  getSecondaryTextColorStyle,
-} from "@lib/customStyles";
+
+import { getSecondaryTextColorStyle } from "@lib/customStyles";
 import { useColorScheme } from "nativewind";
 import { useDispatch, useSelector } from "react-redux";
 import { cancelScheduledNotificationAsync } from "expo-notifications";
@@ -23,6 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { switchPrayerStatus } from "@redux/prayerReducer";
 import * as DropdownMenu from "zeego/dropdown-menu";
+import { Container } from "@components/Container";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -123,8 +121,6 @@ const SingleReminderScreen = () => {
     position: "absolute",
   }));
 
-  console.log(singleReminder);
-
   function handleAmen() {
     posthog.capture("Amen");
     buttonProgress.value = withTiming(1, { duration: 800 });
@@ -140,6 +136,8 @@ const SingleReminderScreen = () => {
     }
   }
 
+  console.log(singleReminder);
+
   function handlePrayerStatus(
     prayer: any,
     newStatus: "Active" | "Answered" | "Archived" | null,
@@ -151,11 +149,10 @@ const SingleReminderScreen = () => {
 
   return (
     <Container
-      style={getMainBackgroundColorStyle(actualTheme)}
       //@ts-ignore
       className="bg-light-background dark:bg-dark-background flex-1"
     >
-      <HeaderView>
+      <View className="flex-row justify-between items-center mb-4">
         <Link className="items-center" asChild href={`/${REMINDER_SCREEN}`}>
           <Pressable>
             <Ionicons
@@ -171,7 +168,7 @@ const SingleReminderScreen = () => {
             />
           </Pressable>
         </Link>
-        <View className="flex-row items-center gap-4">
+        <View className="flex-row items-center gap-8">
           <Pressable
             onPress={() =>
               //@ts-expect-error
@@ -181,6 +178,7 @@ const SingleReminderScreen = () => {
                 reminderEditPrayerId: singleReminder.reminder.prayer_id,
                 reminderIdentifier: singleReminder.identifier,
                 ocurrence: singleReminder.ocurrence,
+                prayer_times: singleReminder.prayer_times,
                 reminderToEditTitle: singleReminder.reminder.message,
                 reminderToEditNote: singleReminder.reminder.note,
                 reminderToEditTime: singleReminder.reminder.time.toString(),
@@ -220,10 +218,10 @@ const SingleReminderScreen = () => {
               )
             }
           >
-            <Ionicons name="trash-outline" size={24} color="red" />
+            <Ionicons name="trash-outline" size={28} color="#ff3333" />
           </Pressable>
         </View>
-      </HeaderView>
+      </View>
       <ScrollView contentContainerClassName="gap-5 mt-7">
         <View className="w-full flex-row justify-between items-center">
           <View className="flex-row bg-light-secondary dark:bg-dark-secondary self-start rounded-lg p-2 items-center gap-2">
@@ -243,7 +241,7 @@ const SingleReminderScreen = () => {
                 style={getSecondaryTextColorStyle(actualTheme)}
                 className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
               >
-                {singleReminder.ocurrence} at {formattedDate}
+                {singleReminder.ocurrence} @ {formattedDate}
               </Text>
             )}
             {singleReminder.ocurrence === "Weekly" && (

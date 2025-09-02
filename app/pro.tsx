@@ -19,16 +19,13 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import {
-  getMainBackgroundColorStyle,
   getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { togglePrayerQuestions, togglePrayerVerses } from "@redux/proReducer";
 import { WALLPAPERS_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
-import { Container, HeaderView, WelcomeContainer } from "@styles/appStyles";
-import { Image } from "expo-image";
+
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector((state) => state.theme.actualTheme);
@@ -54,12 +51,12 @@ const ProScreen = () => {
   }
 
   return (
-    <WelcomeContainer
+    <View
       showsVerticalScrollIndicator={false}
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background"
     >
-      <HeaderView>
+      <View>
         <Link href="/welcome">
           <View className="flex-row items-center justify-between gap-2">
             <AntDesign
@@ -83,7 +80,7 @@ const ProScreen = () => {
             </Text>
           </View>
         </Link>
-      </HeaderView>
+      </View>
       <View className="flex-row items-center gap-3">
         <Text
           style={getMainTextColorStyle(actualTheme)}
@@ -351,7 +348,7 @@ const ProScreen = () => {
           </TouchableOpacity>
         </Link>
       </View> */}
-    </WelcomeContainer>
+    </View>
   );
 };
 

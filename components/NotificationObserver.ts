@@ -1,4 +1,4 @@
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import {
@@ -7,12 +7,7 @@ import {
   REMINDER_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
 } from "@routes";
-import { useDispatch } from "react-redux";
 export function useNotificationObserver() {
-  const navigation = useNavigation();
-
-  const dispatch = useDispatch();
-
   useEffect(() => {
     let isMounted = true;
 
@@ -27,10 +22,12 @@ export function useNotificationObserver() {
         console.log("url exists!!", url);
 
         const navigateWithDelay = (screen: string, params?: any) => {
-          setTimeout(() => {
-            //@ts-ignore
-            navigation.navigate(screen, params);
-          }, 0); // 2 seconds delay
+          console.log("screen: ", screen);
+          if (params) {
+            router.push({ pathname: screen, params });
+          } else {
+            router.push(screen);
+          }
         };
 
         if (
@@ -41,6 +38,7 @@ export function useNotificationObserver() {
             group_id: data.group_id,
           });
         } else if (["VerseOfTheDay", VERSE_OF_THE_DAY_SCREEN].includes(url)) {
+          console.log("verse of they day!!!");
           navigateWithDelay(VERSE_OF_THE_DAY_SCREEN);
         } else if (
           ["Question", QUESTION_SCREEN].includes(url) &&

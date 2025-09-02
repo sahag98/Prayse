@@ -1,9 +1,7 @@
 //@ts-nocheck
 
 import React, { useState } from "react";
-import * as Device from "expo-device";
 import * as ImagePicker from "expo-image-picker";
-import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
@@ -30,9 +28,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 
-import config from "../config";
 import { useSupabase } from "../context/useSupabase";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
 
 const ProfileSetup = () => {
   const { colorScheme } = useColorScheme();
@@ -198,7 +194,7 @@ const ProfileSetup = () => {
   }
 
   return (
-    <Container
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       className="flex-1 justify-center w-full gap-2 items-center bg-light-background dark:bg-dark-background"
     >
@@ -212,14 +208,14 @@ const ProfileSetup = () => {
           style={getMainBackgroundColorStyle(actualTheme)}
           className="bg-light-background flex-1 w-full dark:bg-dark-background justify-center items-center gap-5"
         >
-          <HeaderView className="items-center justify-center">
-            <HeaderTitle
+          <View className="items-center justify-center">
+            <Text
               style={getMainTextColorStyle(actualTheme)}
               className="font-inter-bold text-wrap text-center text-light-primary dark:text-dark-accent"
             >
               Welcome to Community
-            </HeaderTitle>
-          </HeaderView>
+            </Text>
+          </View>
           <View className="relative self-center w-full h-32 justify-center items-center">
             <TouchableOpacity
               onPress={photoPermission}
@@ -342,7 +338,7 @@ const ProfileSetup = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </Container>
+    </View>
   );
 };
 

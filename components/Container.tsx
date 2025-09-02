@@ -10,10 +10,10 @@ export const Container = ({ children }: { children: React.ReactNode }) => {
   return (
     <SafeAreaView
       edges={["top"]}
+      className="px-4"
       style={{
         flex: 1,
         backgroundColor: colorScheme === "dark" ? "#121212" : "#f2f7ff",
-        paddingHorizontal: 10,
       }}
     >
       {children}

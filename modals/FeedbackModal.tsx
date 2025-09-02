@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 
 import { CheckReview } from "@hooks/useShowReview";
 import {
@@ -8,7 +8,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ModalContainer } from "@styles/appStyles";
 // import * as StoreReview from "expo-store-review";
 const FeedbackModal = ({ actualTheme, theme }: any) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -40,7 +39,7 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
 
   return (
     <Modal visible={isVisible} animationType="fade" transparent>
-      <ModalContainer
+      <View
         style={
           theme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.4)" }
@@ -73,7 +72,7 @@ const FeedbackModal = ({ actualTheme, theme }: any) => {
             <Text className="text-white font-bold">Okay</Text>
           </TouchableOpacity>
         </View>
-      </ModalContainer>
+      </View>
     </Modal>
   );
 };

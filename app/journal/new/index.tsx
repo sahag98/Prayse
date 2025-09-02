@@ -22,6 +22,9 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
+import { CheckReview } from "@hooks/useShowReview";
+import EncouragementModal from "@modals/encouragement-modal";
+import { getRandomJournalEncouragement } from "@lib/encouragement";
 
 const questions = [
   "What's on your heart today?",
@@ -46,7 +49,11 @@ const NewJournal = () => {
     null,
   );
   const [title, setTitle] = useState("");
-  const { handleAddJournal } = useStore();
+  const { handleAddJournal, reviewRequested, setReviewRequested, journals } =
+    useStore();
+  const [cameraType, setCameraType] = useState<"front" | "back">("front");
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [encouragementData, setEncouragementData] = useState<any>(null);
 
   // Speech recognition states
   const [transcript, setTranscript] = useState("");
@@ -113,10 +120,10 @@ const NewJournal = () => {
 
   if (!permission.granted || !micPermission.granted) {
     return (
-      <View className="flex-1 items-center justify-center gap-4 p-4">
+      <View className="flex-1 bg-light-background dark:bg-dark-background items-center justify-center gap-4 p-4">
         <Text className="w-4/5 text-center font-inter-medium text-lg text-light-primary dark:text-dark-primary">
           We need permission to use the camera and microphone to record your
-          journal
+          journal.
         </Text>
         <Pressable
           className="w-full items-center justify-center rounded-xl border bg-light-primary dark:bg-dark-primary p-3"
@@ -212,14 +219,32 @@ const NewJournal = () => {
       };
 
       handleAddJournal(journalEntry);
+
+      // Check if this is the first journal overall or a milestone journal
+      const totalJournals = journals.length;
+      const isFirstJournal = totalJournals === 0;
+      const isMilestoneJournal =
+        totalJournals > 0 && (totalJournals + 1) % 5 === 0;
+
+      if (isFirstJournal || isMilestoneJournal) {
+        const encouragement = getRandomJournalEncouragement(isFirstJournal);
+        setEncouragementData(encouragement);
+        setShowEncouragement(true);
+      } else {
+        // Navigate back to journal list if no encouragement modal
+        router.back();
+      }
+
       setVideoUri(null);
       setTitle("");
       setTranscript("");
       setRecordingSeconds(0);
       setLastVideoDuration(null);
 
-      // Navigate back to journal list
-      router.back();
+      if (!reviewRequested) {
+        await CheckReview();
+        setReviewRequested(true);
+      }
     }
   };
 
@@ -229,6 +254,12 @@ const NewJournal = () => {
     setTranscript("");
     setRecordingSeconds(0);
     setLastVideoDuration(null);
+  };
+
+  const handleCloseEncouragement = () => {
+    setShowEncouragement(false);
+    setEncouragementData(null);
+    router.back();
   };
 
   return (
@@ -292,21 +323,43 @@ const NewJournal = () => {
               </Pressable>
             </View>
           ) : (
-            <CameraView
+            <View
               style={{
                 flex: 1,
                 marginTop: 10,
                 borderRadius: 16,
                 overflow: "hidden",
+                position: "relative",
               }}
-              ref={cameraRef}
-              facing="front"
-              mode="video"
-              enableTorch={false}
-              onCameraReady={() => {
-                // Camera ready
-              }}
-            />
+            >
+              <CameraView
+                style={{ flex: 1, borderRadius: 16, overflow: "hidden" }}
+                ref={cameraRef}
+                facing={cameraType}
+                mode="video"
+                enableTorch={false}
+                onCameraReady={() => {
+                  // Camera ready
+                }}
+              />
+              <Pressable
+                style={{
+                  position: "absolute",
+                  bottom: 16,
+                  right: 16,
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  borderRadius: 24,
+                  padding: 8,
+                  zIndex: 10,
+                }}
+                onPress={() =>
+                  setCameraType((prev) => (prev === "front" ? "back" : "front"))
+                }
+                accessibilityLabel="Switch camera"
+              >
+                <Ionicons name="camera-reverse" size={28} color="#fff" />
+              </Pressable>
+            </View>
           )}
         </View>
         {!videoUri && (
@@ -357,11 +410,15 @@ const NewJournal = () => {
               )}
               {!videoUri && (
                 <Pressable
-                  className={`size-16 ${isRecording ? "bg-red-500" : "bg-white"} border border-gray-200 items-center justify-center rounded-full`}
+                  className={`size-16 ${
+                    isRecording ? "bg-red-500" : "bg-white"
+                  } border border-gray-200 items-center justify-center rounded-full`}
                   onPress={handleRecordPress}
                 >
                   <View
-                    className={`w-3/4 h-3/4 rounded-full ${isRecording ? "bg-white" : "bg-red-500"}`}
+                    className={`w-3/4 h-3/4 rounded-full ${
+                      isRecording ? "bg-white" : "bg-red-500"
+                    }`}
                   />
                 </Pressable>
               )}
@@ -369,6 +426,16 @@ const NewJournal = () => {
           </View>
         )}
       </View>
+
+      {/* Encouragement Modal */}
+      <EncouragementModal
+        visible={showEncouragement && encouragementData !== null}
+        onClose={handleCloseEncouragement}
+        actualTheme={null}
+        colorScheme={colorScheme}
+        message={encouragementData?.message || ""}
+        verse={encouragementData?.verse || { text: "", reference: "" }}
+      />
     </Container>
   );
 };

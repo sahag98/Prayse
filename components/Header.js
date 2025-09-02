@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useFonts } from "expo-font";
 import {
-  ActivityIndicator,
   Alert,
   Modal,
   Share,
@@ -18,6 +16,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import EditFolder from "../components/EditFolder";
+import DeleteFolder from "../components/DeleteFolder";
+
 import {
   AntDesign,
   Entypo,
@@ -27,17 +28,14 @@ import {
 } from "@expo/vector-icons";
 
 import { FOLDER_SCREEN } from "../routes";
-import { HeaderTitle, HeaderView } from "../styles/appStyles";
-
-import DeleteFolder from "./DeleteFolder";
-import EditFolder from "./EditFolder";
-import { Link, useNavigation } from "expo-router";
 import {
   getMainTextColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
+import { useNavigation, Link } from "expo-router";
+import HeaderText from "./HeaderText";
 
 const Header = ({
   actualTheme,
@@ -101,41 +99,34 @@ const Header = ({
 
   return (
     <>
-      <HeaderView>
-        <View
-          className={cn(
-            "flex-row items-center justify-between gap-14 transition-all w-full",
-            prayer && "opacity-25"
-          )}
-        >
-          <View className="flex-row flex-1 items-center">
-            <Link className="items-center" asChild href={`/${FOLDER_SCREEN}`}>
-              <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
-                <Ionicons
-                  name="chevron-back"
-                  size={30}
-                  color={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : colorScheme === "light"
-                        ? "#2f2d51"
-                        : "white"
-                  }
-                />
-              </TouchableOpacity>
-            </Link>
-            <View className="flex-row flex-1 items-center ml-2 gap-3">
-              <HeaderTitle
-                style={getMainTextColorStyle(actualTheme)}
-                numberOfLines={1}
-                className="font-inter-bold text-light-primary dark:text-dark-primary"
-              >
-                {folderName}
-              </HeaderTitle>
-            </View>
+      <View
+        className={cn(
+          "flex-row items-center justify-between gap-14 transition-all w-full",
+          prayer && "opacity-25"
+        )}
+      >
+        <View className="flex-row flex-1 items-center">
+          <Link className="items-center" asChild href={`/${FOLDER_SCREEN}`}>
+            <TouchableOpacity href={`/${FOLDER_SCREEN}`}>
+              <Ionicons
+                name="chevron-back"
+                size={30}
+                color={
+                  actualTheme && actualTheme.MainTxt
+                    ? actualTheme.MainTxt
+                    : colorScheme === "light"
+                    ? "#2f2d51"
+                    : "white"
+                }
+              />
+            </TouchableOpacity>
+          </Link>
+          <View className="flex-row flex-1 items-center ml-2 gap-3">
+            <HeaderText text={folderName} />
           </View>
-          <View className="flex-row items-center">
-            {/* <TouchableOpacity className="bg-light-secondary dark:bg-dark-secondary p-3 rounded-full">
+        </View>
+        <View className="flex-row items-center">
+          {/* <TouchableOpacity className="bg-light-secondary dark:bg-dark-secondary p-3 rounded-full">
               <FontAwesome
                 name="text-height"
                 size={20}
@@ -149,175 +140,174 @@ const Header = ({
               />
             </TouchableOpacity> */}
 
-            <Entypo
-              name="dots-three-vertical"
-              onPress={() => {
-                setIsShowingModal(true);
-                doSlideUpAnimation();
-              }}
-              size={20}
-              color={
-                actualTheme && actualTheme.MainTxt
-                  ? actualTheme.MainTxt
-                  : colorScheme === "dark"
-                    ? "white"
-                    : "#2F2D51"
-              }
-            />
-          </View>
-        </View>
-        <Modal
-          animationType="fade"
-          transparent
-          visible={isShowingModal}
-          onRequestClose={() => setIsShowingModal(false)}
-          statusBarTranslucent
-        >
-          <View
-            className="flex-1 justify-end items-center"
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
+          <Entypo
+            name="dots-three-vertical"
+            onPress={() => {
+              setIsShowingModal(true);
+              doSlideUpAnimation();
             }}
+            size={20}
+            color={
+              actualTheme && actualTheme.MainTxt
+                ? actualTheme.MainTxt
+                : colorScheme === "dark"
+                ? "white"
+                : "#2F2D51"
+            }
+          />
+        </View>
+      </View>
+      <Modal
+        animationType="fade"
+        transparent
+        visible={isShowingModal}
+        onRequestClose={() => setIsShowingModal(false)}
+        statusBarTranslucent
+      >
+        <View
+          className="flex-1 justify-end items-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+          }}
+        >
+          <Animated.View
+            className="p-3 w-[95%] gap-4 mb-10 rounded-xl"
+            style={
+              colorScheme === "dark"
+                ? [
+                    animatedSlideUpStyle,
+                    getSecondaryBackgroundColorStyle(actualTheme),
+                    {
+                      backgroundColor:
+                        actualTheme && actualTheme.Secondary
+                          ? actualTheme.Secondary
+                          : "rgba(33, 33, 33, 1)",
+                    },
+                  ]
+                : [
+                    animatedSlideUpStyle,
+                    {
+                      backgroundColor:
+                        actualTheme && actualTheme.Secondary
+                          ? actualTheme.Secondary
+                          : "rgba(183, 211, 255,1)",
+                    },
+                  ]
+            }
           >
-            <Animated.View
-              className="p-3 w-[95%] gap-4 mb-10 rounded-xl"
-              style={
-                colorScheme === "dark"
-                  ? [
-                      animatedSlideUpStyle,
-                      getSecondaryBackgroundColorStyle(actualTheme),
-                      {
-                        backgroundColor:
-                          actualTheme && actualTheme.Secondary
-                            ? actualTheme.Secondary
-                            : "rgba(33, 33, 33, 1)",
-                      },
-                    ]
-                  : [
-                      animatedSlideUpStyle,
-                      {
-                        backgroundColor:
-                          actualTheme && actualTheme.Secondary
-                            ? actualTheme.Secondary
-                            : "rgba(183, 211, 255,1)",
-                      },
-                    ]
-              }
+            <View className="flex-row items-center justify-between mb-1">
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter-bold text-2xl dark:text-dark-primary text-light-primary"
+              >
+                List Settings
+              </Text>
+              <AntDesign
+                onPress={() => {
+                  setIsShowingModal(false);
+                  doSlideDownAnimation();
+                }}
+                style={{ alignSelf: "flex-end" }}
+                name="closecircleo"
+                size={30}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+                }
+              />
+            </View>
+
+            <TouchableOpacity
+              // style={[
+              //   getSecondaryBackgroundColorStyle(actualTheme),
+              //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
+              // ]}
+              onPress={() => {
+                setIsShowingModal(false);
+                setOpenEdit(true);
+              }}
+              className="flex-row items-center border border-light-primary dark:border-dark-primary/50 rounded-lg justify-between p-4 dark:bg-dark-secondary bg-light-secondary"
             >
-              <View className="flex-row items-center justify-between mb-1">
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="font-inter-bold text-2xl dark:text-dark-primary text-light-primary"
-                >
-                  List Settings
-                </Text>
-                <AntDesign
-                  onPress={() => {
-                    setIsShowingModal(false);
-                    doSlideDownAnimation();
-                  }}
-                  style={{ alignSelf: "flex-end" }}
-                  name="closecircleo"
-                  size={30}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : colorScheme === "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              </View>
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
+              >
+                Rename list
+              </Text>
+              <Feather
+                name="edit"
+                size={20}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              // style={[
+              //   getSecondaryBackgroundColorStyle(actualTheme),
+              //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
+              // ]}
+              onPress={onShare}
+              className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary/50 p-4 dark:bg-dark-secondary bg-light-secondary"
+            >
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
+              >
+                Share list
+              </Text>
 
-              <TouchableOpacity
-                // style={[
-                //   getSecondaryBackgroundColorStyle(actualTheme),
-                //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
-                // ]}
-                onPress={() => {
-                  setIsShowingModal(false);
-                  setOpenEdit(true);
-                }}
-                className="flex-row items-center border border-light-primary dark:border-dark-primary/50 rounded-lg justify-between p-4 dark:bg-dark-secondary bg-light-secondary"
-              >
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
-                >
-                  Rename list
-                </Text>
-                <Feather
-                  name="edit"
-                  size={20}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : colorScheme === "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                // style={[
-                //   getSecondaryBackgroundColorStyle(actualTheme),
-                //   { borderColor: actualTheme && actualTheme.SecondaryTxt },
-                // ]}
-                onPress={onShare}
-                className="flex-row mb-3 items-center rounded-lg justify-between border border-light-primary dark:border-dark-primary/50 p-4 dark:bg-dark-secondary bg-light-secondary"
-              >
-                <Text
-                  style={getSecondaryTextColorStyle(actualTheme)}
-                  className="dark:text-dark-primary text-light-primary text-center font-inter-medium"
-                >
-                  Share list
-                </Text>
-
-                <Feather
-                  name="share"
-                  size={20}
-                  color={
-                    actualTheme && actualTheme.SecondaryTxt
-                      ? actualTheme.SecondaryTxt
-                      : colorScheme === "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setOpenDelete(true);
-                  setIsShowingModal(false);
-                }}
-                className="flex-row items-center justify-between p-4 rounded-lg border border-red-500"
-              >
-                <Text className="text-center font-inter-bold text-[#ff3b3b]">
-                  Delete
-                </Text>
-                <EvilIcons name="trash" size={24} color="#ff3b3b" />
-              </TouchableOpacity>
-            </Animated.View>
-          </View>
-        </Modal>
-        <EditFolder
-          actualTheme={actualTheme}
-          openEdit={openEdit}
-          setOpenEdit={setOpenEdit}
-          folderName={folderName}
-          colorScheme={colorScheme}
-          theme={theme}
-          folderId={folderId}
-        />
-        <DeleteFolder
-          actualTheme={actualTheme}
-          openDelete={openDelete}
-          setOpenDelete={setOpenDelete}
-          theme={theme}
-          colorScheme={colorScheme}
-          folderId={folderId}
-        />
-      </HeaderView>
+              <Feather
+                name="share"
+                size={20}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme === "dark"
+                    ? "white"
+                    : "#2f2d51"
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setOpenDelete(true);
+                setIsShowingModal(false);
+              }}
+              className="flex-row items-center justify-between p-4 rounded-lg border border-red-500"
+            >
+              <Text className="text-center font-inter-bold text-[#ff3b3b]">
+                Delete
+              </Text>
+              <EvilIcons name="trash" size={24} color="#ff3b3b" />
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
+      <EditFolder
+        actualTheme={actualTheme}
+        openEdit={openEdit}
+        setOpenEdit={setOpenEdit}
+        folderName={folderName}
+        colorScheme={colorScheme}
+        theme={theme}
+        folderId={folderId}
+      />
+      <DeleteFolder
+        actualTheme={actualTheme}
+        openDelete={openDelete}
+        setOpenDelete={setOpenDelete}
+        theme={theme}
+        colorScheme={colorScheme}
+        folderId={folderId}
+      />
     </>
   );
 };

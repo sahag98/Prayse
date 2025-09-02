@@ -1,11 +1,6 @@
 // @ts-nocheck
-import { useCallback, useEffect, useState } from "react";
-import {
-  Link,
-  router,
-  useFocusEffect,
-  useLocalSearchParams,
-} from "expo-router";
+import { useCallback, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   FlatList,
@@ -18,21 +13,17 @@ import { useSelector } from "react-redux";
 
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import {
-  getMainBackgroundColorStyle,
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
-  getPrimaryTextColorStyle,
 } from "@lib/customStyles";
 
 import AnswerItem from "../components/AnswerItem";
 import { useSupabase } from "../context/useSupabase";
 import QuestionModal from "../modals/QuestionModal";
-import { EXPLORE_SCREEN, QUESTION_LIST_SCREEN } from "../routes";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import { EXPLORE_SCREEN } from "../routes";
 
 const QuestionScreen = () => {
-  const { answers, currentUser, setQuestions, fetchAnswers, supabase } =
-    useSupabase();
+  const { currentUser, setQuestions, supabase } = useSupabase();
   const [answersVisible, setAnswersVisible] = useState(false);
   const routeParams = useLocalSearchParams();
   const [answersArray, setAnswersArray] = useState([]);
@@ -66,11 +57,11 @@ const QuestionScreen = () => {
   }
 
   return (
-    <Container
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       className="dark:bg-dark-background relative bg-light-background"
     >
-      <HeaderView style={{ marginTop: 10, alignItems: "center" }}>
+      <View style={{ marginTop: 10, alignItems: "center" }}>
         <View className="flex-row items-center gap-3">
           <Pressable
             onPress={() =>
@@ -91,14 +82,14 @@ const QuestionScreen = () => {
               }
             />
           </Pressable>
-          <HeaderTitle
+          <Text
             style={getMainTextColorStyle(actualTheme)}
             className="font-inter-bold dark:text-dark-primary text-light-primary"
           >
             Question
-          </HeaderTitle>
+          </Text>
         </View>
-      </HeaderView>
+      </View>
       <View
         style={
           actualTheme &&
@@ -199,7 +190,7 @@ const QuestionScreen = () => {
         setAnswersVisible={setAnswersVisible}
         answersVisible={answersVisible}
       />
-    </Container>
+    </View>
   );
 };
 

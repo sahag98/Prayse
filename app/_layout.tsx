@@ -4,7 +4,6 @@ import { isRunningInExpoGo } from "expo";
 import { SplashScreen, useNavigationContainerRef } from "expo-router";
 // import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
@@ -25,12 +24,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Sentry from "@sentry/react-native";
 
 import StackContainer from "./Stack";
-
-import "../global.css";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 
 import "react-native-url-polyfill/auto";
 import "expo-dev-client";
-// import { vexo } from "vexo-analytics";
+
+import { vexo } from "vexo-analytics";
+
+function loadGlobalCSS() {
+  try {
+    require("@/global.css");
+  } catch (e) {
+    console.log("error loading global css", e);
+  }
+}
+
+loadGlobalCSS();
 
 const persistor = persistStore(store);
 
@@ -38,9 +50,14 @@ const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
 });
 
-// if (!__DEV__) {
-//   vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY!);
-// }
+if (!__DEV__) {
+  vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY!);
+}
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: true, // Reanimated runs in strict mode by default
+});
 
 Sentry.init({
   dsn: "https://62cc83d0927020ddab15c63295a4f908@o4506981596594176.ingest.us.sentry.io/4508010266427392",

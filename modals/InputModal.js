@@ -7,21 +7,15 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import uuid from "react-native-uuid";
-import { useDispatch } from "react-redux";
-import * as Notifications from "expo-notifications";
-import {
-  AntDesign,
-  Entypo,
-  FontAwesome6,
-  FontAwesome,
-} from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 import Animated, {
   Easing,
@@ -32,15 +26,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { addPrayer, editPrayer } from "../redux/prayerReducer";
-import {
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
+
 import {
   getMainBackgroundColorStyle,
   getPrimaryBackgroundColorStyle,
@@ -52,6 +38,8 @@ import {
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import useStore from "@hooks/store";
+import EncouragementModal from "./encouragement-modal";
+import { getRandomEncouragement } from "@lib/encouragement";
 
 const InputModal = ({
   addPrayerBottomSheetModalRef,
@@ -82,6 +70,10 @@ const InputModal = ({
   const [transcript, setTranscript] = useState("");
 
   const { isShowingNewBadge, handleShowNewBadge } = useStore();
+
+  const prayerList = useSelector((state) => state.prayer.prayer);
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [encouragementData, setEncouragementData] = useState(null);
 
   const scale = useSharedValue(1);
 
@@ -188,6 +180,18 @@ const InputModal = ({
           id: newId,
         })
       );
+
+      // Check if this is the first prayer overall or a milestone prayer
+      const totalPrayers = prayerList.length;
+      const isFirstPrayer = totalPrayers === 0;
+      const isMilestonePrayer =
+        totalPrayers > 0 && (totalPrayers + 1) % 5 === 0;
+
+      if (isFirstPrayer || isMilestonePrayer) {
+        const encouragement = getRandomEncouragement(isFirstPrayer);
+        setEncouragementData(encouragement);
+        setShowEncouragement(true);
+      }
       // const randomTime = getRandomTime();
       // console.log("random time: ", randomTime);
       // const identifier = await Notifications.scheduleNotificationAsync({
@@ -239,6 +243,11 @@ const InputModal = ({
     setIsEditing(false);
   };
 
+  const handleCloseEncouragement = () => {
+    setShowEncouragement(false);
+    setEncouragementData(null);
+  };
+
   return (
     <View>
       <View className="flex-row items-center justify-between mb-4 absolute bottom-4 w-full">
@@ -251,16 +260,6 @@ const InputModal = ({
           }}
           className="dark:bg-dark-secondary relative dark:shadow-purple-400 flex-row items-center shadow-lg shadow-purple-200 justify-center gap-2 bg-white size-20 rounded-full"
         >
-          {isShowingNewBadge && (
-            <Animated.View
-              style={scaleStyle}
-              className="absolute -top-3 -right-3 bg-red-400 rounded-xl px-2 py-1"
-            >
-              <Text className="font-inter-semibold text-sm text-white">
-                New
-              </Text>
-            </Animated.View>
-          )}
           <FontAwesome
             name="microphone"
             size={30}
@@ -306,41 +305,27 @@ const InputModal = ({
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ModalContainer
+          <View
             style={
               colorScheme === "dark"
                 ? { backgroundColor: "rgba(0, 0, 0, 0.3)" }
                 : { backgroundColor: "rgba(0, 0, 0, 0.3)" }
             }
             // style={getMainBackgroundColorStyle(actualTheme)}
-            className="bg-light-background dark:bg-dark-background"
+            className="bg-light-background flex-1 items-center justify-center dark:bg-dark-background"
           >
             <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               className="bg-white p-5 rounded-2xl w-4/5 shadow-lg dark:shadow-purple-400 shadow-purple-300 dark:bg-dark-secondary"
             >
-              <ModalIcon>
-                <View className="flex-row items-center gap-2">
-                  <HeaderTitle
-                    style={getSecondaryTextColorStyle(actualTheme)}
-                    className="font-inter-bold text-light-primary dark:text-dark-primary"
-                  >
-                    Say Prayer
-                  </HeaderTitle>
-                </View>
-              </ModalIcon>
-              {/* {!recognizing ? (
-                <Button title="Start" onPress={handleStart} />
-              ) : (
-                <Button
-                  title="Stop"
-                  onPress={() => ExpoSpeechRecognitionModule.stop()}
-                />
-              )} */}
-
-              {/* <ScrollView>
-                <Text>{transcript}</Text>
-              </ScrollView> */}
+              <View>
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-bold text-2xl text-center text-light-primary dark:text-dark-primary"
+                >
+                  Say Prayer
+                </Text>
+              </View>
 
               <TextInput
                 className="mt-3 w-full rounded-lg px-2 items-center font-inter-regular border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#bbbbbb] self-center font-inter"
@@ -389,7 +374,7 @@ const InputModal = ({
               {!recognizing ? (
                 <Pressable
                   onPress={handleStart}
-                  className="bg-light-primary mt-3 dark:bg-dark-accent rounded-lg w-fit p-3  self-start justify-center items-center"
+                  className="bg-light-primary my-3 dark:bg-dark-accent rounded-lg w-fit p-3  self-start justify-center items-center"
                 >
                   <Text className="font-inter-medium text-light-background dark:text-dark-background">
                     Start
@@ -409,7 +394,7 @@ const InputModal = ({
               ) : (
                 <Pressable
                   onPress={() => ExpoSpeechRecognitionModule.stop()}
-                  className="bg-light-primary mt-3 dark:bg-dark-accent rounded-lg self-start p-3 justify-center items-center"
+                  className="bg-light-primary my-3 dark:bg-dark-accent rounded-lg self-start p-3 justify-center items-center"
                 >
                   <Text className="font-inter-medium text-light-background dark:text-dark-background">
                     Stop
@@ -417,15 +402,9 @@ const InputModal = ({
                 </Pressable>
               )}
 
-              <ModalActionGroup>
-                <ModalAction
-                  color={
-                    actualTheme && actualTheme.Primary
-                      ? actualTheme.Primary
-                      : colorScheme === "dark"
-                        ? "#121212"
-                        : "#b7d3ff"
-                  }
+              <View className=" flex-row items-center justify-evenly">
+                <Pressable
+                  className="bg-light-secondary dark:bg-dark-background size-16 rounded-full items-center justify-center"
                   onPress={() => {
                     setIsSpeechVisible(false);
                     setTranscript("");
@@ -436,15 +415,9 @@ const InputModal = ({
                     size={28}
                     color={colorScheme === "dark" ? "white" : "#2F2D51"}
                   />
-                </ModalAction>
-                <ModalAction
-                  color={
-                    actualTheme && actualTheme.Primary
-                      ? actualTheme.Primary
-                      : colorScheme === "dark"
-                        ? "#a5c9ff"
-                        : "#2F2D51"
-                  }
+                </Pressable>
+                <Pressable
+                  className="bg-light-primary dark:bg-dark-accent size-16 rounded-full items-center justify-center"
                   onPress={handleSubmit}
                 >
                   <AntDesign
@@ -458,10 +431,10 @@ const InputModal = ({
                           : "white"
                     }
                   />
-                </ModalAction>
-              </ModalActionGroup>
+                </Pressable>
+              </View>
             </View>
-          </ModalContainer>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -475,22 +448,22 @@ const InputModal = ({
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ModalContainer
+          <View
             style={getMainBackgroundColorStyle(actualTheme)}
             className="bg-light-background dark:bg-dark-background"
           >
-            <ModalView
+            <View
               style={getSecondaryBackgroundColorStyle(actualTheme)}
               className="bg-light-secondary dark:bg-dark-secondary"
             >
-              <ModalIcon>
+              <View>
                 <View className="flex-row items-center gap-2">
-                  <HeaderTitle
+                  <Text
                     style={getSecondaryTextColorStyle(actualTheme)}
                     className="font-inter-bold text-light-primary dark:text-dark-primary"
                   >
                     {taskName} Prayer
-                  </HeaderTitle>
+                  </Text>
                   <AntDesign
                     name="edit"
                     size={24}
@@ -503,8 +476,8 @@ const InputModal = ({
                     }
                   />
                 </View>
-              </ModalIcon>
-              <StyledInput
+              </View>
+              <TextInput
                 className="mt-3 items-center font-inter-regular border text-light-primary dark:text-dark-primary border-light-primary dark:border-[#d2d2d2] self-center font-inter"
                 style={
                   actualTheme && actualTheme.SecondaryTxt
@@ -546,15 +519,15 @@ const InputModal = ({
                 multiline
               />
 
-              <ModalActionGroup>
-                <ModalAction color="white" onPress={handleCloseModal}>
+              <View>
+                <View color="white" onPress={handleCloseModal}>
                   <AntDesign
                     name="close"
                     size={28}
                     color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
                   />
-                </ModalAction>
-                <ModalAction
+                </View>
+                <View
                   color={
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
@@ -573,12 +546,22 @@ const InputModal = ({
                         : "white"
                     }
                   />
-                </ModalAction>
-              </ModalActionGroup>
-            </ModalView>
-          </ModalContainer>
+                </View>
+              </View>
+            </View>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Encouragement Modal */}
+      <EncouragementModal
+        visible={showEncouragement && encouragementData !== null}
+        onClose={handleCloseEncouragement}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        message={encouragementData?.message || ""}
+        verse={encouragementData?.verse || { text: "", reference: "" }}
+      />
     </View>
   );
 };

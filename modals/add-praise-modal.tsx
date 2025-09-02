@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Pressable, Text } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -16,8 +15,6 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
-import { LOGIN_SCREEN } from "@routes";
 
 const AddPraiseModal = ({
   actualTheme,
@@ -27,7 +24,7 @@ const AddPraiseModal = ({
   praiseBottomSheetRef,
 }: any) => {
   const [newPraise, setNewPraise] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [isAnonymous] = useState(true);
   const [praiseCount, setPraiseCount] = useState(0);
 
   const queryClient = useQueryClient();
@@ -51,7 +48,7 @@ const AddPraiseModal = ({
       return;
     }
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("praises")
         .insert([
           {
@@ -123,7 +120,7 @@ const AddPraiseModal = ({
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
             ]}
-            className="w-full font-inter-medium rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:bg-dark-background p-4"
+            className="w-full font-inter-medium rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:placeholder:text-stone-400 dark:bg-dark-background p-4"
             placeholder="How can you praise God today?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
@@ -143,58 +140,11 @@ const AddPraiseModal = ({
             onChangeText={setNewPraise}
           />
 
-          <View className="flex-row gap-2 items-center self-start">
-            <Pressable
-              onPress={() => {
-                if (isAnonymous && !currentUser) {
-                  Alert.alert(
-                    "Sign In",
-                    "You need to sign in to submit a praise with your name.",
-                    [
-                      {
-                        text: "Cancel",
-                        onPress: () => setIsAnonymous(true),
-                        style: "cancel",
-                      },
-                      {
-                        text: "OK",
-                        onPress: () => router.push(LOGIN_SCREEN),
-                      },
-                    ],
-                  );
-                } else {
-                  setIsAnonymous((prev) => !prev);
-                }
-              }}
-              className="size-6 border border-light-primary dark:border-dark-primary items-center justify-center rounded-lg"
-            >
-              {isAnonymous && (
-                <AntDesign
-                  name="check"
-                  size={15}
-                  color={
-                    actualTheme && actualTheme.MainTxt
-                      ? actualTheme.MainTxt
-                      : colorScheme == "dark"
-                        ? "white"
-                        : "#2f2d51"
-                  }
-                />
-              )}
-            </Pressable>
-            <Text
-              style={getMainTextColorStyle(actualTheme)}
-              className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
-            >
-              Anonymous
-            </Text>
-          </View>
-
           {praiseCount < 10 ? (
             <Pressable
               onPress={handleSubmit}
               style={getPrimaryBackgroundColorStyle(actualTheme)}
-              className="bg-light-primary mt-4 w-full dark:bg-dark-accent p-4 items-center justify-center rounded-lg"
+              className="bg-light-primary w-full dark:bg-dark-accent p-4 items-center justify-center rounded-lg"
             >
               <Text
                 style={getMainTextColorStyle(actualTheme)}

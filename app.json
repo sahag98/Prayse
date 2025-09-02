@@ -3,7 +3,7 @@
     "name": "Prayse",
     "slug": "prayer-app",
     "scheme": "prayseapp",
-    "version": "10.4.0",
+    "version": "11.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "owner": "sahag98",
@@ -15,13 +15,7 @@
     },
     "plugins": [
       "@stream-io/video-react-native-sdk",
-      [
-        "@config-plugins/react-native-webrtc",
-        {
-          "cameraPermission": "Prayse requires camera access in order to capture and transmit video",
-          "microphonePermission": "Prayse requires microphone access in order to capture and transmit audio"
-        }
-      ],
+
       ["expo-apple-authentication"],
       [
         "expo-media-library",
@@ -43,7 +37,8 @@
         "expo-build-properties",
         {
           "android": {
-            "minSdkVersion": 24
+            "minSdkVersion": 24,
+            "targetSdkVersion": 35
           },
           "ios": {
             "deploymentTarget": "15.1"
@@ -102,7 +97,7 @@
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "104",
+      "buildNumber": "112",
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
       },
@@ -170,7 +165,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 90
+      "versionCode": 93
     },
     "web": {
       "favicon": "./assets/favicon.png"

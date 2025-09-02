@@ -19,8 +19,6 @@ import {
 } from "@expo/vector-icons";
 
 import { COMMUNITY_SCREEN, HOME_SCREEN } from "../routes";
-import { HeaderTitle, HeaderView, ModalContainer } from "../styles/appStyles";
-
 import {
   getMainTextColorStyle,
   getSecondaryBackgroundColorStyle,
@@ -150,7 +148,7 @@ const GroupInfoModal = ({
         style={{ flex: 1, height: "100%" }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ModalContainer
+        <View
           className="bg-light-background dark:bg-dark-background"
           style={
             actualTheme && actualTheme.Bg
@@ -162,21 +160,21 @@ const GroupInfoModal = ({
                   paddingBottom: insets.bottom,
                 }
               : theme == "dark"
-                ? {
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                    paddingBottom: insets.bottom,
-                  }
-                : {
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    paddingTop: Platform.OS == "ios" ? insets.top : 0,
-                    paddingBottom: insets.bottom,
-                  }
+              ? {
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: insets.bottom,
+                }
+              : {
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  paddingTop: Platform.OS == "ios" ? insets.top : 0,
+                  paddingBottom: insets.bottom,
+                }
           }
         >
-          <HeaderView className="flex-row gap-3">
+          <View className="flex-row gap-3">
             <TouchableOpacity onPress={handleCloseModal}>
               <AntDesign
                 name="close"
@@ -185,18 +183,18 @@ const GroupInfoModal = ({
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme == "dark"
-                      ? "white"
-                      : "#2f2d51"
+                    ? "white"
+                    : "#2f2d51"
                 }
               />
             </TouchableOpacity>
-            <HeaderTitle
+            <Text
               style={getMainTextColorStyle(actualTheme)}
               className="font-inter-bold text-light-primary dark:text-dark-primary"
             >
               Group Settings
-            </HeaderTitle>
-          </HeaderView>
+            </Text>
+          </View>
           <Text
             style={getMainTextColorStyle(actualTheme)}
             className="text-center self-center my-5 font-inter-semibold text-2xl text-light-primary dark:text-dark-primary"
@@ -275,8 +273,8 @@ const GroupInfoModal = ({
                                 actualTheme && actualTheme.MainTxt
                                   ? actualTheme.MainTxt
                                   : theme === "dark"
-                                    ? "white"
-                                    : "#2f2d51"
+                                  ? "white"
+                                  : "#2f2d51"
                               }
                             />
                           </TouchableOpacity>
@@ -313,7 +311,7 @@ const GroupInfoModal = ({
               </TouchableOpacity>
             )}
           </View>
-        </ModalContainer>
+        </View>
         {/* {showMenu && (
           <GroupInfoMenu
             theme={theme}

@@ -1,11 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
-import {
-  Pressable,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { Pressable, Text, View } from "react-native";
 
 import {
   BottomSheetModal,
@@ -16,11 +10,9 @@ import {
 import {
   getMainBackgroundColorStyle,
   getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { cn } from "@lib/utils";
 
 const AddListModal = ({
   actualTheme,
@@ -30,13 +22,6 @@ const AddListModal = ({
   setFolderName,
   bottomSheetModalRef,
 }: any) => {
-  const [newQuestion, setNewQuestion] = useState("");
-  const [isApproving, setIsApproving] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
-  // ref
-  //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
   // variables
   const snapPoints = useMemo(() => ["25%", "50%"], []);
 

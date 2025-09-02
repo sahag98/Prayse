@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -9,46 +9,31 @@ import ColorPanel from "@components/ColorPanel";
 import TextColorPanel from "@components/TextColorPanel";
 
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
 import { resetTheme, setTheme } from "@redux/themeReducer";
 import { YOUR_THEMES_SCREEN } from "@routes";
-import { HeaderView, WelcomeContainer } from "@styles/appStyles";
 
 const CreateThemeScreen = () => {
   const { colorScheme } = useColorScheme();
   const customBg = useSelector((state) => state.theme.customBg);
-  const isFocused = useIsFocused();
   const customPrimary = useSelector((state) => state.theme.customPrimary);
   const customPrimaryTxt = useSelector((state) => state.theme.customPrimaryTxt);
   const customSecondary = useSelector((state) => state.theme.customSecondary);
   const customSecondaryTxt = useSelector(
     (state) => state.theme.customSecondaryTxt,
   );
-  const customAccent = useSelector((state) => state.theme.customAccent);
 
-  const customAccentTxt = useSelector((state) => state.theme.customAccentTxt);
   const customMainTxt = useSelector((state) => state.theme.customMainTxt);
-
-  const Bg = useSelector((state) => state.theme.Bg);
-  const Primary = useSelector((state) => state.theme.Primary);
-  const PrimaryTxt = useSelector((state) => state.theme.PrimaryTxt);
-  const Secondary = useSelector((state) => state.theme.Secondary);
-  const SecondaryTxt = useSelector((state) => state.theme.SecondaryTxt);
-
-  // useEffect(() => {
-  //   dispatch(resetTheme());
-  // }, [isFocused]);
 
   const dispatch = useDispatch();
 
   return (
-    <WelcomeContainer
+    <View
       // style={Bg && { backgroundColor: Bg }}
       className="flex relative py-20 flex-1 dark:bg-[#121212] bg-[#f2f7ff]"
       // showsVerticalScrollIndicator={false}
       // contentContainerStyle={{ flex: 1 }}
     >
-      <HeaderView>
+      <View>
         <Link href="/pro">
           <View className="flex-row items-center justify-between gap-2">
             <AntDesign
@@ -61,7 +46,7 @@ const CreateThemeScreen = () => {
             </Text>
           </View>
         </Link>
-      </HeaderView>
+      </View>
       <View className="flex-1 justify-between">
         <View>
           <Text className="font-inter text-xl mb-3 font-medium">Example</Text>
@@ -177,7 +162,7 @@ const CreateThemeScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </WelcomeContainer>
+    </View>
   );
 };
 

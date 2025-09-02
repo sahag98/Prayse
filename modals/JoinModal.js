@@ -19,7 +19,6 @@ import Toast from "react-native-toast-message";
 
 import { AntDesign } from "@expo/vector-icons";
 
-import { HeaderView, ModalContainer } from "../styles/appStyles";
 import { getMainTextColorStyle } from "@lib/customStyles";
 
 const JoinModal = ({
@@ -138,7 +137,7 @@ const JoinModal = ({
       visible={modalVisible}
       onRequestClose={handleCloseModal}
     >
-      <ModalContainer
+      <View
         className="bg-light-background flex-1 dark:bg-dark-background items-center"
         style={
           actualTheme && actualTheme.Bg
@@ -149,21 +148,21 @@ const JoinModal = ({
                 paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
               }
             : theme === "dark"
-              ? {
-                  justifyContent: "flex-start",
+            ? {
+                justifyContent: "flex-start",
 
-                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
-              : {
-                  justifyContent: "flex-start",
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }
+            : {
+                justifyContent: "flex-start",
 
-                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
-                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-                }
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }
         }
       >
-        <HeaderView className="flex-row w-full justify-between">
+        <View className="flex-row w-full justify-between">
           <TouchableOpacity onPress={handleCloseModal}>
             <AntDesign
               name="left"
@@ -172,12 +171,12 @@ const JoinModal = ({
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : theme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
-        </HeaderView>
+        </View>
 
         <View className="flex-1 mb-14 gap-2 self-center items-center w-full justify-center">
           <Text
@@ -212,15 +211,15 @@ const JoinModal = ({
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme === "dark"
-                      ? "#d6d6d6"
-                      : "#2f2d51"
+                    ? "#d6d6d6"
+                    : "#2f2d51"
                 }
                 selectionColor={
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : theme === "dark"
-                      ? "white"
-                      : "#2f2d51"
+                    ? "white"
+                    : "#2f2d51"
                 }
                 value={code}
                 on
@@ -236,8 +235,8 @@ const JoinModal = ({
                     actualTheme && actualTheme.Primary
                       ? actualTheme.Primary
                       : theme === "dark"
-                        ? "#a5c9ff"
-                        : "#2f2d51"
+                      ? "#a5c9ff"
+                      : "#2f2d51"
                   }
                 />
               </Animated.View>
@@ -265,7 +264,7 @@ const JoinModal = ({
             </Text>
           </View>
         </View>
-      </ModalContainer>
+      </View>
     </Modal>
     // </SafeAreaProvider>
   );

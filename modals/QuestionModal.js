@@ -5,6 +5,8 @@ import {
   Modal,
   Platform,
   Text,
+  TextInput,
+  View,
   TouchableOpacity,
 } from "react-native";
 import Toast from "react-native-toast-message";
@@ -12,13 +14,7 @@ import Toast from "react-native-toast-message";
 import { AntDesign } from "@expo/vector-icons";
 
 import { useSupabase } from "../context/useSupabase";
-import {
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalView,
-  StyledInput,
-} from "../styles/appStyles";
+
 import config from "@config";
 
 const QuestionModal = ({
@@ -125,14 +121,14 @@ const QuestionModal = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={-130}
       >
-        <ModalContainer
+        <View
           style={
             colorScheme === "dark"
               ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
               : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
           }
         >
-          <ModalView
+          <View
             style={
               actualTheme && actualTheme.Secondary
                 ? { backgroundColor: actualTheme.Secondary }
@@ -141,7 +137,7 @@ const QuestionModal = ({
                 : { backgroundColor: "#b7d3ff" }
             }
           >
-            <StyledInput
+            <TextInput
               className="font-inter-regular text-light-primary dark:text-dark-primary mb-2 bg-light-background dark:bg-dark-background"
               style={
                 actualTheme && actualTheme.Bg
@@ -193,15 +189,15 @@ const QuestionModal = ({
                 Dismiss Keyboard
               </Text>
             </TouchableOpacity>
-            <ModalActionGroup>
-              <ModalAction color="white" onPress={handleCloseModal}>
+            <View>
+              <View color="white" onPress={handleCloseModal}>
                 <AntDesign
                   name="close"
                   size={28}
                   color={colorScheme === "dark" ? "#121212" : "#2F2D51"}
                 />
-              </ModalAction>
-              <ModalAction
+              </View>
+              <View
                 color={
                   actualTheme && actualTheme.Primary
                     ? actualTheme.Primary
@@ -220,10 +216,10 @@ const QuestionModal = ({
                       : "white"
                   }
                 />
-              </ModalAction>
-            </ModalActionGroup>
-          </ModalView>
-        </ModalContainer>
+              </View>
+            </View>
+          </View>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );

@@ -16,7 +16,6 @@ import {
 import { useNavigation } from "expo-router";
 
 import { TEST_SCREEN } from "../routes";
-import { ListView } from "../styles/appStyles";
 
 import {
   getPrimaryBackgroundColorStyle,
@@ -27,8 +26,6 @@ import PrayerTabs from "./PrayerTabs";
 import { useSupabase } from "@context/useSupabase";
 import { addVerseToPrayer } from "@redux/prayerReducer";
 import VerseModal from "@modals/VerseModal";
-
-import { posthog } from "@lib/posthog";
 
 const ListItems = ({
   actualTheme,
@@ -129,7 +126,6 @@ const ListItems = ({
 
   const renderItem = ({ item }) => {
     const addReminder = (item) => {
-      posthog.capture("Create reminder");
       navigation.navigate(TEST_SCREEN, {
         reminder: item.prayer,
         note: item.notes ?? "",
@@ -146,9 +142,9 @@ const ListItems = ({
 
     return (
       <>
-        <ListView
+        <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary dark:bg-dark-secondary relative"
+          className="bg-light-secondary p-3 rounded-xl dark:bg-dark-secondary relative"
         >
           <>
             <Text
@@ -187,8 +183,8 @@ const ListItems = ({
                   actualTheme && actualTheme.SecondaryTxt
                     ? actualTheme.SecondaryTxt
                     : colorScheme == "dark"
-                      ? "white"
-                      : "#2F2D51"
+                    ? "white"
+                    : "#2F2D51"
                 }
               />
             </TouchableOpacity>
@@ -219,8 +215,8 @@ const ListItems = ({
                         actualTheme && actualTheme.SecondaryTxt
                           ? actualTheme.SecondaryTxt
                           : colorScheme === "dark"
-                            ? "#a5c9ff"
-                            : "#2f2d51"
+                          ? "#a5c9ff"
+                          : "#2f2d51"
                       }
                     />
                   ) : (
@@ -236,8 +232,8 @@ const ListItems = ({
                           actualTheme && actualTheme.PrimaryTxt
                             ? actualTheme.PrimaryTxt
                             : colorScheme === "dark"
-                              ? "#121212"
-                              : "#f2f7ff"
+                            ? "#121212"
+                            : "#f2f7ff"
                         }
                       />
 
@@ -267,7 +263,7 @@ const ListItems = ({
               )}
             </View>
           </>
-        </ListView>
+        </View>
       </>
     );
   };
@@ -294,7 +290,7 @@ const ListItems = ({
 
       <FlatList
         data={filteredList}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }} // Increased bottom padding and added flexGrow
+        contentContainerStyle={{ flexGrow: 1, gap: 10, paddingBottom: 10 }} // Increased bottom padding and added flexGrow
         keyExtractor={(item) => item.id.toString()}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
@@ -313,8 +309,8 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? " archive "
                   : activeTab === "Answered"
-                    ? " answered list "
-                    : " prayer list "}
+                  ? " answered list "
+                  : " prayer list "}
                 is empty.
               </Text>
               <Text
@@ -324,8 +320,8 @@ const ListItems = ({
                 {activeTab === "Archived"
                   ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
                   : activeTab === "Answered"
-                    ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
-                    : "Add a prayer using your voice or just type it in!"}
+                  ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
+                  : "Add a prayer using your voice or just type it in!"}
               </Text>
             </View>
           </View>

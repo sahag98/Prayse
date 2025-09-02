@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   ActivityIndicator,
@@ -30,16 +30,16 @@ import { useSupabase } from "../context/useSupabase";
 
 import "react-native-url-polyfill/auto";
 import { cn } from "@lib/utils";
-import AddPraiseModal from "@modals/add-anon-prayer";
+import AddPraiseModal from "@modals/add-praise-modal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+//@ts-ignore
 import praiseImg from "../assets/praise-list.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PraiseHelpModal from "@modals/praise-help-modal";
 const DevoListScreen = () => {
   const navigation = useNavigation();
-  const routeParams = useLocalSearchParams();
   //@ts-ignore
   const { currentUser, supabase } = useSupabase();
   const praiseBottomSheetRef = useRef<BottomSheetModal>(null);
@@ -70,7 +70,7 @@ const DevoListScreen = () => {
   }, [data]);
 
   async function getPraises() {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("praises")
       .select("*, profiles(*)")
       .order("id", { ascending: true });
@@ -190,7 +190,7 @@ const DevoListScreen = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -203,7 +203,7 @@ const DevoListScreen = () => {
               color={
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
-                  : colorScheme == "dark"
+                  : colorScheme === "dark"
                     ? "white"
                     : "#2f2d51"
               }
@@ -264,7 +264,9 @@ const DevoListScreen = () => {
           {praiseCount < 10 && (
             <View className="absolute bottom-0">
               <Pressable
-                onPress={() => praiseBottomSheetRef.current?.present()}
+                onPress={() => {
+                  praiseBottomSheetRef.current?.present();
+                }}
                 className="bg-light-primary dark:bg-dark-accent size-20 items-center justify-center rounded-full"
               >
                 <Entypo
@@ -273,7 +275,7 @@ const DevoListScreen = () => {
                   color={
                     actualTheme && actualTheme.MainTxt
                       ? actualTheme.MainTxt
-                      : colorScheme == "dark"
+                      : colorScheme === "dark"
                         ? "#121212"
                         : "white"
                   }

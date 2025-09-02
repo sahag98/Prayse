@@ -1,40 +1,25 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Link, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import AddQuestionModal from "@modals/AddQuestionModal";
-
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import {
-  getMainBackgroundColorStyle,
-  getMainTextColorStyle,
-  getPrimaryBackgroundColorStyle,
-} from "@lib/customStyles";
+import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import { cn } from "@lib/utils";
 
 import QuestionInfo from "../components/QuestionInfo";
 import { useSupabase } from "../context/useSupabase";
 import { EXPLORE_SCREEN } from "../routes";
-import { Container, HeaderTitle, HeaderView } from "../styles/appStyles";
+import HeaderText from "@components/HeaderText";
 
 const QuestionListScreen = () => {
-  const [isAddingQuestion, setIsAddingQuestion] = useState(false);
-  const questionBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [isAddingQuestion] = useState(false);
   const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
 
   const [refreshing, setRefreshing] = useState(false);
-  const {
-    questions,
-    answers,
-    currentUser,
-    fetchQuestions,
-    supabase,
-    // fetchAnswers,
-  } = useSupabase();
+  const { questions, answers, fetchQuestions } = useSupabase();
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
     (state: { theme: ActualTheme }) => state.theme.actualTheme,
@@ -61,11 +46,11 @@ const QuestionListScreen = () => {
   // console.log(questionBottomSheetModalRef.current);
 
   return (
-    <Container
+    <View
       style={getMainBackgroundColorStyle(actualTheme)}
       className="bg-light-background dark:bg-dark-background flex-1"
     >
-      <HeaderView
+      <View
         className={cn(
           isAddingQuestion ? "opacity-50" : "opacity-100 transition-opacity",
         )}
@@ -84,12 +69,7 @@ const QuestionListScreen = () => {
               }
             />
           </Link>
-          <HeaderTitle
-            style={getMainTextColorStyle(actualTheme)}
-            className="font-inter-bold text-light-primary dark:text-dark-primary"
-          >
-            Questions
-          </HeaderTitle>
+          <HeaderText title="Questions" />
         </View>
         <View className="flex-row items-center gap-3">
           <TouchableOpacity onPress={fetchQuestions}>
@@ -106,7 +86,7 @@ const QuestionListScreen = () => {
             />
           </TouchableOpacity>
         </View>
-      </HeaderView>
+      </View>
 
       <FlatList
         className={cn(
@@ -131,7 +111,7 @@ const QuestionListScreen = () => {
           />
         )}
       />
-    </Container>
+    </View>
   );
 };
 

@@ -16,8 +16,6 @@ import Toast from "react-native-toast-message";
 
 import { AntDesign } from "@expo/vector-icons";
 
-import { HeaderView, ModalContainer } from "../styles/appStyles";
-
 import {
   getMainTextColorStyle,
   getPrimaryBackgroundColorStyle,
@@ -100,7 +98,7 @@ const CreateGroupModal = ({
       visible={modalVisible}
       onRequestClose={handleCloseModal}
     >
-      <ModalContainer
+      <View
         className="bg-light-background dark:bg-dark-background items-center"
         style={
           actualTheme && actualTheme.Bg
@@ -117,7 +115,7 @@ const CreateGroupModal = ({
               }
         }
       >
-        <HeaderView className="flex-row w-full justify-between">
+        <View className="flex-row w-full justify-between">
           <TouchableOpacity onPress={handleCloseModal}>
             <AntDesign
               name="left"
@@ -126,8 +124,8 @@ const CreateGroupModal = ({
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : theme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
@@ -149,7 +147,7 @@ const CreateGroupModal = ({
               Create
             </Text>
           </TouchableOpacity>
-        </HeaderView>
+        </View>
         <Text
           style={getMainTextColorStyle(actualTheme)}
           className="font-inter-bold mt-5 text-2xl text-light-primary dark:text-dark-primary"
@@ -176,15 +174,15 @@ const CreateGroupModal = ({
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
-                  ? "#d6d6d6"
-                  : "#2f2d51"
+                ? "#d6d6d6"
+                : "#2f2d51"
             }
             selectionColor={
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? "#a5c9ff"
+                : "#2f2d51"
             }
             value={groupName}
             onChangeText={(text) => setGroupName(text)}
@@ -202,15 +200,15 @@ const CreateGroupModal = ({
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
-                  ? "#d6d6d6"
-                  : "#2f2d51"
+                ? "#d6d6d6"
+                : "#2f2d51"
             }
             selectionColor={
               actualTheme && actualTheme.MainTxt
                 ? actualTheme.MainTxt
                 : theme === "dark"
-                  ? "#a5c9ff"
-                  : "#2f2d51"
+                ? "#a5c9ff"
+                : "#2f2d51"
             }
             value={groupDescription}
             onChangeText={(text) => setGroupDescription(text)}
@@ -232,7 +230,7 @@ const CreateGroupModal = ({
             </Text>
           </View>
         </View>
-      </ModalContainer>
+      </View>
     </Modal>
   );
 };

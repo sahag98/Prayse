@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Audio } from "expo-av";
-import Constants from "expo-constants";
 import {
   Link,
   useFocusEffect,
@@ -11,7 +10,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "nativewind";
 import {
   Pressable,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -33,14 +31,15 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { addFolder } from "@redux/folderReducer";
 
 import { FOLDER_SCREEN, HOME_SCREEN } from "../routes";
-import { HeaderView } from "../styles/appStyles";
+
 import { ActualTheme, Prayer } from "../types/reduxTypes";
 import { cn } from "@lib/utils";
-import { incrementReviewCounter } from "@redux/remindersReducer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Gpad from "../assets/pads/g.mp3";
 import Dpad from "../assets/pads/d.mp3";
 import ABpad from "../assets/pads/ab.mp3";
+import useStore from "@hooks/store";
+import { CheckReview } from "@hooks/useShowReview";
 
 const PrayerRoom = () => {
   const prayers = useSelector(
@@ -51,15 +50,12 @@ const PrayerRoom = () => {
     (prayer) => prayer.status !== "Archived",
   );
 
-  const reviewCounter = useSelector(
-    (state: any) => state.reminder.reviewCounter,
-  );
-
-  const [isPraying, setIsPraying] = useState(false);
   const [sound, setSound] = useState<Audio.Sound>();
   const [isPlayingSound, setIsPlayingSound] = useState(false);
   const [isEndingPrayer, setIsEndingPrayer] = useState(false);
   const [saying, setSaying] = useState("");
+
+  const { reviewRequested, setReviewRequested } = useStore();
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -67,10 +63,6 @@ const PrayerRoom = () => {
   const actualTheme = useSelector(
     (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
   );
-
-  const FIXED_QUESTION = {
-    title: "Who is on your heart to pray for today?",
-  };
 
   const allQuestions = [
     {
@@ -186,6 +178,14 @@ const PrayerRoom = () => {
       ],
     },
     {
+      title: "Is there something you need to bring before God for forgiveness?",
+      verses: [
+        '1 John 1:9 "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."',
+        'Psalm 51:10 "Create in me a clean heart, O God, and renew a steadfast spirit within me."',
+        'Isaiah 1:18 "Come now, and let us reason together, says the Lord, Though your sins are like scarlet, they shall be as white as snow; though they are red like crimson, they shall be as wool."',
+      ],
+    },
+    {
       title: "What is one way you can serve someone in need today?",
       verses: [
         'Matthew 25:40 "And the King shall answer and say unto them, Verily I say unto you, Inasmuch as ye have done it unto one of the least of these my brethren, ye have done it unto me."',
@@ -279,8 +279,6 @@ const PrayerRoom = () => {
     fetchSaying();
   }, []);
 
-  const statusBarHeight = Constants.statusBarHeight;
-
   useEffect(() => {
     const initializeSound = async () => {
       try {
@@ -341,12 +339,17 @@ const PrayerRoom = () => {
   }
 
   async function endPrayer() {
-    dispatch(incrementReviewCounter());
-
+    if (!reviewRequested) {
+      console.log("NOT REQUESTED");
+      await CheckReview();
+    } else {
+      console.log("Already requested");
+    }
     // setStep(0);
     setIsEndingPrayer(true);
     pauseSound();
     router.back();
+    setReviewRequested(true);
   }
 
   async function pauseSound() {
@@ -354,8 +357,6 @@ const PrayerRoom = () => {
 
     setTimeout(async () => {
       let currentVolume = 1;
-
-      const fadeDuration = 2000; // 2 seconds fade out
 
       const decrementStep = 0.02; // Adjust based on desired fade smoothness
 
@@ -371,18 +372,6 @@ const PrayerRoom = () => {
 
       await sound?.stopAsync();
     }, 500);
-    // await sound?.pauseAsync();
-    // await sound?.unloadAsync();
-  }
-
-  async function checkSound() {
-    if (isPlayingSound) {
-      setIsPlayingSound(false);
-      await sound?.pauseAsync();
-    } else {
-      setIsPlayingSound(true);
-      await sound?.playAsync();
-    }
   }
 
   function handleCreateFolder() {
@@ -424,7 +413,7 @@ const PrayerRoom = () => {
         className="flex-1 px-4"
       >
         <AnimatedBackground />
-        <HeaderView>
+        <View className="mt-3">
           <Link
             asChild
             href={
@@ -447,22 +436,7 @@ const PrayerRoom = () => {
               />
             </TouchableOpacity>
           </Link>
-          {isPraying && (
-            <TouchableOpacity onPress={checkSound}>
-              <Feather
-                name={isPlayingSound ? "volume-2" : "volume-x"}
-                size={30}
-                color={
-                  actualTheme && actualTheme.PrimaryTxt
-                    ? actualTheme.PrimaryTxt
-                    : colorScheme === "dark"
-                      ? "white"
-                      : "#2f2d51"
-                }
-              />
-            </TouchableOpacity>
-          )}
-        </HeaderView>
+        </View>
         <PrayerPreparation
           handleCreateFolder={handleCreateFolder}
           unarchivedPrayers={unarchivedPrayers}
@@ -477,16 +451,18 @@ const PrayerRoom = () => {
           <Animated.Text
             // onPress={playSound}
             style={animatedPressFadeInStyle}
-            className="text-center font-inter-medium text-light-primary dark:text-dark-primary text-base mb-10"
+            className="text-center font-inter-semibold text-light-primary dark:text-dark-primary text-base mb-16"
           >
             Tap the screen to{" "}
             {isPlayingSound && step !== 4 ? "continue" : "begin"}
           </Animated.Text>
         ) : (
           <View className="mb-20 self-center bg-light-primary dark:bg-dark-accent size-20 items-center justify-center rounded-full">
-            <Text className="font-inter-bold text-light-background dark:text-dark-background text-xl">
-              Done
-            </Text>
+            <Feather
+              name="check"
+              size={35}
+              color={colorScheme === "dark" ? "#121212" : "#f2f7ff"}
+            />
           </View>
         )}
         {/* <Animated.Text
@@ -528,8 +504,6 @@ function PrayerPreparation({
   const titleFadeIn = useSharedValue(0);
   const thanksFadeIn = useSharedValue(0);
   const hoverTranslateY = useSharedValue(0);
-  const router = useRouter();
-  const dispatch = useDispatch();
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
   function getRandomPrayers(prayersArray: Prayer[], count: number) {
     // Shuffle the array
@@ -548,7 +522,7 @@ function PrayerPreparation({
     };
 
     const fixedLastQuestion = {
-      title: `In Jesus' name, Amen. \n\nThank you for using our app to pray. We hope this prayer strengthens your faith and guides your day with His grace!`,
+      title: `In Jesus' name, Amen. \n\nThank you for praying with us! \n\nWe hope this prayer strengthens your faith and guides your day with His grace!`,
       verses: [],
     };
 
@@ -659,9 +633,7 @@ function PrayerPreparation({
   const animatedSayingFadeInStyle = useAnimatedStyle(() => ({
     opacity: sayingFadeIn.value * 1,
   }));
-  const animatedPromptFadeInStyle = useAnimatedStyle(() => ({
-    opacity: promptFadeIn.value * 1,
-  }));
+
   const animatedMomentFadeInStyle = useAnimatedStyle(() => ({
     opacity: momentFadeIn.value * 1,
   }));
@@ -685,7 +657,7 @@ function PrayerPreparation({
       <View className="absolute w-full top-0 left-0 self-start h-full flex-1 justify-start gap-3 right-0 items-start">
         <Animated.Text
           style={titleFadeInStyle}
-          className="font-inter-semibold mb-5 text-3xl text-light-primary dark:text-dark-primary"
+          className="font-inter-semibold mb-5 text-balance text-3xl text-light-primary dark:text-dark-primary"
         >
           {randomQuestions[step].title}
         </Animated.Text>
@@ -703,14 +675,13 @@ function PrayerPreparation({
                   style={thanksFadeInStyle}
                   className="font-inter-medium text-base text-light-primary dark:text-dark-primary"
                 >
-                  You haven't added any prayers.
+                  You don't have any prayers.
                 </Animated.Text>
                 <Animated.Text
                   style={thanksFadeInStyle}
                   className="font-inter-regular text-sm mt-2 text-light-primary dark:text-dark-primary"
                 >
-                  Click here to create a folder so that you can add prayers to
-                  it.
+                  Go back to create a list and add prayers to it!
                 </Animated.Text>
               </AnimatedTouchable>
             ) : (
@@ -770,7 +741,7 @@ function PrayerPreparation({
             <>
               <Animated.View
                 style={[thanksFadeInStyle, hoverStyle]}
-                className=" bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+                className=" bg-light-secondary border border-light-primary/25 dark:bg-[#292929] dark:border-dark-primary/25 w-3/4 p-2 rounded-lg"
               >
                 <Animated.Text
                   style={thanksFadeInStyle}
@@ -781,7 +752,7 @@ function PrayerPreparation({
               </Animated.View>
               <Animated.View
                 style={[thanksFadeInStyle, hoverStyle]}
-                className="ml-auto bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+                className="ml-auto bg-light-secondary border border-light-primary/25 dark:bg-[#292929] dark:border-dark-primary/25 w-3/4 p-2 rounded-lg"
               >
                 <Animated.Text
                   style={thanksFadeInStyle}
@@ -793,7 +764,7 @@ function PrayerPreparation({
 
               <Animated.View
                 style={[thanksFadeInStyle, hoverStyle]}
-                className=" bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
+                className=" bg-light-secondary border border-light-primary/25 dark:bg-[#292929] dark:border-dark-primary/25 w-3/4 p-2 rounded-lg"
               >
                 <Animated.Text
                   style={thanksFadeInStyle}
@@ -808,7 +779,7 @@ function PrayerPreparation({
       <View className="items-start w-4/5 gap-3">
         <Animated.Text
           style={animatedWelcomeFadeInStyle}
-          className="font-inter-regular text-sm text-light-primary dark:text-dark-primary"
+          className="font-inter-regular text-light-primary dark:text-dark-primary"
         >
           Welcome
         </Animated.Text>
@@ -892,14 +863,16 @@ const ProgressBar = ({
       {Array.from({ length: totalSteps }).map((_, index) => (
         <View
           key={index}
-          className="flex-1 h-1 bg-gray-500 rounded-lg"
+          className="flex-1 h-1 bg-gray-300 rounded-lg"
           style={{
             backgroundColor:
               index <= step
                 ? colorScheme === "dark"
                   ? "white"
                   : "#2f2d51"
-                : "#acacac",
+                : colorScheme === "dark"
+                  ? "#525252"
+                  : "#d1d0d0",
           }}
         />
       ))}

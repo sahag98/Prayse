@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import {
@@ -15,9 +15,11 @@ import {
 } from "@lib/customStyles";
 import { cn } from "@lib/utils";
 import uuid from "react-native-uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPrayer, editPrayer } from "@redux/prayerReducer";
-
+import { posthog } from "@lib/posthog";
+import EncouragementModal from "./encouragement-modal";
+import { getRandomEncouragement } from "@lib/encouragement";
 const AddPrayerModal = ({
   actualTheme,
   colorScheme,
@@ -34,6 +36,9 @@ const AddPrayerModal = ({
   addPrayerBottomSheetModalRef,
 }: any) => {
   const dispatch = useDispatch();
+  const prayerList = useSelector((state: any) => state.prayer.prayer);
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [encouragementData, setEncouragementData] = useState<any>(null);
 
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -72,6 +77,18 @@ const AddPrayerModal = ({
           id: newId,
         }),
       );
+
+      // Check if this is the first prayer overall or a milestone prayer
+      const totalPrayers = prayerList.length;
+      const isFirstPrayer = totalPrayers === 0;
+      const isMilestonePrayer =
+        totalPrayers > 0 && (totalPrayers + 1) % 5 === 0;
+
+      if (isFirstPrayer || isMilestonePrayer) {
+        const encouragement = getRandomEncouragement(isFirstPrayer);
+        setEncouragementData(encouragement);
+        setShowEncouragement(true);
+      }
       // const randomTime = getRandomTime();
       // console.log("random time: ", randomTime);
       // const identifier = await Notifications.scheduleNotificationAsync({
@@ -120,9 +137,14 @@ const AddPrayerModal = ({
 
     setPrayerTitle("");
     setPrayerNote("");
-
+    posthog.capture("Adding prayer");
     setIsEditing(false);
     addPrayerBottomSheetModalRef.current.close();
+  };
+
+  const handleCloseEncouragement = () => {
+    setShowEncouragement(false);
+    // setEncouragementData(null);
   };
 
   return (
@@ -248,6 +270,16 @@ const AddPrayerModal = ({
           </Pressable>
         </BottomSheetView>
       </BottomSheetModal>
+
+      {/* Encouragement Modal */}
+      <EncouragementModal
+        visible={showEncouragement && encouragementData !== null}
+        onClose={handleCloseEncouragement}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+        message={encouragementData?.message || ""}
+        verse={encouragementData?.verse || { text: "", reference: "" }}
+      />
     </BottomSheetModalProvider>
   );
 };

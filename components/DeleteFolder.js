@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -9,17 +9,10 @@ import { deleteFolder, deleteQuickFolder } from "../redux/folderReducer";
 import { deletePrayerByFolderId } from "../redux/prayerReducer";
 import { FOLDER_SCREEN, PRAYER_SCREEN } from "../routes";
 import {
-  HeaderTitle,
-  ModalAction,
-  ModalActionGroup,
-  ModalContainer,
-  ModalIcon,
-  ModalView,
-} from "../styles/appStyles";
-import {
   getSecondaryBackgroundColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
+import HeaderText from "./HeaderText";
 
 const DeleteFolder = ({
   actualTheme,
@@ -53,41 +46,36 @@ const DeleteFolder = ({
       statusBarTranslucent
       // onShow={() => inputRef.current?.focus()}
     >
-      <ModalContainer
+      <View
+        className="p-2 justify-center items-center flex-1"
         style={
           colorScheme === "dark"
             ? { backgroundColor: "rgba(0, 0, 0, 0.6)" }
             : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
         }
       >
-        <ModalView
+        <View
           style={getSecondaryBackgroundColorStyle(actualTheme)}
-          className="bg-light-secondary w-4/5 dark:bg-dark-secondary"
+          className="bg-light-secondary p-3 rounded-2xl items-center justify-center w-4/5 dark:bg-dark-secondary"
         >
-          <ModalIcon>
-            <HeaderTitle
-              style={getSecondaryTextColorStyle(actualTheme)}
-              className="font-inter-bold text-light-primary dark:text-dark-primary"
+          <HeaderText
+            className="mb-4 text-xl text-center"
+            text=" This will permenantly delete this prayer list."
+          />
+
+          <View className="flex-row w-full items-center justify-evenly">
+            <Pressable
+              className="bg-white size-16 rounded-full items-center justify-center"
+              onPress={() => setOpenDelete(false)}
             >
-              This will permenantly delete this prayer list.
-            </HeaderTitle>
-          </ModalIcon>
-          <ModalActionGroup>
-            <ModalAction color="white" onPress={() => setOpenDelete(false)}>
               <AntDesign
                 name="close"
                 size={28}
-                color={theme === "dark" ? "black" : "#2F2D51"}
+                color={colorScheme === "dark" ? "black" : "#2F2D51"}
               />
-            </ModalAction>
-            <ModalAction
-              color={
-                actualTheme && actualTheme.Primary
-                  ? actualTheme.Primary
-                  : colorScheme === "dark"
-                    ? "#121212"
-                    : "#2F2D51"
-              }
+            </Pressable>
+            <Pressable
+              className="bg-light-primary dark:bg-dark-accent size-16 rounded-full items-center justify-center"
               onPress={deleteFolderById}
             >
               <AntDesign
@@ -96,13 +84,15 @@ const DeleteFolder = ({
                 color={
                   actualTheme && actualTheme.PrimaryTxt
                     ? actualTheme.PrimaryTxt
+                    : colorScheme === "dark"
+                    ? "#121212"
                     : "white"
                 }
               />
-            </ModalAction>
-          </ModalActionGroup>
-        </ModalView>
-      </ModalContainer>
+            </Pressable>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
 };
