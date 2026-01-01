@@ -1,0 +1,339 @@
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  Entypo,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+
+import { SET_REMINDER_SCREEN } from "../routes";
+
+import {
+  getPrimaryBackgroundColorStyle,
+  getSecondaryBackgroundColorStyle,
+  getSecondaryTextColorStyle,
+} from "@lib/customStyles";
+import PrayerTabs from "./PrayerTabs";
+import { useSupabase } from "@context/useSupabase";
+import { addVerseToPrayer } from "@redux/prayerReducer";
+import VerseModal from "@modals/VerseModal";
+
+const ListItems = ({
+  actualTheme,
+  colorScheme,
+  pickedPrayer,
+  prayerList,
+  onScroll,
+
+  folderId,
+}: any) => {
+  const dispatch = useDispatch();
+  const versesEnabled = useSelector((state: any) => state.pro.prayer_verses);
+  const navigation = useNavigation();
+
+  const BusyIndicator = () => {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  };
+
+  const prayers = prayerList.filter((item: any) => item.folderId === folderId);
+  const reminders = useSelector((state: any) => state.reminder.reminders);
+  const size = useSelector((state: any) => state.user.fontSize);
+
+  const [verseModal, setVerseModal] = useState(false);
+
+  const { supabase } = useSupabase() as any;
+
+  const All = "All";
+  const General = "General";
+  const People = "People";
+  const Personal = "Personal";
+  const Praise = "Praise";
+  const Other = "Other";
+
+  const titles = ["Active", "Answered", "Archived"];
+
+  const [activeTab, setActiveTab] = useState(titles[0]);
+
+  const answeredList = prayers
+    .filter((item: any) => item.status === "Answered")
+    .sort(
+      (b: any, a: any) =>
+        new Date(b.answeredDate).getTime() - new Date(a.answeredDate).getTime()
+    );
+
+  console.log(JSON.stringify(answeredList, null, 2));
+
+  const archivedList = prayers.filter(
+    (item: any) => item.status === "Archived"
+  );
+  const [verse, setVerse] = useState(null);
+  const activeList = prayers.filter(
+    (item: any) => item.status === "Active" || !item.status
+  );
+
+  const [isLoadingVerse, setIsLoadingVerse] = useState(false);
+
+  const getFilteredList = () => {
+    switch (activeTab) {
+      case "Answered":
+        return answeredList;
+      case "Archived":
+        return archivedList;
+      default:
+        return activeList;
+    }
+  };
+
+  // async function getBibleVerse(item:any) {
+  //   setVerseModal(true);
+  //   if (item.verse) {
+  //     console.log("verse exists");
+  //     setVerse(item.verse);
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsLoadingVerse(true);
+  //     const { data } = await supabase.functions.invoke("get-verse", {
+  //       body: JSON.stringify({
+  //         prayer: item.prayer,
+  //       }),
+  //     });
+  //     dispatch(
+  //       addVerseToPrayer({
+  //         id: item.id,
+  //         verse: data,
+  //       })
+  //     );
+  //     setVerse(data);
+  //   } catch (error) {
+  //     Alert.alert("Error", "There was an error getting the verse");
+  //   } finally {
+  //     setIsLoadingVerse(false);
+  //   }
+  // }
+
+  const filteredList = getFilteredList();
+
+  const renderItem = ({ item }: any) => {
+    const addReminder = (item: any) => {
+      (navigation as any).navigate(SET_REMINDER_SCREEN, {
+        reminder: item.prayer,
+        note: item.notes ?? "",
+        reminderId: item.id,
+        type: "Add",
+      });
+    };
+
+    const isReminder = reminders.find(
+      (reminder: any) => reminder.reminder?.prayer_id === item.id
+    );
+
+    return (
+      <>
+        <View
+          style={getSecondaryBackgroundColorStyle(actualTheme)}
+          className="bg-light-secondary p-3 rounded-xl dark:bg-dark-secondary relative"
+        >
+          <>
+            <Text
+              style={[getSecondaryTextColorStyle(actualTheme)]}
+              className="text-xl mb-2 font-inter-semibold text-light-primary dark:text-dark-primary"
+            >
+              {item.prayer}
+            </Text>
+
+            {item.notes && (
+              <Text
+                style={[getSecondaryTextColorStyle(actualTheme)]}
+                className="font-inter-regular text-light-primary dark:text-dark-primary"
+              >
+                {item?.notes}
+              </Text>
+            )}
+
+            {/* {item.verse && (
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-light-primary mt-2 font-inter-regular dark:text-dark-primary"
+              >
+                {item.verse}
+              </Text>
+            )} */}
+
+            <TouchableOpacity
+              onPress={() => pickedPrayer(item)}
+              className="absolute top-1 right-0 p-2"
+            >
+              <Entypo
+                name="dots-three-vertical"
+                size={18}
+                color={
+                  actualTheme && actualTheme.SecondaryTxt
+                    ? actualTheme.SecondaryTxt
+                    : colorScheme == "dark"
+                    ? "white"
+                    : "#2F2D51"
+                }
+              />
+            </TouchableOpacity>
+
+            <View className="flex-row justify-between mt-3 items-end">
+              {item.status === "Answered" ? (
+                <>
+                  <View className="flex-row bg-green-300 px-2 py-1 rounded-md items-center">
+                    <Text className="font-inter-medium text-light-primary dark:text-dark-background">
+                      Answered on {item?.answeredDate?.split(",")[0]}
+                    </Text>
+                  </View>
+                </>
+              ) : item.status === "Archived" ? (
+                <Text
+                  style={getSecondaryTextColorStyle(actualTheme)}
+                  className="font-inter-medium text-sm  text-light-primary dark:text-dark-primary"
+                >
+                  Archived
+                </Text>
+              ) : (
+                <View className="flex-row items-end w-full justify-end">
+                  {isReminder?.reminder.prayer_id === item.id ? (
+                    <MaterialCommunityIcons
+                      name="bell-check-outline"
+                      size={24}
+                      color={
+                        actualTheme && actualTheme.SecondaryTxt
+                          ? actualTheme.SecondaryTxt
+                          : colorScheme === "dark"
+                          ? "#a5c9ff"
+                          : "#2f2d51"
+                      }
+                    />
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => addReminder(item)}
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
+                      className="flex-row items-center justify-center bg-light-primary dark:bg-dark-accent p-3 rounded-md gap-2"
+                    >
+                      <FontAwesome
+                        name="bell-o"
+                        size={20}
+                        color={
+                          actualTheme && actualTheme.PrimaryTxt
+                            ? actualTheme.PrimaryTxt
+                            : colorScheme === "dark"
+                            ? "#121212"
+                            : "#f2f7ff"
+                        }
+                      />
+
+                      {/* <Text
+                        style={getPrimaryTextColorStyle(actualTheme)}
+                        className="font-inter-semibold text-base text-light-background dark:text-dark-background"
+                      >
+                        Reminder
+                      </Text> */}
+                    </TouchableOpacity>
+                  )}
+
+                  {/* {versesEnabled && (
+                    <TouchableOpacity
+                      onPress={() => getBibleVerse(item)}
+                      style={getPrimaryBackgroundColorStyle(actualTheme)}
+                      className="flex-row items-center bg-light-primary dark:bg-dark-accent p-2 rounded-md gap-2"
+                    >
+                      <FontAwesome5
+                        name="bible"
+                        size={22}
+                        color={colorScheme === "dark" ? "#121212" : "white"}
+                      />
+                    </TouchableOpacity>
+                  )} */}
+                </View>
+              )}
+            </View>
+          </>
+        </View>
+      </>
+    );
+  };
+
+  return (
+    <View className="flex-1">
+      <VerseModal
+        verseModal={verseModal}
+        setVerseModal={setVerseModal}
+        isLoadingVerse={isLoadingVerse}
+        verse={verse}
+        actualTheme={actualTheme}
+        colorScheme={colorScheme}
+      />
+      <View className="flex-row items-center my-5 gap-5">
+        <PrayerTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          titles={["Active", "Answered", "Archived"]}
+          actualTheme={actualTheme}
+          colorScheme={colorScheme}
+        />
+      </View>
+
+      <FlatList
+        data={filteredList}
+        contentContainerStyle={{ flexGrow: 1, gap: 10, paddingBottom: 10 }} // Increased bottom padding and added flexGrow
+        keyExtractor={(item) => item.id.toString()}
+        onEndReachedThreshold={0}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View className="flex-1 items-center h-full justify-center gap-2">
+            <View
+              style={getSecondaryBackgroundColorStyle(actualTheme)}
+              className="bg-light-secondary  gap-5 w-4/5 dark:bg-dark-secondary items-center justify-center p-3 rounded-lg"
+            >
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-center text-2xl font-inter-bold text-light-primary dark:text-dark-primary"
+              >
+                Your
+                {activeTab === "Archived"
+                  ? " archive "
+                  : activeTab === "Answered"
+                  ? " answered list "
+                  : " prayer list "}
+                is empty.
+              </Text>
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="text-center font-inter-regular text-lg text-light-primary dark:text-dark-primary"
+              >
+                {activeTab === "Archived"
+                  ? "When you don't need an active prayer for the moment, but don't want to delete it, you can archive it. You will not receive reminders for archived prayers."
+                  : activeTab === "Answered"
+                  ? "Mark a prayer as answered by clicking the three dots on an active prayer and select 'Mark as answered'."
+                  : "Add a prayer using your voice or just type it in!"}
+              </Text>
+            </View>
+          </View>
+        )}
+        ListFooterComponent={() => <View className="h-32" />}
+        onScroll={onScroll}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+};
+
+export default ListItems;

@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { persistReducer } from "redux-persist";
+
+import { persistReducer,FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import thunk from "redux-thunk";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,5 +42,12 @@ const persReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
   reducer: persReducer,
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+  // middleware:(getDefaultMiddleware) =>
+  //       getDefaultMiddleware().concat(thunk),
 });

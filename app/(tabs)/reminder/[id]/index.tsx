@@ -1,5 +1,13 @@
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
-import React from "react";
+import {
+  Alert,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, router, useLocalSearchParams, useNavigation } from "expo-router";
 
 import { getSecondaryTextColorStyle } from "@lib/customStyles";
@@ -17,32 +25,37 @@ import Animated, {
   withTiming,
   useSharedValue,
   interpolateColor,
+  cancelAnimation,
+  runOnJS,
+  withRepeat,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
 import { switchPrayerStatus } from "@redux/prayerReducer";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { Container } from "@components/Container";
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+// const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const SingleReminderScreen = () => {
   const { colorScheme } = useColorScheme();
   const dispatch = useDispatch();
   const prayerList = useSelector((state: any) => state.prayer.prayer);
   const reminders = useSelector(
-    (state: { reminder: { reminders: any[] } }) => state.reminder.reminders,
+    (state: { reminder: { reminders: any[] } }) => state.reminder.reminders
   );
   const navigation = useNavigation();
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
   const { id } = useLocalSearchParams();
 
   const singleReminder = reminders.find(
-    (reminder) => reminder.reminder.id === id,
+    (reminder) => reminder.reminder.id === id
   );
 
   const prayer = prayerList.find(
-    (p: any) => p.id === singleReminder?.reminder?.prayer_id,
+    (p: any) => p.id === singleReminder?.reminder?.prayer_id
   );
 
   //   console.log(JSON.stringify(singleReminder, null, 2));
@@ -91,14 +104,27 @@ const SingleReminderScreen = () => {
 
   const buttonProgress = useSharedValue(0);
   const textProgress = useSharedValue(0);
+  const holdProgress = useSharedValue(0);
+  const buttonWidth = useSharedValue(0);
+  const buttonHeight = useSharedValue(0);
+  const [showAmenModal, setShowAmenModal] = useState(false);
+  const hapticsIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pulse = useSharedValue(0);
 
   const animatedButtonStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(
         buttonProgress.value,
         [0, 1],
-        [colorScheme === "dark" ? "#a5c9ff" : "#2f2d51", "#4ade80"],
+        [colorScheme === "dark" ? "#a5c9ff" : "#2f2d51", "#4ade80"]
       ),
+
+      transform: [{ scale: 1 + 0.025 * pulse.value }], // pulse the button itself
+      borderWidth: 1 + 6.5 * pulse.value, // grows from 1 → 3
+      borderColor:
+        colorScheme === "light"
+          ? `rgba(186, 185, 216, ${0.5 + 0.5 * (1 - pulse.value)})`
+          : `rgba(67, 142, 255, ${0.5 + 0.5 * (1 - pulse.value)})`,
     };
   });
 
@@ -107,7 +133,7 @@ const SingleReminderScreen = () => {
       color: interpolateColor(
         buttonProgress.value,
         [0, 1],
-        [colorScheme === "dark" ? "#121212" : "#ffffff", "#000000"],
+        [colorScheme === "dark" ? "#121212" : "#ffffff", "#000000"]
       ),
     };
   });
@@ -121,26 +147,85 @@ const SingleReminderScreen = () => {
     position: "absolute",
   }));
 
-  function handleAmen() {
-    posthog.capture("Amen");
-    buttonProgress.value = withTiming(1, { duration: 800 });
-    textProgress.value = withTiming(1, { duration: 800 });
-    dispatch(handleReminderAmen(singleReminder.reminder.id));
+  const fillStyle = useAnimatedStyle(() => ({
+    width: buttonWidth.value * holdProgress.value,
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "#4ade80",
+  }));
 
-    setTimeout(() => router.push(REMINDER_SCREEN), 1000);
+  useEffect(() => {
+    pulse.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
+  }, []);
+
+  function handleAmenSuccess() {
+    posthog.capture("Amen");
+    dispatch(handleReminderAmen(singleReminder.reminder.id));
+    setShowAmenModal(true);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setTimeout(() => setShowAmenModal(false), 5000);
+    setTimeout(() => router.push(REMINDER_SCREEN), 5050);
     if (singleReminder.ocurrence === "None") {
       setTimeout(
         () => dispatch(deleteReminder(singleReminder?.reminder.id)),
-        1300,
+        1600
       );
     }
   }
 
-  console.log(singleReminder);
+  const startHaptics = () => {
+    if (hapticsIntervalRef.current) return;
+    // Initial haptic feedback when starting to hold
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Continuous haptic feedback during hold with less frequent intervals
+    hapticsIntervalRef.current = setInterval(() => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }, 200);
+  };
+
+  const stopHaptics = () => {
+    if (hapticsIntervalRef.current) {
+      clearInterval(hapticsIntervalRef.current);
+      hapticsIntervalRef.current = null;
+    }
+  };
+
+  const stopHapticsWithFeedback = () => {
+    if (hapticsIntervalRef.current) {
+      clearInterval(hapticsIntervalRef.current);
+      hapticsIntervalRef.current = null;
+      // Provide subtle feedback when releasing early
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const holdGesture = Gesture.LongPress()
+    .minDuration(1200)
+    .onBegin(() => {
+      cancelAnimation(holdProgress);
+      holdProgress.value = withTiming(1, { duration: 1200 }, (finished) => {
+        if (finished) {
+          runOnJS(stopHaptics)();
+          runOnJS(handleAmenSuccess)();
+        }
+      });
+      runOnJS(startHaptics)();
+    })
+    .onFinalize(() => {
+      if (holdProgress.value < 1) {
+        cancelAnimation(holdProgress);
+        holdProgress.value = withTiming(0, { duration: 200 });
+        runOnJS(stopHapticsWithFeedback)();
+      } else {
+        runOnJS(stopHaptics)();
+      }
+    });
 
   function handlePrayerStatus(
     prayer: any,
-    newStatus: "Active" | "Answered" | "Archived" | null,
+    newStatus: "Active" | "Answered" | "Archived" | null
   ) {
     dispatch(switchPrayerStatus({ prayer, newStatus }));
   }
@@ -214,7 +299,7 @@ const SingleReminderScreen = () => {
                     style: "destructive",
                     onPress: dismissNotification,
                   },
-                ],
+                ]
               )
             }
           >
@@ -308,7 +393,6 @@ const SingleReminderScreen = () => {
                   </Pressable>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                  <DropdownMenu.Label>Change Status</DropdownMenu.Label>
                   <DropdownMenu.Item
                     onSelect={() => handlePrayerStatus(prayer, "Active")}
                     key="1"
@@ -392,26 +476,58 @@ const SingleReminderScreen = () => {
           )}
         </View>
       </ScrollView>
-      <AnimatedPressable
-        onPress={handleAmen}
-        style={[animatedButtonStyle]}
-        className="mt-auto flex-row gap-2 absolute bottom-0 self-center w-full mb-4 p-4 rounded-lg justify-center items-center"
-      >
-        <View className="items-center justify-center">
-          <Animated.Text
-            style={[animatedTextStyle, animatedTextContentStyle]}
-            className="font-inter-bold text-lg"
+      <GestureDetector gesture={holdGesture}>
+        <View className="mt-auto absolute bottom-0 self-center w-full mb-4">
+          {/* Pulse ring behind the button (full-width, not clipped) */}
+          {/* <Animated.View style={[pulseRingStyle]} /> */}
+          {/* Actual button with clipping for fill overlay */}
+          {/* <Animated.View style={[pulseBorderStyle]} /> */}
+          <Animated.View
+            onLayout={(e) => {
+              buttonWidth.value = e.nativeEvent.layout.width;
+              buttonHeight.value = e.nativeEvent.layout.height;
+            }}
+            style={[animatedButtonStyle, { overflow: "hidden", zIndex: 1 }]}
+            className="w-full flex-row gap-2 p-5 rounded-lg justify-center items-center"
           >
-            Amen 🙏
-          </Animated.Text>
-          <Animated.Text
-            style={[animatedTextStyle, animatedCheckStyle]}
-            className="font-inter-bold text-lg"
-          >
-            ✓
-          </Animated.Text>
+            <Animated.View pointerEvents="none" style={[fillStyle]} />
+            <View className="items-center justify-center">
+              <Animated.Text
+                style={[animatedTextStyle, animatedTextContentStyle]}
+                className="font-inter-bold text-lg"
+              >
+                Hold to say Amen 🙏
+              </Animated.Text>
+              <Animated.Text
+                style={[animatedTextStyle, animatedCheckStyle]}
+                className="font-inter-bold text-lg"
+              >
+                ✓
+              </Animated.Text>
+            </View>
+          </Animated.View>
         </View>
-      </AnimatedPressable>
+      </GestureDetector>
+
+      <Modal
+        transparent
+        visible={showAmenModal}
+        animationType="fade"
+        onRequestClose={() => setShowAmenModal(false)}
+      >
+        <View className="flex-1 items-center justify-center">
+          <View className="bg-[#00000099] absolute inset-0" />
+          <View className="bg-light-secondary dark:bg-dark-secondary px-6 py-4 w-4/5 rounded-xl items-center justify-center">
+            <Text className="font-inter-semibold text-xl text-light-primary dark:text-dark-primary">
+              Every single prayer counts.
+            </Text>
+            <Text className="font-inter-regular text-sm text-light-primary dark:text-dark-primary mt-1">
+              “For the eyes of the Lord are on the righteous, and His ears are
+              open to their prayers.” – 1 Peter 3:12
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </Container>
   );
 };

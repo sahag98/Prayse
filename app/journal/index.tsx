@@ -14,7 +14,7 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { JOURNAL_SCREEN } from "@routes";
 
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 
 const JournalScreen = () => {
   const { colorScheme } = useColorScheme();
@@ -55,7 +55,7 @@ const JournalScreen = () => {
                   style: "destructive",
                   onPress: handleDeleteAllJournals,
                 },
-              ],
+              ]
             );
           }}
         >
@@ -70,7 +70,7 @@ const JournalScreen = () => {
             {(() => {
               const currentMonth = Moment().month();
               const journalsInMonth = journals.filter(
-                (journal) => Moment(journal.date).month() === currentMonth,
+                (journal) => Moment(journal.date).month() === currentMonth
               );
               return journalsInMonth.length;
             })()}
@@ -92,7 +92,7 @@ const JournalScreen = () => {
             {(() => {
               const totalMinutes = journals.reduce(
                 (acc, journal) => acc + Number(journal.time),
-                0,
+                0
               );
               const hours = (totalMinutes / 60).toFixed(1);
               return `${hours} hrs`;
@@ -146,11 +146,12 @@ const JournalScreen = () => {
                       {item.type === "video"
                         ? `${Math.floor(Number(item.time) / 60)
                             .toString()
-                            .padStart(
-                              2,
-                              "0",
-                            )}:${(Number(item.time) % 60).toString().padStart(2, "0")}`
-                        : `${Math.floor(Number(item.time) / 60)}:${Number(item.time) % 60}`}
+                            .padStart(2, "0")}:${(Number(item.time) % 60)
+                            .toString()
+                            .padStart(2, "0")}`
+                        : `${Math.floor(Number(item.time) / 60)}:${
+                            Number(item.time) % 60
+                          }`}
                     </Text>
                   </View>
                 </View>
@@ -166,11 +167,14 @@ const JournalScreen = () => {
                       {Moment(item.date).isSame(Moment(), "day")
                         ? "Today"
                         : Moment(item.date).isSame(
-                              Moment().subtract(1, "days"),
-                              "day",
-                            )
-                          ? "Yesterday"
-                          : `${Moment().diff(Moment(item.date), "days")} days ago`}
+                            Moment().subtract(1, "days"),
+                            "day"
+                          )
+                        ? "Yesterday"
+                        : `${Moment().diff(
+                            Moment(item.date),
+                            "days"
+                          )} days ago`}
                     </Text>
                   </View>
                 </View>

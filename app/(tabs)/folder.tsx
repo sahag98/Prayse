@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, router, useNavigation } from "expo-router";
+import { Redirect, useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
 
 import Folder from "../../components/Folder";
@@ -13,6 +13,7 @@ import { Platform } from "react-native";
 import { UpdateModal } from "@modals/update-modal";
 import { useSelector } from "react-redux";
 import { ActualTheme } from "../../types/reduxTypes";
+
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -46,7 +47,7 @@ async function sendToken(expoPushToken: string) {
   });
 }
 
-async function registerForPushNotificationsAsync() {
+export async function registerForPushNotificationsAsync() {
   let token;
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
@@ -67,7 +68,7 @@ async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       console.log(
-        "To recieve notifications in the future, enable Notifications from the App Settings.",
+        "To recieve notifications in the future, enable Notifications from the App Settings."
       );
       return;
     }
@@ -89,7 +90,7 @@ export default function MainScreen() {
   const { colorScheme } = useColorScheme();
   const [isFirst, setIsFirst] = useState(false);
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
 
   const loadIsFirstTime = async () => {
@@ -102,8 +103,8 @@ export default function MainScreen() {
         if (hasNewUpdate) {
           console.log("hasNewUpdate is not null");
         } else {
-          await AsyncStorage.setItem("newUpdate2", "true");
-          router.push("new-update");
+          // await AsyncStorage.setItem("newUpdate2", "true");
+          // router.push("new-update");
         }
       } else {
         setIsFirst(true);

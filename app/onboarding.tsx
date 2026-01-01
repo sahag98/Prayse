@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { router } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -24,6 +23,7 @@ import Animated, {
 import { useSelector } from "react-redux";
 
 import { getMainBackgroundColorStyle } from "@lib/customStyles";
+import { ActualTheme } from "../types/reduxTypes";
 
 import bible from "../assets/Bible.png";
 import prayseIcon from "../assets/prayse-logo.png";
@@ -63,7 +63,7 @@ export default function OnboardingScreen() {
   const data = onboardingSteps[screenIndex];
 
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
   const { colorScheme } = useColorScheme();
 
@@ -85,16 +85,16 @@ export default function OnboardingScreen() {
     }
   };
 
-  const endOnboarding = () => {
+  function endOnboarding() {
     setScreenIndex(0);
     router.push("/(tabs)/folder");
     // navigation.navigate("/(tabs)");
     // router.push("/");
-  };
+  }
 
   const swipes = Gesture.Simultaneous(
     Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack),
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
   );
 
   return (

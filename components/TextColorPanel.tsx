@@ -5,7 +5,6 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
-import type { returnedResults } from "reanimated-color-picker";
 import ColorPicker, {
   colorKit,
   HueSlider,
@@ -40,7 +39,7 @@ export default function TextColorPanel({
     backgroundColor: selectedColor.value,
   }));
 
-  const onColorSelect = (color: returnedResults) => {
+  const onColorSelect = (color: any) => {
     // "worklet";
     selectedColor.value = color.hex;
 

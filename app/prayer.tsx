@@ -6,9 +6,15 @@ import Home from "../components/Home";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 
+interface RootState {
+  prayer: {
+    prayer: Prayer[];
+  };
+}
+
 const PrayerScreen = () => {
   const navigation = useNavigation();
-  const prayerList = useSelector((state: any) => state.prayer.prayer);
+  const prayerList = useSelector((state: RootState) => state.prayer.prayer);
   const { prayers, id, title, setoldPrayer } = useLocalSearchParams();
   const { colorScheme } = useColorScheme();
   return (

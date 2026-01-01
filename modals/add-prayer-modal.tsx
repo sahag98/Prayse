@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPrayer, editPrayer } from "@redux/prayerReducer";
 import { posthog } from "@lib/posthog";
 import EncouragementModal from "./encouragement-modal";
-import { getRandomEncouragement } from "@lib/encouragement";
+import { getRandomEncouragement, EncouragementData } from "@lib/encouragement";
 const AddPrayerModal = ({
   actualTheme,
   colorScheme,
@@ -38,7 +38,8 @@ const AddPrayerModal = ({
   const dispatch = useDispatch();
   const prayerList = useSelector((state: any) => state.prayer.prayer);
   const [showEncouragement, setShowEncouragement] = useState(false);
-  const [encouragementData, setEncouragementData] = useState<any>(null);
+  const [encouragementData, setEncouragementData] =
+    useState<EncouragementData | null>(null);
 
   // ref
   //   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -75,8 +76,15 @@ const AddPrayerModal = ({
           folderId,
           date: new Date().toLocaleString(),
           id: newId,
-        }),
+        })
       );
+
+      // Close modal immediately for smooth transition
+      addPrayerBottomSheetModalRef.current?.close();
+      setPrayerTitle("");
+      setPrayerNote("");
+      setIsEditing(false);
+      posthog.capture("Adding prayer");
 
       // Check if this is the first prayer overall or a milestone prayer
       const totalPrayers = prayerList.length;
@@ -85,9 +93,12 @@ const AddPrayerModal = ({
         totalPrayers > 0 && (totalPrayers + 1) % 5 === 0;
 
       if (isFirstPrayer || isMilestonePrayer) {
-        const encouragement = getRandomEncouragement(isFirstPrayer);
-        setEncouragementData(encouragement);
-        setShowEncouragement(true);
+        // Small delay to ensure modal is closed before showing encouragement
+        setTimeout(() => {
+          const encouragement = getRandomEncouragement(isFirstPrayer);
+          setEncouragementData(encouragement);
+          setShowEncouragement(true);
+        }, 100);
       }
       // const randomTime = getRandomTime();
       // console.log("random time: ", randomTime);
@@ -128,18 +139,16 @@ const AddPrayerModal = ({
           folderId,
           date: prayertoBeEdited.date,
           id: prayertoBeEdited.id,
-        }),
+        })
       );
       setIsEditing(false);
-
       setPrayertoBeEdited(null);
-    }
 
-    setPrayerTitle("");
-    setPrayerNote("");
-    posthog.capture("Adding prayer");
-    setIsEditing(false);
-    addPrayerBottomSheetModalRef.current.close();
+      // Close modal immediately for smooth transition
+      addPrayerBottomSheetModalRef.current?.close();
+      setPrayerTitle("");
+      setPrayerNote("");
+    }
   };
 
   const handleCloseEncouragement = () => {
@@ -161,20 +170,10 @@ const AddPrayerModal = ({
         }}
         keyboardBehavior="extend"
         handleIndicatorStyle={{
-          backgroundColor:
-            actualTheme && actualTheme.MainTxt
-              ? actualTheme.MainTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51",
+          backgroundColor: colorScheme === "dark" ? "white" : "#2f2d51",
         }}
         handleStyle={{
-          backgroundColor:
-            actualTheme && actualTheme.Bg
-              ? actualTheme.Bg
-              : colorScheme === "dark"
-                ? "#212121"
-                : "#f2f7ff",
+          backgroundColor: colorScheme === "dark" ? "#212121" : "#f2f7ff",
         }}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
@@ -206,15 +205,15 @@ const AddPrayerModal = ({
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               // autoFocus={true}
               onChangeText={(text) => setPrayerTitle(text)}
@@ -238,15 +237,15 @@ const AddPrayerModal = ({
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               selectionColor={
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
               // autoFocus={true}
               onChangeText={(text) => setPrayerNote(text)}
@@ -261,7 +260,7 @@ const AddPrayerModal = ({
                 ? "bg-[#2e2e2e]"
                 : "bg-gray-400",
               prayerTitle && "bg-light-primary dark:bg-dark-accent",
-              " p-4 items-center justify-center rounded-lg w-full",
+              " p-4 items-center justify-center rounded-lg w-full"
             )}
           >
             <Text className="font-inter-semibold text-lg text-light-background dark:text-dark-background">

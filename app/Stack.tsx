@@ -7,6 +7,7 @@ import {
   GOSPEL_SCREEN,
   NEW_UPDATE_SCREEN,
   ONBOARDING_SCREEN,
+  PEOPLE_SCREEN,
   PRAISE_SCREEN,
   PRAYER_ROOM_SCREEN,
   PRAYER_SCREEN,
@@ -15,11 +16,13 @@ import {
   QUESTION_SCREEN,
   SETTINGS_SCREEN,
   SINGLE_REMINDER_SCREEN,
-  TEST_SCREEN,
+  SET_REMINDER_SCREEN,
   VERSE_OF_THE_DAY_SCREEN,
   WALLPAPERS_SCREEN,
   YOUR_THEMES_SCREEN,
   JOURNAL_SCREEN,
+  ADD_FRIEND_SCREEN,
+  PROGRESS_SCREEN,
 } from "@routes";
 import { useNotificationObserver } from "@components/NotificationObserver";
 import { useColorScheme } from "nativewind";
@@ -36,7 +39,7 @@ const StackContainer = () => {
             contentStyle: {
               backgroundColor: colorScheme === "dark" ? "#121212" : "#f2f7ff",
             },
-            animation: "fade",
+            // animation: "fade",
             headerShown: false,
           }}
         />
@@ -57,6 +60,7 @@ const StackContainer = () => {
             headerShown: false,
           }}
         />
+
         {/* <Stack.Screen
           name={OLD_PRAYER_SCREEN}
           options={{ headerShown: false }}
@@ -97,11 +101,29 @@ const StackContainer = () => {
           options={{ headerShown: false }}
         /> */}
         {/* <Stack.Screen name="prayer" options={{ headerShown: false }} /> */}
-        <Stack.Screen name={TEST_SCREEN} options={{ headerShown: false }} />
+        <Stack.Screen
+          name={SET_REMINDER_SCREEN}
+          options={{ headerShown: false }}
+        />
 
         <Stack.Screen
           name={PRAYER_ROOM_SCREEN}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={PEOPLE_SCREEN}
+          options={{
+            presentation: "modal",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name={PROGRESS_SCREEN} options={{ headerShown: false }} />
+        <Stack.Screen
+          name={ADD_FRIEND_SCREEN}
+          options={{
+            presentation: "modal",
+            headerShown: false,
+          }}
         />
         {/* 
         <Stack.Screen

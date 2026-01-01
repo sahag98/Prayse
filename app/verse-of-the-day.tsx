@@ -40,10 +40,36 @@ import { ActualTheme } from "../types/reduxTypes";
 import { Container } from "@components/Container";
 import HeaderText from "@components/HeaderText";
 
+interface VerseData {
+  _id: string;
+  _updatedAt: string;
+  _createdAt: string;
+  image?: string;
+  chapter: string;
+  verse: string;
+}
+
+interface FavoriteVerseItem {
+  verse: {
+    _id: string;
+    verse: string;
+    chapter: string;
+  };
+}
+
+interface RootState {
+  favorites: {
+    favoriteVerses: FavoriteVerseItem[];
+  };
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
+
 const VerseOfTheDayScreen = () => {
-  const favorites = useSelector((state: any) => state.favorites.favoriteVerses);
+  const favorites = useSelector((state: RootState) => state.favorites.favoriteVerses);
   const dispatch = useDispatch();
-  const [verse, setVerse] = useState<any>([]);
+  const [verse, setVerse] = useState<VerseData[]>([]);
 
   const routeParams = useLocalSearchParams();
 
@@ -54,7 +80,7 @@ const VerseOfTheDayScreen = () => {
 
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
 
   useFocusEffect(
@@ -66,13 +92,13 @@ const VerseOfTheDayScreen = () => {
       scaleValue.value = withRepeat(
         withSequence(
           withTiming(1.5, { duration: 30000, easing: Easing.linear }),
-          withTiming(1, { duration: 30000, easing: Easing.linear }),
+          withTiming(1, { duration: 30000, easing: Easing.linear })
         ),
         -1,
-        true,
+        true
       );
       // Return function is invoked whenever the route gets out of focus.
-    }, []),
+    }, [])
   );
 
   const loadDailyVerse = () => {
@@ -94,25 +120,26 @@ const VerseOfTheDayScreen = () => {
       });
   };
 
-  const onShare = async (verse: string, chapter: string) => {
-    if (verse && chapter) {
-      const shareVerse = verse + " - " + chapter;
+  const onShare = async (verseText: string, chapter: string) => {
+    if (verseText && chapter) {
+      const shareVerse = verseText + " - " + chapter;
 
       try {
         await Share.share({
           message: shareVerse,
         });
-      } catch (error: any) {
-        Alert.alert(error.message);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to share";
+        Alert.alert(errorMessage);
       }
     }
   };
 
-  const HandleFavorites = (verse: any) => {
+  const HandleFavorites = (verse: VerseData) => {
     dispatch(
       addToFavorites({
         verse,
-      }),
+      })
     );
   };
 
@@ -169,7 +196,7 @@ const VerseOfTheDayScreen = () => {
             <AntDesign
               name="right"
               size={24}
-              color={colorScheme === "dark" ? "white" : "#2f2d51"}
+              color={colorScheme === "dark" ? "#121212" : "#2f2d51"}
             />
           </Pressable>
         </Link>
@@ -188,7 +215,7 @@ const VerseOfTheDayScreen = () => {
 
           <View className="flex-row  w-full justify-evenly mt-5 items-center">
             {favorites.some(
-              (favorite: any) => favorite.verse.verse === verse[0].verse,
+              (favorite) => favorite.verse.verse === verse[0].verse
             ) ? (
               <Text className="font-inter-semibold text-xl dark:text-white text-light-primary ">
                 Saved

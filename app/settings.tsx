@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as Application from "expo-application";
 import * as Device from "expo-device";
@@ -19,15 +18,25 @@ import { large, regular, small } from "../redux/userReducer";
 import { MORE_SCREEN } from "../routes";
 import { Container } from "@components/Container";
 import HeaderText from "@components/HeaderText";
+import { ActualTheme } from "../types/reduxTypes";
+
+interface RootState {
+  user: {
+    fontSize: number;
+  };
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
 
 const SettingsScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const size = useSelector((state) => state.user.fontSize);
+  const size = useSelector((state: RootState) => state.user.fontSize);
   const dispatch = useDispatch();
 
   const { colorScheme, setColorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme,
   );
 
   useEffect(() => {
@@ -35,7 +44,7 @@ const SettingsScreen = () => {
     getPermission();
   }, []);
 
-  async function sendToken(expoPushToken) {
+  async function sendToken(expoPushToken: string) {
     const message = {
       to: expoPushToken,
       sound: "default",
@@ -91,7 +100,7 @@ const SettingsScreen = () => {
     }
   };
 
-  const changeFont = (font) => {
+  const changeFont = (font: "large" | "regular" | "small") => {
     if (font === "large") {
       dispatch(large());
     }

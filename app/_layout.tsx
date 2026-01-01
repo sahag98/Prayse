@@ -1,8 +1,18 @@
 import React, { useEffect } from "react";
 import { isRunningInExpoGo } from "expo";
 
+if (typeof global.structuredClone === "undefined") {
+  global.structuredClone = (obj: unknown, options?: any) => {
+    try {
+      return JSON.parse(JSON.stringify(obj));
+    } catch (error) {
+      console.warn("structuredClone polyfill failed:", error);
+      return obj;
+    }
+  };
+}
+
 import { SplashScreen, useNavigationContainerRef } from "expo-router";
-// import AnimatedSplash from "react-native-animated-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { Provider } from "react-redux";
@@ -33,6 +43,7 @@ import "react-native-url-polyfill/auto";
 import "expo-dev-client";
 
 import { vexo } from "vexo-analytics";
+import { Text, View } from "react-native";
 
 function loadGlobalCSS() {
   try {
@@ -77,7 +88,7 @@ function App() {
       Overwrite 'success' type,
       by modifying the existing `BaseToast` component
     */
-    success: (props: any) => (
+    success: (props: React.ComponentProps<typeof BaseToast>) => (
       <BaseToast
         {...props}
         style={{
@@ -97,7 +108,7 @@ function App() {
         }}
       />
     ),
-    edit: (props: any) => (
+    edit: (props: React.ComponentProps<typeof BaseToast>) => (
       <BaseToast
         {...props}
         style={{
@@ -121,7 +132,7 @@ function App() {
       Overwrite 'error' type,
       by modifying the existing `ErrorToast` component
     */
-    error: (props: any) => (
+    error: (props: React.ComponentProps<typeof ErrorToast>) => (
       <ErrorToast
         {...props}
         style={{
@@ -176,11 +187,9 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-              {/* <SafeAreaProvider> */}
               <SupabaseProvider>
                 <StackContainer />
               </SupabaseProvider>
-              {/* </SafeAreaProvider> */}
             </PersistGate>
           </Provider>
         </QueryClientProvider>
@@ -190,4 +199,6 @@ function App() {
   );
 }
 
-export default Sentry.wrap(App);
+// export default Sentry.wrap(App);
+
+export default App;

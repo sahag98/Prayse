@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -25,12 +24,23 @@ import {
 } from "@lib/customStyles";
 import { togglePrayerQuestions, togglePrayerVerses } from "@redux/proReducer";
 import { WALLPAPERS_SCREEN, YOUR_THEMES_SCREEN } from "@routes";
+import { ActualTheme } from "../types/reduxTypes";
+
+interface RootState {
+  theme: {
+    actualTheme: ActualTheme;
+  };
+  pro: {
+    prayer_verses: boolean;
+    prayer_questions: boolean;
+  };
+}
 
 const ProScreen = () => {
   const { colorScheme } = useColorScheme();
-  const actualTheme = useSelector((state) => state.theme.actualTheme);
-  const versesEnabled = useSelector((state) => state.pro.prayer_verses);
-  const questionsEnabled = useSelector((state) => state.pro.prayer_questions);
+  const actualTheme = useSelector((state: RootState) => state.theme.actualTheme);
+  const versesEnabled = useSelector((state: RootState) => state.pro.prayer_verses);
+  const questionsEnabled = useSelector((state: RootState) => state.pro.prayer_questions);
 
   const dispatch = useDispatch();
 
@@ -51,11 +61,12 @@ const ProScreen = () => {
   }
 
   return (
-    <View
-      showsVerticalScrollIndicator={false}
-      style={getMainBackgroundColorStyle(actualTheme)}
-      className="bg-light-background dark:bg-dark-background"
-    >
+    <View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={getMainBackgroundColorStyle(actualTheme)}
+          className="bg-light-background dark:bg-dark-background"
+        >
       <View>
         <Link href="/welcome">
           <View className="flex-row items-center justify-between gap-2">
@@ -348,8 +359,9 @@ const ProScreen = () => {
           </TouchableOpacity>
         </Link>
       </View> */}
-    </View>
-  );
-};
-
-export default ProScreen;
+        </ScrollView>
+      </View>
+    );
+  };
+  
+  export default ProScreen;

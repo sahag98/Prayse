@@ -1,12 +1,13 @@
 export type Prayer = {
-  category: string;
+  category?: string;
   date: string;
   folder: string;
   folderId: string;
   id: string;
   status: string;
   prayer: string;
-  verse: string;
+  verse?: string;
+  notes?: string;
 };
 
 export type AnsweredPrayer = {

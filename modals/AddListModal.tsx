@@ -46,20 +46,10 @@ const AddListModal = ({
         }}
         containerStyle={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
         handleIndicatorStyle={{
-          backgroundColor:
-            actualTheme && actualTheme.MainTxt
-              ? actualTheme.MainTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51",
+          backgroundColor: colorScheme === "dark" ? "white" : "#2f2d51",
         }}
         handleStyle={{
-          backgroundColor:
-            actualTheme && actualTheme.Bg
-              ? actualTheme.Bg
-              : colorScheme === "dark"
-                ? "#212121"
-                : "#f2f7ff",
+          backgroundColor: colorScheme === "dark" ? "#212121" : "#f2f7ff",
         }}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
@@ -122,15 +112,15 @@ const AddListModal = ({
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
+                ? "white"
+                : "#2f2d51"
             }
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "white"
-                  : "#2f2d51"
+                ? "white"
+                : "#2f2d51"
             }
             // autoFocus={true}
             onChangeText={(text) => setFolderName(text)}

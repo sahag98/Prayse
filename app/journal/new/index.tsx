@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Linking,
 } from "react-native";
 import React, { useMemo, useRef, useState } from "react";
 import { Container } from "@components/Container";
@@ -17,7 +18,8 @@ import {
   useMicrophonePermissions,
 } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
+import Feather from "@expo/vector-icons/Feather";
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -46,7 +48,7 @@ const NewJournal = () => {
     useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [lastVideoDuration, setLastVideoDuration] = useState<number | null>(
-    null,
+    null
   );
   const [title, setTitle] = useState("");
   const { handleAddJournal, reviewRequested, setReviewRequested, journals } =
@@ -121,19 +123,23 @@ const NewJournal = () => {
   if (!permission.granted || !micPermission.granted) {
     return (
       <View className="flex-1 bg-light-background dark:bg-dark-background items-center justify-center gap-4 p-4">
-        <Text className="w-4/5 text-center font-inter-medium text-lg text-light-primary dark:text-dark-primary">
-          We need permission to use the camera and microphone to record your
-          journal.
+        <Feather
+          name="alert-circle"
+          size={80}
+          color={colorScheme === "dark" ? "white" : "#2f2d51"}
+        />
+        <Text className="w-4/5 text-center font-inter-medium text-balance text-lg text-light-primary dark:text-dark-primary">
+          Permissions were denied. Please enable camera and microphone
+          permissions in your device settings to use this feature.
         </Text>
         <Pressable
-          className="w-full items-center justify-center rounded-xl border bg-light-primary dark:bg-dark-primary p-3"
+          className="w-full items-center justify-center rounded-xl border bg-light-primary dark:bg-dark-primary p-4"
           onPress={() => {
-            requestPermission();
-            requestMicPermission();
+            Linking.openSettings();
           }}
         >
           <Text className="font-inter-bold text-base text-light-background dark:text-dark-background">
-            Allow
+            Open Settings
           </Text>
         </Pressable>
       </View>
@@ -374,8 +380,8 @@ const NewJournal = () => {
                 {isRecording
                   ? formatTime(recordingSeconds)
                   : lastVideoDuration !== null
-                    ? formatTime(lastVideoDuration)
-                    : "00:00"}
+                  ? formatTime(lastVideoDuration)
+                  : "00:00"}
               </Text>
             </View>
 
@@ -432,7 +438,7 @@ const NewJournal = () => {
         visible={showEncouragement && encouragementData !== null}
         onClose={handleCloseEncouragement}
         actualTheme={null}
-        colorScheme={colorScheme}
+        colorScheme={colorScheme!}
         message={encouragementData?.message || ""}
         verse={encouragementData?.verse || { text: "", reference: "" }}
       />

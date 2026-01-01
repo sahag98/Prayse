@@ -9,6 +9,7 @@ import {
 import Moment from "moment";
 import uuid from "react-native-uuid";
 import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   AntDesign,
@@ -28,7 +29,13 @@ import Animated, {
 import { posthog } from "@lib/posthog";
 
 import { addFolder } from "../redux/folderReducer";
-import { JOURNAL_SCREEN, PRAYER_ROOM_SCREEN, PRAYER_SCREEN } from "../routes";
+import {
+  JOURNAL_SCREEN,
+  PEOPLE_SCREEN,
+  PRAYER_ROOM_SCREEN,
+  PRAYER_SCREEN,
+  PROGRESS_SCREEN,
+} from "../routes";
 
 import FolderItem from "./FolderItem";
 import { ActualTheme } from "../types/reduxTypes";
@@ -37,7 +44,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { CheckReview } from "@hooks/useShowReview";
 import { router } from "expo-router";
 import { cn } from "@lib/utils";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 import * as Haptics from "expo-haptics";
 
 const Folder = ({
@@ -49,13 +56,14 @@ const Folder = ({
 }) => {
   const folders = useSelector((state: any) => state.folder.folders);
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const tabTranslateX = useSharedValue(0);
   const [folderName, setFolderName] = useState("");
   const [prayerTab, setPrayerTab] = useState("lists");
   const [tabWidth, setTabWidth] = useState(0);
+  const [showPeopleBadge, setShowPeopleBadge] = useState(false);
   const { journals, reviewRequested, setReviewRequested } = useStore();
   const plusOpacity = useSharedValue(prayerTab === "lists" ? 1 : 0);
   const videoOpacity = useSharedValue(prayerTab === "journals" ? 1 : 0);
@@ -65,6 +73,23 @@ const Folder = ({
     flatListOpacity.value = 0;
     flatListOpacity.value = withTiming(1, { duration: 300 });
   }, [prayerTab]);
+
+  // Check if people badge should be shown
+  useEffect(() => {
+    const checkPeopleBadge = async () => {
+      try {
+        const hasSeenPeopleBadge = await AsyncStorage.getItem(
+          "hasSeenPeopleBadge"
+        );
+        if (!hasSeenPeopleBadge) {
+          setShowPeopleBadge(true);
+        }
+      } catch (error) {
+        console.log("Error checking people badge:", error);
+      }
+    };
+    checkPeopleBadge();
+  }, []);
   const flatListAnimatedStyle = useAnimatedStyle(() => ({
     opacity: flatListOpacity.value,
   }));
@@ -102,12 +127,15 @@ const Folder = ({
 
   async function addNewFolder() {
     const newId = uuid.v4();
+    if (process.env.EXPO_OS === "ios") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
     dispatch(
       addFolder({
         id: newId,
         name: folderName,
         prayers: [],
-      }),
+      })
     );
     if (reviewRequested) {
       navigation.navigate(PRAYER_SCREEN, {
@@ -131,6 +159,16 @@ const Folder = ({
     navigation.navigate(PRAYER_ROOM_SCREEN);
   };
 
+  const handlePeopleBadgePress = async () => {
+    try {
+      await AsyncStorage.setItem("hasSeenPeopleBadge", "true");
+      setShowPeopleBadge(false);
+      navigation.navigate(PEOPLE_SCREEN);
+    } catch (error) {
+      console.log("Error saving people badge state:", error);
+    }
+  };
+
   const renderItem = ({ item }: any) => {
     return (
       <FolderItem
@@ -144,13 +182,42 @@ const Folder = ({
   return (
     <>
       <View className="px-4 h-full">
-        <View className="mt-0 flex-row justify-between items-center">
-          <Text
-            style={getMainTextColorStyle(actualTheme)}
-            className="pb-3 font-inter-bold text-3xl text-light-primary dark:text-dark-primary"
+        <View className="mt-0 mb-4 flex-row justify-between items-center">
+          <Pressable
+            onPress={() => router.push(`/${PROGRESS_SCREEN}`)}
+            hitSlop={12}
           >
-            Prayer
-          </Text>
+            <Text
+              style={getMainTextColorStyle(actualTheme)}
+              className="pb-3 font-inter-bold text-3xl text-light-primary dark:text-dark-primary"
+            >
+              Prayer
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={handlePeopleBadgePress}
+            className="bg-light-secondary flex-row items-center gap-4 dark:bg-dark-secondary p-4 rounded-full relative"
+          >
+            <Text className="font-inter-bold text-lg text-light-primary dark:text-dark-primary">
+              People
+            </Text>
+            <MaterialCommunityIcons
+              name="account-group"
+              size={24}
+              color={
+                actualTheme && actualTheme.PrimaryTxt
+                  ? actualTheme.PrimaryTxt
+                  : colorScheme === "dark"
+                  ? "white"
+                  : "#2f2d51"
+              }
+            />
+            {showPeopleBadge && (
+              <View className="absolute -top-4 -right-1 bg-red-500 rounded-full  p-2 items-center justify-center">
+                <Text className="text-white text-xs font-inter-bold">NEW</Text>
+              </View>
+            )}
+          </Pressable>
         </View>
         <View
           onLayout={(e) => {
@@ -188,7 +255,7 @@ const Folder = ({
                 "font-inter-bold",
                 prayerTab === "lists"
                   ? "text-light-background text-lg dark:text-dark-background"
-                  : "text-light-primary text-lg dark:text-dark-primary",
+                  : "text-light-primary text-lg dark:text-dark-primary"
               )}
             >
               Lists
@@ -205,7 +272,7 @@ const Folder = ({
                 "font-inter-bold",
                 prayerTab === "journals"
                   ? "text-light-background text-lg dark:text-dark-background"
-                  : "text-light-primary text-lg dark:text-dark-primary",
+                  : "text-light-primary text-lg dark:text-dark-primary"
               )}
             >
               Journals
@@ -236,8 +303,8 @@ const Folder = ({
                         actualTheme && actualTheme.MainTxt
                           ? actualTheme.MainTxt
                           : colorScheme === "dark"
-                            ? "white"
-                            : "#2f2d51"
+                          ? "white"
+                          : "#2f2d51"
                       }
                     />
                     <Text
@@ -312,8 +379,8 @@ const Folder = ({
                           actualTheme && actualTheme.PrimaryTxt
                             ? actualTheme.PrimaryTxt
                             : colorScheme === "dark"
-                              ? "white"
-                              : "#2f2d51"
+                            ? "white"
+                            : "#2f2d51"
                         }
                       />
                       <Text className="font-inter-semibold text-xl text-light-primary dark:text-dark-primary">
@@ -374,14 +441,14 @@ const Folder = ({
                               {Moment(item.date).isSame(Moment(), "day")
                                 ? "Today"
                                 : Moment(item.date).isSame(
-                                      Moment().subtract(1, "days"),
-                                      "day",
-                                    )
-                                  ? "Yesterday"
-                                  : `${Moment().diff(
-                                      Moment(item.date),
-                                      "days",
-                                    )} days ago`}
+                                    Moment().subtract(1, "days"),
+                                    "day"
+                                  )
+                                ? "Yesterday"
+                                : `${Moment().diff(
+                                    Moment(item.date),
+                                    "days"
+                                  )} days ago`}
                             </Text>
                           </View>
                         </View>
@@ -410,17 +477,14 @@ const Folder = ({
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
           <TouchableOpacity
             style={getPrimaryBackgroundColorStyle(actualTheme)}
             onPress={() => {
-              if (process.env.EXPO_OS === "ios") {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              }
               if (prayerTab === "lists") {
                 bottomSheetModalRef.current?.present();
                 posthog.capture("Create folder");
@@ -444,8 +508,8 @@ const Folder = ({
                     actualTheme && actualTheme.PrimaryTxt
                       ? actualTheme.PrimaryTxt
                       : colorScheme === "dark"
-                        ? "#121212"
-                        : "white"
+                      ? "#121212"
+                      : "white"
                   }
                 />
               </Animated.View>
@@ -462,8 +526,8 @@ const Folder = ({
                     actualTheme && actualTheme.PrimaryTxt
                       ? actualTheme.PrimaryTxt
                       : colorScheme === "dark"
-                        ? "#121212"
-                        : "white"
+                      ? "#121212"
+                      : "white"
                   }
                 />
               </Animated.View>

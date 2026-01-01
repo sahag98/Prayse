@@ -79,22 +79,12 @@ const AddPraiseModal = ({
         ref={praiseBottomSheetRef}
         index={0}
         handleIndicatorStyle={{
-          backgroundColor:
-            actualTheme && actualTheme.MainTxt
-              ? actualTheme.MainTxt
-              : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51",
+          backgroundColor: colorScheme === "dark" ? "white" : "#2f2d51",
         }}
         handleStyle={{
           // borderTopWidth: 1,
           // borderTopColor: "gainsboro",
-          backgroundColor:
-            actualTheme && actualTheme.Bg
-              ? actualTheme.Bg
-              : colorScheme === "dark"
-                ? "#212121"
-                : "#f2f7ff",
+          backgroundColor: colorScheme === "dark" ? "#212121" : "#f2f7ff",
         }}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
@@ -126,15 +116,15 @@ const AddPraiseModal = ({
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "#e0e0e0"
-                  : "#2f2d51"
+                ? "#e0e0e0"
+                : "#2f2d51"
             }
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
-                  ? "#e0e0e0"
-                  : "#2f2d51"
+                ? "#e0e0e0"
+                : "#2f2d51"
             }
             defaultValue={newPraise}
             onChangeText={setNewPraise}

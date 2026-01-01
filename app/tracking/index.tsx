@@ -2,7 +2,7 @@ import { Dimensions, Pressable, ScrollView, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 import { Link } from "expo-router";
 import { WELCOME_SCREEN } from "@routes";
 import { ContributionGraph } from "react-native-chart-kit";
@@ -44,7 +44,7 @@ const TrackingScreen = () => {
   const verseoftheday = useStore((state) => state.verseoftheday);
   // console.log(prayers);
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
 
   const { colorScheme } = useColorScheme();
@@ -80,8 +80,8 @@ const TrackingScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "light"
-                    ? "#2f2d51"
-                    : "white"
+                  ? "#2f2d51"
+                  : "white"
               }
             />
           </Pressable>

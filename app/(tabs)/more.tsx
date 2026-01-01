@@ -44,7 +44,7 @@ import { ActualTheme } from "../../types/reduxTypes";
 const MoreScreen = () => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
 
   async function shareApp(market: string) {
@@ -75,8 +75,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -94,8 +94,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -113,8 +113,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -158,8 +158,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -177,8 +177,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -199,8 +199,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -211,15 +211,15 @@ const MoreScreen = () => {
       id: 2,
       icon: (
         <AntDesign
-          name="infocirlceo"
+          name="info-circle"
           className="mr-3"
           size={24}
           color={
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -237,8 +237,8 @@ const MoreScreen = () => {
             actualTheme && actualTheme.SecondaryTxt
               ? actualTheme.SecondaryTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51"
+              ? "white"
+              : "#2f2d51"
           }
         />
       ),
@@ -334,8 +334,8 @@ const MoreScreen = () => {
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
@@ -357,8 +357,8 @@ const MoreScreen = () => {
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>

@@ -38,16 +38,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Gpad from "../assets/pads/g.mp3";
 import Dpad from "../assets/pads/d.mp3";
 import ABpad from "../assets/pads/ab.mp3";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 import { CheckReview } from "@hooks/useShowReview";
 
 const PrayerRoom = () => {
   const prayers = useSelector(
-    (state: { prayer: { prayer: Prayer[] } }) => state.prayer.prayer,
+    (state: { prayer: { prayer: Prayer[] } }) => state.prayer.prayer
   );
 
   const unarchivedPrayers = prayers.filter(
-    (prayer) => prayer.status !== "Archived",
+    (prayer) => prayer.status !== "Archived"
   );
 
   const [sound, setSound] = useState<Audio.Sound>();
@@ -61,7 +61,7 @@ const PrayerRoom = () => {
   const dispatch = useDispatch();
 
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
 
   const allQuestions = [
@@ -248,7 +248,7 @@ const PrayerRoom = () => {
   useEffect(() => {
     pressFadeIn.value = withDelay(
       12000,
-      withTiming(1, { duration: 3000, easing: Easing.ease }),
+      withTiming(1, { duration: 3000, easing: Easing.ease })
     );
     const fetchSaying = async () => {
       try {
@@ -307,7 +307,7 @@ const PrayerRoom = () => {
           await sound.setVolumeAsync(currentVolume);
           currentVolume += incrementStep;
           await new Promise((resolve) =>
-            setTimeout(resolve, fadeDuration / (0.9 / incrementStep)),
+            setTimeout(resolve, fadeDuration / (0.9 / incrementStep))
           );
         }
 
@@ -380,7 +380,7 @@ const PrayerRoom = () => {
         id: uuid.v4(),
         name: "Folder",
         prayers: [],
-      }),
+      })
     );
     setIsEndingPrayer(true);
     pauseSound();
@@ -407,8 +407,8 @@ const PrayerRoom = () => {
           isPlayingSound && step !== 3
             ? nextStep
             : isPlayingSound && step === 3
-              ? endPrayer
-              : beginPrayer
+            ? endPrayer
+            : beginPrayer
         }
         className="flex-1 px-4"
       >
@@ -430,8 +430,8 @@ const PrayerRoom = () => {
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : colorScheme === "light"
-                      ? "#2f2d51"
-                      : "white"
+                    ? "#2f2d51"
+                    : "white"
                 }
               />
             </TouchableOpacity>
@@ -514,7 +514,7 @@ function PrayerPreparation({
 
   function getRandomQuestions(
     arr: { title: string; verses?: string[] }[],
-    num: number,
+    num: number
   ) {
     const fixedQuestion = {
       title: "Who is on your heart to pray for today?",
@@ -528,7 +528,7 @@ function PrayerPreparation({
 
     const arrayCopy = arr.filter(
       (q) =>
-        q.title !== fixedQuestion.title && q.title !== fixedLastQuestion.title,
+        q.title !== fixedQuestion.title && q.title !== fixedLastQuestion.title
     );
 
     // Shuffle the array
@@ -578,14 +578,14 @@ function PrayerPreparation({
         withTiming(1, {
           duration: 3000,
           easing: Easing.ease,
-        }),
+        })
       );
       thanksFadeIn.value = withDelay(
         6000, // Delay to ensure previous texts have faded out
         withTiming(1, {
           duration: 3000,
           easing: Easing.ease,
-        }),
+        })
       );
     }
   }, [isPlayingSound]);
@@ -604,7 +604,7 @@ function PrayerPreparation({
       withTiming(1, {
         duration: 3000,
         easing: Easing.ease,
-      }),
+      })
     );
 
     promptFadeIn.value = withDelay(
@@ -612,21 +612,21 @@ function PrayerPreparation({
       withTiming(1, {
         duration: 3000,
         easing: Easing.ease,
-      }),
+      })
     );
     momentFadeIn.value = withDelay(
       8000,
       withTiming(1, {
         duration: 3000,
         easing: Easing.ease,
-      }),
+      })
     );
 
     // Start the hover animation
     hoverTranslateY.value = withRepeat(
       withTiming(10, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
       -1,
-      true,
+      true
     );
   }, []);
 
@@ -668,7 +668,7 @@ function PrayerPreparation({
                 onPress={handleCreateFolder}
                 style={[thanksFadeInStyle, hoverStyle]}
                 className={cn(
-                  " bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg",
+                  " bg-light-secondary/50 dark:bg-[#292929] w-3/4 p-2 rounded-lg"
                 )}
               >
                 <Animated.Text
@@ -692,7 +692,7 @@ function PrayerPreparation({
                     style={[thanksFadeInStyle, hoverStyle]}
                     className={cn(
                       " bg-light-secondary/50 dark:bg-[#292929] w-fit p-2 rounded-lg",
-                      idx % 2 && "ml-auto",
+                      idx % 2 && "ml-auto"
                     )}
                   >
                     <Animated.Text
@@ -821,14 +821,14 @@ function AnimatedBackground() {
       top1.value = withRepeat(withTiming(0.2 * height, options), -1, true);
       top2.value = withDelay(
         1000,
-        withRepeat(withTiming(0.4 * height, options), -1, true),
+        withRepeat(withTiming(0.4 * height, options), -1, true)
       );
       top3.value = withDelay(
         2000,
-        withRepeat(withTiming(0.6 * height, options), -1, true),
+        withRepeat(withTiming(0.6 * height, options), -1, true)
       );
       // Return function is invoked whenever the route gets out of focus.
-    }, []),
+    }, [])
   );
   return (
     <View className="absolute top-0 overflow-hidden bottom-0 left-0 right-0 items-center">
@@ -871,8 +871,8 @@ const ProgressBar = ({
                   ? "white"
                   : "#2f2d51"
                 : colorScheme === "dark"
-                  ? "#525252"
-                  : "#d1d0d0",
+                ? "#525252"
+                : "#d1d0d0",
           }}
         />
       ))}

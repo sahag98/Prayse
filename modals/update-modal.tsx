@@ -18,6 +18,7 @@ import {
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
 import { ActualTheme } from "@types/reduxTypes";
+import { supabase } from "@lib/supabase";
 
 interface UpdateModalProps {
   theme: string;
@@ -27,14 +28,15 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   theme,
   actualTheme,
 }) => {
-  const { supabase } = useSupabase();
   const [hasUpdate, setHasUpdate] = React.useState(false);
 
   async function fetchUpdate() {
+    console.log("fetchUpdate");
     try {
       const { data: update } = await supabase
         .from("update")
         .select("isUpdateAvailable");
+      console.log("update", update);
 
       if (!update.length) {
         return;
@@ -99,12 +101,12 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               onPress={() => {
                 if (Platform.OS === "android") {
                   Linking.openURL(
-                    "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp",
+                    "https://play.google.com/store/apps/details?id=com.sahag98.prayerListApp"
                   );
                 }
                 if (Platform.OS === "ios") {
                   Linking.openURL(
-                    "https://apps.apple.com/us/app/prayse-prayer-journal/id6443480347",
+                    "https://apps.apple.com/us/app/prayse-prayer-journal/id6443480347"
                   );
                 }
               }}
