@@ -33,6 +33,7 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
+        "NPM_FLAGS": "--legacy-peer-deps",
         "EXPO_PUBLIC_STREAM_API_KEY": "ywjtrtqun6y5",
         "EXPO_PUBLIC_IOS_ITEM_ID": "6443480347",
         "EXPO_PUBLIC_ANDROID_PACKAGE_NAME": "com.sahag98.prayerListApp",

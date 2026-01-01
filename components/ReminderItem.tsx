@@ -25,7 +25,7 @@ type Reminder = {
   id: string;
   message: string;
   note: string;
-  time: Date;
+  time: Date | string; // Can be Date or ISO string (stored as string in Redux)
 };
 
 const ReminderItem = ({

@@ -7,22 +7,41 @@ import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { getMainTextColorStyle } from "@lib/customStyles";
 
-import FavoriteVerses from "../components/FavoriteVerses";
+import FavoriteVerses from "../components/FavoriteVerse";
 import { VERSE_OF_THE_DAY_SCREEN } from "../routes";
 import { Container } from "@components/Container";
 import HeaderText from "@components/HeaderText";
 import { ActualTheme } from "../types/reduxTypes";
 
+interface FavoriteVerseItem {
+  verse: {
+    _id: string;
+    verse: string;
+    chapter: string;
+  };
+}
+
+interface RootState {
+  favorites: {
+    favoriteVerses: FavoriteVerseItem[];
+  };
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
+
 const FavoritesScreen = () => {
-  const favorites = useSelector((state: any) => state.favorites.favoriteVerses);
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.favoriteVerses
+  );
 
   const { colorScheme } = useColorScheme();
 
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme
   );
 
-  const renderFavoriteVerses = ({ item }: { item: any }) => {
+  const renderFavoriteVerses = ({ item }: { item: FavoriteVerseItem }) => {
     return (
       <FavoriteVerses
         item={item.verse}
@@ -44,8 +63,8 @@ const FavoritesScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>

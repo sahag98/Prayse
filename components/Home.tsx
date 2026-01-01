@@ -1,8 +1,14 @@
-//@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { useColorScheme } from "nativewind";
-import { Animated, Platform, View } from "react-native";
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
+import { ScrollView } from "react-native";
 
 import PrayerBottomModal from "@modals/PrayerBottomModal";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -11,12 +17,33 @@ import { getMainBackgroundColorStyle } from "@lib/customStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import InputModal from "../modals/InputModal";
-import { PrayerContainer } from "../styles/appStyles";
 
 import Header from "./Header";
 import ListItems from "./ListItems";
 import { router } from "expo-router";
 import AddPrayerModal from "@modals/add-prayer-modal";
+import { ActualTheme, Prayer } from "../types/reduxTypes";
+
+interface HomeProps {
+  navigation: any;
+  prayerList: Prayer[];
+  folderName: string;
+  oldPrayers: any[];
+  setoldPrayer: (prayers: any[]) => void;
+  folderId: string;
+}
+
+interface RootState {
+  theme: {
+    actualTheme: ActualTheme;
+  };
+  user: {
+    theme: string;
+  };
+  prayer: {
+    prayer: Prayer[];
+  };
+}
 
 const Home = ({
   navigation,
@@ -25,13 +52,13 @@ const Home = ({
   oldPrayers,
   setoldPrayer,
   folderId,
-}) => {
+}: HomeProps) => {
   const { colorScheme } = useColorScheme();
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme
   );
   const addPrayerBottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const theme = useSelector((state) => state.user.theme);
+  const theme = useSelector((state: RootState) => state.user.theme);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
   const [prayerTitle, setPrayerTitle] = useState("");
@@ -48,7 +75,7 @@ const Home = ({
   //   (state) => state.answered.answeredPrayers
   // );
 
-  const [prayer, setPrayer] = useState(null);
+  const [prayer, setPrayer] = useState<Prayer | null>(null);
 
   const prayerBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -57,7 +84,9 @@ const Home = ({
 
   const { current: velocity } = useRef(new Animated.Value(0));
 
-  const onScroll = ({ nativeEvent }) => {
+  const onScroll = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<NativeScrollEvent>) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
     if (!isIOS) {
@@ -82,24 +111,24 @@ const Home = ({
     prayerBottomSheetModalRef.current?.close();
   };
 
-  function pickedPrayer(prayer) {
+  function pickedPrayer(prayer: Prayer) {
     handleOpenBottomModal();
     setPrayer(prayer);
   }
 
-  const handleAddOldPrayers = (todo) => {
+  const handleAddOldPrayers = (todo: any) => {
     const newTodos = [todo, ...oldPrayers];
     AsyncStorage.setItem("storedTodos", JSON.stringify(newTodos))
       .then(() => {
         setoldPrayer(newTodos);
         setModalVisible(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error: Error) => console.log(error));
   };
 
-  const [prayertoBeEdited, setPrayertoBeEdited] = useState(null);
+  const [prayertoBeEdited, setPrayertoBeEdited] = useState<Prayer | null>(null);
 
-  const handleTriggerEdit = (item) => {
+  const handleTriggerEdit = (item: Prayer) => {
     console.log("prayer to edit:", item);
     setIsEditing(true);
     handleCloseBottomModal();
@@ -110,7 +139,7 @@ const Home = ({
     // setModalVisible(true);
     addPrayerBottomSheetModalRef.current?.present();
     setPrayerTitle(item.prayer);
-    setPrayerNote(item.notes);
+    setPrayerNote(item.notes ?? "");
   };
 
   return (
@@ -157,34 +186,32 @@ const Home = ({
             />
           </View>
 
-          {!prayer && (
-            <>
-              <InputModal
-                addPrayerBottomSheetModalRef={addPrayerBottomSheetModalRef}
-                actualTheme={actualTheme}
-                colorScheme={colorScheme}
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                setTaskName={setTaskName}
-                taskName={taskName}
-                folderName={folderName}
-                folderId={folderId}
-                animatedValue={velocity}
-                extended={extended}
-                isIOS={isIOS}
-                // isExtended={isExtended}
-                theme={theme}
-                prayerTitle={prayerTitle}
-                setPrayerTitle={setPrayerTitle}
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                oldPrayers={oldPrayers}
-                handleAddOldPrayers={handleAddOldPrayers}
-                prayertoBeEdited={prayertoBeEdited}
-                setPrayertoBeEdited={setPrayertoBeEdited}
-              />
-            </>
-          )}
+          {/* {!prayer && (
+            <> */}
+          <InputModal
+            addPrayerBottomSheetModalRef={
+              addPrayerBottomSheetModalRef as React.RefObject<BottomSheetModal>
+            }
+            actualTheme={actualTheme}
+            colorScheme={colorScheme}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            setTaskName={setTaskName}
+            taskName={taskName}
+            folderName={folderName}
+            folderId={folderId}
+            animatedValue={velocity}
+            extended={extended}
+            isIOS={isIOS}
+            prayerTitle={prayerTitle}
+            setPrayerTitle={setPrayerTitle}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            prayertoBeEdited={prayertoBeEdited}
+            setPrayertoBeEdited={setPrayertoBeEdited}
+          />
+          {/* </>
+          )} */}
         </View>
       </View>
       <PrayerBottomModal

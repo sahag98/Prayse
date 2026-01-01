@@ -8,13 +8,25 @@ import { useSelector } from "react-redux";
 
 import { FOLDER_SCREEN, MORE_SCREEN, REMINDER_SCREEN } from "@routes";
 import { ActualTheme } from "../../types/reduxTypes";
+import { Platform } from "react-native";
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
 
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
+
+  const tabBarBackgroundColor =
+    actualTheme && actualTheme.Bg
+      ? actualTheme.Bg
+      : colorScheme === "dark"
+      ? "#212121"
+      : "white";
+
+  const isDarkMode = colorScheme === "dark";
+
+  const tabBarBorderColor = isDarkMode ? "#383838" : "#E5E5EA";
 
   return (
     <>
@@ -26,42 +38,37 @@ export default function TabLayout() {
             actualTheme.Bg === "#0C192F")
             ? "light"
             : actualTheme && actualTheme.Bg === "white"
-              ? "dark"
-              : colorScheme === "dark"
-                ? "light"
-                : "dark"
+            ? "dark"
+            : colorScheme === "dark"
+            ? "light"
+            : "dark"
         }
       />
 
       <Tabs
         initialRouteName={FOLDER_SCREEN}
+        detachInactiveScreens={Platform.OS !== "ios"}
         screenOptions={{
-          animation: "fade",
+          animation: "shift",
           headerShown: false,
           tabBarActiveTintColor:
             actualTheme && actualTheme.MainTxt
               ? actualTheme.MainTxt
               : colorScheme === "dark"
-                ? "white"
-                : "#2f2d51",
+              ? "white"
+              : "#2f2d51",
           tabBarInactiveTintColor: "gray",
         }}
       >
         <Tabs.Screen
           name={REMINDER_SCREEN}
           options={{
-            animation: "shift",
-            // title: "Reminders",
-
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#212121"
-                    : "white",
+              backgroundColor: tabBarBackgroundColor,
+              borderTopColor: tabBarBorderColor,
+              borderTopWidth: 1,
             },
 
             tabBarIcon: ({ color, focused }) => (
@@ -76,17 +83,12 @@ export default function TabLayout() {
         <Tabs.Screen
           name={FOLDER_SCREEN}
           options={{
-            animation: "shift",
-            // title: "Prayer",
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#212121"
-                    : "white",
+              backgroundColor: tabBarBackgroundColor,
+              borderTopColor: tabBarBorderColor,
+              borderTopWidth: 1,
             },
 
             tabBarIcon: ({ color, size, focused }) => (
@@ -102,17 +104,12 @@ export default function TabLayout() {
         <Tabs.Screen
           name={MORE_SCREEN}
           options={{
-            animation: "shift",
-            // title: "More",
             tabBarShowLabel: false,
             tabBarLabelStyle: { fontSize: 11, fontFamily: "Inter-Medium" },
             tabBarStyle: {
-              backgroundColor:
-                actualTheme && actualTheme.Bg
-                  ? actualTheme.Bg
-                  : colorScheme === "dark"
-                    ? "#212121"
-                    : "white",
+              backgroundColor: tabBarBackgroundColor,
+              borderTopColor: tabBarBorderColor,
+              borderTopWidth: 1,
             },
 
             tabBarIcon: ({ color, size, focused }) => (

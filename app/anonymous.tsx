@@ -20,30 +20,47 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@node_modules/axios";
 import { ANON_SCREEN } from "@routes";
 import { cn } from "@lib/utils";
+import { Database } from "../database.types";
+
+type AnonymousRow = Database["public"]["Tables"]["anonymous"]["Row"];
+type AnonymousUpdate = Database["public"]["Tables"]["anonymous"]["Update"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+interface AnonymousPrayer extends AnonymousRow {
+  profiles: Profile | null;
+}
+
+interface SupabaseContext {
+  supabase: ReturnType<
+    typeof import("@supabase/supabase-js").createClient<Database>
+  >;
+  currentUser: Profile | null;
+}
+
 const AnonymousScreen = () => {
   const { colorScheme } = useColorScheme();
-  const { currentUser, supabase } = useSupabase();
+  const { currentUser, supabase } = useSupabase() as unknown as SupabaseContext;
   const prayerBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<AnonymousPrayer[]>({
     queryKey: ["anonprayers"],
     queryFn: getAnonymousPrayers,
   });
-  async function getAnonymousPrayers() {
+  async function getAnonymousPrayers(): Promise<AnonymousPrayer[]> {
     const { data } = await supabase
       .from("anonymous")
       .select("*, profiles(*)")
       .order("id", { ascending: false });
 
-    return data as [];
+    return (data as AnonymousPrayer[]) || [];
   }
 
-  async function incrementPrayer(id: string) {
+  async function incrementPrayer(id: number) {
     const { data: currentData, error: fetchError } = await supabase
       .from("anonymous")
-      .select("prayers, profiles(*)")
+      .select("prayers, title, profiles(*)")
       .eq("id", id)
       .single();
 
@@ -52,7 +69,12 @@ const AnonymousScreen = () => {
       return;
     }
 
-    if (currentData.profiles && currentData.profiles.expoToken) {
+    if (
+      currentData &&
+      currentData.profiles &&
+      currentData.profiles.expoToken &&
+      currentData.title
+    ) {
       const message = {
         to: currentData.profiles.expoToken,
         sound: "default",
@@ -74,7 +96,9 @@ const AnonymousScreen = () => {
     // Step 2: Increment and update
     await supabase
       .from("anonymous")
-      .update({ prayers: currentData.prayers + 1 })
+      .update({
+        prayers: (currentData.prayers ?? 0) + 1,
+      } satisfies AnonymousUpdate)
       .eq("id", id);
 
     queryClient.invalidateQueries({ queryKey: ["anonprayers"] });
@@ -135,16 +159,16 @@ const AnonymousScreen = () => {
           flexGrow: 1,
           gap: 10,
         }}
-        renderItem={({ item }: { item: any }) => (
+        renderItem={({ item }: { item: AnonymousPrayer }) => (
           <View className=" gap-4 bg-light-secondary dark:bg-dark-secondary rounded-lg p-4 justify-between">
             <View className="flex-row items-center justify-between gap-2">
-              {item.user_id ? (
+              {item.user_id && item.profiles ? (
                 <Text className="text-light-primary dark:text-dark-primary font-inter-semibold">
-                  {item.profiles.full_name}
+                  {item.profiles.full_name || "Unknown"}
                 </Text>
               ) : (
                 <Text className="text-light-primary dark:text-dark-primary font-inter-semibold">
-                  {item.anon_name}
+                  {item.anon_name || "Anonymous"}
                 </Text>
               )}
 
@@ -167,23 +191,23 @@ const AnonymousScreen = () => {
                 size={18}
                 color={
                   colorScheme === "dark"
-                    ? item.prayers > 0
+                    ? (item.prayers ?? 0) > 0
                       ? "#ff3333"
                       : "white"
-                    : item.prayers > 0
-                      ? "red"
-                      : "#2f2d51"
+                    : (item.prayers ?? 0) > 0
+                    ? "red"
+                    : "#2f2d51"
                 }
               />
               <Text
                 className={cn(
                   "font-inter-medium",
-                  item.prayers > 0
+                  (item.prayers ?? 0) > 0
                     ? "text-red-500"
-                    : "dark:text-dark-primary text-light-primary",
+                    : "dark:text-dark-primary text-light-primary"
                 )}
               >
-                {item?.prayers}
+                {item.prayers ?? 0}
               </Text>
             </Pressable>
 

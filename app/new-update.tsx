@@ -3,9 +3,10 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { Image } from "expo-image";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 import { router } from "expo-router";
 import { FOLDER_SCREEN } from "@routes";
+import { UpdateItemType } from "../types/appTypes";
 
 const NewUpdate = () => {
   const { handleShowUpdate } = useStore();
@@ -63,7 +64,7 @@ const NewUpdate = () => {
         data={update}
         contentContainerStyle={{ flexGrow: 1, gap: 10 }}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item: any) => item.title}
+        keyExtractor={(item: UpdateItemType) => item.title}
         renderItem={({ item }: { item: UpdateItemType }) => (
           <UpdateItem item={item} />
         )}

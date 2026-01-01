@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -12,17 +11,28 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { resetTheme, setTheme } from "@redux/themeReducer";
 import { YOUR_THEMES_SCREEN } from "@routes";
 
+interface RootState {
+  theme: {
+    customBg: string;
+    customPrimary: string;
+    customPrimaryTxt: string;
+    customSecondary: string;
+    customSecondaryTxt: string;
+    customMainTxt: string;
+  };
+}
+
 const CreateThemeScreen = () => {
   const { colorScheme } = useColorScheme();
-  const customBg = useSelector((state) => state.theme.customBg);
-  const customPrimary = useSelector((state) => state.theme.customPrimary);
-  const customPrimaryTxt = useSelector((state) => state.theme.customPrimaryTxt);
-  const customSecondary = useSelector((state) => state.theme.customSecondary);
+  const customBg = useSelector((state: RootState) => state.theme.customBg);
+  const customPrimary = useSelector((state: RootState) => state.theme.customPrimary);
+  const customPrimaryTxt = useSelector((state: RootState) => state.theme.customPrimaryTxt);
+  const customSecondary = useSelector((state: RootState) => state.theme.customSecondary);
   const customSecondaryTxt = useSelector(
-    (state) => state.theme.customSecondaryTxt,
+    (state: RootState) => state.theme.customSecondaryTxt,
   );
 
-  const customMainTxt = useSelector((state) => state.theme.customMainTxt);
+  const customMainTxt = useSelector((state: RootState) => state.theme.customMainTxt);
 
   const dispatch = useDispatch();
 

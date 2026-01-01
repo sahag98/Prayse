@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React from "react";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -17,11 +15,30 @@ import {
 } from "@lib/customStyles";
 import { resetTheme, selectTheme } from "@redux/themeReducer";
 import { CREATE_THEME_SCREEN } from "@routes";
+import { ActualTheme } from "../types/reduxTypes";
+
+interface AvailableTheme {
+  id: number;
+  Bg: string;
+  MainTxt: string;
+  Primary: string;
+  Secondary: string;
+  PrimaryTxt: string;
+  SecondaryTxt: string;
+  Accent: string;
+  AccentTxt: string;
+}
+
+interface RootState {
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
 
 const YourThemesScreen = () => {
   const { colorScheme } = useColorScheme();
 
-  const availableThemes = [
+  const availableThemes: AvailableTheme[] = [
     {
       id: 1,
       Bg: "white",
@@ -94,7 +111,7 @@ const YourThemesScreen = () => {
 
   const dispatch = useDispatch();
 
-  const actualTheme = useSelector((state) => state.theme.actualTheme);
+  const actualTheme = useSelector((state: RootState) => state.theme.actualTheme);
 
   console.log("actual theme: ", actualTheme);
   return (
@@ -162,7 +179,7 @@ const YourThemesScreen = () => {
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             data={availableThemes}
-            renderItem={({ item }) => (
+            renderItem={({ item }: { item: AvailableTheme }) => (
               <TouchableOpacity
                 onPress={() => dispatch(selectTheme(item))}
                 style={getSecondaryBackgroundColorStyle(actualTheme)}

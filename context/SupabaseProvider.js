@@ -12,6 +12,7 @@ import "react-native-url-polyfill/auto";
 import { useRouter } from "expo-router";
 import { COMMUNITY_SCREEN, HOME_SCREEN, WELCOME_SCREEN } from "@routes";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@lib/supabase";
 
 // We are using Expo Secure Store to persist session info
 const ExpoSecureStoreAdapter = {
@@ -53,20 +54,21 @@ export const SupabaseProvider = (props) => {
 
   const queryClient = useQueryClient();
 
-  const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-    auth: {
-      storage: ExpoSecureStoreAdapter,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: false,
-    },
-  });
+  // const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+  //   auth: {
+  //     storage: ExpoSecureStoreAdapter,
+  //     autoRefreshToken: true,
+  //     persistSession: true,
+  //     detectSessionInUrl: false,
+  //   },
+  // });
 
   const getGoogleOAuthUrl = async () => {
     const result = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: "prayseapp://google-auth",
+        skipBrowserRedirect: true,
         // prayseapp://google-auth
         // exp://192.168.1.110:19000
       },
@@ -93,11 +95,11 @@ export const SupabaseProvider = (props) => {
     setLoggedIn(true);
 
     // Add navigation logic here
-    if (profiles[0] && profiles[0].full_name !== null) {
-      router.replace(`${HOME_SCREEN}?active=community`);
-    } else if (profiles[0] && profiles[0].full_name === null) {
-      router.replace("profile-setup");
-    }
+    // if (profiles[0] && profiles[0].full_name !== null) {
+    //   router.replace(`${HOME_SCREEN}?active=community`);
+    // } else if (profiles[0] && profiles[0].full_name === null) {
+    //   router.replace("profile-setup");
+    // }
   };
 
   const showToast = (type, content) => {
@@ -116,13 +118,13 @@ export const SupabaseProvider = (props) => {
 
     const profiles = await checkIfUserIsLoggedIn();
 
-    if (profiles[0] && profiles[0].full_name !== null) {
-      router.push("/(tabs)/explore");
-    } else if (profiles[0] && profiles[0].full_name === null) {
-      router.push("profile-setup");
-    }
-    if (error) showToast("error", "Invalid login credentials.");
-    if (error) throw error;
+    // if (profiles[0] && profiles[0].full_name !== null) {
+    //   router.push("/(tabs)/explore");
+    // } else if (profiles[0] && profiles[0].full_name === null) {
+    //   router.push("profile-setup");
+    // }
+    // if (error) showToast("error", "Invalid login credentials.");
+    // if (error) throw error;
     setLoggedIn(true);
   };
 
@@ -148,6 +150,7 @@ export const SupabaseProvider = (props) => {
     console.log("logging out");
     setLoggedIn(false);
     setSession(null);
+    setCurrentUser(null);
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
 
@@ -252,7 +255,44 @@ export const SupabaseProvider = (props) => {
     }
   };
 
+  async function getUser(user) {
+    if (user) {
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id);
+
+      if (profiles) {
+        setCurrentUser(profiles[0]);
+      }
+    }
+  }
+
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const user = session?.user;
+      if (user) {
+        getUser(user);
+        // getUser(user);
+      } else {
+        console.log("no user");
+
+        // setIsReady(true);
+      }
+
+      // setIsReady(true);
+      // console.log('get session: ', user);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+
+      if (user) {
+        getUser(user);
+      } else {
+        console.log("no user");
+      }
+    });
     // fetchQuestions();
     // fetchLatestQuestion();
     // fetchPublicGroups();
@@ -309,6 +349,7 @@ export const SupabaseProvider = (props) => {
         fetchTestQuestions,
         setNewPost,
         newAnswer,
+        getUser,
         publicGroups,
         fetchLatestQuestion,
         fetchQuestions,

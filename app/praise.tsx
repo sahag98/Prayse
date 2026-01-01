@@ -34,18 +34,33 @@ import AddPraiseModal from "@modals/add-praise-modal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//@ts-ignore
+// @ts-ignore - Image asset import
 import praiseImg from "../assets/praise-list.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PraiseHelpModal from "@modals/praise-help-modal";
+import { Database } from "../database.types";
+
+type PraiseRow = Database["public"]["Tables"]["praises"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+interface Praise extends PraiseRow {
+  profiles: Profile | null;
+}
+
+interface SupabaseContext {
+  supabase: ReturnType<
+    typeof import("@supabase/supabase-js").createClient<Database>
+  >;
+  currentUser: Profile | null;
+}
+
 const DevoListScreen = () => {
   const navigation = useNavigation();
-  //@ts-ignore
-  const { currentUser, supabase } = useSupabase();
+  const { currentUser, supabase } = useSupabase() as unknown as SupabaseContext;
   const praiseBottomSheetRef = useRef<BottomSheetModal>(null);
   const [praiseCount, setPraiseCount] = useState(0);
   const [isShowingHelpModal, setIsShowingHelpModal] = useState(false);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<Praise[]>({
     queryKey: ["praises"],
     queryFn: getPraises,
   });
@@ -62,24 +77,24 @@ const DevoListScreen = () => {
         await AsyncStorage.setItem("lastResetDate", today);
         setPraiseCount(0);
       } else {
-        setPraiseCount(count ? parseInt(count) : 0);
+        setPraiseCount(count ? parseInt(count, 10) : 0);
       }
     };
 
     checkPraiseCount();
   }, [data]);
 
-  async function getPraises() {
+  async function getPraises(): Promise<Praise[]> {
     const { data } = await supabase
       .from("praises")
       .select("*, profiles(*)")
       .order("id", { ascending: true });
 
-    return data as [];
+    return (data as Praise[]) || [];
   }
 
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme
   );
   const { colorScheme } = useColorScheme();
 
@@ -103,7 +118,7 @@ const DevoListScreen = () => {
   // };
 
   // Animated style for each item in the FlatList
-  const AnimatedPraiseItem = ({ item }: { item: any }) => {
+  const AnimatedPraiseItem = ({ item }: { item: Praise }) => {
     const hoverTranslateY = useSharedValue(0);
 
     hoverTranslateY.value = withRepeat(
@@ -112,7 +127,7 @@ const DevoListScreen = () => {
         easing: Easing.inOut(Easing.ease),
       }),
       -1,
-      true,
+      true
     );
     // Animate vertical movement
 
@@ -124,17 +139,17 @@ const DevoListScreen = () => {
       <Animated.View
         className={cn(
           "bg-light-secondary dark:bg-dark-secondary w-fit max-w-56 gap-2 self-start p-3 rounded-xl",
-          item.id % 2 === 0 && "self-end",
+          item.id % 2 === 0 && "self-end"
         )}
         style={hoverStyle}
       >
-        {item.user_id ? (
+        {item.user_id && item.profiles ? (
           <View>
             <Text
               style={getSecondaryTextColorStyle(actualTheme)}
               className="font-semibold ext-light-primary dark:text-dark-primary text-sm"
             >
-              {item.profiles.full_name}
+              {item.profiles.full_name || "Unknown"}
             </Text>
           </View>
         ) : (
@@ -191,8 +206,8 @@ const DevoListScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
@@ -204,8 +219,8 @@ const DevoListScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "dark"
-                    ? "white"
-                    : "#2f2d51"
+                  ? "white"
+                  : "#2f2d51"
               }
             />
           </TouchableOpacity>
@@ -258,7 +273,7 @@ const DevoListScreen = () => {
                 </Text>
               </View>
             )}
-            keyExtractor={(item: any) => item.id.toString()}
+            keyExtractor={(item: Praise) => item.id.toString()}
             renderItem={({ item }) => <AnimatedPraiseItem item={item} />}
           />
           {praiseCount < 10 && (
@@ -276,8 +291,8 @@ const DevoListScreen = () => {
                     actualTheme && actualTheme.MainTxt
                       ? actualTheme.MainTxt
                       : colorScheme === "dark"
-                        ? "#121212"
-                        : "white"
+                      ? "#121212"
+                      : "white"
                   }
                 />
               </Pressable>

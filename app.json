@@ -3,7 +3,7 @@
     "name": "Prayse",
     "slug": "prayer-app",
     "scheme": "prayseapp",
-    "version": "11.1.0",
+    "version": "11.2.1",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "owner": "sahag98",
@@ -14,13 +14,11 @@
       "color": "#349eeb"
     },
     "plugins": [
-      "@stream-io/video-react-native-sdk",
-
       ["expo-apple-authentication"],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow Prayse access to your photos/videos to allow you to record journals and set profile pictures.",
+          "photosPermission": "Allow Prayse access to your photos/videos to allow you to record and save journals",
           "savePhotosPermission": "Allow Prayse to save files to your gallery.",
           "isAccessMediaLocationEnabled": true
         }
@@ -37,8 +35,11 @@
         "expo-build-properties",
         {
           "android": {
-            "minSdkVersion": 24,
-            "targetSdkVersion": 35
+            "android": {
+              "compileSdkVersion": 35,
+              "targetSdkVersion": 35,
+              "buildToolsVersion": "35.0.0"
+            }
           },
           "ios": {
             "deploymentTarget": "15.1"
@@ -58,7 +59,6 @@
           "color": "#349eeb"
         }
       ],
-
       [
         "expo-speech-recognition",
         {
@@ -80,7 +80,13 @@
       "expo-secure-store",
       "expo-router",
       "expo-asset",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-web-browser",
+        {
+          "experimentalLauncherActivity": true
+        }
+      ]
     ],
     "splash": {
       "image": "./assets/prayse-splash.png",
@@ -97,7 +103,7 @@
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.sahag98.prayerListApp",
-      "buildNumber": "112",
+      "buildNumber": "115",
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
       },
@@ -165,7 +171,7 @@
       },
       "package": "com.sahag98.prayerListApp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 93
+      "versionCode": 96
     },
     "web": {
       "favicon": "./assets/favicon.png"

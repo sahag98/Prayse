@@ -30,14 +30,22 @@ export const reminderSlice = createSlice({
 
       const nextReviewDate = new Date();
       nextReviewDate.setDate(nextReviewDate.getDate() + 14);
-      state.nextReviewDate = nextReviewDate;
+      state.nextReviewDate = nextReviewDate.toISOString();
     },
     clearReminders: (state) => {
       state.reminders = [];
     },
     addNewReminder: (state, action) => {
       // state.reminders = "hello";
-      const Reminders = [action.payload, ...state.reminders];
+      // Convert Date objects to ISO strings for serialization
+      const payload = { ...action.payload };
+      if (payload.reminder && payload.reminder.time instanceof Date) {
+        payload.reminder = {
+          ...payload.reminder,
+          time: payload.reminder.time.toISOString(),
+        };
+      }
+      const Reminders = [payload, ...state.reminders];
       state.reminders = Reminders;
     },
     deleteReminder: (state, action) => {
@@ -71,10 +79,20 @@ export const reminderSlice = createSlice({
     editReminder: (state, action) => {
       const newReminders = [...state.reminders];
       const reminderIndex = state.reminders.findIndex(
-        (reminder) => reminder.id === action.payload.reminder.id,
+        (reminder) => reminder.reminder.id === action.payload.reminder.id,
       );
-      newReminders.splice(reminderIndex, 1, action.payload.reminder);
-      state.reminders = newReminders;
+      // Convert Date objects to ISO strings for serialization
+      const payload = { ...action.payload };
+      if (payload.reminder && payload.reminder.time instanceof Date) {
+        payload.reminder = {
+          ...payload.reminder,
+          time: payload.reminder.time.toISOString(),
+        };
+      }
+      if (reminderIndex !== -1) {
+        newReminders.splice(reminderIndex, 1, payload);
+        state.reminders = newReminders;
+      }
     },
   },
 });

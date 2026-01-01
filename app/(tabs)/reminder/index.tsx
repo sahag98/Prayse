@@ -15,11 +15,25 @@ import { deleteAllReminders } from "@redux/remindersReducer";
 import { Container } from "@components/Container";
 import HeaderText from "@components/HeaderText";
 
+interface ReminderItem {
+  identifier: string;
+  [key: string]: unknown;
+}
+
+interface RootState {
+  reminder: {
+    reminders: ReminderItem[];
+  };
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
+
 const ReminderScreen = () => {
   const { colorScheme } = useColorScheme();
-  const reminders = useSelector((state: any) => state.reminder.reminders);
+  const reminders = useSelector((state: RootState) => state.reminder.reminders);
   const actualTheme = useSelector(
-    (state: { theme: { actualTheme: ActualTheme } }) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme,
   );
 
   const dispatch = useDispatch();

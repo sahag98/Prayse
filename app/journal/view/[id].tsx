@@ -7,7 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useVideoPlayer, VideoView } from "expo-video";
 import Moment from "moment";
-import useStore from "@hooks/store";
+import useStore from "@lib/zustand-store";
 
 const JournalView = () => {
   const { colorScheme } = useColorScheme();
@@ -98,11 +98,12 @@ const JournalView = () => {
                   {journal.type === "video"
                     ? `${Math.floor(Number(journal.time) / 60)
                         .toString()
-                        .padStart(
-                          2,
-                          "0",
-                        )}:${(Number(journal.time) % 60).toString().padStart(2, "0")}`
-                    : `${Math.floor(Number(journal.time) / 60)}:${Number(journal.time) % 60}`}
+                        .padStart(2, "0")}:${(Number(journal.time) % 60)
+                        .toString()
+                        .padStart(2, "0")}`
+                    : `${Math.floor(Number(journal.time) / 60)}:${
+                        Number(journal.time) % 60
+                      }`}
                 </Text>
               </View>
 

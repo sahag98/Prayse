@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef, useState } from "react";
 import { useNavigation } from "expo-router";
 import { useColorScheme } from "nativewind";
@@ -22,16 +21,30 @@ import {
   getPrimaryTextColorStyle,
   getSecondaryTextColorStyle,
 } from "@lib/customStyles";
-import { ActualTheme } from "@types/reduxTypes";
+import { ActualTheme } from "../types/reduxTypes";
+
+interface GospelMessage {
+  id: number;
+  title: string;
+  content: string;
+  verse: string;
+  chapter: string;
+}
+
+interface RootState {
+  theme: {
+    actualTheme: ActualTheme;
+  };
+}
 
 const Gospel = () => {
   const navigation = useNavigation();
   const { colorScheme } = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const actualTheme = useSelector(
-    (state: { theme: ActualTheme }) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme,
   );
-  const Message = [
+  const Message: GospelMessage[] = [
     {
       id: 1,
       title: "GOD LOVES YOU",
@@ -76,7 +89,7 @@ const Gospel = () => {
     },
   ];
 
-  const Item = ({ title, verse, chapter, content }) => (
+  const Item = ({ title, verse, chapter, content }: GospelMessage) => (
     <View
       style={
         actualTheme &&
@@ -116,7 +129,7 @@ const Gospel = () => {
       </Text>
     </View>
   );
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }: { item: GospelMessage; index: number }) => (
     <Item
       title={item.title}
       verse={item.verse}
