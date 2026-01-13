@@ -31,10 +31,12 @@ interface RootState {
 
 const ReminderScreen = () => {
   const { colorScheme } = useColorScheme();
-  const reminders = useSelector((state: RootState) => state.reminder.reminders);
+  const reminders = useSelector((state: any) => state.reminder.reminders);
   const actualTheme = useSelector(
-    (state: RootState) => state.theme.actualTheme,
+    (state: RootState) => state.theme.actualTheme
   );
+
+  console.log(JSON.stringify(reminders, null, 2));
 
   const dispatch = useDispatch();
 
@@ -71,7 +73,7 @@ const ReminderScreen = () => {
                       style: "destructive",
                       onPress: handleDeleteAllReminders,
                     },
-                  ],
+                  ]
                 )
               }
             >
@@ -113,8 +115,8 @@ const ReminderScreen = () => {
                   actualTheme && actualTheme.MainTxt
                     ? actualTheme.MainTxt
                     : colorScheme === "dark"
-                      ? "white"
-                      : "#2f2d51"
+                    ? "white"
+                    : "#2f2d51"
                 }
               />
               <Text

@@ -66,6 +66,7 @@ export default function TestScreen() {
   const navigation = useNavigation();
   const routeParams = useLocalSearchParams<{
     reminder?: string;
+    reminderId?: string;
     type?: "Add" | "Edit";
     note?: string;
     reminderToEditTitle?: string;
@@ -77,7 +78,7 @@ export default function TestScreen() {
     reminderIdentifier?: string;
     prayer_times?: string;
   }>();
-  console.log("params: ", routeParams.prayer_times);
+  console.log("params: ", routeParams);
 
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [newReminder, setNewReminder] = useState("");
@@ -306,6 +307,83 @@ export default function TestScreen() {
           })
         );
       }
+    } else if (repeatOption === "monthly" && Platform.OS === "ios") {
+      const newDate = new Date(
+        combinedDate.getTime() + 6 * 24 * 60 * 60 * 1000
+      );
+      console.log("new Date: ", newDate);
+
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Pray 🙏",
+          body: reminder.message,
+          data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+          year: combinedDate.getFullYear(),
+          month: combinedDate.getMonth() + 1,
+          weekday: combinedDate.getDay(),
+          hour: combinedDate.getHours(),
+          minute: combinedDate.getMinutes(),
+        },
+      });
+
+      if (type === "edit") {
+        dispatch(
+          editReminder({
+            reminder: serializeReminder(reminder),
+            identifier,
+            prayer_times: routeParams.prayer_times,
+            ocurrence: "Monthly",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: serializeReminder(reminder),
+            identifier,
+            prayer_times: routeParams.prayer_times,
+            ocurrence: "Monthly",
+          })
+        );
+      }
+    } else if (repeatOption === "monthly" && Platform.OS === "android") {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Pray 🙏",
+          body: reminder.message,
+          data: { url: REMINDER_SCREEN, reminder_id: reminder.id },
+          sound: "default",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.MONTHLY,
+          day: combinedDate.getDay(),
+          hour: combinedDate.getHours(),
+          minute: combinedDate.getMinutes(),
+        },
+      });
+
+      if (type === "edit") {
+        dispatch(
+          editReminder({
+            reminder: serializeReminder(reminder),
+            identifier,
+            prayer_times: routeParams.prayer_times,
+            ocurrence: "Weekly",
+          })
+        );
+      } else {
+        dispatch(
+          addNewReminder({
+            reminder: serializeReminder(reminder),
+            identifier,
+            prayer_times: routeParams.prayer_times,
+            ocurrence: "Weekly",
+          })
+        );
+      }
     } else {
       console.log("HEREEE", secondsUntilNotification);
       const identifier = await Notifications.scheduleNotificationAsync({
@@ -416,7 +494,7 @@ export default function TestScreen() {
     const newReminderObj = {
       id: uuid.v4(),
       message: newReminder,
-      prayer_id: routeParams.reminder,
+      prayer_id: routeParams.reminderId,
       prayer_times: routeParams.prayer_times,
       note: newNote,
       time: combinedDate,
@@ -509,7 +587,7 @@ export default function TestScreen() {
 
     // Calculate days to next Wednesday (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
     const currentDay = reminderDate.getDay();
-    const daysUntilWednesday = (3 - currentDay + 7) % 7 || 7; // Ensure it's at least 1 day ahead
+    const daysUntilWednesday = (3 - currentDay + 6) % 7 || 7; // Ensure it's at least 1 day ahead
     reminderDate.setDate(reminderDate.getDate() + daysUntilWednesday);
 
     setReminderDate(reminderDate);
@@ -518,9 +596,28 @@ export default function TestScreen() {
     setRepeatOption("weekly");
   }
 
+  function useMonthlyOption() {
+    const reminderTime = new Date();
+    reminderTime.setHours(12, 0, 0, 0);
+
+    const reminderDate = new Date();
+
+    const currentDate = reminderDate.getDay();
+    const currentMonth = reminderDate.getMonth();
+
+    reminderDate.setMonth(currentMonth + 1);
+    reminderDate.setDate(currentDate + 1);
+
+    setReminderDate(reminderDate);
+
+    setReminderTime(reminderTime);
+    setIsRepeat(true);
+    setRepeatOption("monthly");
+  }
+
   return (
     <Container>
-      <View className="flex-1 justify-center items-center p-4">
+      <View className="flex-1 justify-center items-center p-0">
         <View className="flex-row justify-between w-full items-center">
           <View className="flex-row gap-2 items-center">
             <TouchableOpacity onPress={clearAll}>
@@ -808,7 +905,7 @@ export default function TestScreen() {
                       : "text-light-primary dark:text-dark-primary"
                   )}
                 >
-                  Once a day
+                  Daily
                 </Text>
               </Pressable>
               <Pressable
@@ -828,7 +925,27 @@ export default function TestScreen() {
                       : "text-light-primary dark:text-dark-primary"
                   )}
                 >
-                  Once a week
+                  Weekly
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={useMonthlyOption}
+                className={cn(
+                  " items-center justify-center rounded-lg p-4 flex-1",
+                  repeatOption === "monthly"
+                    ? "bg-light-primary dark:bg-dark-accent"
+                    : "bg-light-secondary dark:bg-dark-secondary"
+                )}
+              >
+                <Text
+                  className={cn(
+                    "font-inter-semibold text-light-primary dark:text-dark-primary",
+                    repeatOption === "monthly"
+                      ? "text-light-background dark:text-dark-background"
+                      : "text-light-primary dark:text-dark-primary"
+                  )}
+                >
+                  Monthly
                 </Text>
               </Pressable>
             </View>
