@@ -36,6 +36,7 @@ export const reminderSlice = createSlice({
       state.reminders = [];
     },
     addNewReminder: (state, action) => {
+      console.log("payload: ", action.payload);
       // state.reminders = "hello";
       // Convert Date objects to ISO strings for serialization
       const payload = { ...action.payload };
@@ -44,6 +45,8 @@ export const reminderSlice = createSlice({
           ...payload.reminder,
           time: payload.reminder.time.toISOString(),
         };
+      } else {
+        console.log("cant add")
       }
       const Reminders = [payload, ...state.reminders];
       state.reminders = Reminders;

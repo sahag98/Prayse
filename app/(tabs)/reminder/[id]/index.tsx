@@ -18,7 +18,7 @@ import { cancelScheduledNotificationAsync } from "expo-notifications";
 import { ActualTheme } from "@types/reduxTypes";
 import { posthog } from "@lib/posthog";
 import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
-import { REMINDER_SCREEN, TEST_SCREEN } from "@routes";
+import { REMINDER_SCREEN, SET_REMINDER_SCREEN } from "@routes";
 import { deleteReminder, handleReminderAmen } from "@redux/remindersReducer";
 import Animated, {
   useAnimatedStyle,
@@ -73,6 +73,16 @@ const SingleReminderScreen = () => {
     };
     timeOptions = options;
   } else if (singleReminder?.ocurrence === "Weekly") {
+    const dayOfWeekNumber = timestamp.getDay();
+    dayOfWeekName = daysOfWeek[dayOfWeekNumber];
+
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+    };
+
+    timeOptions = options;
+  } else if (singleReminder?.ocurrence === "Monthly") {
     const dayOfWeekNumber = timestamp.getDay();
     dayOfWeekName = daysOfWeek[dayOfWeekNumber];
 
@@ -157,7 +167,7 @@ const SingleReminderScreen = () => {
   }));
 
   useEffect(() => {
-    pulse.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
+    pulse.value = withRepeat(withTiming(0.8, { duration: 3000 }), -1, true);
   }, []);
 
   function handleAmenSuccess() {
@@ -247,8 +257,8 @@ const SingleReminderScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "light"
-                    ? "#2f2d51"
-                    : "white"
+                  ? "#2f2d51"
+                  : "white"
               }
             />
           </Pressable>
@@ -257,7 +267,7 @@ const SingleReminderScreen = () => {
           <Pressable
             onPress={() =>
               //@ts-expect-error
-              navigation.navigate(TEST_SCREEN, {
+              navigation.navigate(SET_REMINDER_SCREEN, {
                 type: "Edit",
                 reminderEditId: singleReminder.reminder.id,
                 reminderEditPrayerId: singleReminder.reminder.prayer_id,
@@ -277,8 +287,8 @@ const SingleReminderScreen = () => {
                 actualTheme && actualTheme.MainTxt
                   ? actualTheme.MainTxt
                   : colorScheme === "light"
-                    ? "#2f2d51"
-                    : "white"
+                  ? "#2f2d51"
+                  : "white"
               }
             />
           </Pressable>
@@ -309,7 +319,7 @@ const SingleReminderScreen = () => {
       </View>
       <ScrollView contentContainerClassName="gap-5 mt-7">
         <View className="w-full flex-row justify-between items-center">
-          <View className="flex-row bg-light-secondary dark:bg-dark-secondary self-start rounded-lg p-2 items-center gap-2">
+          <View className="flex-row bg-light-secondary dark:bg-dark-secondary self-start rounded-xl px-3 py-2 items-center gap-2">
             <Ionicons
               name="time-outline"
               size={24}
@@ -317,8 +327,8 @@ const SingleReminderScreen = () => {
                 actualTheme && actualTheme.SecondaryTxt
                   ? actualTheme.SecondaryTxt
                   : colorScheme === "dark"
-                    ? "#d2d2d2"
-                    : "#2f2d51"
+                  ? "#d2d2d2"
+                  : "#2f2d51"
               }
             />
             {singleReminder.ocurrence === "Daily" && (
@@ -335,6 +345,14 @@ const SingleReminderScreen = () => {
                 className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
               >
                 {singleReminder.ocurrence} on {dayOfWeekName} @ {formattedDate}
+              </Text>
+            )}
+            {singleReminder.ocurrence === "Monthly" && (
+              <Text
+                style={getSecondaryTextColorStyle(actualTheme)}
+                className="font-inter-medium text-sm text-light-primary dark:text-dark-primary"
+              >
+                {singleReminder.ocurrence} on {dayOfWeekName} {formattedDate}
               </Text>
             )}
             {singleReminder.ocurrence === "None" && (
@@ -370,24 +388,24 @@ const SingleReminderScreen = () => {
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
                   <Pressable
-                    className="self-start flex-row items-center gap-2 p-2 rounded-lg bg-light-secondary dark:bg-dark-secondary"
+                    className="self-start flex-row items-center gap-2 px-4 py-2 rounded-lg bg-light-secondary dark:bg-dark-secondary"
                     // onPress={() => {
                     //   console.log("hereeee");
                     //   setIsChangingStatus(true);
                     // }}
                   >
-                    <Text className="font-inter-semibold text-light-primary dark:text-dark-primary">
+                    <Text className="font-inter-semibold text-sm text-light-primary dark:text-dark-primary">
                       {prayer?.status}
                     </Text>
                     <AntDesign
                       name="down"
-                      size={15}
+                      size={12}
                       color={
                         actualTheme && actualTheme.MainTxt
                           ? actualTheme.MainTxt
                           : colorScheme === "light"
-                            ? "#2f2d51"
-                            : "white"
+                          ? "#2f2d51"
+                          : "white"
                       }
                     />
                   </Pressable>
@@ -488,7 +506,7 @@ const SingleReminderScreen = () => {
               buttonHeight.value = e.nativeEvent.layout.height;
             }}
             style={[animatedButtonStyle, { overflow: "hidden", zIndex: 1 }]}
-            className="w-full flex-row gap-2 p-5 rounded-lg justify-center items-center"
+            className="w-full flex-row gap-2 p-5 rounded-xl justify-center items-center"
           >
             <Animated.View pointerEvents="none" style={[fillStyle]} />
             <View className="items-center justify-center">

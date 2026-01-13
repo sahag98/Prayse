@@ -77,7 +77,7 @@ const AddPraiseModal = ({
       <BottomSheetModal
         containerStyle={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
         ref={praiseBottomSheetRef}
-        index={0}
+        index={1}
         handleIndicatorStyle={{
           backgroundColor: colorScheme === "dark" ? "white" : "#2f2d51",
         }}
@@ -110,14 +110,14 @@ const AddPraiseModal = ({
               getSecondaryTextColorStyle(actualTheme),
               getSecondaryBackgroundColorStyle(actualTheme),
             ]}
-            className="w-full font-inter-medium rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary placeholder:text-gray-600 dark:placeholder:text-stone-400 dark:bg-dark-background p-4"
+            className="w-full font-inter-regular rounded-lg text-light-primary dark:text-dark-primary bg-light-secondary dark:bg-dark-background p-4"
             placeholder="How can you praise God today?"
             placeholderTextColor={
               actualTheme && actualTheme.SecondaryTxt
                 ? actualTheme.SecondaryTxt
                 : colorScheme === "dark"
                 ? "#e0e0e0"
-                : "#2f2d51"
+                : "#7a7a7a"
             }
             selectionColor={
               actualTheme && actualTheme.SecondaryTxt
